@@ -16,7 +16,9 @@ export class ObsService {
 	private readonly local = inject(ObsLocalService);
 	private readonly desktop =
 		typeof window !== 'undefined' &&
-		('__TAURI_INTERNALS__' in window || navigator.userAgent.includes('NamelessStreamHataDesktop'));
+		('__TAURI_INTERNALS__' in window ||
+			(window as unknown as Record<string, unknown>)['__STREAMHATA_DESKTOP__'] === true ||
+			navigator.userAgent.includes('NamelessStreamHataDesktop'));
 
 	status() {
 		return this.desktop
