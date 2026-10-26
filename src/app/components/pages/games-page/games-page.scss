@@ -4,7 +4,7 @@
 
 .games-filters {
 	position: sticky;
-	top: var(--layout-header);
+	top: calc(var(--layout-header) + 112px);
 	z-index: 25;
 	display: grid;
 	grid-template-columns: minmax(0, 1.6fr) repeat(4, minmax(0, 1fr)) max-content;
@@ -327,5 +327,5 @@
 }
 
 html[data-tauri] .games-filters {
-	top: 0;
+	top: 112px;
 }
