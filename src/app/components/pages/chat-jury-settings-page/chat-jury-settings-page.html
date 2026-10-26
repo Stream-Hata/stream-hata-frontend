@@ -7,7 +7,10 @@
 
     <div class="jk-page-actions">
       <a appearance="jkit-tint" routerLink="/app/chat-jury" tuiButton>К жюри</a>
-      <button appearance="primary" tuiButton type="button">Сохранить</button>
+      @if (saved()) {
+        <span appearance="positive" tuiBadge>Сохранено</span>
+      }
+      <button appearance="primary" tuiButton type="button" (click)="save()">Сохранить</button>
     </div>
   </header>
 
@@ -187,20 +190,37 @@
               </header>
 
               <div class="cfg-row">
-                <span class="cfg-label">Команда голоса</span>
+                <span class="cfg-label">Команда голоса «за»</span>
                 <tui-textfield class="cfg-control">
                   <input
-                    aria-label="Команда голоса"
+                    aria-label="Команда голоса за"
                     type="text"
-                    [value]="voteCommand()"
-                    (input)="voteCommand.set($any($event.target).value)"
+                    [value]="yeaCommand()"
+                    (input)="yeaCommand.set($any($event.target).value)"
                     tuiInput
-                    />
-                  </tui-textfield>
-                </div>
+                  />
+                </tui-textfield>
+              </div>
 
-                <div class="cfg-row">
-                  <span class="cfg-label">Команда запуска</span>
+              <div class="cfg-row">
+                <span class="cfg-label">Команда голоса «против»</span>
+                <tui-textfield class="cfg-control">
+                  <input
+                    aria-label="Команда голоса против"
+                    type="text"
+                    [value]="neiCommand()"
+                    (input)="neiCommand.set($any($event.target).value)"
+                    tuiInput
+                  />
+                </tui-textfield>
+              </div>
+
+              <p class="jk-caption">
+                По умолчанию: !yea и !nei. Сообщения «yea» и «nei» без команды тоже считаются голосами.
+              </p>
+
+              <div class="cfg-row">
+                <span class="cfg-label">Команда запуска</span>
                   <tui-textfield class="cfg-control">
                     <input
                       aria-label="Команда запуска"

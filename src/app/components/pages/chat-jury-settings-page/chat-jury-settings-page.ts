@@ -1,4 +1,7 @@
-import { Component, computed, inject, Injector, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, Injector, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TriggersService } from '@shared/services/ops.services';
+import type { Trigger } from '@shared/types/automation';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { signalControl } from '@shared/helpers/form-control';
@@ -59,6 +62,9 @@ const SELECT_LABELS: Record<string, string> = {
 })
 export default class ChatJurySettingsPage {
 	private readonly injector = inject(Injector);
+	private readonly triggers = inject(TriggersService);
+	private readonly destroyRef = inject(DestroyRef);
+	readonly saved = signal(false);
 	readonly section = signal<Section>('main');
 
 	readonly sections = [
@@ -99,8 +105,50 @@ export default class ChatJurySettingsPage {
 	readonly animationControl = signalControl(this.animation, this.injector);
 
 	/* Доступ */
-	readonly voteCommand = signal('!голос');
+	readonly yeaCommand = signal('!yea');
+	readonly neiCommand = signal('!nei');
 	readonly startCommand = signal('!жюри');
+	private triggerList: Trigger[] = [];
+
+	constructor() {
+		this.triggers
+			.list()
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe(({ triggers }) => {
+				this.triggerList = triggers;
+				this.yeaCommand.set(triggers.find((item) => item.action === 'jury.yea')?.command ?? '!yea');
+				this.neiCommand.set(triggers.find((item) => item.action === 'jury.nei')?.command ?? '!nei');
+			});
+	}
+
+	save(): void {
+		const next = this.triggerList.map((trigger) => {
+			if (trigger.action === 'jury.yea') {
+				return { ...trigger, command: this.normalizeCommand(this.yeaCommand()) };
+			}
+
+			if (trigger.action === 'jury.nei') {
+				return { ...trigger, command: this.normalizeCommand(this.neiCommand()) };
+			}
+
+			return trigger;
+		});
+
+		this.triggers
+			.save(next)
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe(({ triggers }) => {
+				this.triggerList = triggers;
+				this.saved.set(true);
+				setTimeout(() => this.saved.set(false), 1800);
+			});
+	}
+
+	private normalizeCommand(value: string): string {
+		const command = value.trim().replace(/^!+/, '');
+
+		return command ? `!${command.toLowerCase()}` : '';
+	}
 
 	setTheme(index: number): void {
 		this.theme.set((['dark', 'light', 'auto'] as const)[index] ?? 'dark');
