@@ -26,6 +26,7 @@ import {
 	timer,
 } from 'rxjs';
 import { UpdateNotice } from '@shared/components/update-notice/update-notice';
+import { DesktopUpdateNotice } from '@shared/components/desktop-update-notice/desktop-update-notice';
 import { Logo } from '../../ui/logo/logo';
 import type { SearchItem } from '../app-search/app-search';
 import { AppSearch } from '../app-search/app-search';
@@ -123,6 +124,7 @@ const WIDGET_ITEMS = [
 		TuiTextfield,
 		Logo,
 		UpdateNotice,
+		DesktopUpdateNotice,
 		AppSearch,
 	],
 	selector: 'app-app-shell',
