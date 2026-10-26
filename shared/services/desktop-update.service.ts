@@ -12,6 +12,7 @@ interface TauriInternals {
 
 @Injectable({ providedIn: 'root' })
 export class DesktopUpdateService {
+	readonly currentVersion = signal('');
 	readonly available = signal(false);
 	readonly version = signal('');
 	readonly notes = signal('');
@@ -25,8 +26,17 @@ export class DesktopUpdateService {
 			return;
 		}
 
+		void this.loadVersion();
 		void this.check();
 		setInterval(() => void this.check(), 30 * 60_000);
+	}
+
+	async loadVersion(): Promise<void> {
+		const version = await this.invoke<string>('app_version');
+
+		if (version) {
+			this.currentVersion.set(version);
+		}
 	}
 
 	async check(): Promise<void> {
