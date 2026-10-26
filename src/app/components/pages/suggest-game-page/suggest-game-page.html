@@ -1,0 +1,232 @@
+<div class="public-page">
+	<div class="container">
+		<header class="public-nav">
+			<a class="public-logo" routerLink="/"><app-logo /></a>
+			<nav class="public-links">
+				<a routerLink="/faq" tuiLink>FAQ</a>
+				<a routerLink="/" tuiLink>На главную</a>
+			</nav>
+		</header>
+
+		<section class="suggest-hero">
+			<span class="eyebrow">Каталог игр</span>
+			<h1 class="jk-display">Предложить игру</h1>
+			<p class="suggest-lead">
+				Знаете игру, которой не хватает в каталоге Nameless StreamHata? Расскажите о ней — мы
+				проверим и добавим в общий список.
+			</p>
+		</section>
+
+		@if (!profile()) {
+			<section class="jk-card suggest-card">
+				<tui-icon icon="@tui.loader" />
+				<span class="jk-h4">Проверяем авторизацию</span>
+			</section>
+		} @else if (!loggedIn()) {
+			<section class="jk-card suggest-card suggest-gate">
+				<tui-icon icon="@tui.lock" />
+				<h2 class="jk-h3">Нужна авторизация Twitch</h2>
+				<p class="jk-body-sm jk-muted">
+					Чтобы оставить заявку, войдите через Twitch. Мы сохраним только ваш ник — без email,
+					аватара и других данных аккаунта.
+				</p>
+				<button appearance="primary" size="l" tuiButton type="button" (click)="login()">
+					<img alt="" class="twitch-icon" src="icons/svg/twitch.svg" />
+					Войти через Twitch
+				</button>
+			</section>
+		} @else {
+			<div class="suggest-grid">
+				<section class="jk-card suggest-card">
+					<header class="suggest-head">
+						<div>
+							<h2 class="jk-h3">Новая заявка</h2>
+							<p class="jk-caption">От {{ displayName() }} (@{{ nickname() }})</p>
+						</div>
+						@if (submitted()) {
+							<span appearance="positive" tuiBadge>Отправлено</span>
+						}
+					</header>
+
+<form class="suggest-form" [formGroup]="form" (ngSubmit)="submit()">
+            <label class="field">
+              <span class="jk-label">Название игры *</span>
+              <tui-textfield>
+                <input formControlName="title" placeholder="Например, Silent Hill 2" tuiInput />
+              </tui-textfield>
+            </label>
+
+            <div class="field-row">
+              <label class="field">
+                <span class="jk-label">Разработчик</span>
+                <tui-textfield>
+                  <input formControlName="developer" placeholder="Team Silent" tuiInput />
+                </tui-textfield>
+              </label>
+
+              <label class="field">
+                <span class="jk-label">Год выпуска</span>
+                <tui-textfield>
+                  <input formControlName="year" placeholder="2001" [min]="1950" [max]="2030" tuiInputNumber />
+                </tui-textfield>
+              </label>
+            </div>
+
+            <div class="auto-row">
+              <div>
+                <span class="jk-label">Найти данные автоматически</span>
+                <span class="jk-caption">
+                  Панель попросит модератора проверить выбранные сервисы. Ручные поля ниже скроются.
+                </span>
+              </div>
+              <input
+                aria-label="Найти данные автоматически"
+                type="checkbox"
+                [formControl]="autoSearchControl"
+                tuiSwitch
+              />
+            </div>
+
+            @if (autoSearch()) {
+              <div class="field">
+                <span class="jk-label">Откуда искать данные</span>
+                <tui-textfield tuiChevron>
+                  <input
+                    aria-label="Сервисы для поиска данных"
+                    [readonly]="true"
+                    [value]="servicesLabel()"
+                    (focus)="servicesOpen.set(true)"
+                    (click)="servicesOpen.set(true)"
+                    tuiInput
+                    tuiSelectLike
+                  />
+                  <tui-data-list-wrapper
+                    *tuiDropdown
+                    [items]="services"
+                    (itemClick)="toggleService($event)"
+                  ></tui-data-list-wrapper>
+                </tui-textfield>
+                <span class="jk-caption">Можно выбрать несколько сервисов — от Steam и IGDB до RGG и MobyGames.</span>
+              </div>
+            } @else {
+              <div class="field-row">
+                <label class="field">
+                  <span class="jk-label">Платформа</span>
+                  <tui-textfield tuiChevron>
+                    <input formControlName="platform" tuiInput tuiSelectLike />
+                    <tui-data-list-wrapper *tuiDropdown [items]="platforms"></tui-data-list-wrapper>
+                  </tui-textfield>
+                </label>
+
+                <label class="field">
+                  <span class="jk-label">Жанры</span>
+                  <tui-textfield>
+                    <input formControlName="genres" placeholder="Survival horror, Adventure" tuiInput />
+                  </tui-textfield>
+                </label>
+              </div>
+
+              <div class="field-row">
+                <label class="field">
+                  <span class="jk-label">Издатель</span>
+                  <tui-textfield>
+                    <input formControlName="publisher" placeholder="Konami" tuiInput />
+                  </tui-textfield>
+                </label>
+
+                <label class="field">
+                  <span class="jk-label">Официальный сайт</span>
+                  <tui-textfield>
+                    <input formControlName="website" placeholder="https://example.com" tuiInput />
+                  </tui-textfield>
+                </label>
+              </div>
+
+              <label class="field">
+                <span class="jk-label">Ссылка на обложку</span>
+                <tui-textfield>
+                  <input formControlName="coverUrl" placeholder="https://.../cover.jpg" tuiInput />
+                </tui-textfield>
+              </label>
+
+              <label class="field">
+                <span class="jk-label">Скриншоты</span>
+                <textarea
+                  class="suggest-textarea"
+                  formControlName="screenshots"
+                  maxlength="6000"
+                  placeholder="По одной ссылке на строку:&#10;https://.../screen-1.jpg&#10;https://.../screen-2.jpg"
+                ></textarea>
+              </label>
+
+              <label class="field">
+                <span class="jk-label">Описание игры</span>
+                <textarea
+                  class="suggest-textarea"
+                  formControlName="description"
+                  maxlength="5000"
+                  placeholder="Чем игра примечательна, особенности, платформы, чем поможет каналу"
+                ></textarea>
+              </label>
+
+              <label class="field">
+                <span class="jk-label">Ссылки на страницы игры</span>
+                <textarea
+                  class="suggest-textarea"
+                  formControlName="links"
+                  maxlength="1200"
+                  placeholder="Steam, GOG, сайт игры, база данных — по одной ссылке на строку"
+                ></textarea>
+              </label>
+
+              <label class="field">
+                <span class="jk-label">Комментарий для модератора</span>
+                <textarea
+                  class="suggest-textarea"
+                  formControlName="comment"
+                  maxlength="2000"
+                  placeholder="Почему игру стоит добавить? Любые важные детали."
+                ></textarea>
+              </label>
+            }
+
+            @if (error()) {
+              <p class="suggest-error" role="alert">{{ error() }}</p>
+            }
+
+            <button appearance="primary" size="l" tuiButton type="submit" [disabled]="submitting() || form.invalid">
+              {{ submitting() ? 'Отправляем…' : 'Отправить заявку' }}
+            </button>
+          </form>
+				</section>
+
+				<aside class="jk-card suggest-card">
+					<h2 class="jk-h3">Мои заявки</h2>
+					@if (mine().length) {
+						<div class="suggest-list">
+							@for (item of mine(); track item.id) {
+								<article class="suggest-item">
+									<div class="suggest-item-head">
+										<strong>{{ item.title }}</strong>
+										<span [appearance]="statusAppearance(item.status)" tuiBadge>{{
+											statusLabel(item.status)
+										}}</span>
+									</div>
+									<span class="jk-caption"
+										>{{ item.platform || 'Платформа не указана'
+										}}{{ item.year ? ' · ' + item.year : '' }}</span
+									>
+									@if (item.moderatorComment) {
+										<p class="jk-body-sm">Комментарий: {{ item.moderatorComment }}</p>
+									}
+								</article>
+							}
+						</div>
+					} @else {
+						<p class="jk-body-sm jk-muted">Здесь появятся ваши заявки и их статус.</p>
+					}
+				</aside>
+			</div>
+		}
+	</div>
+</div>

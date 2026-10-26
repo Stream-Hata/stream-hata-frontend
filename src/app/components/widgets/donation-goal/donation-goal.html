@@ -1,0 +1,19 @@
+<div class="donation-goal" [style]="style()">
+  <div class="donation-goal-head">
+    <strong>{{ goal().title || 'Цель сбора' }}</strong>
+    @if (config().goalShowPercent) {
+      <span>{{ progress() | number: '1.0-0' }}%</span>
+    }
+  </div>
+  <div class="donation-goal-track">
+    <span [style.width.%]="progress()"></span>
+  </div>
+  <div class="donation-goal-meta">
+    @if (config().goalShowAmounts) {
+      <span>{{ goal().raisedAmount | number: '1.0-0' }} / {{ goal().goalAmount | number: '1.0-0' }} {{ goal().currency }}</span>
+      <span>осталось {{ remaining() | number: '1.0-0' }}</span>
+    } @else {
+      <span>Собрано {{ progress() | number: '1.0-0' }}%</span>
+    }
+  </div>
+</div>

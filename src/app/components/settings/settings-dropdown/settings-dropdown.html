@@ -1,22 +1,22 @@
 <div class="dropdown-content">
-	<section class="platforms">
-		<div class="section-header">
-			<div class="name" (click)="showHideMaintainersSet()">
-				<span>Список платформ</span>
-				<tui-icon
-					[icon]="maintainersSetShown() ? '@tui.chevron-up' : '@tui.chevron-down'"
-				></tui-icon>
-			</div>
-			<br />
-			<span>Выбери тут не более 10 платформ</span>
-		</div>
+  <section class="platforms">
+    <div class="section-header">
+      <div class="name" (click)="showHideMaintainersSet()">
+        <span>Список платформ</span>
+        <tui-icon
+          [icon]="maintainersSetShown() ? '@tui.chevron-up' : '@tui.chevron-down'"
+        ></tui-icon>
+      </div>
+      <br />
+      <span>Выбери тут не более 10 платформ</span>
+    </div>
 
-		<div class="platforms-container" [class.expanded]="maintainersSetShown()">
-			<div class="maintainer-set">
-				@for (maintainer of platforms(); track $index) {
-					<app-platform-maintainer [data]="maintainer"></app-platform-maintainer>
-				}
-			</div>
-		</div>
-	</section>
+    <div class="platforms-container" [class.expanded]="maintainersSetShown()">
+      <div class="maintainer-set">
+        @for (maintainer of platforms(); track $index) {
+          <app-platform-maintainer [data]="maintainer"></app-platform-maintainer>
+        }
+      </div>
+    </div>
+  </section>
 </div>

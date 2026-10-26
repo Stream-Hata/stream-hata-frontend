@@ -1,5 +1,7 @@
 import type { ComponentFixture } from '@angular/core/testing';
 import type { Platform, YamlPlatform } from '../../../../../shared/services/yaml-parser';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
@@ -35,6 +37,8 @@ describe('platformMaintainer', () => {
 		await TestBed.configureTestingModule({
 			imports: [PlatformMaintainer],
 			providers: [
+				provideHttpClient(),
+				provideHttpClientTesting(),
 				{
 					provide: PlatformBar,
 					useValue: { selected, toggleSelected },

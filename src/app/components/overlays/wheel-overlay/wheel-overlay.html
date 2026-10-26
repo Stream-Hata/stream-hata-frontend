@@ -1,0 +1,129 @@
+<div class="overlay-stage">
+  <article class="wheel-card">
+    <span class="wheel-kicker">
+      {{ isElimination() ? 'КОЛЕСО НА ВЫБЫВАНИЕ' : 'КОЛЕСО БАЛЛОВ' }}
+    </span>
+
+    @if (round(); as current) {
+      <h2 class="wheel-title">{{ title() }}</h2>
+
+      @if (current.state === 'collecting') {
+        <span class="wheel-pot">Банк: {{ pot() }} · участников: {{ participants().length }}</span>
+
+        <div class="wheel-participants">
+          @for (participant of participantsView(); track participant.userId) {
+            <span
+              class="participant-chip"
+             >{{ participant.label }} · {{ participant.bet }}</span
+          >
+        } @empty {
+        <span class="jk-caption">Ждём участников в чате…</span>
+      }
+    </div>
+
+    <div class="wheel-countdown">{{ countdown() }}</div>
+    <span class="jk-caption">Вход: !wheel {{ title() }} &lt;ставка&gt;</span>
+  } @else {
+    <div class="wheel-wrap" [style.width.px]="appearance().size" [style.height.px]="appearance().size">
+      <span class="wheel-pointer" [style.border-top-color]="appearance().pointerColor"></span>
+      <div
+        class="wheel"
+        [style.background]="wheelGradient()"
+        [style.border-color]="appearance().borderColor"
+        [style.border-width.px]="appearance().borderWidth"
+        [style.box-shadow]="'0 0 ' + appearance().glowSize + 'px ' + appearance().glowColor"
+        [style.transform]="'rotate(' + wheelAngle() + 'deg)'"
+      >
+        @if (appearance().showLabels) {
+          @for (label of wheelLabels(); track label.id) {
+            <span
+              class="wheel-name"
+              [style.left.%]="label.left"
+              [style.top.%]="label.top"
+              [style.color]="appearance().labelColor"
+              [style.font-size.px]="appearance().labelSize"
+              [style.font-family]="fontFamilyCss()"
+              [style.-webkit-text-stroke]="appearance().labelStrokeWidth + 'px ' + appearance().labelStrokeColor"
+            >{{ label.label }}</span>
+          }
+        }
+        <span
+          class="wheel-center"
+          [style.background]="appearance().centerColor"
+          [style.color]="appearance().centerTextColor"
+          [style.font-family]="fontFamilyCss()"
+        >{{ appearance().centerText || 'NS' }}</span>
+      </div>
+    </div>
+
+    <div class="wheel-live-list">
+      @for (participant of orderView(); track participant.userId; let index = $index) {
+        @if (index < revealed()) {
+          <span class="participant-chip" [class.eliminated]="index < order().length - 1">
+            {{ participant.label }}
+          </span>
+        }
+      }
+    </div>
+
+    @if (isElimination() && !spinPending() && ((isSpinning() && eliminatedView().length) || recentEliminated())) {
+      <div class="eliminated-popup">
+        <span class="eliminated-kicker">ВЫБЫЛ</span>
+        <strong>{{ recentEliminated()?.lot || recentEliminated()?.displayName || eliminatedView()[eliminatedView().length - 1]?.label }}</strong>
+      </div>
+    }
+
+    @if (winnerView(); as champion) {
+      <div class="wheel-result">
+        <strong class="wheel-label">🏆 {{ champion.label }}</strong>
+
+      </div>
+
+      <div class="result-popup">
+        <div class="winner-particles" aria-hidden="true">
+          @for (particle of winnerParticles; track $index) {
+            <span
+              [style.left.%]="particle.left"
+              [style.background]="particle.color"
+              [style.width.px]="particle.size"
+              [style.height.px]="particle.size"
+              [style.animation-delay.s]="particle.delay"
+              [style.animation-duration.s]="particle.duration"
+            ></span>
+          }
+        </div>
+        <span class="result-crown">🏆</span>
+        <span class="result-kicker">ПОБЕДИТЕЛЬ</span>
+        <strong class="result-name">{{ champion.label }}</strong>
+        @if (champion.lot && labelMode() === 'viewer') {
+          <span class="result-lot">{{ champion.lot }}</span>
+        }
+        @if (luckMultiplier() > 1) {
+          <span class="result-luck">🍀 ×{{ luckMultiplier() }}</span>
+        }
+      </div>
+    } @else {
+      <span class="wheel-status">{{ spinPending() ? 'Приготовьтесь…' : 'Колесо крутится…' }}</span>
+    }
+  }
+} @else {
+  <h2 class="wheel-title">{{ lastLabel() }}</h2>
+
+  <div class="wheel-wrap">
+    <span class="wheel-pointer"></span>
+    <div
+      class="wheel"
+      [style.background]="wheelGradient()"
+      [style.transform]="'rotate(' + wheelAngle() + 'deg)'"
+    >
+      <span class="wheel-center">NS</span>
+    </div>
+  </div>
+
+  <div class="wheel-result">
+    <strong class="wheel-label">{{ lastUser() }}</strong>
+    <span class="wheel-win">×{{ lastMultiplier() }}</span>
+  </div>
+}
+</article>
+</div>

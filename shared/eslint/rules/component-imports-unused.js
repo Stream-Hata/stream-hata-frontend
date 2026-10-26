@@ -24,8 +24,36 @@ const DEFAULT_OPTIONS = {
 const pascalToKebab = (name) => name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
 const pascalToCamel = (name) => name.charAt(0).toLowerCase() + name.slice(1);
 
+const MODULE_TEMPLATE_FORMS = {
+	CommonModule: [
+		'ngIf',
+		'ngFor',
+		'ngClass',
+		'ngStyle',
+		'ngSwitch',
+		'ngSwitchCase',
+		'ngSwitchDefault',
+		'ngTemplateOutlet',
+		'ngComponentOutlet',
+		'ngPlural',
+		'async',
+	],
+	FormsModule: ['ngModel', 'ngModelChange', 'ngForm', 'ngModelGroup', 'ngFormOptions'],
+	ReactiveFormsModule: [
+		'formControl',
+		'formControlName',
+		'formGroup',
+		'formGroupName',
+		'formArrayName',
+	],
+};
+
 const templateForms = (name, pipeNames) => {
 	const forms = [name, pascalToKebab(name), pascalToCamel(name)];
+
+	if (MODULE_TEMPLATE_FORMS[name]) {
+		forms.push(...MODULE_TEMPLATE_FORMS[name]);
+	}
 
 	if (name.endsWith('Directive')) {
 		const base = name.slice(0, -'Directive'.length);
@@ -34,6 +62,12 @@ const templateForms = (name, pipeNames) => {
 
 	if (name.endsWith('Pipe') && pipeNames[name]) {
 		forms.push(...pipeNames[name]);
+	}
+
+	// Taiga-таблицы: импорт TuiTableTh, а в шаблоне атрибут tuiTh.
+	if (name.startsWith('TuiTable') && name.length > 'TuiTable'.length) {
+		const suffix = name.slice('TuiTable'.length);
+		forms.push(`tui${suffix}`, `tui-${suffix.toLowerCase()}`);
 	}
 
 	return forms;

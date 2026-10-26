@@ -1,0 +1,11 @@
+@use 'mixins';
+
+$min-mobile: 0rem;
+$max-mobile: mixins.to-rem(760);
+$min-tablet: #{$max-mobile};
+$max-tablet: mixins.to-rem(1339);
+$min-desktop: mixins.to-rem(1440);
+$max-desktop: mixins.to-rem(999999999);
+$mobile: 'min-width: #{$min-mobile} and max-width: #{$max-mobile}';
+$tablet: 'min-width: #{$max-tablet} and max-width: #{$max-tablet}';
+$desktop: 'min-width: #{$max-desktop} and max-width: #{$max-desktop}';

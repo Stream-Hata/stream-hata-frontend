@@ -1,0 +1,154 @@
+<div class="jk-page">
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">Донаты</h1>
+      <p class="jk-caption">
+        DonationAlerts, Ko-fi, DonationTo, Donate.stream, DonatePay и вебхуки.
+      </p>
+    </div>
+
+    <div class="jk-page-actions">
+      <a appearance="jkit-tint" routerLink="/app/settings" tuiButton>Настройки интеграций</a>
+      <a appearance="primary" routerLink="/app/settings" tuiButton>
+        <tui-icon icon="@tui.plus" />
+        Подключить сервис
+      </a>
+    </div>
+  </header>
+
+  <section class="metrics">
+    <article class="jk-card metric-card">
+      <span class="jk-label">Всего собрано</span>
+      <span class="jk-metric metric-value">{{ totalsLine() }}</span>
+      <span class="jk-caption">за всё время</span>
+    </article>
+
+    <article class="jk-card metric-card">
+      <span class="jk-label">Сегодня</span>
+      <span class="jk-metric metric-value">{{ todayLine() }}</span>
+      <span class="jk-caption">с начала суток</span>
+    </article>
+
+    <article class="jk-card metric-card">
+      <span class="jk-label">Донатов</span>
+      <span class="jk-metric metric-value">{{ snapshot().stats.totalCount }}</span>
+      <span class="jk-caption">событий в списке</span>
+    </article>
+
+    <article class="jk-card metric-card">
+      <span class="jk-label">Топ донатер</span>
+      @if (topDonator(); as top) {
+        <span class="jk-metric metric-value">{{ top.username }}</span>
+        <span
+          class="jk-caption"
+        >{{ formatAmount(top.amount, top.currency) }} · {{ top.count }} раз</span
+      >
+    } @else {
+      <span class="jk-metric metric-value">—</span>
+      <span class="jk-caption">пока нет донатов</span>
+    }
+  </article>
+</section>
+
+<div class="donations-grid">
+  <section class="donations-main">
+    <h2 class="jk-h4">Последние донаты</h2>
+
+    @if (snapshot().recent.length) {
+      <div class="table-wrap">
+        <table tuiTable>
+          <thead tuiThead>
+            <tr>
+              <th tuiTh>Донатер</th>
+              <th tuiTh>Сумма</th>
+              <th tuiTh>Сообщение</th>
+              <th tuiTh>Источник</th>
+              <th tuiTh>Время</th>
+            </tr>
+          </thead>
+
+          <tbody tuiTbody>
+            @for (donation of snapshot().recent; track donation.provider + donation.id) {
+              <tr>
+                <td tuiTd class="donor-cell">{{ donation.username || 'аноним' }}</td>
+                <td tuiTd class="amount-cell">
+                  {{ formatAmount(donation.amount, donation.currency) }}
+                </td>
+                <td tuiTd class="message-cell">{{ donation.message || '—' }}</td>
+                <td tuiTd>
+                  <span appearance="neutral" tuiBadge>{{ donation.provider }}</span>
+                </td>
+                <td tuiTd class="jk-caption">{{ formatTime(donation.createdAt) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <div class="jk-card jk-empty">
+        <span class="jk-empty-icon">
+          <tui-icon icon="@tui.heart" />
+        </span>
+        <span class="jk-h4">Донатов пока нет</span>
+        <span class="jk-body-sm jk-muted">
+          Подключите сервис в настройках — события начнут появляться здесь автоматически.
+        </span>
+      </div>
+    }
+  </section>
+
+  <aside class="donations-side">
+    <section class="jk-card side-card">
+      <h2 class="jk-h4">Топ донатеров</h2>
+
+      @if (snapshot().stats.top.length) {
+        <ol class="top-list">
+          @for (
+          entry of snapshot().stats.top;
+          track entry.username + entry.currency;
+          let index = $index
+          ) {
+          <li class="top-row">
+            <span class="top-place" [class]="'place-' + (index + 1)">
+              {{ index + 1 }}
+            </span>
+            <span class="top-name">{{ entry.username }}</span>
+            <span class="top-amount jk-numeric">
+              {{ formatAmount(entry.amount, entry.currency) }}
+            </span>
+          </li>
+        }
+      </ol>
+    } @else {
+      <p class="jk-body-sm jk-muted">Список появится после первых донатов.</p>
+    }
+  </section>
+
+  <section class="jk-card side-card">
+    <h2 class="jk-h4">Состояние сервисов</h2>
+
+    @for (provider of snapshot().providers; track provider.name) {
+      <div class="provider-row">
+        <span [appearance]="stateTone(provider.state)" tuiBadge>
+          {{ stateLabel(provider.state) }}
+        </span>
+        <div class="provider-text">
+          <span class="provider-name">{{ providerLabel(provider.name) }}</span>
+          <span class="jk-caption">{{ provider.detail }}</span>
+        </div>
+        @if (provider.name === 'donationalerts') {
+          @if (provider.state !== 'connected') {
+            <button appearance="flat" size="s" type="button" (click)="connectDonationAlerts()" tuiButton>Войти</button>
+          }
+        } @else {
+          <a appearance="flat" size="s" routerLink="/app/settings" tuiButton>Настроить</a>
+        }
+      </div>
+    }
+    @if (authError()) {
+      <span class="jk-caption auth-error">{{ authError() }}</span>
+    }
+  </section>
+</aside>
+</div>
+</div>

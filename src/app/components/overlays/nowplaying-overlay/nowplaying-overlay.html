@@ -1,0 +1,22 @@
+<div class="overlay-stage">
+  <article class="nowplaying-card">
+    <span class="nowplaying-kicker">СЕЙЧАС ИГРАЕТ</span>
+    @if (current(); as track) {
+      @if (videoUrl(); as video) {
+        <iframe
+          class="nowplaying-video"
+          [src]="video"
+          title="Now playing"
+          allow="autoplay; encrypted-media"
+          referrerpolicy="strict-origin-when-cross-origin"
+        ></iframe>
+      } @else if (track.thumbnail) {
+        <img class="nowplaying-cover" [alt]="track.title" [src]="track.thumbnail" />
+      }
+      <strong class="nowplaying-title">{{ track.title }}</strong>
+      <span class="nowplaying-author">{{ track.author }} · {{ duration() }}</span>
+    } @else {
+      <span class="jk-caption">Трек-лист пуст</span>
+    }
+  </article>
+</div>

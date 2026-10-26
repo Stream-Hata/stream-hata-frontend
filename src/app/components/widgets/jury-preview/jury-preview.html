@@ -1,0 +1,64 @@
+@if (compact()) {
+  <div class="jury compact">
+    <p class="question">Спрятаться или сражаться?</p>
+
+    <div class="votes">
+      <div class="vote">
+        <span class="vote-label">Yea</span>
+        <span class="bar">
+          <span class="bar-fill yea" style="width: 72%"></span>
+        </span>
+        <span class="vote-count">18</span>
+      </div>
+      <div class="vote">
+        <span class="vote-label">Nei</span>
+        <span class="bar">
+          <span class="bar-fill nei" style="width: 28%"></span>
+        </span>
+        <span class="vote-count">7</span>
+      </div>
+    </div>
+
+    <span class="time">00:12</span>
+  </div>
+} @else {
+  <div class="jury">
+    <div class="head">
+      <span class="label">Чат-жюри</span>
+      <span class="live">
+        <span class="jk-dot jk-dot-live"></span>
+        Live
+      </span>
+    </div>
+
+    <p class="question">Спрятаться или сражаться?</p>
+    <p class="source">Совет из чата · AI-оценка</p>
+
+    <div class="votes">
+      <div class="vote">
+        <span class="vote-label">Yea</span>
+        <span class="bar">
+          <span class="bar-fill yea" style="width: 72%"></span>
+        </span>
+        <span class="vote-count">18</span>
+      </div>
+      <div class="vote">
+        <span class="vote-label">Nei</span>
+        <span class="bar">
+          <span class="bar-fill nei" style="width: 28%"></span>
+        </span>
+        <span class="vote-count">7</span>
+      </div>
+    </div>
+
+    <div class="timer">
+      <span class="time">00:12</span>
+      <span class="caption">до конца голосования</span>
+    </div>
+
+    <div class="chips">
+      <span class="chip">AI 88%</span>
+      <span class="chip">72% одобрение</span>
+    </div>
+  </div>
+}

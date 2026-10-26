@@ -1,0 +1,71 @@
+<div class="profile-dialog">
+  <div class="profile-head">
+    <span class="jk-avatar jk-avatar-xl jk-avatar-purple">
+      {{ profile.displayName.slice(0, 2).toUpperCase() }}
+    </span>
+    <div class="profile-title">
+      <strong>{{ profile.displayName }}</strong>
+      <span class="jk-caption">&#64;{{ profile.login }} · ID {{ profile.userId }}</span>
+      <div class="profile-badges">
+        @if (banned()) {
+          <span appearance="negative" tuiBadge>Забанен</span>
+        } @else {
+          <span appearance="positive" tuiBadge>Активен</span>
+        }
+        @if (profile.streak > 0) {
+          <span appearance="warning" tuiBadge>Стрик {{ profile.streak }}</span>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="profile-stats">
+    <div class="stat">
+      <span class="jk-caption">Баллы</span>
+      <strong>{{ profile.balance }}</strong>
+    </div>
+    <div class="stat">
+      <span class="jk-caption">Сообщений</span>
+      <strong>{{ profile.messages }}</strong>
+    </div>
+    <div class="stat">
+      <span class="jk-caption">Таймауты</span>
+      <strong>{{ timeoutCount() }}</strong>
+    </div>
+  </div>
+
+  <div class="profile-rows">
+    <div class="profile-row">
+      <span class="jk-caption">Первый раз в чате</span>
+      <span>{{ profile.firstSeenAt || '—' }}</span>
+    </div>
+    <div class="profile-row">
+      <span class="jk-caption">Последняя активность</span>
+      <span>{{ profile.lastSeenAt || '—' }}</span>
+    </div>
+    <div class="profile-row">
+      <span class="jk-caption">Последнее сообщение</span>
+      <span>{{ profile.lastMessage || '—' }}</span>
+    </div>
+  </div>
+
+  <div class="profile-actions">
+    <button appearance="secondary-destructive" tuiButton type="button" (click)="ban()">
+      <tui-icon icon="@tui.ban" />
+      Бан
+    </button>
+    <button appearance="secondary-destructive" tuiButton type="button" (click)="timeout()">
+      <tui-icon icon="@tui.timer" />
+      Таймаут 10 мин
+    </button>
+    <button appearance="secondary" tuiButton type="button" (click)="deleteMessage()">
+      <tui-icon icon="@tui.trash-2" />
+      Удалить сообщение
+    </button>
+    <button appearance="primary" tuiButton type="button" (click)="startBanVote()">
+      <tui-icon icon="@tui.vote" />
+      Голосование за бан
+    </button>
+    <button appearance="flat" tuiButton type="button" (click)="close()">Закрыть</button>
+  </div>
+</div>

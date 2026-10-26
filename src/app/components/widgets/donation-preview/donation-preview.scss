@@ -1,0 +1,53 @@
+:host {
+	display: block;
+}
+
+.donations {
+	display: flex;
+	gap: var(--space-xs);
+	flex-direction: column;
+	width: 100%;
+	max-width: 340px;
+}
+
+.donation {
+	display: flex;
+	gap: var(--space-sm);
+	align-items: center;
+	padding: var(--space-sm) var(--space-md);
+	border: 1px solid var(--border-strong);
+	border-radius: var(--radius-md);
+	background: rgb(11, 6, 18, 0.78);
+}
+
+.amount {
+	flex-shrink: 0;
+	color: var(--accent-primary);
+	font: 700 16px/20px var(--tui-font-text);
+	white-space: nowrap;
+	font-variant-numeric: tabular-nums;
+}
+
+.donation-text {
+	display: flex;
+	gap: 1px;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.name {
+	font: 600 13px/18px var(--tui-font-text);
+}
+
+.message {
+	overflow: hidden;
+	color: var(--text-secondary);
+	font: var(--font-caption);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.small .amount {
+	color: var(--text-secondary);
+	font-size: 14px;
+}

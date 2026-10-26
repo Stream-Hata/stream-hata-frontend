@@ -1,7 +1,7 @@
 <div class="platforms">
-	<div class="platforms-row">
-		@for (_ of count(); track $index) {
-			<app-slot [data]="platforms()[$index]"></app-slot>
-		}
-	</div>
+  <div class="platforms-row">
+    @for (_ of count(); track $index) {
+      <app-slot [data]="platforms()[$index]"></app-slot>
+    }
+  </div>
 </div>

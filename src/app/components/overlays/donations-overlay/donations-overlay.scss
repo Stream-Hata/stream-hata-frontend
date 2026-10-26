@@ -1,0 +1,34 @@
+:host {
+	display: block;
+	width: 100vw;
+	height: 100vh;
+	overflow: hidden;
+	color: var(--text-primary);
+	font-family: var(--font-ui);
+	pointer-events: none;
+}
+
+.donation-overlay-stage {
+	position: absolute;
+	display: flex;
+	gap: var(--space-sm);
+	flex-direction: column;
+	width: 100%;
+	padding: 24px;
+}
+
+.donation-position-top-left { top: 0; left: 0; justify-content: flex-start; }
+.donation-position-top-center { top: 0; left: 50%; transform: translateX(-50%); justify-content: center; }
+.donation-position-top-right { top: 0; right: 0; justify-content: flex-end; }
+.donation-position-middle-left { top: 50%; left: 0; transform: translateY(-50%); justify-content: flex-start; }
+.donation-position-center { top: 50%; left: 50%; transform: translate(-50%, -50%); justify-content: center; }
+.donation-position-middle-right { top: 50%; right: 0; transform: translateY(-50%); justify-content: flex-end; }
+.donation-position-bottom-left { bottom: 0; left: 0; justify-content: flex-start; }
+.donation-position-bottom-center { bottom: 0; left: 50%; transform: translateX(-50%); justify-content: center; }
+.donation-position-bottom-right { bottom: 0; right: 0; justify-content: flex-end; }
+
+@media (width <= 560px) {
+	.donation-overlay-stage {
+		padding: 10px;
+	}
+}

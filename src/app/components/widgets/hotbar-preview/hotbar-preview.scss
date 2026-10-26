@@ -1,0 +1,48 @@
+:host {
+	display: block;
+}
+
+.hotbar-preview {
+	display: grid;
+	grid-template-columns: repeat(10, minmax(0, 1fr));
+	gap: 6px;
+	width: 100%;
+}
+
+.hotbar-cell {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	aspect-ratio: 1;
+	border: 1px solid var(--border-normal);
+	border-radius: var(--radius-sm);
+	background: var(--surface-elevated-2);
+}
+
+.hotbar-cell-empty {
+	border-style: dashed;
+	background: transparent;
+}
+
+.hotbar-icon {
+	width: 68%;
+	height: 68%;
+	object-fit: contain;
+}
+
+.hotbar-empty {
+	color: var(--text-tertiary);
+	font: 500 16px/1 var(--font-ui);
+}
+
+.hotbar-label {
+	display: none;
+}
+
+.hotbar-preview-s .hotbar-cell {
+	border-radius: 4px;
+}
+
+.hotbar-preview-l .hotbar-cell {
+	border-radius: var(--radius-md);
+}

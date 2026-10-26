@@ -1,0 +1,55 @@
+:host {
+	display: block;
+	padding: 16px;
+	color: var(--text-primary);
+	font-family: var(--font-ui);
+}
+
+.overlay-stage {
+	display: flex;
+	justify-content: center;
+}
+
+.nowplaying-card {
+	display: flex;
+	gap: 6px;
+	flex-direction: column;
+	align-items: center;
+	width: min(460px, 100%);
+	padding: 14px;
+	border: 1px solid rgb(255 255 255 / 12%);
+	border-radius: 18px;
+	background: rgb(18 18 24 / 92%);
+	box-shadow: 0 18px 50px rgb(0 0 0 / 45%);
+	text-align: center;
+	backdrop-filter: blur(16px);
+}
+
+.nowplaying-video {
+	width: 100%;
+	aspect-ratio: 16 / 9;
+	border: 1px solid rgb(255 255 255 / 12%);
+	border-radius: 12px;
+}
+
+.nowplaying-cover {
+	width: 96px;
+	height: 96px;
+	border-radius: 12px;
+	object-fit: cover;
+}
+
+.nowplaying-kicker {
+	color: var(--accent-primary);
+	font: 700 11px/15px var(--font-ui);
+	letter-spacing: 0.14em;
+}
+
+.nowplaying-title {
+	font: 700 20px/26px var(--font-ui);
+}
+
+.nowplaying-author {
+	color: var(--text-secondary);
+	font: var(--font-body-sm);
+}

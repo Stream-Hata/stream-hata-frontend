@@ -1,0 +1,275 @@
+<div class="jk-page game-details-page">
+  @if (game(); as item) {
+    <div class="game-top-actions">
+      <a appearance="flat" routerLink="/app/games" tuiButton>
+        <tui-icon icon="@tui.arrow-left" />
+        Назад к играм
+      </a>
+      <button appearance="flat" type="button" tuiButton [disabled]="loading()" (click)="refresh()">
+        <tui-icon icon="@tui.refresh-cw" />
+        {{ loading() ? 'Обновляем…' : 'Обновить данные' }}
+      </button>
+    </div>
+
+    <header class="game-hero jk-card">
+      <div class="game-hero-cover">
+        <span class="game-cover-fallback">{{ initials(item.title) }}</span>
+
+        @if (item.cover) {
+          <img [alt]="item.title" [src]="imageUrl(item.cover)" (error)="hideBroken($event)" />
+        }
+
+        @if (item.tier !== 'none') {
+          <span class="game-tier" [class]="'game-tier-' + item.tier">
+            {{ tierLabel(item.tier) }}
+          </span>
+        }
+      </div>
+
+
+      <div class="game-hero-body">
+        <div class="game-hero-head">
+          <h1 class="jk-h1">{{ item.title }}</h1>
+          <span class="game-year">{{ item.year || 'Год неизвестен' }}</span>
+        </div>
+
+        @if (item.titleRu && item.titleRu !== item.title) {
+          <p class="jk-caption">{{ item.titleRu }}</p>
+        }
+
+        @if (item.originalTitle) {
+          <p class="jk-caption">Оригинальное название: {{ item.originalTitle }}</p>
+        }
+
+        <div class="game-badges">
+          @for (platform of item.platforms; track platform.code) {
+            <span appearance="info" tuiBadge>{{ platform.name }}</span>
+          }
+          @for (genre of genres(); track genre) {
+            <span appearance="neutral" tuiBadge>{{ genre }}</span>
+          }
+        </div>
+
+        <p class="game-description">
+          {{ description() || i18n.t('games.noDescription') }}
+        </p>
+
+        <p class="game-source-note jk-caption">
+          @if (serviceSources().length) {
+            Информация об игре взята из сервисов:
+            @for (source of serviceSources(); track source.id + source.url) {
+              <a target="_blank" rel="noopener" [href]="source.url">{{ source.name }}</a>
+            }
+          } @else {
+            Информация взята из каталога RGG.
+          }
+        </p>
+
+        <div class="game-actions">
+          @if (item.website) {
+            <a appearance="primary" tuiButton target="_blank" rel="noopener" [href]="item.website" (click)="openExternal($event, item.website)">
+              <tui-icon icon="@tui.external-link" />
+              Сайт игры
+            </a>
+          }
+          @for (source of item.sources; track source.id) {
+            <a appearance="flat" tuiButton target="_blank" rel="noopener" [href]="source.url" (click)="openExternal($event, source.url)">
+              {{ source.name }}
+            </a>
+          }
+        </div>
+      </div>
+    </header>
+
+    <section class="jk-card game-section game-shots">
+      <h2 class="jk-h4">Скриншоты</h2>
+      @if (item.screenshots?.length) {
+        <div class="shots-grid">
+          @for (shot of item.screenshots ?? []; track shot) {
+            <img [alt]="item.title" [src]="imageUrl(shot)" loading="lazy" />
+          }
+        </div>
+      } @else if (item.cover) {
+        <div class="shots-fallback">
+          <img alt="" [attr.src]="imageUrl(item.cover)" />
+          <span class="jk-caption">Скриншоты не найдены — показана обложка игры.</span>
+        </div>
+      } @else {
+        <p
+          class="jk-body-sm jk-muted"
+        >Скриншоты пока не найдены. Они подтянутся из источников или модерации.</p>
+      }
+    </section>
+
+    <div class="game-grid">
+      <section class="jk-card game-section">
+        <h2 class="jk-h4">Эмуляторы</h2>
+        @if (item.emulatorsRequired) {
+          <p
+            class="jk-caption"
+          >Для запуска нужен эмулятор. Ссылки ведут на официальные сайты проектов.</p>
+          <div class="emulator-list">
+            @for (emulator of item.emulators; track emulator.name) {
+              <a class="emulator-row" target="_blank" rel="noopener" [href]="emulator.url" (click)="openExternal($event, emulator.url)">
+                <span class="emulator-name">{{ emulator.name }}</span>
+                <span class="jk-caption">{{ emulator.os.join(' · ') }}</span>
+                <span appearance="info" tuiBadge>{{ emulator.free ? 'Бесплатно' : 'Платно' }}</span>
+              </a>
+            }
+          </div>
+        } @else {
+          <p class="jk-body-sm jk-muted">Эмулятор не требуется.</p>
+        }
+      </section>
+
+      <section class="jk-card game-section">
+        <h2 class="jk-h4">Информация</h2>
+        <dl class="game-meta">
+          <dt>Год</dt><dd>{{ item.year || 'Нет данных' }}</dd>
+          <dt>Дата выхода</dt><dd>{{ item.releaseDate || 'Нет данных' }}</dd>
+          <dt>Платформы</dt><dd>{{ platformsLabel() }}</dd>
+          <dt>Жанры</dt><dd>{{ list(genres()) }}</dd>
+          <dt>Режимы</dt><dd>{{ list(item.modes) }}</dd>
+          <dt>Перспективы</dt><dd>{{ list(item.perspectives) }}</dd>
+          <dt>Темы</dt><dd>{{ list(item.themes) }}</dd>
+          <dt>Разработчики</dt><dd>{{ list(item.developers) }}</dd>
+          <dt>Издатели</dt><dd>{{ list(item.publishers) }}</dd>
+          <dt>Рейтинг</dt><dd>{{ number(item.rating) }}</dd>
+          <dt>Агрегированный рейтинг</dt><dd>{{ number(item.aggregatedRating) }}</dd>
+          <dt>Эпоха</dt><dd>{{ item.age }}</dd>
+          <dt>Возрастная категория</dt><dd>{{ item.ageRating || '—' }}</dd>
+          <dt>Статус каталога</dt><dd>{{ item.status }}</dd>
+        </dl>
+      </section>
+
+      <section class="jk-card game-section">
+        <h2 class="jk-h4">Прохождение</h2>
+        <dl class="game-meta">
+          <dt>Быстро</dt><dd>{{ number(item.completion?.hastilyHours) }} ч</dd>
+          <dt>Обычно</dt><dd>{{ number(item.completion?.normallyHours) }} ч</dd>
+          <dt>Полностью</dt><dd>{{ number(item.completion?.completelyHours) }} ч</dd>
+        </dl>
+      </section>
+
+      <section class="jk-card game-section">
+        <h2 class="jk-h4">Скачать игру</h2>
+        @if (item.downloads?.length) {
+          <div class="download-list">
+            @for (download of item.downloads ?? []; track download.url) {
+              <a class="download-row" target="_blank" rel="noopener" [href]="download.url">
+                <span class="download-name">{{ download.name }}</span>
+                @if (download.language) {
+                  <span appearance="info" tuiBadge>{{ download.language }}</span>
+                }
+                <span class="jk-caption download-note">{{ download.note || 'Перейти' }}</span>
+              </a>
+            }
+          </div>
+        } @else {
+          <p class="jk-body-sm jk-muted">Ссылки на скачивание не найдены.</p>
+        }
+      </section>
+
+      <section class="jk-card game-section game-extra">
+        <h2 class="jk-h4">Дополнительно</h2>
+        <div class="game-extra-grid">
+          <div class="game-extra-block">
+            <h3 class="jk-caption">DLC</h3>
+            @if (item.dlc?.length) {
+              <ul class="game-extra-list">
+                @for (entry of item.dlc ?? []; track entry) {
+                  <li>{{ entry }}</li>
+                }
+              </ul>
+            } @else {
+              <p class="jk-body-sm jk-muted">Нет данных</p>
+            }
+          </div>
+          <div class="game-extra-block">
+            <h3 class="jk-caption">Издания</h3>
+            @if (item.editions?.length) {
+              <ul class="game-extra-list">
+                @for (entry of item.editions ?? []; track entry) {
+                  <li>{{ entry }}</li>
+                }
+              </ul>
+            } @else {
+              <p class="jk-body-sm jk-muted">Нет данных</p>
+            }
+          </div>
+          <div class="game-extra-block">
+            <h3 class="jk-caption">Моды</h3>
+            @if (item.mods?.length) {
+              <ul class="game-extra-list">
+                @for (entry of item.mods ?? []; track entry) {
+                  <li>{{ entry }}</li>
+                }
+              </ul>
+            } @else {
+              <p class="jk-body-sm jk-muted">Нет данных</p>
+            }
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    @if (item.popularMods?.length || item.popularCollections?.length) {
+      <section class="jk-card game-section game-mods">
+        <h2 class="jk-h4">Популярные моды и сборки</h2>
+
+        @if (item.popularMods?.length) {
+          <div class="mods-grid">
+            @for (mod of item.popularMods ?? []; track mod.url) {
+              <a class="mod-card" target="_blank" rel="noopener" [href]="mod.url">
+                @if (mod.image) {
+                  <img class="mod-image" alt="" loading="lazy" [src]="imageUrl(mod.image)" />
+                }
+                <div class="mod-body">
+                  <span class="mod-name">{{ mod.name }}</span>
+                  @if (mod.author) {
+                    <span class="jk-caption">Автор: {{ mod.author }}</span>
+                  }
+                  @if (mod.summary) {
+                    <span class="jk-body-sm jk-muted">{{ mod.summary }}</span>
+                  }
+                  <span class="jk-caption">
+                    {{ number(mod.downloads) }} загрузок · {{ number(mod.endorsements) }} рекомендаций
+                  </span>
+                </div>
+              </a>
+            }
+          </div>
+        }
+
+        @if (item.popularCollections?.length) {
+          <h3 class="jk-caption">Сборки</h3>
+          <div class="mods-grid">
+            @for (collection of item.popularCollections ?? []; track collection.url) {
+              <a class="mod-card" target="_blank" rel="noopener" [href]="collection.url">
+                @if (collection.image) {
+                  <img class="mod-image" alt="" loading="lazy" [src]="imageUrl(collection.image)" />
+                }
+                <div class="mod-body">
+                  <span class="mod-name">{{ collection.name }}</span>
+                  @if (collection.summary) {
+                    <span class="jk-body-sm jk-muted">{{ collection.summary }}</span>
+                  }
+                  @if (collection.mods) {
+                    <span class="jk-caption">{{ collection.mods }} модов</span>
+                  }
+                </div>
+              </a>
+            }
+          </div>
+        }
+      </section>
+    }
+
+  } @else {
+    <div class="jk-card games-state">
+      <tui-icon icon="@tui.loader" />
+      <span>Загружаем игру…</span>
+    </div>
+  }
+</div>

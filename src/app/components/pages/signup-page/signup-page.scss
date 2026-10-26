@@ -1,0 +1,57 @@
+:host {
+	display: block;
+}
+
+.auth-head {
+	display: flex;
+	gap: var(--space-2xs);
+	flex-direction: column;
+}
+
+.auth-form {
+	display: flex;
+	gap: var(--space-sm);
+	flex-direction: column;
+}
+
+.terms {
+	display: flex;
+	gap: var(--space-xs);
+	align-items: flex-start;
+	cursor: pointer;
+}
+
+.terms input[tuiCheckbox] {
+	margin-top: 2px;
+}
+
+.terms-text {
+	color: var(--text-secondary);
+}
+
+.auth-divider {
+	display: flex;
+	gap: var(--space-sm);
+	align-items: center;
+	color: var(--text-tertiary);
+	font: var(--font-caption);
+}
+
+.auth-divider:before,
+.auth-divider:after {
+	content: '';
+	flex: 1;
+	height: 1px;
+	background: var(--border-divider);
+}
+
+.auth-foot {
+	color: var(--text-secondary);
+	font: var(--font-body-sm);
+	text-align: center;
+}
+
+.twitch-icon {
+	width: 18px;
+	height: 18px;
+}

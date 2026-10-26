@@ -1,0 +1,138 @@
+<div class="jk-page">
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">Зрители</h1>
+      <p class="jk-caption">Watch streak, баллы за просмотр и активность в чате.</p>
+    </div>
+
+    <div class="jk-page-actions">
+      <tui-textfield>
+        <tui-icon icon="@tui.search" />
+        <input
+          aria-label="Поиск зрителя"
+          placeholder="Поиск..."
+          type="search"
+          [formControl]="searchControl"
+          tuiInput
+        ></tui-textfield>
+      </div>
+    </header>
+
+    <section class="jk-card access-card">
+      <div class="cfg-text">
+        <span class="cfg-label">Владельцы канала</span>
+        <span class="jk-caption">Смена ника Twitch не снимает доступ — просто добавь новый логин.</span>
+      </div>
+
+      <div class="access-row">
+        <tui-textfield>
+          <input
+            aria-label="Логин владельца"
+            placeholder="grep_ban"
+            [value]="ownerDraft()"
+            (input)="ownerDraft.set($any($event.target).value)"
+            tuiInput
+          />
+        </tui-textfield>
+        <button appearance="primary" tuiButton type="button" (click)="addOwner()">
+          Добавить владельца
+        </button>
+      </div>
+
+      @if (roles().owners.length) {
+        <div class="access-list">
+          @for (owner of roles().owners; track owner) {
+            <span appearance="info" tuiBadge>
+              {{ owner }}
+              <button
+                appearance="flat"
+                iconStart="@tui.x"
+                size="xs"
+                tuiIconButton
+                type="button"
+                aria-label="Убрать владельца"
+                (click)="removeOwner(owner)"
+              ></button>
+            </span>
+          }
+        </div>
+      }
+    </section>
+
+    <section class="viewer-stats">
+      <div class="jk-card viewer-stat">
+        <span class="jk-caption">Всего зрителей</span>
+        <strong>{{ total() }}</strong>
+      </div>
+      <div class="jk-card viewer-stat">
+        <span class="jk-caption">Максимальный стрик</span>
+        <strong>{{ maxStreak() }}</strong>
+      </div>
+    </section>
+
+    @if (rows().length) {
+      <div class="table-wrap">
+        <table tuiTable>
+          <thead tuiThead>
+            <tr>
+              <th tuiTh>#</th>
+              <th tuiTh>Зритель</th>
+              <th tuiTh>Watch streak</th>
+              <th tuiTh>Баллы за просмотр</th>
+              <th tuiTh>Первый раз</th>
+              <th tuiTh>Последний раз</th>
+              <th tuiTh>Роль</th>
+            </tr>
+          </thead>
+          <tbody tuiTbody>
+            @for (row of rows(); track row.userId) {
+              <tr>
+                <td tuiTd class="rank-cell">{{ row.rank }}</td>
+                <td tuiTd>
+                  <span class="viewer-cell">
+                    <span class="jk-avatar jk-avatar-s jk-avatar-purple">
+                      {{ row.displayName.slice(0, 2).toUpperCase() }}
+                    </span>
+                    <span class="viewer-name">{{ row.displayName }}</span>
+                    @if (row.leader) {
+                      <span appearance="warning" tuiBadge>лидер</span>
+                    }
+                  </span>
+                </td>
+                <td tuiTd>
+                  <span class="streak-cell">🔥 {{ row.watchStreak }}</span>
+                </td>
+                <td tuiTd class="numeric-cell">{{ row.channelPointsAwarded }}</td>
+                <td tuiTd class="jk-caption">{{ row.firstSeenLabel }}</td>
+                <td tuiTd class="jk-caption">{{ row.lastSeenLabel }}</td>
+                <td tuiTd>
+                  <tui-textfield class="role-select" tuiChevron>
+                    <input
+                      aria-label="Роль зрителя"
+                      [readonly]="true"
+                      [value]="roleLabel(row.login)"
+                      tuiInput
+                      tuiSelectLike
+                    />
+                    <tui-data-list-wrapper
+                      *tuiDropdown
+                      [items]="roleLabels"
+                      (itemClick)="setRole(row.login, $event)"
+                    ></tui-data-list-wrapper>
+                  </tui-textfield>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <div class="jk-card jk-empty">
+        <span class="jk-empty-icon"><tui-icon icon="@tui.users" /></span>
+        <span class="jk-h4">Пока нет данных</span>
+        <span
+          class="jk-body-sm jk-muted"
+        >Зрители появятся после подключения Twitch и активности в чате.</span>
+      </div>
+    }
+  </div>

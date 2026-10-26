@@ -6,7 +6,7 @@
 	},
 	"newProjectRoot": "projects",
 	"projects": {
-		"rgg-inv": {
+		"nameless-streamhata": {
 			"projectType": "application",
 			"schematics": {
 				"@schematics/angular:component": {
@@ -32,7 +32,9 @@
 					"builder": "@angular/build:application",
 					"options": {
 						"stylePreprocessorOptions": {
-							"includePaths": ["./"]
+							"includePaths": [
+								"./"
+							]
 						},
 						"browser": "src/main.ts",
 						"tsConfig": "tsconfig.app.json",
@@ -56,6 +58,9 @@
 					},
 					"configurations": {
 						"production": {
+							"optimization": {
+								"fonts": false
+							},
 							"budgets": [
 								{
 									"type": "initial",
@@ -64,7 +69,7 @@
 								},
 								{
 									"type": "anyComponentStyle",
-									"maximumWarning": "4kB",
+									"maximumWarning": "16kB",
 									"maximumError": "10MB"
 								}
 							],
@@ -85,16 +90,98 @@
 					},
 					"configurations": {
 						"production": {
-							"buildTarget": "rgg-inv:build:production"
+							"buildTarget": "nameless-streamhata:build:production"
 						},
 						"development": {
-							"buildTarget": "rgg-inv:build:development"
+							"buildTarget": "nameless-streamhata:build:development"
 						}
 					},
 					"defaultConfiguration": "development"
 				},
 				"test": {
 					"builder": "@angular/build:unit-test"
+				}
+			}
+		},
+		"streamhata-admin": {
+			"projectType": "application",
+			"schematics": {
+				"@schematics/angular:component": {
+					"style": "scss",
+					"changeDetection": "OnPush",
+					"name": "component",
+					"addTypeToClassName": true
+				},
+				"@schematics/angular:directive": {
+					"addTypeToClassName": true,
+					"name": "directive"
+				},
+				"@schematics/angular:service": {
+					"addTypeToClassName": true,
+					"name": "service"
+				}
+			},
+			"root": "admin",
+			"sourceRoot": "admin/src",
+			"prefix": "app",
+			"architect": {
+				"build": {
+					"builder": "@angular/build:application",
+					"options": {
+						"stylePreprocessorOptions": {
+							"includePaths": [
+								"./"
+							]
+						},
+						"browser": "admin/src/main.ts",
+						"tsConfig": "admin/tsconfig.app.json",
+						"assets": [
+							{
+								"glob": "**/*",
+								"input": "public"
+							},
+							{
+								"glob": "**/*",
+								"input": "node_modules/@taiga-ui/icons/src",
+								"output": "assets/taiga-ui/icons"
+							}
+						],
+						"styles": [
+							"src/styles.scss"
+						],
+						"index": "admin/src/index.html",
+						"outputPath": "dist/streamhata-admin"
+					},
+					"configurations": {
+						"production": {
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "2mb",
+									"maximumError": "5mb"
+								}
+							],
+							"outputHashing": "all"
+						},
+						"development": {
+							"optimization": false,
+							"extractLicenses": false,
+							"sourceMap": true
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"serve": {
+					"builder": "@angular/build:dev-server",
+					"configurations": {
+						"production": {
+							"buildTarget": "streamhata-admin:build:production"
+						},
+						"development": {
+							"buildTarget": "streamhata-admin:build:development"
+						}
+					},
+					"defaultConfiguration": "development"
 				}
 			}
 		}

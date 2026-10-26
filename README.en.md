@@ -1,6 +1,11 @@
-# RGG Inventory (rgg-inv)
+# Nameless StreamHata
 
-An overlay for [rgg.land](https://rgg.land) — a hotbar with gaming platforms and a timer for streams/OBS. You can pick platforms (grouped by manufacturer), show them in the hotbar and keep time, syncing the state through a local Express server.
+Nameless StreamHata is a Twitch streamer panel and OBS widget suite: chat jury, points and games, moderation, donations, music, alerts and integrations.
+
+Full Russian guide: [GUIDE.md](./GUIDE.md).
+
+- Frontend: https://github.com/p7x-dev/nameless-streamhata
+- Backend: https://github.com/p7x-dev/nameless-streamhata-backend
 
 > Russian version: [README.md](README.md) · Contributing: [CONTRIBUTING.en.md](CONTRIBUTING.en.md) · code style: [CODESTYLE.en.md](CODESTYLE.en.md) · [CODE_OF_CONDUCT.en.md](CODE_OF_CONDUCT.en.md)
 

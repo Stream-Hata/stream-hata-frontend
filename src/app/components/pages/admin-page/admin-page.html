@@ -1,0 +1,170 @@
+<div class="jk-page admin-page">
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">Админка</h1>
+      <p class="jk-caption">Управление каталогом, импортом и доступом.</p>
+    </div>
+    <span appearance="info" tuiBadge>{{ roleLabel() }}</span>
+  </header>
+
+  @if (!roles.isAdmin()) {
+    <section class="jk-card admin-section">
+      <h2 class="jk-h4">Доступ ограничен</h2>
+      <p class="jk-body-sm jk-muted">Раздел доступен только владельцу и администраторам канала.</p>
+    </section>
+  } @else {
+    <div class="admin-grid">
+      <section class="jk-card admin-section">
+        <h2 class="jk-h4">Каталог</h2>
+        <p class="jk-body-sm jk-muted">Всего игр: <strong>{{ total() }}</strong></p>
+        <div class="admin-actions">
+          <button type="button" appearance="secondary" tuiButton [disabled]="importing()" (click)="refreshCatalog()">
+            Обновить каталог
+          </button>
+          <a appearance="flat" routerLink="/app/games" tuiButton>Открыть игры</a>
+        </div>
+      </section>
+
+      <section class="jk-card admin-section">
+        <h2 class="jk-h4">Импорт и квоты</h2>
+        @if (status(); as info) {
+          <dl class="game-meta admin-meta">
+            <dt>Источники</dt><dd>{{ info.sources }}</dd>
+            <dt>IGDB offset</dt><dd>{{ info.igdb.cursor.offset }}{{ info.igdb.cursor.done ? ' (цикл завершён)' : '' }}</dd>
+            <dt>RAWG курсор</dt><dd>{{ info.rawg.cursor.year }}, стр. {{ info.rawg.cursor.page }}</dd>
+            <dt>RAWG квота</dt><dd>{{ info.rawg.quota.count }} / {{ info.rawg.quota.limit }}</dd>
+            @if (info.rawg.quota.pausedUntil) {
+              <dt>Пауза до</dt><dd>{{ info.rawg.quota.pausedUntil }}</dd>
+            }
+            @if (info.rawg.quota.lastError) {
+              <dt>Ошибка</dt><dd class="admin-error">{{ info.rawg.quota.lastError }}</dd>
+            }
+          </dl>
+        } @else {
+          <p class="jk-caption">Статус недоступен.</p>
+        }
+        <div class="admin-actions">
+          <button type="button" appearance="secondary" tuiButton (click)="loadStatus()">Обновить статус</button>
+          <button type="button" appearance="flat" tuiButton (click)="resumeRawg()">Сбросить паузу RAWG</button>
+        </div>
+      </section>
+
+      <section class="jk-card admin-section">
+        <h2 class="jk-h4">Импорт по названию</h2>
+        <form class="admin-form" (submit)="$event.preventDefault(); importByName()">
+          <tui-textfield class="admin-input">
+            <input
+              aria-label="Название игры"
+              placeholder="The Elder Scrolls: Arena"
+              tuiInput
+              [formControl]="queryControl"
+            />
+          </tui-textfield>
+          <button type="submit" appearance="primary" tuiButton [disabled]="importing()">
+            {{ importing() ? 'Импортируем…' : 'Импортировать' }}
+          </button>
+        </form>
+        @if (result()) {
+          <p class="jk-caption">{{ result() }}</p>
+        }
+      </section>
+
+      <section class="jk-card admin-section admin-aliases">
+        <h2 class="jk-h4">Поисковые ассоциации</h2>
+        <p class="jk-caption">Например: «мортал шел» → «mortal shell». Работает и по словам, и по фразе.</p>
+
+        <form class="admin-form" (submit)="$event.preventDefault(); addAlias()">
+          <tui-textfield class="admin-input">
+            <input aria-label="Термин" placeholder="мортал шел" tuiInput [formControl]="aliasTerm" />
+          </tui-textfield>
+          <tui-textfield class="admin-input">
+            <input aria-label="Замена" placeholder="mortal shell" tuiInput [formControl]="aliasReplacement" />
+          </tui-textfield>
+          <button type="submit" appearance="primary" tuiButton>Добавить</button>
+        </form>
+
+        <div class="alias-list">
+          @for (alias of aliases(); track alias.term) {
+            <div class="alias-row">
+              <span class="alias-term">{{ alias.term }}</span>
+              <span class="alias-arrow">→</span>
+              <span class="alias-value">{{ alias.replacement }}</span>
+              <button appearance="flat" size="xs" tuiButton type="button" (click)="removeAlias(alias.term)">
+                Удалить
+              </button>
+            </div>
+          } @empty {
+            <span class="jk-caption">Пока нет ассоциаций.</span>
+          }
+        </div>
+      </section>
+
+      <section class="jk-card admin-section admin-aliases">
+        <h2 class="jk-h4">Синонимы игры</h2>
+        <p class="jk-caption">Привязка к конкретной игре: «мортал шелл 2» → Mortal Shell II. В основном приложении не показываются.</p>
+
+        <form class="admin-form" (submit)="$event.preventDefault(); findGames()">
+          <tui-textfield class="admin-input">
+            <input aria-label="Поиск игры" placeholder="Название игры" tuiInput [formControl]="gameAliasQuery" />
+          </tui-textfield>
+          <button type="submit" appearance="secondary" tuiButton>Найти</button>
+        </form>
+
+        @if (gameAliasResults().length) {
+          <div class="alias-results">
+            @for (game of gameAliasResults(); track game.slug) {
+              <button type="button" appearance="flat" tuiButton (click)="selectGame(game)">
+                {{ game.title }}
+              </button>
+            }
+          </div>
+        }
+
+        @if (selectedGame(); as game) {
+          <p class="jk-caption">Игра: <strong>{{ game.title }}</strong></p>
+          <form class="admin-form" (submit)="$event.preventDefault(); addGameAlias()">
+            <tui-textfield class="admin-input">
+              <input aria-label="Синоним игры" placeholder="мортал шелл 2" tuiInput [formControl]="gameAliasTerm" />
+            </tui-textfield>
+            <button type="submit" appearance="primary" tuiButton>Добавить</button>
+          </form>
+
+          <div class="alias-list">
+            @for (alias of gameAliases(); track alias.term) {
+              <div class="alias-row alias-row-game">
+                <span class="alias-term">{{ alias.term }}</span>
+                <button appearance="flat" size="xs" tuiButton type="button" (click)="removeGameAlias(alias.term)">
+                  Удалить
+                </button>
+              </div>
+            } @empty {
+              <span class="jk-caption">Синонимов пока нет.</span>
+            }
+          </div>
+        }
+      </section>
+
+      <section class="jk-card admin-section">
+        <h2 class="jk-h4">Доступ</h2>
+        <div class="admin-stats">
+          @for (item of accessSummary(); track item.label) {
+            <div class="admin-stat">
+              <span class="jk-caption">{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+            </div>
+          }
+        </div>
+        <a appearance="flat" routerLink="/app/viewers" tuiButton>Управлять ролями</a>
+      </section>
+
+      <section class="jk-card admin-section">
+        <h2 class="jk-h4">Система</h2>
+        <div class="admin-actions">
+          <a appearance="flat" routerLink="/app/settings" tuiButton>Настройки</a>
+          <a appearance="flat" routerLink="/app/notifications" tuiButton>Уведомления</a>
+        </div>
+        <p class="jk-caption">Фоновый импорт RAWG и обогащение каталога работают на бэкенде постоянно.</p>
+      </section>
+    </div>
+  }
+</div>

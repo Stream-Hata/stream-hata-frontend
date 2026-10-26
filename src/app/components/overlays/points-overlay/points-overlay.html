@@ -1,0 +1,14 @@
+<div class="overlay-stage">
+  <article class="points-card">
+    <span class="points-kicker">ТОП ЗРИТЕЛЕЙ</span>
+    @for (row of rows(); track row.userId; let index = $index) {
+      <div class="points-row">
+        <span class="points-rank">{{ index + 1 }}</span>
+        <span class="points-name">{{ row.displayName }}</span>
+        <strong class="points-balance">{{ row.balance }}</strong>
+      </div>
+    } @empty {
+    <span class="jk-caption">Пока нет баллов</span>
+  }
+</article>
+</div>

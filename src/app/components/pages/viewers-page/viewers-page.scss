@@ -1,0 +1,90 @@
+.viewer-stats {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	gap: var(--space-md);
+}
+
+.viewer-stat {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	padding: var(--space-md);
+}
+
+.viewer-stat strong {
+	font: 700 26px/32px var(--font-ui);
+	font-variant-numeric: tabular-nums;
+}
+
+.viewer-cell,
+.streak-cell {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-xs);
+}
+
+.viewer-name {
+	font-weight: 500;
+}
+
+.rank-cell,
+.numeric-cell {
+	font-variant-numeric: tabular-nums;
+}
+
+.rank-cell {
+	color: var(--text-tertiary);
+}
+
+.streak-cell {
+	color: var(--tui-text-warning);
+	font-weight: 700;
+}
+
+.access-card {
+	display: flex;
+	gap: var(--space-sm);
+	flex-direction: column;
+	margin-bottom: var(--space-md);
+}
+
+.access-row {
+	display: flex;
+	gap: var(--space-sm);
+	align-items: center;
+}
+
+.access-list {
+	display: flex;
+	gap: var(--space-xs);
+	flex-wrap: wrap;
+}
+
+.access-list button {
+	margin-inline-start: 4px;
+	border: 0;
+	background: transparent;
+	color: inherit;
+	cursor: pointer;
+}
+
+.role-select {
+	padding: 4px 6px;
+	border: 1px solid var(--border-normal);
+	border-radius: var(--radius-sm);
+	background: var(--surface-elevated-1);
+	color: var(--text-primary);
+	font: var(--font-caption);
+}
+
+.jk-page-actions tui-textfield {
+	width: 280px;
+}
+
+.access-row tui-textfield {
+	flex: 1;
+}
+
+.table-wrap table {
+	width: 100%;
+}

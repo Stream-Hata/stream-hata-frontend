@@ -1,0 +1,22 @@
+<app-auth-layout>
+  <div class="auth-head">
+    <h1 class="jk-h2">Вход в desktop-приложение</h1>
+    <p class="jk-caption">
+      После входа через Twitch приложение получит одноразовый код и сохранит сессию в системном keychain.
+    </p>
+  </div>
+
+  <div class="auth-form">
+    @if (loggedIn()) {
+      <p class="jk-body-sm">{{ status() }}</p>
+    } @else {
+      <p class="jk-body-sm jk-muted">{{ status() }}</p>
+      <button appearance="primary" size="l" tuiButton type="button" (click)="connect()">
+        Войти через Twitch
+      </button>
+    }
+    @if (error()) {
+      <p class="desktop-auth-error" role="alert">{{ error() }}</p>
+    }
+  </div>
+</app-auth-layout>

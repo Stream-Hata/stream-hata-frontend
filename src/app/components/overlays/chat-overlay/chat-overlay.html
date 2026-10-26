@@ -1,0 +1,25 @@
+<div class="overlay-stage">
+  <article class="chat-card">
+    @for (row of rows(); track row.id) {
+      <div class="chat-line">
+        <span class="chat-author" [class.broadcaster]="row.color">{{ row.author }}</span>
+        <span class="chat-text">
+          @for (segment of row.segments; track $index) {
+            @if (segment.type === 'emote') {
+              <span
+                class="chat-emote"
+                role="img"
+                [attr.aria-label]="segment.text"
+                [style.background-image]="'url(' + segment.url + ')'"
+              ></span>
+            } @else {
+              <span>{{ segment.text }}</span>
+            }
+          }
+        </span>
+      </div>
+    } @empty {
+    <span class="jk-caption">Чат пока пуст</span>
+  }
+</article>
+</div>

@@ -1,0 +1,20 @@
+<app-auth-layout>
+  <div class="auth-head">
+    <h1 class="jk-h2">Вход в Nameless StreamHata</h1>
+    <p class="jk-caption">
+      Подключите Twitch-канал — панель, виджеты и чат-жюри заработают с реальными данными.
+    </p>
+  </div>
+
+  <div class="auth-form">
+    <button appearance="primary" size="l" tuiButton type="button" (click)="connect()">
+      <img alt="" class="twitch-icon" src="icons/svg/twitch.svg" />
+      Войти через Twitch
+    </button>
+  </div>
+
+  <p class="auth-foot">
+    После авторизации откроется панель вашего канала. Доступ к OBS и локальным интеграциям — в
+    desktop-приложении.
+  </p>
+</app-auth-layout>

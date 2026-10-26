@@ -1,0 +1,113 @@
+<section class="hotbar-config">
+  <header class="hotbar-head">
+    <div class="cfg-text">
+      <h2 class="jk-h4">Платформы</h2>
+      <span class="jk-caption">10 слотов. Перетащите, чтобы изменить порядок.</span>
+    </div>
+
+    <div class="hotbar-actions">
+      <tui-textfield tuiChevron class="hotbar-select">
+        <input
+          aria-label="Добавить платформу"
+          placeholder="Добавить платформу…"
+          [formControl]="selectControl"
+          tuiInput
+          tuiSelectLike
+          />
+          <tui-data-list-wrapper
+            *tuiDropdown
+            [items]="availableNames()"
+            (itemClick)="addName($event)"
+          ></tui-data-list-wrapper>
+        </tui-textfield>
+
+        <a appearance="flat" routerLink="/app/roulette" size="s" tuiButton>Крутить рулетку</a>
+        <button appearance="flat" size="s" tuiButton type="button" (click)="clear()">
+          Очистить
+        </button>
+      </div>
+    </header>
+
+    <div class="hotbar-slots">
+      @for (code of slots(); track $index) {
+        <div
+          class="hotbar-slot"
+          draggable="true"
+          [class.hotbar-slot-empty]="!code"
+          (dragstart)="dragStart($index)"
+          (dragover)="$event.preventDefault()"
+          (drop)="drop($index)"
+        >
+          @if (code) {
+            <img
+              alt=""
+              class="hotbar-slot-icon"
+              [attr.src]="catalog.icon(platform(code))"
+              />
+              <span class="hotbar-slot-name">{{ platform(code)?.name ?? code }}</span>
+              <button
+                class="hotbar-slot-remove"
+                type="button"
+                aria-label="Убрать платформу"
+                (click)="remove($index)"
+              >
+                <tui-icon icon="@tui.x" />
+              </button>
+            } @else {
+              <span class="hotbar-slot-plus">+</span>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="hotbar-preview-wrap">
+        <span class="jk-label">Превью</span>
+        <app-hotbar-preview [slots]="slots()" [size]="iconSize()" />
+      </div>
+
+      <div class="hotbar-options">
+        <div class="cfg-row">
+          <span class="cfg-label">Размер иконок</span>
+          <tui-segmented
+            [activeItemIndex]="iconSize() === 's' ? 0 : iconSize() === 'm' ? 1 : 2"
+            (activeItemIndexChange)="setIconSize($event)"
+          >
+            <button type="button">S</button>
+            <button type="button">M</button>
+            <button type="button">L</button>
+          </tui-segmented>
+        </div>
+
+        <div class="cfg-row">
+          <div class="cfg-text">
+            <span class="cfg-label">Таймер</span>
+            <span class="jk-caption">Показывать таймер в хотбаре</span>
+          </div>
+          <input type="checkbox" [checked]="showTimer()" (change)="toggleTimer()" tuiSwitch />
+        </div>
+
+        <div class="cfg-row">
+          <div class="cfg-text">
+            <span class="cfg-label">Настройки</span>
+            <span class="jk-caption">Показывать кнопку настроек</span>
+          </div>
+          <input type="checkbox" [checked]="showSettings()" (change)="toggleSettings()" tuiSwitch />
+        </div>
+
+        <div class="cfg-row">
+          <div class="cfg-text">
+            <span class="cfg-label">Отступ</span>
+            <span class="jk-caption">Между слотами · {{ gap() }}px</span>
+          </div>
+          <input
+            class="cfg-slider"
+            max="20"
+            min="0"
+            type="range"
+            [value]="gap()"
+            (input)="setGap($event)"
+            tuiSlider
+            />
+          </div>
+        </div>
+      </section>

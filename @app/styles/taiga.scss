@@ -1,97 +1,232 @@
 :root,
-[tuiTheme='dark'] {
-	// ---- Backgrounds -------------------------------------------------------
-	--tui-background-base: #0f0817; // глубокий фиолетово-чёрный фон
-	--tui-background-base-alt: #180e26;
-	--tui-background-neutral-1: rgb(255, 46, 166, 0.08); // магента с прозрачностью
-	--tui-background-neutral-1-hover: rgb(255, 46, 166, 0.16);
-	--tui-background-neutral-1-pressed: rgb(255, 46, 166, 0.24);
-	--tui-background-neutral-2: rgb(34, 224, 255, 0.1); // циан с прозрачностью
+[tuiTheme] {
+	/* ══ Taiga UI core (переопределение под дизайн-систему) ═══════ */
+
+	/* Surfaces */
+	--tui-background-base: #0f0817; /* ink-900 */
+	--tui-background-base-alt: #180e26; /* ink-800 */
+	--tui-background-elevation-1: #180e26; /* ink-800 */
+	--tui-background-elevation-2: #241536; /* ink-700 */
+	--tui-background-elevation-3: #331f4a; /* ink-600 */
+
+	/* Accents */
+	--tui-background-accent-1: var(--accent-primary); /* magenta-500 */
+	--tui-background-accent-1-hover: var(--accent-primary-hover); /* magenta-400 */
+	--tui-background-accent-1-pressed: var(--accent-primary-pressed); /* magenta-600 */
+	--tui-background-accent-2: #22e0ff; /* cyan-400 */
+	--tui-background-accent-2-hover: #6ceaff; /* cyan-300 */
+	--tui-background-accent-2-pressed: #10adc4; /* cyan-600 */
+	--tui-background-accent-opposite: #f5eaff; /* lavender-50 */
+	--tui-background-accent-opposite-hover: #e0c9ff; /* lavender-100 */
+	--tui-background-accent-opposite-pressed: #c9a8ff; /* lavender-200 */
+
+	/* Text */
+	--tui-text-primary: #f5eaff; /* lavender-50 */
+	--tui-text-secondary: rgb(245, 234, 255, 0.72);
+	--tui-text-tertiary: rgb(245, 234, 255, 0.5);
+	--tui-text-action: var(--accent-primary-hover); /* magenta-400 */
+	--tui-text-action-hover: #ff8ad4; /* magenta-300 */
+	--tui-text-positive: #39ff88;
+	--tui-text-negative: #ff3b3b;
+	--tui-text-warning: #ffe14d;
+	--tui-text-info: #22e0ff;
+
+	/* Status (Taiga 3 совместимость) */
+	--tui-status-info: #22e0ff;
+	--tui-status-neutral: #b291d9;
+
+	/* ══ Taiga component tokens (маппинг на дизайн-систему) ══════ */
+	--tui-text-primary-on-accent-1: #0f0817;
+	--tui-text-primary-on-accent-2: #0f0817;
+	--tui-background-neutral-1: color-mix(in srgb, var(--accent-primary) 8%, transparent);
+	--tui-background-neutral-1-hover: color-mix(in srgb, var(--accent-primary) 16%, transparent);
+	--tui-background-neutral-1-pressed: color-mix(in srgb, var(--accent-primary) 24%, transparent);
+	--tui-background-neutral-2: rgb(34, 224, 255, 0.1);
 	--tui-background-neutral-2-hover: rgb(34, 224, 255, 0.18);
 	--tui-background-neutral-2-pressed: rgb(34, 224, 255, 0.26);
-	--tui-background-accent-1: #ff2ea6; // магента — основной акцент
-	--tui-background-accent-1-hover: #ff5cc0;
-	--tui-background-accent-1-pressed: #c9197f;
-	--tui-background-accent-2: #22e0ff; // циан — вторичный акцент
-	--tui-background-accent-2-hover: #6ceaff;
-	--tui-background-accent-2-pressed: #10adc4;
-	--tui-background-accent-opposite: #f5eaff;
-	--tui-background-accent-opposite-hover: #e0c9ff;
-	--tui-background-accent-opposite-pressed: #c9a8ff;
-	--tui-background-elevation-1: #180e26;
-	--tui-background-elevation-2: #241536;
-	--tui-background-elevation-3: #331f4a;
-
-	// ---- Borders / service ---------------------------------------------------
-	--tui-border-normal: rgb(255, 46, 166, 0.24);
-	--tui-border-hover: rgb(255, 46, 166, 0.5);
+	--tui-border-normal: color-mix(in srgb, var(--accent-primary) 24%, transparent);
+	--tui-border-hover: color-mix(in srgb, var(--accent-primary) 50%, transparent);
 	--tui-border-focus: rgb(34, 224, 255, 0.7);
-	--tui-service-autofill-background: rgb(255, 225, 77, 0.2);
-	--tui-service-selection-background: rgb(34, 224, 255, 0.24);
-	--tui-service-backdrop: rgb(8, 4, 14, 0.85);
-
-	// ---- Statuses ------------------------------------------------------------
-	--tui-status-negative: #ff3b3b;
-	--tui-status-negative-pale: rgb(255, 59, 59, 0.2);
-	--tui-status-negative-pale-hover: rgb(255, 59, 59, 0.3);
 	--tui-status-positive: #39ff88;
 	--tui-status-positive-pale: rgb(57, 255, 136, 0.2);
 	--tui-status-positive-pale-hover: rgb(57, 255, 136, 0.3);
+	--tui-status-negative: #ff3b3b;
+	--tui-status-negative-pale: rgb(255, 59, 59, 0.2);
+	--tui-status-negative-pale-hover: rgb(255, 59, 59, 0.3);
 	--tui-status-warning: #ffe14d;
 	--tui-status-warning-pale: rgb(255, 225, 77, 0.2);
 	--tui-status-warning-pale-hover: rgb(255, 225, 77, 0.3);
-	--tui-status-info: #22e0ff;
 	--tui-status-info-pale: rgb(34, 224, 255, 0.2);
 	--tui-status-info-pale-hover: rgb(34, 224, 255, 0.3);
-	--tui-status-neutral: #b291d9;
+	--tui-status-neutral-pale: rgb(178, 145, 217, 0.14);
+	--tui-status-neutral-pale-hover: rgb(178, 145, 217, 0.22);
 
-	// ---- Text ------------------------------------------------------------
-	--tui-text-primary: #f5eaff;
-	--tui-text-secondary: rgb(245, 234, 255, 0.72);
-	--tui-text-tertiary: rgb(245, 234, 255, 0.5);
-	--tui-text-primary-on-accent-1: #0f0817; // текст поверх --tui-background-accent-1
-	--tui-text-primary-on-accent-2: #0f0817; // текст поверх --tui-background-accent-2
-	--tui-text-action: #ff5cc0;
-	--tui-text-action-hover: #ff8ad4;
-	--tui-text-positive: #39ff88;
-	--tui-text-positive-hover: #6dffab;
-	--tui-text-negative: #ff3b3b;
-	--tui-text-negative-hover: #ff6f6f;
+	/* Высоты контролов дизайн-системы: S 32 · M 36 · L 44 */
+	--tui-height-xs: 1.75rem;
+	--tui-height-s: 2rem;
+	--tui-height-m: 2.25rem;
+	--tui-height-l: 2.75rem;
 
-	// ---- Charts (categorical, если используешь графики/диаграммы) -----------
-	--tui-chart-categorical-00: var(--tui-background-accent-1);
-	--tui-chart-categorical-01: #ff2ea6;
-	--tui-chart-categorical-02: #22e0ff;
-	--tui-chart-categorical-03: #ffe14d;
-	--tui-chart-categorical-04: #39ff88;
-	--tui-chart-categorical-05: #b291d9;
-	--tui-chart-categorical-06: #ff8a00;
-	--tui-chart-categorical-07: #6788ff;
-	--tui-chart-categorical-08: #ff6f6f;
-	--tui-chart-categorical-09: #7fd7cc;
-	--tui-chart-categorical-10: #cc6eff;
-	--tui-chart-categorical-11: #8dda71;
-	--tui-chart-categorical-12: #ffc700;
-	--tui-chart-categorical-13: #70b6f6;
-	--tui-chart-categorical-14: #ff5cc0;
-	--tui-chart-categorical-15: #4ac99b;
-	--tui-chart-categorical-16: #2fad96;
-	--tui-chart-categorical-17: #d4aca2;
-	--tui-chart-categorical-18: #9d6f64;
-	--tui-chart-categorical-19: #d2e9a2;
-	--tui-chart-categorical-20: #aadc42;
-	--tui-chart-categorical-21: #3682db;
-	--tui-chart-categorical-22: #34b41f;
+	/* Типографика Taiga-компонентов */
+	--tui-typography-family-text: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+	--tui-typography-family-display: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+	--tui-typography-family-mono:
+		'JetBrains Mono', ui-monospace, sfmono-regular, menlo, consolas, monospace;
+	--tui-typography-body-m: normal 0.875rem / 1.25rem var(--tui-typography-family-text);
+	--tui-typography-body-l: normal 1rem / 1.625rem var(--tui-typography-family-text);
 
-	// ---- Shadows (усилены под тёмный фон + лёгкое неоновое свечение) --------
-	--tui-shadow-small: 0 0.25rem 1.25rem rgb(255, 46, 166, 0.15);
-	--tui-shadow-small-hover: 0 1rem 2.5rem rgb(255, 46, 166, 0.22);
-	--tui-shadow-medium: 0 0.375rem 2rem rgb(34, 224, 255, 0.15);
-	--tui-shadow-medium-hover: 0 1.25rem 4rem rgb(34, 224, 255, 0.22);
-	--tui-shadow-popup: 0 1.25rem 3rem rgb(8, 4, 14, 0.6);
+	/* lavender-400 */
+
+	/* Shadows */
+	--tui-shadow-small: 0 4px 20px color-mix(in srgb, var(--accent-primary) 15%, transparent);
+	--tui-shadow-medium: 0 6px 32px rgb(34, 224, 255, 0.15);
+	--tui-shadow-popup: 0 20px 48px rgb(8, 4, 14, 0.6);
+
+	/* Radius */
+	--tui-radius-xs: 4px;
+	--tui-radius-s: 6px;
+	--tui-radius-m: 8px;
+	--tui-radius-l: 12px;
+	--tui-radius-xl: 16px;
+
+	/* Fonts */
+	--tui-font-heading: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+	--tui-font-text: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+	--tui-font-text-mono: 'JetBrains Mono', ui-monospace, sfmono-regular, menlo, consolas, monospace;
+
+	/* ══ JuryKit semantic (поверх Taiga) ═══════════════════════ */
+	--surface-base: var(--tui-background-base);
+	--surface-elevated-1: var(--tui-background-elevation-1);
+	--surface-elevated-2: var(--tui-background-elevation-2);
+	--surface-elevated-3: var(--tui-background-elevation-3);
+	--accent-primary: #ff2ea6;
+	--accent-primary-hover: #ff5cc0;
+	--accent-primary-pressed: #c9197f;
+	--accent-secondary: var(--tui-background-accent-2);
+	--accent-secondary-hover: var(--tui-background-accent-2-hover);
+	--accent-secondary-pressed: var(--tui-background-accent-2-pressed);
+	--accent-opposite: var(--tui-background-accent-opposite);
+	--text-primary: var(--tui-text-primary);
+	--text-secondary: var(--tui-text-secondary);
+	--text-tertiary: var(--tui-text-tertiary);
+	--text-action: var(--tui-text-action);
+	--text-on-accent: #0f0817;
+
+	/* Новые токены (в Taiga отсутствуют) */
+	--ink-950: #0b0612;
+	--border-normal: color-mix(in srgb, var(--accent-primary) 24%, transparent);
+	--border-hover: color-mix(in srgb, var(--accent-primary) 50%, transparent);
+	--border-strong: color-mix(in srgb, var(--accent-primary) 35%, transparent);
+	--border-divider: rgb(245, 234, 255, 0.08);
+	--focus-border: rgb(34, 224, 255, 0.7);
+	--focus-ring: rgb(34, 224, 255, 0.18);
+	--neutral-1: color-mix(in srgb, var(--accent-primary) 8%, transparent); /* hover .16 · pressed .24 */
+	--neutral-2: rgb(34, 224, 255, 0.1); /* hover .18 · pressed .26 */
+	--pale-positive: rgb(57, 255, 136, 0.2); /* hover .30 */
+	--pale-negative: rgb(255, 59, 59, 0.2); /* hover .30 */
+	--pale-warning: rgb(255, 225, 77, 0.2); /* hover .30 */
+	--pale-info: rgb(34, 224, 255, 0.2); /* hover .30 */
+	--pale-neutral: rgb(178, 145, 217, 0.14); /* hover .22 */
+	--elevation-none: none;
+	--elevation-subtle: 0 1px 2px rgb(8, 4, 14, 0.4);
+	--elevation-small: var(--tui-shadow-small);
+	--elevation-medium: var(--tui-shadow-medium);
+	--elevation-large: 0 12px 40px rgb(8, 4, 14, 0.5);
+	--elevation-popup: var(--tui-shadow-popup);
+
+	/* ══ Radius ═════════════════════════════════════════════════ */
+	--radius-none: 0;
+	--radius-xs: 4px;
+	--radius-sm: 6px;
+	--radius-md: 8px;
+	--radius-lg: 12px;
+	--radius-xl: 16px;
+	--radius-full: 999px;
+
+	/* ══ Motion ═════════════════════════════════════════════════ */
+	--motion-micro: 100ms;
+	--motion-fast: 160ms;
+	--motion-base: 200ms;
+	--motion-slow: 280ms;
+	--motion-overlay: 320ms;
+	--motion-exit: 180ms;
+	--ease-standard: cubic-bezier(0.2, 0, 0, 1);
+	--ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
+	--ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
+	--ease-linear: linear;
+
+	/* ══ Layout ═════════════════════════════════════════════════ */
+	--layout-nav: 72px;
+	--layout-header: 56px;
+	--layout-sidebar: 240px;
+	--layout-sidebar-tablet: 200px;
+	--layout-container: 1280px;
+	--skeleton: rgb(245, 234, 255, 0.06);
+	--checker: rgb(245, 234, 255, 0.06);
+
+	/* ══ Spacing (tui-space(n) = n × 4px) ═══════════════════════ */
+	--space-2xs: 4px; /* 4px  */
+	--space-xs: 8px; /* 8px  */
+	--space-sm: 12px; /* 12px */
+	--space-md: 16px; /* 16px */
+	--space-lg: 20px; /* 20px */
+	--space-xl: 24px; /* 24px */
+	--space-2xl: 32px; /* 32px */
+	--space-3xl: 40px; /* 40px */
+	--space-4xl: 48px; /* 48px */
+
+	/* ══ Typography roles (--tui-font-heading/text/mono) ════════ */
+	--font-display: 700 40px/44px var(--tui-font-heading); /* -0.02em */
+	--font-h1: 700 28px/34px var(--tui-font-heading); /* -0.015em */
+	--font-h2: 700 22px/28px var(--tui-font-heading); /* -0.01em */
+	--font-h3: 600 18px/24px var(--tui-font-text);
+	--font-h4: 600 16px/22px var(--tui-font-text);
+	--font-body: 400 14px/20px var(--tui-font-text);
+	--font-body-sm: 400 13px/18px var(--tui-font-text);
+	--font-caption: 400 12px/16px var(--tui-font-text);
+	--font-label: 600 12px/16px var(--tui-font-text); /* uppercase · +0.06em */
+	--font-button: 600 14px/20px var(--tui-font-text); /* +0.01em */
+	--font-code: 400 13px/18px var(--tui-font-text-mono);
+	--font-numeric: 500 14px/20px var(--tui-font-text); /* tabular-nums */
+	--font-metric: 700 28px/32px var(--tui-font-heading); /* tabular-nums · -0.01em */
 }
 
-.overlay {
-	background: rgb(15, 8, 23, 0.78);
-	backdrop-filter: blur(6px);
+/* ══ Taiga tweaks под дизайн-систему ══════════════════════════════════ */
+[tuiButton],
+[tuiIconButton] {
+	--t-radius: var(--tui-radius-m);
+	font-weight: 600;
+}
+
+[tuiBadge] {
+	font-weight: 600;
+}
+
+/* ══ Кастомные appearance tuiButton под дизайн-систему ════════════════ */
+[tuiAppearance][data-appearance='jkit-tint'] {
+	background: color-mix(in srgb, var(--accent-primary) 14%, transparent);
+	box-shadow: inset 0 0 0 1px var(--border-normal);
+	color: var(--text-primary);
+}
+
+[tuiAppearance][data-appearance='jkit-tint']:hover {
+	background: color-mix(in srgb, var(--accent-primary) 22%, transparent);
+}
+
+[tuiAppearance][data-appearance='jkit-tint']:active {
+	background: color-mix(in srgb, var(--accent-primary) 30%, transparent);
+}
+
+[tuiAppearance][data-appearance='jkit-tint-cyan'] {
+	background: var(--neutral-2);
+	box-shadow: inset 0 0 0 1px rgb(34, 224, 255, 0.24);
+	color: var(--text-primary);
+}
+
+[tuiAppearance][data-appearance='jkit-tint-cyan']:hover {
+	background: rgb(34, 224, 255, 0.18);
+}
+
+[tuiAppearance][data-appearance='jkit-tint-cyan']:active {
+	background: rgb(34, 224, 255, 0.26);
 }

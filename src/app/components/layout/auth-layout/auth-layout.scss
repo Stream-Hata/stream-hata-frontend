@@ -1,0 +1,44 @@
+:host {
+	display: block;
+}
+
+.auth {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 100dvh;
+	padding: var(--space-xl);
+	background:
+		radial-gradient(1000px 500px at 15% -10%, color-mix(in srgb, var(--accent-primary) 12%, transparent), transparent 60%),
+		radial-gradient(800px 420px at 90% 110%, rgb(34, 224, 255, 0.1), transparent 60%),
+		var(--surface-base);
+}
+
+.auth-card {
+	display: flex;
+	gap: var(--space-lg);
+	flex-direction: column;
+	width: 100%;
+	max-width: 420px;
+	padding: var(--space-2xl);
+	border: 1px solid var(--border-normal);
+	border-radius: var(--radius-xl);
+	background: var(--surface-elevated-1);
+	box-shadow: var(--elevation-large);
+}
+
+.auth-logo {
+	width: max-content;
+	text-decoration: none;
+}
+
+@media (width <= 560px) {
+	.auth {
+		padding: var(--space-md);
+	}
+
+	.auth-card {
+		padding: var(--space-lg);
+		border-radius: var(--radius-lg);
+	}
+}

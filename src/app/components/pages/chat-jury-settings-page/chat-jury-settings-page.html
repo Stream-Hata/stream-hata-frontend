@@ -1,0 +1,227 @@
+<div class="jk-page">
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">Настройки чат-жюри</h1>
+      <p class="jk-caption">Вопросы, поведение голосования и доступ из чата.</p>
+    </div>
+
+    <div class="jk-page-actions">
+      <a appearance="jkit-tint" routerLink="/app/chat-jury" tuiButton>К жюри</a>
+      <button appearance="primary" tuiButton type="button">Сохранить</button>
+    </div>
+  </header>
+
+  <div class="settings-grid">
+    <tui-tabs
+      class="settings-nav"
+      [activeItemIndex]="activeIndex()"
+      (activeItemIndexChange)="selectSection($event)"
+      vertical="start"
+    >
+      @for (item of sections; track item.id) {
+        <button tuiTab type="button">
+          <tui-icon [icon]="item.icon" />
+          {{ item.label }}
+        </button>
+      }
+    </tui-tabs>
+
+    <div class="settings-content">
+      @switch (section()) {
+        @case ('main') {
+        <section class="cfg-section">
+          <header class="cfg-head">
+            <h2 class="cfg-title">Основное</h2>
+            <p class="jk-caption">Шаблоны вопросов и правила голосования.</p>
+          </header>
+
+          <div class="cfg-row cfg-row-column">
+            <div class="cfg-text">
+              <span class="cfg-label">Шаблоны вопросов</span>
+              <span
+                class="jk-caption"
+              >По одному вопросу на строку — используются при авто-открытии</span
+            >
+          </div>
+          <tui-textfield class="cfg-textarea">
+            <textarea
+              aria-label="Шаблоны вопросов"
+              rows="4"
+              [value]="templates()"
+              (input)="templates.set($any($event.target).value)"
+              tuiTextarea
+            ></textarea>
+          </tui-textfield>
+        </div>
+
+        <div class="cfg-row">
+          <span class="cfg-label">Длительность голосования</span>
+          <tui-textfield
+            tuiChevron
+            class="cfg-control"
+          >
+            <input
+              type="text"
+              aria-label="Длительность голосования"
+              [formControl]="durationControl"
+              tuiInput
+              tuiSelectLike
+            >
+            <tui-data-list-wrapper
+              *tuiDropdown
+              [items]="durationValues"
+              (itemClick)="duration.set($event)"
+            ></tui-data-list-wrapper>
+          </tui-textfield>
+        </div>
+
+        <div class="cfg-row">
+          <div class="cfg-text">
+            <span class="cfg-label">Кворум</span>
+            <span class="jk-caption">Минимум голосов для вердикта · {{ quorum() }}</span>
+          </div>
+          <input
+            aria-label="Кворум"
+            class="cfg-slider"
+            max="50"
+            min="1"
+            type="range"
+            [value]="quorum()"
+            (input)="quorum.set($any($event.target).value)"
+            tuiSlider
+            />
+          </div>
+
+          <div class="cfg-row">
+            <div class="cfg-text">
+              <span class="cfg-label">Авто-открытие</span>
+              <span class="jk-caption">Открывать жюри, когда AI уверен в совете</span>
+            </div>
+            <input
+              aria-label="Авто-открытие"
+              type="checkbox"
+              [formControl]="autoOpenControl"
+              tuiSwitch
+              />
+            </div>
+          </section>
+        }
+
+        @case ('appearance') {
+        <section class="cfg-section">
+          <header class="cfg-head">
+            <h2 class="cfg-title">Появление</h2>
+            <p class="jk-caption">Как жюри выглядит в панели и в эфире.</p>
+          </header>
+
+          <div class="cfg-row">
+            <span class="cfg-label">Стиль</span>
+            <tui-textfield tuiChevron class="cfg-control">
+              <input type="text"
+                aria-label="Стиль"
+                [formControl]="styleControl" tuiInput tuiSelectLike>
+              <tui-data-list-wrapper
+                *tuiDropdown
+                [items]="styleValues"></tui-data-list-wrapper>
+            </tui-textfield>
+          </div>
+
+          <div class="cfg-row">
+            <span class="cfg-label">Тема</span>
+            <tui-segmented
+              [activeItemIndex]="themeIndex()"
+              (activeItemIndexChange)="setTheme($event)"
+            >
+              <button type="button">Dark</button>
+              <button type="button">Light</button>
+              <button type="button">Auto</button>
+            </tui-segmented>
+          </div>
+
+          <div class="cfg-row">
+            <div class="cfg-text">
+              <span class="cfg-label">Авторы советов</span>
+              <span class="jk-caption">Показывать ник и контекст</span>
+            </div>
+            <input
+              aria-label="Авторы советов"
+              type="checkbox"
+              [formControl]="showAuthorsControl"
+              tuiSwitch
+              />
+            </div>
+
+            <div class="cfg-row">
+              <div class="cfg-text">
+                <span class="cfg-label">Полосы прогресса</span>
+                <span class="jk-caption">Голоса За / Против в кадре</span>
+              </div>
+              <input
+                aria-label="Полосы прогресса"
+                type="checkbox"
+                [formControl]="showProgressControl"
+                tuiSwitch
+                />
+              </div>
+
+              <div class="cfg-row">
+                <div class="cfg-text">
+                  <span class="cfg-label">Анимация</span>
+                  <span class="jk-caption">Переходы при смене состояния</span>
+                </div>
+                <input
+                  aria-label="Анимация"
+                  type="checkbox"
+                  [formControl]="animationControl"
+                  tuiSwitch
+                  />
+                </div>
+              </section>
+            }
+
+            @case ('access') {
+            <section class="cfg-section">
+              <header class="cfg-head">
+                <h2 class="cfg-title">Доступ</h2>
+                <p class="jk-caption">Команды чата для управления жюри.</p>
+              </header>
+
+              <div class="cfg-row">
+                <span class="cfg-label">Команда голоса</span>
+                <tui-textfield class="cfg-control">
+                  <input
+                    aria-label="Команда голоса"
+                    type="text"
+                    [value]="voteCommand()"
+                    (input)="voteCommand.set($any($event.target).value)"
+                    tuiInput
+                    />
+                  </tui-textfield>
+                </div>
+
+                <div class="cfg-row">
+                  <span class="cfg-label">Команда запуска</span>
+                  <tui-textfield class="cfg-control">
+                    <input
+                      aria-label="Команда запуска"
+                      type="text"
+                      [value]="startCommand()"
+                      (input)="startCommand.set($any($event.target).value)"
+                      tuiInput
+                      />
+                    </tui-textfield>
+                  </div>
+
+                  <div class="cfg-row">
+                    <div class="cfg-text">
+                      <span class="cfg-label">Модераторы и VIP</span>
+                      <span class="jk-caption">Могут запускать жюри без команды</span>
+                    </div>
+                    <span appearance="info" tuiBadge>Включено</span>
+                  </div>
+                </section>
+              }
+            }
+          </div>
+        </div>
+      </div>

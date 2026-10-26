@@ -1,0 +1,109 @@
+:host {
+	display: block;
+}
+
+.add-row {
+	display: flex;
+	gap: var(--space-sm);
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+.add-input {
+	width: min(520px, 100%);
+}
+
+.add-error {
+	color: var(--tui-text-negative);
+	font: var(--font-caption);
+}
+
+.table-wrap {
+	overflow: hidden;
+	border: 1px solid var(--border-normal);
+	border-radius: var(--radius-lg);
+	background: var(--surface-elevated-1);
+}
+
+.col-index {
+	width: 48px;
+	color: var(--text-tertiary);
+}
+
+.col-plays {
+	width: 88px;
+}
+
+.track-id {
+	color: var(--text-tertiary);
+	font-size: 11px;
+}
+
+.track-title-cell {
+	overflow: hidden;
+	max-width: 300px;
+	font-weight: 500;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.track-links {
+	display: flex;
+	gap: 2px;
+	flex-direction: column;
+	white-space: nowrap;
+}
+
+.col-actions {
+	width: 56px;
+	text-align: right;
+}
+
+.track-cell {
+	display: inline-flex;
+	gap: var(--space-xs);
+	align-items: center;
+	max-width: 480px;
+	color: var(--text-primary);
+	font: 500 14px/20px var(--tui-font-text);
+	text-decoration: none;
+}
+
+.track-cell:hover {
+	color: var(--text-action);
+}
+
+.track-cell tui-icon {
+	flex-shrink: 0;
+	color: var(--text-tertiary);
+	font-size: 14px;
+}
+
+.track-title {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.danger-action {
+	color: var(--tui-text-negative);
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (width <= 1024px) {
+	.col-plays,
+	.col-index {
+		display: none;
+	}
+}
+
+@media (width <= 760px) {
+	.add-row {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.add-input {
+		width: 100%;
+	}
+}

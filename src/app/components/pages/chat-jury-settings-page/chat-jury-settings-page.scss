@@ -1,0 +1,102 @@
+:host {
+	display: block;
+}
+
+.settings-grid {
+	display: grid;
+	grid-template-columns: 240px minmax(0, 1fr);
+	gap: var(--space-2xl);
+	align-items: start;
+}
+
+.settings-nav {
+	align-self: start;
+}
+
+.settings-content {
+	max-width: 720px;
+}
+
+.cfg-section {
+	display: flex;
+	flex-direction: column;
+}
+
+.cfg-head {
+	display: flex;
+	gap: 2px;
+	flex-direction: column;
+	margin-bottom: var(--space-xs);
+}
+
+.cfg-title {
+	font: var(--font-h4);
+}
+
+.cfg-row {
+	display: flex;
+	gap: var(--space-md);
+	align-items: center;
+	justify-content: space-between;
+	min-height: 52px;
+	border-bottom: 1px solid var(--border-divider);
+	padding-block: var(--space-xs);
+}
+
+.cfg-row:last-child {
+	border-bottom: 0;
+}
+
+.cfg-row-column {
+	flex-direction: column;
+	align-items: stretch;
+	padding-block: var(--space-md);
+}
+
+.cfg-label {
+	font: 500 14px/20px var(--tui-font-text);
+}
+
+.cfg-text {
+	display: flex;
+	gap: 1px;
+	flex-direction: column;
+}
+
+.cfg-control {
+	width: 200px;
+}
+
+.cfg-textarea {
+	width: 100%;
+}
+
+.cfg-slider {
+	flex-shrink: 0;
+	width: 180px;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (width <= 1024px) {
+	.settings-grid {
+		grid-template-columns: minmax(0, 1fr);
+		gap: var(--space-lg);
+	}
+
+	.settings-content {
+		max-width: none;
+	}
+}
+
+@media (width <= 760px) {
+	.cfg-row {
+		gap: var(--space-xs);
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.cfg-control,
+	.cfg-slider {
+		width: 100%;
+	}
+}

@@ -1,0 +1,150 @@
+:host {
+	display: block;
+}
+
+.jury {
+	display: flex;
+	gap: var(--space-sm);
+	flex-direction: column;
+	width: 100%;
+	max-width: 360px;
+	padding: var(--space-md);
+	border: 1px solid var(--border-normal);
+	border-radius: var(--radius-lg);
+	background: rgb(11, 6, 18, 0.78);
+	box-shadow: var(--elevation-subtle);
+}
+
+.head {
+	display: flex;
+	gap: var(--space-sm);
+	align-items: center;
+	justify-content: space-between;
+}
+
+.label {
+	color: var(--text-secondary);
+	font: var(--font-label);
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+}
+
+.live {
+	display: inline-flex;
+	gap: 6px;
+	align-items: center;
+	color: var(--accent-primary);
+	font: 600 12px/16px var(--tui-font-text);
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+}
+
+.question {
+	font: var(--font-h3);
+}
+
+.source {
+	color: var(--text-tertiary);
+	font: var(--font-caption);
+}
+
+.votes {
+	display: flex;
+	gap: var(--space-xs);
+	flex-direction: column;
+}
+
+.vote {
+	display: grid;
+	grid-template-columns: 2.25rem 1fr 2rem;
+	gap: var(--space-xs);
+	align-items: center;
+}
+
+.vote-label {
+	color: var(--text-secondary);
+	font: 600 11px/14px var(--tui-font-text);
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.bar {
+	overflow: hidden;
+	height: 8px;
+	border-radius: var(--radius-full);
+	background: var(--neutral-1);
+}
+
+.bar-fill {
+	display: block;
+	height: 100%;
+	border-radius: var(--radius-full);
+}
+
+.yea {
+	background: var(--accent-primary);
+}
+
+.nei {
+	background: var(--accent-secondary);
+}
+
+.vote-count {
+	font: var(--font-numeric);
+	text-align: right;
+}
+
+.timer {
+	display: flex;
+	gap: var(--space-xs);
+	align-items: baseline;
+}
+
+.time {
+	font: 700 20px/24px var(--tui-font-text-mono);
+	letter-spacing: 0.02em;
+	font-variant-numeric: tabular-nums;
+}
+
+.caption {
+	color: var(--text-tertiary);
+	font: var(--font-caption);
+}
+
+.chips {
+	display: flex;
+	gap: var(--space-2xs);
+	flex-wrap: wrap;
+}
+
+.chip {
+	display: inline-flex;
+	align-items: center;
+	height: 22px;
+	padding: 0 var(--space-xs);
+	border: 1px solid var(--border-divider);
+	border-radius: var(--radius-full);
+	background: var(--pale-neutral);
+	color: var(--text-secondary);
+	font: 500 11px/14px var(--tui-font-text);
+	white-space: nowrap;
+}
+
+.compact {
+	gap: var(--space-xs);
+	max-width: none;
+	padding: var(--space-sm);
+}
+
+.compact .question {
+	font: 600 14px/18px var(--tui-font-text);
+}
+
+.compact .bar {
+	height: 6px;
+}
+
+.compact .time {
+	margin-top: var(--space-2xs);
+	font-size: 15px;
+}

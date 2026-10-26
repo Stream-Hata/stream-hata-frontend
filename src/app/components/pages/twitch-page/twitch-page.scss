@@ -1,0 +1,167 @@
+:host {
+	display: block;
+}
+
+.account-page {
+	max-width: 760px;
+}
+
+.danger-action {
+	color: var(--tui-text-negative);
+}
+
+/* ── Connected ──────────────────────────────────────────────── */
+.account-card {
+	display: flex;
+	gap: var(--space-xl);
+	flex-direction: column;
+	padding: var(--space-xl);
+}
+
+.account-main {
+	display: flex;
+	gap: var(--space-md);
+	align-items: center;
+}
+
+.account-info {
+	display: flex;
+	gap: var(--space-2xs);
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.account-name {
+	font: var(--font-h3);
+}
+
+.account-disconnect {
+	margin-left: auto;
+}
+
+.twitch-stats {
+	display: flex;
+	gap: var(--space-2xl);
+	flex-wrap: wrap;
+	padding-top: var(--space-lg);
+	border-top: 1px solid var(--border-divider);
+}
+
+.twitch-stat {
+	display: flex;
+	gap: 2px;
+	flex-direction: column;
+}
+
+.twitch-stat-value {
+	font: 600 18px/24px var(--tui-font-text);
+	font-variant-numeric: tabular-nums;
+}
+
+.scopes {
+	display: flex;
+	gap: var(--space-xs);
+	flex-direction: column;
+	padding-top: var(--space-lg);
+	border-top: 1px solid var(--border-divider);
+}
+
+.scopes .jk-label {
+	margin-bottom: var(--space-2xs);
+}
+
+.scope-row {
+	display: flex;
+	gap: var(--space-sm);
+	align-items: flex-start;
+	cursor: pointer;
+	padding-block: var(--space-xs);
+}
+
+.scope-row input[tuiCheckbox] {
+	margin-top: 1px;
+}
+
+.scope-text {
+	display: flex;
+	gap: 1px;
+	flex-direction: column;
+}
+
+.scope-title {
+	font: 500 14px/20px var(--tui-font-text);
+}
+
+/* ── Disconnected ───────────────────────────────────────────── */
+.connect-card {
+	display: flex;
+	gap: var(--space-sm);
+	flex-direction: column;
+	align-items: flex-start;
+	padding: var(--space-2xl);
+}
+
+.connect-tile {
+	width: 56px;
+	height: 56px;
+	border-radius: var(--radius-lg);
+}
+
+.connect-tile img {
+	width: 28px;
+	height: 28px;
+}
+
+.connect-sub {
+	max-width: 52ch;
+}
+
+.permissions {
+	display: flex;
+	gap: var(--space-xs);
+	flex-direction: column;
+	margin-top: var(--space-xs);
+	list-style: none;
+}
+
+.permission {
+	display: flex;
+	gap: var(--space-xs);
+	align-items: center;
+	color: var(--text-secondary);
+	font: var(--font-body-sm);
+}
+
+.permission tui-icon {
+	color: var(--tui-text-positive);
+	font-size: 16px;
+}
+
+.connect-btn {
+	margin-top: var(--space-md);
+}
+
+.twitch-icon {
+	width: 18px;
+	height: 18px;
+}
+
+.connect-note {
+	max-width: 48ch;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (width <= 760px) {
+	.account-main {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.account-disconnect {
+		margin-left: 0;
+	}
+
+	.connect-card {
+		padding: var(--space-lg);
+	}
+}

@@ -1,0 +1,108 @@
+:host {
+	display: block;
+}
+
+.onboarding {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 100dvh;
+	padding: var(--space-xl);
+	background:
+		radial-gradient(1000px 500px at 15% -10%, color-mix(in srgb, var(--accent-primary) 12%, transparent), transparent 60%),
+		radial-gradient(800px 420px at 90% 110%, rgb(34, 224, 255, 0.1), transparent 60%),
+		var(--surface-base);
+}
+
+.onboard-card {
+	display: flex;
+	gap: var(--space-xl);
+	flex-direction: column;
+	width: 100%;
+	max-width: 560px;
+	padding: var(--space-2xl);
+	border: 1px solid var(--border-normal);
+	border-radius: var(--radius-xl);
+	background: var(--surface-elevated-1);
+	box-shadow: var(--elevation-large);
+}
+
+.onboard-stepper {
+	align-self: center;
+}
+
+.onboard-body {
+	display: flex;
+	gap: var(--space-sm);
+	flex-direction: column;
+	align-items: flex-start;
+	min-height: 240px;
+}
+
+.onboard-icon {
+	width: 56px;
+	height: 56px;
+	border-radius: var(--radius-lg);
+}
+
+.twitch-img {
+	width: 28px;
+	height: 28px;
+}
+
+.onboard-icon .twitch-img {
+	width: 28px;
+	height: 28px;
+}
+
+.onboard-body a[tuiButton] .twitch-img,
+.onboard-body button[tuiButton] .twitch-img {
+	width: 18px;
+	height: 18px;
+}
+
+.onboard-sub {
+	max-width: 46ch;
+}
+
+.onboard-slider {
+	display: flex;
+	gap: var(--space-md);
+	align-items: center;
+	width: 100%;
+	margin-top: var(--space-xs);
+}
+
+.onboard-slider input[tuiSlider] {
+	flex: 1;
+}
+
+.onboard-value {
+	min-width: 3.5ch;
+	text-align: right;
+}
+
+.onboard-foot {
+	display: flex;
+	gap: var(--space-sm);
+	align-items: center;
+	justify-content: space-between;
+	padding-top: var(--space-md);
+	border-top: 1px solid var(--border-divider);
+}
+
+@media (width <= 640px) {
+	.onboarding {
+		padding: var(--space-md);
+	}
+
+	.onboard-card {
+		padding: var(--space-lg);
+		border-radius: var(--radius-lg);
+	}
+
+	.onboard-slider {
+		flex-direction: column;
+		align-items: stretch;
+	}
+}

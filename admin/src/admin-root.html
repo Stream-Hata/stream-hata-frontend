@@ -1,0 +1,92 @@
+<tui-root>
+  <div class="admin-shell">
+    <aside class="admin-sidebar" [class.admin-sidebar-open]="menuOpen()">
+      <a class="admin-logo" routerLink="/" (click)="menuOpen.set(false)">
+        <span class="admin-logo-mark"></span>
+        <span class="admin-logo-text">Nameless StreamHata<span>admin</span></span>
+      </a>
+
+      <nav class="admin-nav">
+        <span class="admin-nav-group">Управление</span>
+        @for (item of nav; track item.link) {
+          <a
+            class="admin-nav-item"
+            [routerLink]="item.link"
+            [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+            routerLinkActive="admin-nav-item-active"
+            (click)="menuOpen.set(false)"
+          >
+            <tui-icon [icon]="item.icon" />
+            <span>{{ item.label }}</span>
+          </a>
+        }
+        <span class="admin-nav-group">Приложение</span>
+        @for (item of appNav; track item.link) {
+          <a class="admin-nav-item" [href]="appOrigin + item.link" target="_blank" rel="noopener">
+            <tui-icon [icon]="item.icon" />
+            <span>{{ item.label }}</span>
+            <tui-icon class="admin-nav-external" icon="@tui.external-link" />
+          </a>
+        }
+      </nav>
+
+      <a class="admin-sidebar-foot" href="https://streamhata.rdpctd.dev/app/dashboard" target="_blank" rel="noopener">
+        <tui-icon icon="@tui.external-link" />
+        <span>
+          <span class="admin-foot-title">Открыть StreamHata</span>
+          <span class="admin-foot-link">Основное приложение</span>
+        </span>
+      </a>
+    </aside>
+
+    @if (menuOpen()) {
+      <button class="admin-backdrop" type="button" aria-label="Закрыть меню" (click)="menuOpen.set(false)"></button>
+    }
+
+    <div class="admin-content">
+      <header class="admin-topbar">
+        <button class="admin-burger" type="button" aria-label="Открыть меню" (click)="menuOpen.set(true)" tuiIconButton iconStart="@tui.menu"></button>
+        <div class="admin-topbar-title">
+          <h1>{{ title() }}</h1>
+          <span class="jk-caption">Панель управления каналом</span>
+        </div>
+        <div class="admin-topbar-right">
+          <span appearance="info" tuiBadge>ADMIN</span>
+          @if (roles.profile()?.user?.avatar) {
+            <img class="admin-avatar" [alt]="initials()" [src]="roles.profile()?.user?.avatar" />
+          } @else {
+            <span class="admin-avatar">{{ initials() }}</span>
+          }
+          <span class="admin-user">{{ roles.profile()?.user?.displayName || roles.profile()?.user?.username }}</span>
+        </div>
+      </header>
+
+      <main class="admin-main">
+        @if (loading()) {
+          <div class="jk-card jk-empty">
+            <span class="jk-empty-icon"><tui-icon icon="@tui.loader" /></span>
+            <span class="jk-h4">Проверяем сессию Twitch…</span>
+          </div>
+        } @else if (!roles.profile()?.valid) {
+          <div class="jk-card jk-empty">
+            <span class="jk-empty-icon"><tui-icon icon="@tui.lock" /></span>
+            <h1 class="jk-h2">Вход в админку</h1>
+            <p class="jk-body-sm jk-muted">Нужна авторизация Twitch владельца канала.</p>
+            <button appearance="primary" type="button" (click)="login()" tuiButton>Войти через Twitch</button>
+          </div>
+        } @else if (denied()) {
+          <div class="jk-card jk-empty">
+            <span class="jk-empty-icon"><tui-icon icon="@tui.shield-x" /></span>
+            <h1 class="jk-h2">Доступ ограничен</h1>
+            <p class="jk-body-sm jk-muted">
+              Вы вошли как {{ roles.profile()?.user?.displayName }}, но не являетесь владельцем или админом.
+            </p>
+          </div>
+        } @else {
+          <router-outlet />
+        }
+      </main>
+    </div>
+  </div>
+<app-update-notice />
+</tui-root>

@@ -1,0 +1,247 @@
+:host {
+	display: block;
+	width: 100%;
+}
+
+.roulette-stage {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	min-height: 420px;
+	padding: var(--space-md);
+	color: var(--roulette-text);
+}
+
+.roulette-meme {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	opacity: 0.2;
+	filter: blur(2px);
+	pointer-events: none;
+}
+
+.roulette-window {
+	position: relative;
+	overflow: hidden;
+	width: 100%;
+	height: 276px;
+	border: 1px solid color-mix(in hsl, var(--roulette-accent) 45%, transparent);
+	border-radius: var(--radius-lg);
+	background: color-mix(in hsl, var(--roulette-background) 82%, transparent);
+	box-shadow:
+		0 0 40px color-mix(in hsl, var(--roulette-accent) 24%, transparent),
+		inset 0 0 60px rgb(0, 0, 0, 0.35);
+	backdrop-filter: blur(12px);
+}
+
+.roulette-window:before,
+.roulette-window:after {
+	position: absolute;
+	z-index: 2;
+	right: 0;
+	left: 0;
+	height: 70px;
+	content: '';
+	pointer-events: none;
+}
+
+.roulette-window:before {
+	top: 0;
+	background: linear-gradient(to bottom, var(--roulette-background), transparent);
+}
+
+.roulette-window:after {
+	bottom: 0;
+	background: linear-gradient(to top, var(--roulette-background), transparent);
+}
+
+.roulette-marker {
+	position: absolute;
+	z-index: 4;
+	top: 50%;
+	right: 0;
+	left: 0;
+	height: 92px;
+	border-top: 2px solid var(--roulette-accent);
+	border-bottom: 2px solid var(--roulette-accent);
+	background: color-mix(in hsl, var(--roulette-accent) 10%, transparent);
+	pointer-events: none;
+	transform: translateY(-46px);
+}
+
+.roulette-track {
+	display: flex;
+	flex-direction: column;
+	will-change: transform;
+}
+
+.roulette-track-rolling {
+	animation: none !important;
+}
+
+@keyframes roulette-roll {
+	from {
+		transform: translateY(var(--roulette-from, 0px));
+	}
+
+	to {
+		transform: translateY(var(--roulette-target));
+	}
+}
+
+.roulette-cell {
+	display: flex;
+	gap: var(--space-sm);
+	flex: 0 0 92px;
+	align-items: center;
+	padding: 10px var(--space-sm);
+	border-bottom: 1px solid color-mix(in hsl, var(--roulette-accent) 12%, transparent);
+}
+
+.roulette-cover {
+	display: flex;
+	overflow: hidden;
+	flex: 0 0 52px;
+	align-items: center;
+	justify-content: center;
+	width: 52px;
+	height: 68px;
+	border-radius: var(--radius-sm);
+	background:
+		radial-gradient(circle at 30% 20%, color-mix(in hsl, var(--roulette-accent) 35%, transparent), transparent 60%),
+		color-mix(in hsl, var(--roulette-background) 70%, white 8%);
+	color: var(--roulette-text);
+	font: 700 14px/1 var(--font-ui);
+}
+
+.roulette-cover img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.roulette-copy {
+	display: flex;
+	gap: 2px;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.roulette-copy strong {
+	overflow: hidden;
+	font: 600 14px/18px var(--font-ui);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.roulette-copy span {
+	color: color-mix(in hsl, var(--roulette-text) 60%, transparent);
+	font: 500 12px/16px var(--font-ui);
+}
+
+.roulette-result {
+	position: relative;
+	z-index: 5;
+	display: flex;
+	gap: var(--space-xs);
+	flex-direction: column;
+	align-items: center;
+	width: min(360px, 100%);
+	margin-top: var(--space-md);
+	padding: var(--space-lg);
+	border: 1px solid color-mix(in hsl, var(--roulette-accent) 50%, transparent);
+	border-radius: var(--radius-lg);
+	background: color-mix(in hsl, var(--roulette-background) 88%, transparent);
+	box-shadow: 0 24px 70px rgb(0, 0, 0, 0.55);
+	text-align: center;
+	backdrop-filter: blur(18px);
+	animation: roulette-result-in 0.42s cubic-bezier(0.35, 1.3, 0.25, 1) both !important;
+}
+
+.roulette-cat {
+	width: 96px;
+	height: 96px;
+	border-radius: var(--radius-md);
+	object-fit: cover;
+}
+
+.roulette-result-head {
+	display: flex;
+	gap: var(--space-xs);
+	align-items: center;
+}
+
+.roulette-kicker {
+	color: var(--roulette-accent);
+	font: 700 10px/14px var(--font-ui);
+	letter-spacing: 0.16em;
+}
+
+.roulette-result-title {
+	margin: 0;
+	font: 800 22px/28px var(--font-ui);
+}
+
+.roulette-result-year {
+	color: color-mix(in hsl, var(--roulette-text) 65%, transparent);
+	font: var(--font-caption);
+}
+
+.roulette-emulators {
+	display: flex;
+	gap: 4px;
+	align-items: center;
+	color: color-mix(in hsl, var(--roulette-text) 70%, transparent);
+	font: var(--font-caption);
+}
+
+.roulette-emulators a {
+	color: var(--roulette-accent);
+	text-decoration: none;
+}
+
+.roulette-result-actions {
+	display: flex;
+	gap: var(--space-xs);
+	flex-wrap: wrap;
+	justify-content: center;
+	margin-top: var(--space-xs);
+}
+
+@keyframes roulette-result-in {
+	from {
+		opacity: 0;
+		transform: translateY(10px) scale(0.97);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
+
+.roulette-track.roulette-track-reset {
+	transition: none;
+}
+
+.roulette-result-slot {
+	position: absolute;
+	inset: 0;
+	z-index: 10;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	pointer-events: none;
+}
+
+.roulette-result-slot .roulette-result {
+	pointer-events: auto;
+	margin-top: 0;
+}

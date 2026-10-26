@@ -1,16 +1,16 @@
 <div class="mainatiner">
-	<div class="name" (click)="listShown.set(!listShown())">
-		<span> {{ data().maintainer }}</span>
-		<tui-icon [icon]="listShown() ? '@tui.chevron-up' : '@tui.chevron-down'"> </tui-icon>
-	</div>
+  <div class="name" (click)="listShown.set(!listShown())">
+    <span> {{ data().maintainer }}</span>
+    <tui-icon [icon]="listShown() ? '@tui.chevron-up' : '@tui.chevron-down'"> </tui-icon>
+  </div>
 
-	<div class="platform-wrapper" [class.expanded]="listShown()">
-		<div class="platforms-set">
-			@for (item of data().platforms; track $index) {
-				<div class="chip" (click)="togglePlatform(item)" [class.selected]="isSelected(item)">
-					{{ item.name }}
-				</div>
-			}
-		</div>
-	</div>
+  <div class="platform-wrapper" [class.expanded]="listShown()">
+    <div class="platforms-set">
+      @for (item of data().platforms; track $index) {
+        <div class="chip" (click)="togglePlatform(item)" [class.selected]="isSelected(item)">
+          {{ item.name }}
+        </div>
+      }
+    </div>
+  </div>
 </div>

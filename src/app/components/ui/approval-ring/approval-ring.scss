@@ -1,0 +1,51 @@
+:host {
+	display: inline-block;
+}
+
+.ring {
+	position: relative;
+	flex-shrink: 0;
+}
+
+.svg {
+	width: 100%;
+	height: 100%;
+	transform: rotate(-90deg);
+}
+
+.track,
+.bar {
+	fill: none;
+}
+
+.track {
+	stroke: var(--neutral-1);
+}
+
+.bar {
+	stroke: var(--accent-primary);
+
+	transition: stroke-dashoffset var(--motion-slow) var(--ease-standard);
+	stroke-linecap: round;
+}
+
+.value {
+	position: absolute;
+	display: flex;
+	gap: 1px;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	inset: 0;
+}
+
+.num {
+	font: 700 20px/24px var(--tui-font-heading);
+	letter-spacing: -0.01em;
+	font-variant-numeric: tabular-nums;
+}
+
+.cap {
+	color: var(--text-tertiary);
+	font: 400 10px/12px var(--tui-font-text);
+}

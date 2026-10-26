@@ -1,0 +1,289 @@
+<div class="jk-page">
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">Модерация</h1>
+      <p class="jk-caption">Фильтры чата, автоматические действия и лог нарушений.</p>
+    </div>
+
+    <div class="jk-page-actions">
+      <button appearance="primary" tuiButton type="button" (click)="save()">
+        {{ saved() ? 'Сохранено' : 'Сохранить фильтры' }}
+      </button>
+    </div>
+  </header>
+
+  <div class="moderation-grid">
+    <section class="jk-card filters-card">
+      <div class="dry-run-row">
+        <div class="cfg-text">
+          <span class="cfg-label">Сухой прогон</span>
+          <span class="jk-caption">Нарушения только логируются и анонсируются, без действий</span>
+        </div>
+        <input
+          aria-label="Сухой прогон"
+          type="checkbox"
+          [formControl]="dryRunControl"
+          tuiSwitch
+          />
+        </div>
+
+        <div class="cfg-row">
+          <span class="cfg-label">Действие</span>
+          <tui-segmented
+            [activeItemIndex]="actionIndex()"
+            (activeItemIndexChange)="setAction($event)"
+          >
+            <button type="button">Удалять</button>
+            <button type="button">Таймаут</button>
+          </tui-segmented>
+        </div>
+
+        @if (action() === 'timeout') {
+          <div class="cfg-row">
+            <span class="cfg-label">Таймаут, сек</span>
+            <tui-textfield class="cfg-control">
+              <input type="number" tuiInput
+                aria-label="Длительность таймаута" min="1"
+               
+                [value]="timeoutSeconds()"
+                (input)="timeoutSeconds.set(+value($event))"
+                />
+              </tui-textfield>
+            </div>
+          }
+
+          <section class="words-editor">
+            <div class="words-head">
+              <div class="cfg-text">
+                <span class="cfg-label">Запрещённые слова</span>
+                <span class="jk-caption">Строки или запятые · авто-парсинг и плагины</span>
+              </div>
+              <span appearance="info" tuiBadge>{{ wordCount() }} слов</span>
+            </div>
+
+            <div class="words-toolbar">
+              @for (plugin of editorPlugins; track plugin.id) {
+                <button
+                  size="s"
+                  type="button"
+                  [iconStart]="plugin.icon"
+                  (click)="applyPlugin(plugin)"
+                  appearance="flat"
+                  tuiButton
+                >
+                  {{ plugin.label }}
+                </button>
+              }
+
+              <label class="words-file" tuiInputFiles (drop)="importFromDrop($event)">
+                <input
+                  accept=".txt,.csv"
+                  (change)="importFromInput($event)"
+                  />
+                  <tui-icon icon="@tui.upload" />
+                  <span class="jk-caption">TXT/CSV · клик или drag&drop</span>
+                </label>
+              </div>
+
+              <tui-textfield class="words-textarea">
+                <textarea
+                  aria-label="Запрещённые слова"
+                  rows="6"
+                  [value]="bannedWords()"
+                  (input)="bannedWords.set(value($event))"
+                  tuiTextarea
+                ></textarea>
+              </tui-textfield>
+
+              <div class="words-import">
+                <tui-textfield class="words-preset" tuiChevron>
+                  <input
+                    aria-label="Открытый список"
+                    [readonly]="true"
+                    [value]="presetLabels()[presetValues().indexOf(presetIdControl.value)]"
+                    tuiInput
+                    tuiSelectLike
+                  />
+                  <tui-data-list-wrapper
+                    *tuiDropdown
+                    [items]="presetLabels()"
+                    (itemClick)="presetIdControl.setValue(presetValues()[presetLabels().indexOf($event)])"
+                  ></tui-data-list-wrapper>
+                </tui-textfield>
+
+                <button
+                  size="s"
+                  type="button"
+                  (click)="addPreset()"
+                  appearance="jkit-tint"
+                  tuiButton
+                >
+                  Добавить список
+                </button>
+
+                <tui-textfield class="words-url">
+                  <input
+                    aria-label="URL списка"
+                    placeholder="https://…/banned.txt"
+                    type="text"
+                    [value]="listUrl()"
+                    (input)="listUrl.set(value($event))"
+                    tuiInput
+                    /></tui-textfield>
+
+                    <button
+                    size="s"
+                    type="button"
+                    (click)="importFromUrl()"
+                    appearance="jkit-tint"
+                    tuiButton
+                  >
+                    Из URL
+                  </button>
+                </div>
+
+                @if (error(); as message) {
+                  <p class="error-text">{{ message }}</p>
+                }
+              </section>
+
+              <div class="cfg-row">
+                <div class="cfg-text">
+                  <span class="cfg-label">Ссылки</span>
+                  <span class="jk-caption">Удалять сообщения со ссылками</span>
+                </div>
+                <input
+                  aria-label="Блокировать ссылки"
+                  type="checkbox"
+                  [formControl]="blockLinksControl"
+                  tuiSwitch
+                  />
+                </div>
+
+                <div class="cfg-row">
+                  <div class="cfg-text">
+                    <span class="cfg-label">Капс</span>
+                    <span
+                      class="jk-caption"
+                    >Порог {{ capsPercent() }}% · от {{ capsMinLength() }} букв</span>
+                  </div>
+                  <input
+                    aria-label="Капс"
+                    type="checkbox"
+                    [formControl]="capsEnabledControl"
+                    tuiSwitch
+                    />
+                  </div>
+
+                  @if (capsEnabled()) {
+                    <div class="cfg-row">
+                      <span class="cfg-label">Порог капса, %</span>
+                      <input
+                        aria-label="Порог капса"
+                        class="cfg-slider"
+                        max="100"
+                        min="30"
+                        type="range"
+                        [value]="capsPercent()"
+                        (input)="capsPercent.set(+value($event))"
+                        />
+                      </div>
+                    }
+
+                    <div class="cfg-row">
+                      <div class="cfg-text">
+                        <span class="cfg-label">Эмодзи-спам</span>
+                        <span class="jk-caption">Больше {{ emojiMax() }} эмодзи в сообщении</span>
+                      </div>
+                      <input
+                        aria-label="Эмодзи-спам"
+                        type="checkbox"
+                        [formControl]="emojiEnabledControl"
+                        tuiSwitch
+                        />
+                      </div>
+
+                      <div class="cfg-row">
+                        <div class="cfg-text">
+                          <span class="cfg-label">Повторы</span>
+                          <span class="jk-caption">
+                            Одинаковые сообщения чаще {{ repeatMax() }} раз за {{ repeatWindow() }}с
+                          </span>
+                        </div>
+                        <input
+                          aria-label="Повторы"
+                          type="checkbox"
+                          [formControl]="repeatEnabledControl"
+                          tuiSwitch
+                          />
+                        </div>
+
+                        <div class="cfg-row">
+                          <div class="cfg-text">
+                            <span class="cfg-label">Исключения</span>
+                            <span class="jk-caption">Не трогать стримера и модераторов</span>
+                          </div>
+                          <input
+                            aria-label="Исключения"
+                            type="checkbox"
+                            [formControl]="exemptModeratorsControl"
+                            tuiSwitch
+                            />
+                          </div>
+                        </section>
+
+                        <section class="log-section">
+                          <h2 class="jk-h4">Лог модерации</h2>
+
+                          @if (log().length) {
+                            <div class="table-wrap">
+                              <table tuiTable>
+                                <thead tuiThead>
+                                  <tr>
+                                    <th tuiTh>Зритель</th>
+                                    <th tuiTh>Сообщение</th>
+                                    <th tuiTh>Причина</th>
+                                    <th tuiTh>Действие</th>
+                                    <th tuiTh>Время</th>
+                                  </tr>
+                                </thead>
+
+                                <tbody tuiTbody>
+                                  @for (entry of log(); track entry.id) {
+                                    <tr>
+                                      <td tuiTd class="name-cell">{{ entry.user }}</td>
+                                      <td tuiTd class="text-cell">{{ entry.text }}</td>
+                                      <td tuiTd>{{ entry.reason }}</td>
+                                      <td tuiTd>
+                                        @if (entry.dryRun) {
+                                          <span appearance="warning" tuiBadge>сухой</span>
+                                        } @else {
+                                          <span
+                                            appearance="negative"
+                                            tuiBadge
+                                          >{{ entry.action }}</span>
+                                        }
+                                      </td>
+                                      <td
+                                        class="jk-caption"
+                                        tuiTd
+                                      >{{ formatTime(entry.createdAt) }}</td>
+                                    </tr>
+                                  }
+                                </tbody>
+                              </table>
+                            </div>
+                          } @else {
+                            <div class="jk-card jk-empty">
+                              <span class="jk-empty-icon">
+                                <tui-icon icon="@tui.shield" />
+                              </span>
+                              <span class="jk-h4">Нарушений нет</span>
+                              <span
+                                class="jk-body-sm jk-muted"
+                              >Чат чистый — фильтры следят за порядком.</span>
+                            </div>
+                          }
+                        </section>
+                      </div>
+                    </div>

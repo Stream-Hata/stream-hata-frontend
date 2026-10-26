@@ -1,20 +1,20 @@
 <div class="timer">
-	<app-time-row [time]="time()" [mode]="mode() ?? 'pause'"></app-time-row>
+  <app-time-row [time]="time()" [mode]="mode() ?? 'pause'"></app-time-row>
 
-	<div class="buttons">
-		<button
-			[iconEnd]="icon()"
-			(click)="mode() === 'play' ? pauseTimer() : startTimer()"
-			tuiButton
-			tuiIconButton
-			appearance="flat"
-		></button>
-		<button
-			(click)="reset()"
-			tuiButton
-			tuiIconButton
-			appearance="flat"
-			iconEnd="@tui.rotate-ccw"
-		></button>
-	</div>
+  <div class="buttons">
+    <button
+      [iconEnd]="icon()"
+      (click)="mode() === 'play' ? pauseTimer() : startTimer()"
+      tuiButton
+      tuiIconButton
+      appearance="flat"
+    ></button>
+    <button
+      (click)="reset()"
+      tuiButton
+      tuiIconButton
+      appearance="flat"
+      iconEnd="@tui.rotate-ccw"
+    ></button>
+  </div>
 </div>

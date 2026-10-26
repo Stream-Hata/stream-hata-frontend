@@ -1,0 +1,75 @@
+<div class="boost-backdrop" (click)="close()">
+  <section class="boost-dialog" (click)="$event.stopPropagation()">
+    <header class="boost-head">
+      <span class="boost-kicker">Буст удачи</span>
+      <strong class="boost-name">{{ participant()?.displayName }}</strong>
+      @if (participant()?.lot) {
+        <span class="boost-lot">{{ participant()?.lot }}</span>
+      }
+    </header>
+
+    <div class="boost-reel-wrap">
+      <div class="boost-reel">
+        <div class="boost-track" [class.boost-track-reset]="resetting()" [style.transform]="'translateX(' + offset() + 'px)'">
+          @for (value of reel(); track $index) {
+            <span
+              class="boost-cell"
+              [class.boost-cell-zero]="value === 0"
+              [class.boost-cell-selected]="$index === selectedIndex()"
+            >×{{ value }}</span>
+          }
+        </div>
+        <span class="boost-window" [class.boost-window-active]="multiplier() !== null && !spinning()"></span>
+      </div>
+    </div>
+
+    @if (!started()) {
+      <div class="boost-info">
+        <span class="boost-info-label">Ставка</span>
+        <strong class="boost-info-bet">{{ baseBet() }}</strong>
+        <span class="boost-info-hint">0 — сгорает · 1 — без изменений · N — умножает</span>
+      </div>
+    } @else if (spinning()) {
+      <div class="boost-status">Крутим буст…</div>
+    } @else if (multiplier() !== null) {
+      <div
+        class="boost-outcome"
+        [class.boost-outcome-burn]="multiplier() === 0"
+        [class.boost-outcome-neutral]="multiplier() === 1"
+        [class.boost-outcome-win]="(multiplier() ?? 1) > 1"
+        aria-live="polite"
+      >
+        <span class="boost-outcome-label">Выпало</span>
+        <strong class="boost-outcome-value">×{{ multiplier() }}</strong>
+        <span class="boost-outcome-text">{{ outcomeText() }}</span>
+        @if (delta() > 0) {
+          <span class="boost-outcome-delta">+{{ delta() }}</span>
+        }
+      </div>
+    } @else {
+      <div class="boost-error">{{ errorText() || 'Не удалось применить буст' }}</div>
+    }
+
+    <div class="boost-odds" aria-label="Шансы буста">
+      @for (odd of boostOdds(); track odd.value) {
+        <span class="boost-odd" [class.boost-odd-zero]="odd.value === 0">
+          <b>×{{ odd.value }}</b>
+          <span>{{ odd.chance | number: '1.0-0' }}%</span>
+        </span>
+      }
+    </div>
+
+    <div class="boost-actions">
+      @if (!started()) {
+        <button appearance="primary" tuiButton type="button" (click)="start()">Крутить</button>
+        <button appearance="flat" tuiButton type="button" (click)="close()">Отмена</button>
+      } @else if (spinning()) {
+        <span class="boost-wait">Подождите результат…</span>
+      } @else if (multiplier() !== null) {
+        <button appearance="primary" tuiButton type="button" (click)="apply()">Готово</button>
+      } @else {
+        <button appearance="flat" tuiButton type="button" (click)="close()">Закрыть</button>
+      }
+    </div>
+  </section>
+</div>

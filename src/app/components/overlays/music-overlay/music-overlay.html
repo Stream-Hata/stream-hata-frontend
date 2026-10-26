@@ -1,0 +1,19 @@
+<div class="overlay-stage">
+  <article class="music-card">
+    <span class="music-kicker">ОЧЕРЕДЬ АУДИО</span>
+
+    @if (tracks().length) {
+      <div class="music-next">
+        @for (item of tracks(); track item.videoId + $index; let index = $index) {
+          <span class="music-next-row">
+            <b>{{ index + 1 }}</b>
+            <span>{{ item.title }}</span>
+            <span class="jk-caption">{{ item.author }}</span>
+          </span>
+        }
+      </div>
+    } @else {
+      <span class="jk-caption">Трек-лист пуст</span>
+    }
+  </article>
+</div>

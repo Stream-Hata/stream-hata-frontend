@@ -1,0 +1,91 @@
+<div class="jk-page roulette-page">
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">Рулетка игр</h1>
+      <p
+        class="jk-caption"
+      >Сервер выбирает игру по фильтрам и весам; оверлей показывает результат.</p>
+    </div>
+    <div class="jk-page-actions">
+      <a appearance="flat" routerLink="/app/widgets/roulette/config" tuiButton>Настройки</a>
+      <button appearance="flat" tuiButton type="button" (click)="reset()">Сбросить</button>
+    </div>
+  </header>
+
+  <div class="roulette-layout">
+    <section class="jk-card roulette-board">
+      <app-roulette-stage
+        [appearance]="config().appearance"
+        [audio]="config().audio"
+        [audioEnabled]="true"
+        [filler]="filler()"
+        [mode]="mode()"
+        [reveal]="config().reveal"
+        [round]="round()"
+        [spinning]="spinning()"
+        />
+
+        <div class="roulette-controls">
+          <tui-textfield class="roulette-mode" tuiChevron>
+            <input
+              aria-label="Режим рулетки"
+              [readonly]="true"
+              [value]="modeLabels[modeValues.indexOf(modeControl.value)]"
+              tuiInput
+              tuiSelectLike
+            />
+            <tui-data-list-wrapper
+              *tuiDropdown
+              [items]="modeLabels"
+              (itemClick)="setModeLabel($event)"
+            ></tui-data-list-wrapper>
+          </tui-textfield>
+
+          <button
+            size="l"
+            type="button"
+            [disabled]="spinning()"
+            (click)="spin()"
+            appearance="primary"
+            tuiButton
+          >
+            <tui-icon icon="@tui.play" />
+            Крутить
+          </button>
+        </div>
+
+        @if (error()) {
+          <p class="roulette-error">{{ error() }}</p>
+        }
+      </section>
+
+      <aside class="roulette-side">
+        <section class="jk-card roulette-summary">
+          <h2 class="jk-h4">Режим</h2>
+          <span appearance="info" tuiBadge>{{ mode() }}</span>
+          <span class="jk-caption">Осталось в пуле: {{ remaining() }}</span>
+          <span class="jk-caption">Тиры: {{ config().filters.tiers?.join(', ') || 'все' }}</span>
+          <span
+            class="jk-caption"
+          >Платформы: {{ config().filters.platforms?.length || 'все' }}</span>
+          <span class="jk-caption">Без повторов: {{ config().avoidRecent }}</span>
+        </section>
+
+        <section class="jk-card roulette-history">
+          <h2 class="jk-h4">История</h2>
+          @if (history().length) {
+            @for (item of history().slice(0, 12); track item.id) {
+              <a class="roulette-history-row" [routerLink]="['/app/games', item.game.slug]">
+                <span class="roulette-history-title">{{ item.game.title }}</span>
+                <span
+                  class="jk-caption"
+                >{{ item.platform.name }} · {{ item.game.year || '—' }}</span>
+              </a>
+            }
+          } @else {
+            <p class="jk-body-sm jk-muted">Пока нет запусков.</p>
+          }
+        </section>
+      </aside>
+    </div>
+  </div>

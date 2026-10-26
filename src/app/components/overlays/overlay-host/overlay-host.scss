@@ -1,0 +1,13 @@
+:host {
+	display: block;
+	min-height: 100vh;
+	background: transparent;
+}
+
+.overlay-unknown {
+	padding: 24px;
+	border-radius: 16px;
+	background: var(--surface-elevated-1);
+	color: var(--text-primary);
+	font: var(--font-body);
+}

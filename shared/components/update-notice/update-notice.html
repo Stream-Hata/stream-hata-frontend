@@ -1,0 +1,12 @@
+@if (available() && !dismissed()) {
+  <aside class="update-notice" role="status">
+    <span class="update-notice-icon">↻</span>
+    <div class="update-notice-text">
+      <strong>Доступна новая версия{{ version() ? ': ' + version() : '' }}</strong>
+      <span>Обновите страницу, чтобы загрузить свежую версию.</span>
+    </div>
+    <a href="/changelog" (click)="dismiss()">Что нового</a>
+    <button type="button" (click)="reload()">Обновить</button>
+    <button type="button" class="update-notice-close" aria-label="Закрыть" (click)="dismiss()">×</button>
+  </aside>
+}

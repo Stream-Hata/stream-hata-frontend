@@ -1,0 +1,9 @@
+:host { display: block; }
+.cfg-section { display: flex; flex-direction: column; gap: 4px; padding: 20px; }
+.cfg-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border-divider); }
+.cfg-row:last-child { border-bottom: 0; }
+.cfg-text { display: flex; flex-direction: column; gap: 2px; }
+.cfg-label { font: var(--font-label); }
+
+.notif-switch-hit { position: relative; display: inline-flex; flex: 0 0 auto; align-items: center; cursor: pointer; }
+.notif-switch-hit-area { position: absolute; inset: -4px; z-index: 2; cursor: pointer; }

@@ -1,0 +1,405 @@
+<div class="jk-page">
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">Стрим и OBS</h1>
+      <p class="jk-caption">Сцены, звук, выходы, инфо канала, шилд-мод и уведомления.</p>
+    </div>
+
+    <div class="jk-page-actions">
+      @if (obsStatus()?.connected) {
+        <span appearance="positive" tuiBadge>OBS подключён</span>
+      } @else {
+        <span appearance="neutral" tuiBadge>OBS оффлайн</span>
+      }
+    </div>
+  </header>
+
+  <div class="stream-grid">
+    <div class="main-col">
+      <section class="jk-card timer-control-card">
+        <div class="card-head">
+          <div>
+            <h2 class="jk-h4">Таймер</h2>
+            <p class="jk-caption">Запуск, пауза и сброс таймера для оверлея.</p>
+          </div>
+        </div>
+        <div class="stream-timer">
+          <app-timer-preview [showMode]="true" [showModeLabel]="true" />
+          <app-timer class="timer-controls-only" />
+        </div>
+      </section>
+
+      <section class="jk-card obs-card">
+        <div class="card-head">
+          <h2 class="jk-h4">OBS WebSocket</h2>
+          @if (obsStatus()?.connected) {
+            <button
+              class="danger-action"
+              type="button"
+              (click)="disconnectObs()"
+              appearance="flat"
+              tuiButton
+            >
+              Отключить
+            </button>
+          }
+        </div>
+
+        @if (!obsStatus()?.connected) {
+          <div class="connect-row">
+            <tui-textfield class="connect-url">
+              <input
+                aria-label="Адрес OBS WebSocket"
+                placeholder="ws://127.0.0.1:4455"
+                type="text"
+                [value]="obsUrl()"
+                (input)="obsUrl.set(value($event))"
+                tuiInput
+                />
+              </tui-textfield>
+
+              <tui-textfield class="connect-password">
+                <input
+                  aria-label="Пароль OBS"
+                  placeholder="Пароль (если задан)"
+                  type="password"
+                  [value]="obsPassword()"
+                  (input)="obsPassword.set(value($event))"
+                  tuiInput
+                  />
+                </tui-textfield>
+
+                <button type="button" (click)="connectObs()" appearance="primary" tuiButton>
+                  Подключить
+                </button>
+              </div>
+
+              @if (obsError(); as message) {
+                <p class="error-text">{{ message }}</p>
+              }
+            } @else {
+              <div class="scenes">
+                @for (scene of obsStatus()?.scenes; track scene) {
+                  <button
+                    class="scene-chip jk-chip"
+                    type="button"
+                    [class.jk-chip-active]="scene === obsStatus()?.currentScene"
+                    (click)="setScene(scene)"
+                  >
+                    {{ scene }}
+                  </button>
+                }
+              </div>
+
+              <div class="obs-split">
+                <div class="inputs">
+                  <span class="jk-label">Источники звука</span>
+
+                  @for (input of obsStatus()?.inputs; track input) {
+                    <div class="input-row">
+                      <span class="input-name">{{ input }}</span>
+                      <button
+                        size="s"
+                        type="button"
+                        (click)="toggleMute(input)"
+                        appearance="flat"
+                        tuiButton
+                      >
+                        Mute/Unmute
+                      </button>
+                    </div>
+                  }
+                </div>
+
+                <div class="outputs">
+                  <span class="jk-label">Выходы</span>
+
+                  <div class="output-row">
+                    <span>Стрим</span>
+                    @if (obsStatus()?.streaming) {
+                      <button
+                        size="s"
+                        type="button"
+                        (click)="output('stream', 'stop')"
+                        appearance="jkit-tint"
+                        tuiButton
+                      >
+                        Стоп
+                      </button>
+                    } @else {
+                      <button
+                        size="s"
+                        type="button"
+                        (click)="output('stream', 'start')"
+                        appearance="primary"
+                        tuiButton
+                      >
+                        Начать
+                      </button>
+                    }
+                  </div>
+
+                  <div class="output-row">
+                    <span>Запись</span>
+                    @if (obsStatus()?.recording) {
+                      <button
+                        size="s"
+                        type="button"
+                        (click)="output('record', 'stop')"
+                        appearance="jkit-tint"
+                        tuiButton
+                      >
+                        Стоп
+                      </button>
+                    } @else {
+                      <button
+                        size="s"
+                        type="button"
+                        (click)="output('record', 'start')"
+                        appearance="jkit-tint"
+                        tuiButton
+                      >
+                        Начать
+                      </button>
+                    }
+                  </div>
+
+                  <div class="output-row">
+                    <span>Реплей</span>
+                    <button
+                      size="s"
+                      type="button"
+                      (click)="output('replay', 'save')"
+                      appearance="jkit-tint"
+                      tuiButton
+                    >
+                      Сохранить буфер
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+          </section>
+
+          <section class="jk-card channel-card">
+            <h2 class="jk-h4">Канал Twitch</h2>
+
+            <div class="channel-row">
+              <tui-textfield class="channel-field">
+                <tui-icon icon="@tui.square-pen" />
+                <input
+                  aria-label="Заголовок стрима"
+                  placeholder="Заголовок стрима"
+                  type="text"
+                  [value]="title()"
+                  (input)="title.set(value($event))"
+                  tuiInput
+                  />
+                </tui-textfield>
+
+                <tui-textfield class="channel-field">
+                  <tui-icon icon="@tui.music" />
+                  <input
+                    aria-label="Категория"
+                    placeholder="Категория (напр. Just Chatting)"
+                    type="text"
+                    [value]="gameQuery()"
+                    (input)="gameQuery.set(value($event))"
+                    tuiInput
+                    />
+                  </tui-textfield>
+
+                  <button appearance="primary" tuiButton type="button" (click)="saveStream()">
+                    {{ streamSaved() ? 'Сохранено' : 'Сохранить' }}
+                  </button>
+                </div>
+
+                <div class="channel-actions">
+                  <div class="action-item">
+                    <div class="cfg-text">
+                      <span class="cfg-label">Shield Mode</span>
+                      <span class="jk-caption">Защита чата от рейдов и хейта</span>
+                    </div>
+                    <input
+                      aria-label="Shield Mode"
+                      type="checkbox"
+                      [checked]="streamInfo()?.shieldMode ?? false"
+                      (change)="toggleShield($event)"
+                      tuiSwitch
+                      />
+                    </div>
+
+                    <div class="action-item">
+                      <span class="cfg-label">Реклама</span>
+                      <div class="ad-buttons">
+                        <button
+                          size="s"
+                          type="button"
+                          (click)="adBreak(30)"
+                          appearance="jkit-tint"
+                          tuiButton
+                        >
+                          30с
+                        </button>
+                        <button
+                          size="s"
+                          type="button"
+                          (click)="adBreak(60)"
+                          appearance="jkit-tint"
+                          tuiButton
+                        >
+                          60с
+                        </button>
+                        <button
+                          size="s"
+                          type="button"
+                          (click)="adBreak(90)"
+                          appearance="jkit-tint"
+                          tuiButton
+                        >
+                          90с
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+
+              <aside class="side-col">
+                <section class="jk-card notify-card">
+                  <div class="card-head">
+                    <h2 class="jk-h4">Discord / Telegram</h2>
+                    @if (notifySettings()?.enabled) {
+                      <input
+                        aria-label="Включить уведомления"
+                        type="checkbox"
+                        checked
+                        (change)="toggleNotify('enabled', $event)"
+                        tuiSwitch
+                        />
+                      } @else {
+                        <input
+                          aria-label="Включить уведомления"
+                          type="checkbox"
+                          (change)="toggleNotify('enabled', $event)"
+                          tuiSwitch
+                          />
+                        }
+                      </div>
+
+                      <span class="jk-label">Discord webhook URL</span>
+                      <tui-textfield>
+                        <input
+                          aria-label="Discord webhook"
+                          placeholder="https://discord.com/api/webhooks/..."
+                          type="text"
+                          [value]="discordWebhook()"
+                          (input)="discordWebhook.set(value($event))"
+                          tuiInput
+                          />
+                        </tui-textfield>
+
+                        <span class="jk-label">Telegram bot token</span>
+                        <tui-textfield>
+                          <input
+                            aria-label="Telegram token"
+                            placeholder="123456:ABC..."
+                            type="text"
+                            [value]="telegramToken()"
+                            (input)="telegramToken.set(value($event))"
+                            tuiInput
+                            />
+                          </tui-textfield>
+
+                          <span class="jk-label">Telegram chat id</span>
+                          <tui-textfield>
+                            <input
+                              aria-label="Telegram chat id"
+                              placeholder="-100123456789"
+                              type="text"
+                              [value]="telegramChatId()"
+                              (input)="telegramChatId.set(value($event))"
+                              tuiInput
+                              />
+                            </tui-textfield>
+
+                            <div class="notify-toggles">
+                              <label class="notify-toggle">
+                                <span class="jk-caption">Старт стрима</span>
+                                <input
+                                  type="checkbox"
+                                  [checked]="notifySettings()?.onStreamOnline ?? true"
+                                  (change)="toggleNotify('onStreamOnline', $event)"
+                                  tuiSwitch
+                                  />
+                                </label>
+                                <label class="notify-toggle">
+                                  <span class="jk-caption">Алерты</span>
+                                  <input
+                                    type="checkbox"
+                                    [checked]="notifySettings()?.onAlerts ?? true"
+                                    (change)="toggleNotify('onAlerts', $event)"
+                                    tuiSwitch
+                                    />
+                                  </label>
+                                  <label class="notify-toggle">
+                                    <span class="jk-caption">Донаты</span>
+                                    <input
+                                      type="checkbox"
+                                      [checked]="notifySettings()?.onDonations ?? true"
+                                      (change)="toggleNotify('onDonations', $event)"
+                                      tuiSwitch
+                                      />
+                                    </label>
+                                  </div>
+
+                                  <div class="notify-actions">
+                                    <button
+                                      size="s"
+                                      type="button"
+                                      (click)="saveNotify()"
+                                      appearance="primary"
+                                      tuiButton
+                                    >
+                                      {{ notifySaved() ? 'Сохранено' : 'Сохранить' }}
+                                    </button>
+                                    <button
+                                      size="s"
+                                      type="button"
+                                      (click)="testNotify()"
+                                      appearance="flat"
+                                      tuiButton
+                                    >
+                                      Тест
+                                    </button>
+                                  </div>
+                                </section>
+
+                                <section class="jk-card api-card">
+                                  <h2 class="jk-h4">API для деков</h2>
+                                  <p class="jk-body-sm jk-muted">
+                                    Stream Deck и макросы ходят сюда с заголовком <code>X-API-Key</code> (значение —
+                                    `DECK_API_KEY` из .env).
+                                  </p>
+
+                                  <div class="api-row">
+                                    <span class="jk-caption api-url">{{ deckUrl }}/clip</span>
+                                    <button
+                                      size="s"
+                                      type="button"
+                                      [tuiButtonCopy]="deckUrl + '/clip'"
+                                      appearance="flat"
+                                      tuiButton
+                                      tuiButtonCopy
+                                    >
+                                      Копировать
+                                    </button>
+                                  </div>
+
+                                  <p class="jk-caption">
+                                    Действия: clip, obs.scene, obs.mute, obs.replay, stream.title, stream.shield.
+                                  </p>
+                                </section>
+                              </aside>
+                            </div>
+                          </div>

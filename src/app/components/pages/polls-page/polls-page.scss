@@ -1,0 +1,134 @@
+:host {
+	display: block;
+}
+
+.polls-grid {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 360px);
+	gap: var(--space-md);
+	align-items: start;
+}
+
+.main-col,
+.side-col {
+	display: flex;
+	gap: var(--space-md);
+	flex-direction: column;
+	min-width: 0;
+}
+
+.side-col {
+	position: sticky;
+	top: calc(var(--layout-header) + var(--space-xl));
+	padding: var(--space-lg);
+}
+
+.poll-card {
+	display: flex;
+	gap: var(--space-sm);
+	flex-direction: column;
+	padding: var(--space-lg);
+}
+
+.poll-head {
+	display: flex;
+	gap: var(--space-sm);
+	align-items: center;
+	justify-content: space-between;
+}
+
+.poll-choices {
+	display: flex;
+	gap: var(--space-sm);
+	flex-direction: column;
+	margin-top: var(--space-xs);
+}
+
+.choice-row {
+	display: grid;
+	grid-template-columns: minmax(120px, 220px) minmax(0, 1fr) 48px 44px;
+	gap: var(--space-sm);
+	align-items: center;
+}
+
+.choice-title {
+	overflow: hidden;
+	font: 500 14px/20px var(--tui-font-text);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.choice-bar {
+	overflow: hidden;
+	height: 8px;
+	border-radius: var(--radius-full);
+	background: var(--neutral-1);
+}
+
+.choice-fill {
+	display: block;
+	height: 100%;
+	border-radius: var(--radius-full);
+	background: var(--accent-primary);
+}
+
+.choice-fill.cyan {
+	background: var(--accent-secondary);
+}
+
+.choice-count {
+	text-align: right;
+}
+
+.choice-pct {
+	text-align: right;
+}
+
+.history {
+	display: flex;
+	gap: var(--space-md);
+	flex-direction: column;
+}
+
+.table-wrap {
+	overflow: hidden;
+	border: 1px solid var(--border-normal);
+	border-radius: var(--radius-lg);
+	background: var(--surface-elevated-1);
+}
+
+.name-cell {
+	font-weight: 500;
+	white-space: nowrap;
+}
+
+.create-actions {
+	margin-top: var(--space-sm);
+}
+
+.error-text {
+	color: var(--tui-text-negative);
+	font: var(--font-caption);
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (width <= 1024px) {
+	.polls-grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.side-col {
+		position: static;
+	}
+}
+
+@media (width <= 760px) {
+	.choice-row {
+		grid-template-columns: minmax(0, 1fr) 44px;
+	}
+
+	.choice-bar,
+	.choice-pct {
+		display: none;
+	}
+}

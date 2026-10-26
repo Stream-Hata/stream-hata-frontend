@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 @mixin expanded($target) {
 	display: grid;
 	grid-template-rows: 0fr;
@@ -14,4 +16,15 @@
 		grid-template-rows: 1fr;
 		overflow: scroll;
 	}
+}
+
+@function to-rem($px) {
+	@return math.div($px, 16px) * 1rem;
+}
+
+@mixin default-container() {
+	width: 100%;
+	max-width: to-rem(1280px);
+	margin-inline: auto;
+	padding-inline: to-rem(24px);
 }

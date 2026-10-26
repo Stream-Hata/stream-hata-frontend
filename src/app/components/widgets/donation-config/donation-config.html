@@ -1,0 +1,101 @@
+<section class="donation-config">
+	<header class="cfg-head">
+		<h2 class="cfg-title">Донаты</h2>
+		<p class="jk-caption">Карточка, таблица, звук, анимация и озвучка донатов.</p>
+	</header>
+
+	<div class="donation-config-grid">
+		<div class="donation-config-form">
+			<span class="jk-label">Поведение</span>
+			<div class="cfg-row">
+				<tui-textfield tuiChevron>
+					<input [readonly]="true" [value]="layoutText()" tuiInput tuiSelectLike />
+					<tui-data-list-wrapper *tuiDropdown [items]="layoutLabels" (itemClick)="layoutText.set($event)" />
+				</tui-textfield>
+				<tui-textfield tuiChevron>
+					<input [readonly]="true" [value]="positionText()" tuiInput tuiSelectLike />
+					<tui-data-list-wrapper *tuiDropdown [items]="positionLabels" (itemClick)="positionText.set($event)" />
+				</tui-textfield>
+				<tui-textfield><input placeholder="Мин. сумма" [formControl]="form.controls.minAmount" tuiInputNumber /></tui-textfield>
+				<tui-textfield><input placeholder="Секунд" [formControl]="form.controls.durationSeconds" tuiInputNumber /></tui-textfield>
+				<tui-textfield><input placeholder="Строк" [formControl]="form.controls.maxRows" tuiInputNumber /></tui-textfield>
+			</div>
+
+			<span class="jk-label">Внешний вид</span>
+			<div class="cfg-row">
+				<tui-textfield tuiChevron>
+					<input [readonly]="true" [value]="animationText()" tuiInput tuiSelectLike />
+					<tui-data-list-wrapper *tuiDropdown [items]="animationLabels" (itemClick)="animationText.set($event)" />
+				</tui-textfield>
+				<tui-textfield><input placeholder="Ширина" [formControl]="form.controls.width" tuiInputNumber /></tui-textfield>
+				<tui-textfield><input placeholder="Масштаб" [formControl]="form.controls.scale" tuiInputNumber /></tui-textfield>
+				<tui-textfield><input placeholder="Размытие" [formControl]="form.controls.blur" tuiInputNumber /></tui-textfield>
+				<tui-textfield><input placeholder="Шрифт" [formControl]="form.controls.fontFamily" tuiInput /></tui-textfield>
+			</div>
+			<div class="cfg-row donation-colors">
+				<tui-textfield><input aria-label="Фон" [formControl]="form.controls.background" tuiInputColor /></tui-textfield>
+				<tui-textfield><input aria-label="Текст" [formControl]="form.controls.textColor" tuiInputColor /></tui-textfield>
+				<tui-textfield><input aria-label="Акцент" [formControl]="form.controls.accentColor" tuiInputColor /></tui-textfield>
+				<tui-textfield><input aria-label="Рамка" [formControl]="form.controls.borderColor" tuiInputColor /></tui-textfield>
+				<tui-textfield><input aria-label="Свечение" [formControl]="form.controls.glowColor" tuiInputColor /></tui-textfield>
+			</div>
+			<div class="cfg-row">
+				<label class="admin-switch"><input type="checkbox" [formControl]="form.controls.showAmount" tuiSwitch /><span>Сумма</span></label>
+				<label class="admin-switch"><input type="checkbox" [formControl]="form.controls.showMessage" tuiSwitch /><span>Сообщение</span></label>
+				<label class="admin-switch"><input type="checkbox" [formControl]="form.controls.showTable" tuiSwitch /><span>Таблица</span></label>
+			</div>
+
+			<span class="jk-label">Полоса сбора</span>
+			<div class="cfg-row">
+				<label class="admin-switch"><input type="checkbox" [formControl]="form.controls.goalsEnabled" tuiSwitch /><span>Показывать цель</span></label>
+				<tui-textfield><input placeholder="Заголовок цели" [formControl]="form.controls.goalManualTitle" tuiInput /></tui-textfield>
+				<tui-textfield><input placeholder="Собрано" [formControl]="form.controls.goalManualCurrent" tuiInputNumber /></tui-textfield>
+				<tui-textfield><input placeholder="Цель" [formControl]="form.controls.goalManualTarget" tuiInputNumber /></tui-textfield>
+				<tui-textfield><input placeholder="Валюта" [formControl]="form.controls.goalManualCurrency" tuiInput /></tui-textfield>
+				<tui-textfield><input placeholder="Ширина" [formControl]="form.controls.goalWidth" tuiInputNumber /></tui-textfield>
+			</div>
+			<div class="cfg-row donation-colors">
+				<tui-textfield><input aria-label="Фон цели" [formControl]="form.controls.goalBackground" tuiInputColor /></tui-textfield>
+				<tui-textfield><input aria-label="Акцент цели" [formControl]="form.controls.goalAccent" tuiInputColor /></tui-textfield>
+				<tui-textfield><input aria-label="Текст цели" [formControl]="form.controls.goalTextColor" tuiInputColor /></tui-textfield>
+				<label class="admin-switch"><input type="checkbox" [formControl]="form.controls.goalShowPercent" tuiSwitch /><span>Процент</span></label>
+				<label class="admin-switch"><input type="checkbox" [formControl]="form.controls.goalShowAmounts" tuiSwitch /><span>Суммы</span></label>
+			</div>
+
+			<span class="jk-label">Звук</span>
+			<div class="cfg-row">
+				<tui-textfield><input placeholder="URL звука доната" [formControl]="form.controls.soundUrl" tuiInput /></tui-textfield>
+				<tui-textfield><input placeholder="Громкость" [formControl]="form.controls.soundVolume" tuiInputNumber /></tui-textfield>
+				<button appearance="flat" size="s" type="button" (click)="testSound()" tuiButton>Проверить звук</button>
+			</div>
+
+			<span class="jk-label">Озвучка</span>
+			<div class="cfg-row">
+				<label class="admin-switch"><input type="checkbox" [formControl]="form.controls.ttsEnabled" tuiSwitch /><span>Включить TTS</span></label>
+				<tui-textfield tuiChevron>
+					<input [readonly]="true" [value]="providerText()" tuiInput tuiSelectLike />
+					<tui-data-list-wrapper *tuiDropdown [items]="providerLabels" (itemClick)="providerText.set($event)" />
+				</tui-textfield>
+				<tui-textfield><input placeholder="Голос" [formControl]="form.controls.ttsVoice" tuiInput /></tui-textfield>
+				<tui-textfield><input placeholder="Модель" [formControl]="form.controls.ttsModel" tuiInput /></tui-textfield>
+				<tui-textfield><input placeholder="Громкость TTS" [formControl]="form.controls.ttsVolume" tuiInputNumber /></tui-textfield>
+				<tui-textfield><input placeholder="Мин. сумма TTS" [formControl]="form.controls.ttsMinAmount" tuiInputNumber /></tui-textfield>
+				<button appearance="flat" size="s" type="button" (click)="testTts()" tuiButton>Проверить TTS</button>
+			</div>
+			<tui-textfield><textarea rows="3" placeholder="Шаблон: {user} {amount} {currency} {message}" [formControl]="form.controls.ttsTemplate" tuiTextarea></textarea></tui-textfield>
+
+			<div class="editor-actions">
+				<button appearance="primary" type="button" (click)="save()" tuiButton>Сохранить</button>
+				@if (saved()) { <span class="admin-success">{{ saved() }}</span> }
+			</div>
+		</div>
+
+		<aside class="donation-preview">
+			<span class="jk-label">Превью</span>
+			@if (previewConfig().goalsEnabled) {
+				<app-donation-goal [config]="previewConfig()" [goal]="previewGoal()" />
+			}
+			<app-donation-card [config]="previewConfig()" [event]="previewEvent" [rows]="previewRows()" [preview]="true" />
+		</aside>
+	</div>
+</section>

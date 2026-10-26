@@ -1,0 +1,52 @@
+:host {
+	display: block;
+	padding: 16px;
+	color: var(--text-primary);
+	font-family: var(--font-ui);
+}
+
+.overlay-stage {
+	display: flex;
+	justify-content: flex-start;
+}
+
+.points-card {
+	display: flex;
+	gap: 6px;
+	flex-direction: column;
+	width: min(360px, 100%);
+	padding: 14px 18px;
+	border: 1px solid rgb(255, 255, 255, 0.1);
+	border-radius: 16px;
+	background: rgb(18, 18, 24, 0.88);
+	backdrop-filter: blur(14px);
+}
+
+.points-kicker {
+	color: var(--accent-primary);
+	font: 700 11px/16px var(--font-ui);
+	letter-spacing: 0.16em;
+}
+
+.points-row {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	font: 600 13px/18px var(--font-ui);
+	padding-block: 2px;
+}
+
+.points-rank {
+	width: 18px;
+	color: var(--text-secondary);
+	font-variant-numeric: tabular-nums;
+}
+
+.points-name {
+	flex: 1;
+}
+
+.points-balance {
+	color: var(--status-positive);
+	font-variant-numeric: tabular-nums;
+}

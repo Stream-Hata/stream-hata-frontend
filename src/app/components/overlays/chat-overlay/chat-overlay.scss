@@ -1,0 +1,51 @@
+:host {
+	display: block;
+	padding: 16px;
+	color: var(--text-primary);
+	font-family: var(--font-ui);
+}
+
+.overlay-stage {
+	display: flex;
+	justify-content: flex-start;
+}
+
+.chat-card {
+	display: flex;
+	gap: 6px;
+	flex-direction: column;
+	width: min(520px, 100%);
+	padding: 14px 18px;
+	border: 1px solid rgb(255, 255, 255, 0.1);
+	border-radius: 16px;
+	background: rgb(18, 18, 24, 0.86);
+	backdrop-filter: blur(14px);
+}
+
+.chat-line {
+	font: 500 14px/20px var(--font-ui);
+	overflow-wrap: anywhere;
+}
+
+.chat-author {
+	color: var(--accent-secondary);
+	font-weight: 700;
+	margin-inline-end: 6px;
+}
+
+.chat-author.broadcaster {
+	color: var(--accent-primary);
+}
+
+.chat-text {
+	color: var(--text-primary);
+}
+
+.chat-emote {
+	display: inline-block;
+	vertical-align: middle;
+	width: 22px;
+	height: 22px;
+	background-size: contain;
+	margin-block: -3px;
+}

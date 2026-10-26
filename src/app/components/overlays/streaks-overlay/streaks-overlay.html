@@ -1,0 +1,15 @@
+@if (visible(); as event) {
+  <div class="overlay-stage">
+    <article class="streak-card" [class.streak-milestone]="milestone()">
+      <span class="streak-icon">🔥</span>
+      <div class="streak-copy">
+        <strong class="streak-name">{{ event.displayName }}</strong>
+        <span class="streak-count">{{ event.streakCount }} стриков подряд</span>
+        @if (milestone()) {
+          <span class="streak-badge">Милстоун!</span>
+        }
+      </div>
+      <span class="streak-points">+{{ event.channelPointsAwarded }}</span>
+    </article>
+  </div>
+}

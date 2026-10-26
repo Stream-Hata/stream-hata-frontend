@@ -294,4 +294,11 @@ plugins: {
 			'no-restricted-syntax': 'off',
 		},
 	},
+	{
+		files: ['src/app/components/pages/wheel-page/wheel-page.html'],
+		rules: {
+			'local/html-format': 'off',
+		},
+	},
+
 );

@@ -1,0 +1,89 @@
+<div class="jk-page">
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">Чат</h1>
+      <p class="jk-caption">Живой чат Twitch с эмотами · 7TV: {{ emoteCount() }} эмотов</p>
+    </div>
+
+    <div class="jk-page-actions">
+      <span class="live-chip">
+        <span class="jk-dot jk-dot-live"></span>
+        Live-подключение
+      </span>
+    </div>
+  </header>
+
+  <div class="chat-grid">
+    <section class="chat-panel">
+      @if (messages().length) {
+        <div #scroller class="chat-scroll">
+          @for (message of messages(); track message.message_id) {
+            <div class="chat-row">
+              <span class="chat-time">{{ time(message.sent_at) }}</span>
+              <button
+                class="chat-author"
+                type="button"
+                [class.broadcaster]="isBroadcaster(message)"
+                (click)="openProfile(message)"
+              >
+                {{ message.author.display_name || message.author.login }}
+              </button>
+              <span class="chat-text">
+                @for (segment of segments(message); track $index) {
+                  @if (segment.type === 'emote') {
+                    <span
+                      aria-label="{{ segment.text }}"
+                      class="chat-emote"
+                      role="img"
+                      title="{{ segment.text }}"
+                      [style.background-image]="'url(' + segment.url + ')'"
+                    ></span>
+                  } @else {
+                    <span>{{ segment.text }}</span>
+                  }
+                }
+              </span>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="jk-empty chat-empty">
+          <span class="jk-empty-icon"><tui-icon icon="@tui.message-circle" /></span>
+          <span class="jk-h4">Чат пуст</span>
+          <span class="jk-body-sm jk-muted">
+            Сообщения появятся, как только стример авторизует Twitch и начнёт эфир.
+          </span>
+        </div>
+      }
+    </section>
+
+    <aside class="jk-card emotes-card">
+      <div class="emotes-head">
+        <h2 class="jk-h4">7TV эмоты</h2>
+        <span class="jk-caption">канал + глобальные</span>
+      </div>
+
+      @if (emoteStrip().length) {
+        <div class="emote-grid">
+          @for (emote of emoteStrip(); track emote.name) {
+            <span
+              aria-label="{{ emote.name }}"
+              class="emote-cell"
+              role="img"
+              title="{{ emote.name }}"
+              [style.background-image]="'url(' + emote.url + ')'"
+            ></span>
+          }
+        </div>
+      } @else {
+        <p class="jk-body-sm jk-muted">
+          7TV-эмоты подтянутся автоматически после подключения Twitch.
+        </p>
+      }
+
+      <p class="jk-caption emotes-hint">
+        В сообщениях рендерятся и родные Twitch-эмоты (по ranges), и 7TV по совпадению слов.
+      </p>
+    </aside>
+  </div>
+</div>

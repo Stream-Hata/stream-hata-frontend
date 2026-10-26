@@ -1,0 +1,12 @@
+<div class="donation-overlay-stage" [class]="positionClass()">
+  @if (config().goalsEnabled) {
+    @for (goal of goals(); track goal.id) {
+      <app-donation-goal [config]="config()" [goal]="goal" />
+    }
+  }
+  <app-donation-card
+    [config]="config()"
+    [event]="active()"
+    [rows]="rows()"
+  />
+</div>

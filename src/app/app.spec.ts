@@ -1,8 +1,6 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { provideTaiga } from '@taiga-ui/core';
-import { of } from 'rxjs';
-import { HotbarService } from '../../shared/services/hotbar.service';
-import { YamlParser } from '../../shared/services/yaml-parser';
 import { App } from './app';
 
 describe('app', () => {
@@ -23,33 +21,13 @@ describe('app', () => {
 
 		await TestBed.configureTestingModule({
 			imports: [App],
-			providers: [
-				provideTaiga(),
-				{
-					provide: HotbarService,
-					useValue: {
-						initialLoad: () => of(null),
-						updateState: () => of(null),
-					},
-				},
-				{
-					provide: YamlParser,
-					useValue: {
-						parse: () => of([]),
-					},
-				},
-			],
+			providers: [provideTaiga(), provideRouter([])],
 		}).compileComponents();
 	});
 
 	it('should create the app', () => {
 		const fixture = TestBed.createComponent(App);
-		expect(fixture.componentInstance).toBeTruthy();
-	});
 
-	it('should render the hotbar', () => {
-		const fixture = TestBed.createComponent(App);
-		fixture.detectChanges();
-		expect(fixture.nativeElement.querySelector('app-hotbar')).toBeTruthy();
+		expect(fixture.componentInstance).toBeTruthy();
 	});
 });

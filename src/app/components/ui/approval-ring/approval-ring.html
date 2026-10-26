@@ -1,0 +1,19 @@
+<div class="ring" [style.width.px]="size()" [style.height.px]="size()">
+  <svg class="svg" viewBox="0 0 100 100" aria-hidden="true">
+    <circle class="track" cx="50" cy="50" r="42" [attr.stroke-width]="stroke()" />
+    <circle
+      class="bar"
+      [attr.stroke-width]="stroke()"
+      [style.stroke-dasharray]="circumference"
+      [style.stroke-dashoffset]="offset()"
+      cx="50"
+      cy="50"
+      r="42"
+      />
+    </svg>
+
+    <span class="value">
+      <span class="num">{{ value() }}%</span>
+      <span class="cap">{{ label() }}</span>
+    </span>
+  </div>

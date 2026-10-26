@@ -1,0 +1,157 @@
+<div class="jk-page jury-page">
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <div class="title-row">
+        <h1 class="jk-h1">Чат-жюри</h1>
+        @if (voting()) {
+          <span appearance="positive" tuiBadge>Активно</span>
+        }
+      </div>
+      <p class="jk-caption">
+        @if (jury(); as current) {
+          {{ current.total }} голосов · старт {{ formatDate(current.started_at) }}
+        } @else {
+          AI слушает чат и отбирает советы
+        }
+      </p>
+    </div>
+
+    <div class="jk-page-actions">
+      <a appearance="jkit-tint" routerLink="/app/chat-jury/settings" tuiButton>Настроить</a>
+      @if (voting()) {
+        <button type="button" (click)="stop()" appearance="primary" tuiButton>
+          Стоп
+        </button>
+      } @else {
+        <button type="button" (click)="startTest()" appearance="primary" tuiButton>
+          Запустить тест
+        </button>
+      }
+    </div>
+  </header>
+
+  @if (jury(); as current) {
+    <section class="jury-panel">
+      <span class="jk-label">Текущий совет</span>
+
+      <h2 class="jury-question">{{ current.message.text }}</h2>
+
+      <div class="advice-row">
+        <div class="advice-author">
+          <span class="jk-avatar jk-avatar-purple">
+            {{ current.message.author.display_name.slice(0, 2).toUpperCase() }}
+          </span>
+          <div class="advice-text">
+            <span class="advice-name">{{ current.message.author.display_name }}</span>
+            <span class="jk-caption">{{ formatDate(current.message.created_at) }}</span>
+          </div>
+        </div>
+
+        <div class="advice-chips">
+          <span class="jk-chip jk-chip-active">
+            <tui-icon icon="@tui.check" />
+            AI {{ confidencePercent() }}%
+          </span>
+          <span class="jk-chip">
+            <tui-icon icon="@tui.sparkles" />
+            Sparkles · совет
+          </span>
+        </div>
+      </div>
+
+      <div class="votes-block">
+        <div class="jury-votes">
+          <div class="vote-row">
+            <span class="vote-name">Yea</span>
+            <span class="vote-bar">
+              <span class="vote-fill yea" [style.width.%]="yeaPercent()"></span>
+            </span>
+            <span class="vote-num">{{ current.votes.yea }}</span>
+            <span class="vote-pct">{{ yeaPercent() }}%</span>
+          </div>
+
+          <div class="vote-row">
+            <span class="vote-name">Nei</span>
+            <span class="vote-bar">
+              <span class="vote-fill nei" [style.width.%]="neiPercent()"></span>
+            </span>
+            <span class="vote-num">{{ current.votes.nei }}</span>
+            <span class="vote-pct">{{ neiPercent() }}%</span>
+          </div>
+
+          <p class="jk-caption">всего {{ current.total }} голосов</p>
+        </div>
+
+        <app-approval-ring [size]="104" [stroke]="5" [value]="approvalPercent()" />
+      </div>
+
+      @if (voting()) {
+        <div class="countdown">
+          <div class="countdown-head">
+            <span class="jk-label">До конца голосования</span>
+            @if (ending()) {
+              <span class="warning-chip">
+                <tui-icon icon="@tui.alert-triangle" />
+                последние 10 секунд
+              </span>
+            }
+          </div>
+
+          <div class="countdown-time">
+            <span class="countdown-value">{{ remainingLabel() }}</span>
+            <span class="jk-caption">осталось</span>
+          </div>
+
+          <div class="jk-progress countdown-progress">
+            <span
+              class="jk-progress-fill jk-progress-fill-cyan"
+              [style.width.%]="countdownProgress()"
+            ></span>
+          </div>
+        </div>
+      }
+
+      <div class="verdict" [class.verdict-finished]="!voting()">
+        @if (current.verdict) {
+          <tui-icon class="verdict-icon" icon="@tui.check" />
+          <div class="verdict-copy">
+            <span class="verdict-title">{{ current.verdict }}</span>
+            <span
+              class="jk-caption"
+            >AI-доверие {{ confidencePercent() }}% · одобрение {{ approvalPercent() }}%</span
+          >
+        </div>
+        <a appearance="jkit-tint" class="verdict-btn" routerLink="/app/widgets" tuiButton>
+          Виджет
+        </a>
+      } @else if (voting()) {
+        <tui-icon class="verdict-icon pending" icon="@tui.hourglass" />
+        <div class="verdict-copy">
+          <span class="verdict-title">Вердикт появится после закрытия голосования</span>
+          <span class="jk-caption">одобрение {{ approvalPercent() }}%</span>
+        </div>
+      } @else {
+        <tui-icon class="verdict-icon pending" icon="@tui.hourglass" />
+        <div class="verdict-copy">
+          <span class="verdict-title">Голосование завершено, вердикт генерируется…</span>
+          <span class="jk-caption">обновится автоматически</span>
+        </div>
+      }
+    </div>
+  </section>
+} @else {
+  <div class="jk-card jk-empty">
+    <span class="jk-empty-icon">
+      <tui-icon icon="@tui.hand" />
+    </span>
+    <span class="jk-h4">Ждём совет от чата</span>
+    <span class="jk-body-sm jk-muted">
+      AI классифицирует сообщения и запустит голосование, когда зритель предложит конкретное
+      действие.
+    </span>
+    <a appearance="jkit-tint" routerLink="/app/chat-jury/settings" tuiButton>
+      Настроить порог доверия
+    </a>
+  </div>
+}
+</div>

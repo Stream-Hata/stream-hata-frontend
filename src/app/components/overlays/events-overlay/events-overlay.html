@@ -1,0 +1,15 @@
+<div class="overlay-stage">
+  <article class="events-card">
+    <span class="events-kicker">СОБЫТИЯ</span>
+    @for (event of events(); track event.id) {
+      <div class="event-row">
+        <span class="event-dot"></span>
+        <span class="event-type">{{ event.type }}</span>
+        <span class="event-user">{{ event.username }}</span>
+        <span class="event-time">{{ event.createdAt.slice(11, 16) }}</span>
+      </div>
+    } @empty {
+    <span class="jk-caption">Событий пока нет</span>
+  }
+</article>
+</div>

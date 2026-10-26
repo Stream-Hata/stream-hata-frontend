@@ -1,0 +1,120 @@
+<div class="jk-page account-page">
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">Twitch</h1>
+      <p class="jk-caption">Подключение канала, права доступа и статус соединения.</p>
+    </div>
+  </header>
+
+  @if (connected()) {
+    <section class="jk-card account-card">
+      <div class="account-main">
+        <span class="jk-avatar jk-avatar-xl jk-avatar-purple">
+          {{ name().slice(0, 2).toUpperCase() }}
+        </span>
+
+        <div class="account-info">
+          <span class="account-name">{{ name() }}</span>
+          <span class="jk-caption">{{ login() }} · канал подключён</span>
+          <span appearance="positive" tuiBadge>Соединение активно</span>
+        </div>
+
+        <button
+          class="account-disconnect danger-action"
+          type="button"
+          (click)="disconnect()"
+          appearance="flat"
+          tuiButton
+        >
+          Отключить
+        </button>
+      </div>
+
+      <div class="twitch-stats">
+        <div class="twitch-stat">
+          <span class="jk-label">Фолловеры</span>
+          <span class="twitch-stat-value">{{ followers() }}</span>
+        </div>
+        <div class="twitch-stat">
+          <span class="jk-label">Подписчики</span>
+          <span class="twitch-stat-value">{{ subscribers() }}</span>
+        </div>
+        <div class="twitch-stat">
+          <span class="jk-label">В чате</span>
+          <span class="twitch-stat-value">{{ chatters() }}</span>
+        </div>
+      </div>
+
+      <div class="scopes">
+        <span class="jk-label">Права доступа</span>
+
+        <label class="scope-row">
+          <input checked tuiCheckbox type="checkbox" />
+          <span class="scope-text">
+            <span class="scope-title">Чтение чата</span>
+            <span class="jk-caption">Сообщения, команды и голосования</span>
+          </span>
+        </label>
+
+        <label class="scope-row">
+          <input checked tuiCheckbox type="checkbox" />
+          <span class="scope-text">
+            <span class="scope-title">Управление каналом</span>
+            <span class="jk-caption">Статус стрима, тайтл и категория</span>
+          </span>
+        </label>
+
+        <label class="scope-row">
+          <input checked tuiCheckbox type="checkbox" />
+          <span class="scope-text">
+            <span class="scope-title">Статистика и модерация</span>
+            <span class="jk-caption">Зрители, подписчики, донаты, баны</span>
+          </span>
+        </label>
+      </div>
+    </section>
+  } @else {
+    <section class="jk-card connect-card">
+      <span class="jk-icon-tile connect-tile">
+        <img alt="Twitch" src="icons/svg/twitch.svg" />
+      </span>
+
+      <h2 class="jk-h3">Подключите Twitch</h2>
+      <p class="jk-body-sm jk-muted connect-sub">
+        Nameless StreamHata читает чат, чтобы превращать советы зрителей в голосования, и управляет
+        виджетами от вашего имени.
+      </p>
+
+      <ul class="permissions">
+        <li class="permission">
+          <tui-icon icon="@tui.check" />
+          Чтение чата и команд
+        </li>
+        <li class="permission">
+          <tui-icon icon="@tui.check" />
+          Управление виджетами и эфиром
+        </li>
+        <li class="permission">
+          <tui-icon icon="@tui.check" />
+          Модерация и статистика канала
+        </li>
+      </ul>
+
+      <button
+        class="connect-btn"
+        size="l"
+        type="button"
+        (click)="connect()"
+        appearance="primary"
+        tuiButton
+      >
+        <img alt="Twitch" class="twitch-icon" src="icons/svg/twitch.svg" />
+        Подключить аккаунт
+      </button>
+
+      <p class="jk-caption connect-note">
+        Откроется OAuth-страница Twitch · права можно отозвать в любой момент
+      </p>
+    </section>
+  }
+</div>

@@ -1,0 +1,9 @@
+@if (chatJury; as jury) {
+  <div class="widget-container" *appChatJuryDelay="20; let result">
+    @if (result) {
+      <app-result></app-result>
+    } @else {
+      <app-interaction [chatJury]="jury"></app-interaction>
+    }
+  </div>
+}

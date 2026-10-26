@@ -1,0 +1,34 @@
+@use '@app/styles/mixins';
+
+:host {
+	display: inline-flex;
+	gap: var(--space-xs);
+	align-items: center;
+	white-space: nowrap;
+}
+
+.logo-mark {
+	position: relative;
+	display: inline-block;
+	flex-shrink: 0;
+	width: 20px;
+	height: 20px;
+	border-radius: 6px;
+	background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+	box-shadow: 0 0 18px color-mix(in srgb, var(--accent-primary) 35%, transparent);
+	transform: rotate(45deg);
+}
+
+.logo-mark:after {
+	content: '';
+	position: absolute;
+	border-radius: 3px;
+	background: var(--surface-base);
+	inset: 6px;
+}
+
+.logo-text {
+	color: var(--text-primary);
+	font: 600 15px/20px var(--tui-font-heading);
+	letter-spacing: -0.01em;
+}

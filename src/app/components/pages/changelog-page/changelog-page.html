@@ -1,0 +1,40 @@
+<div class="public-page">
+  <div class="container">
+    <header class="public-nav">
+      <a class="public-logo" routerLink="/"><app-logo /></a>
+      <nav class="public-links">
+        <a routerLink="/faq" tuiLink>FAQ</a>
+        <a routerLink="/" tuiLink>На главную</a>
+      </nav>
+    </header>
+    <section class="changelog-hero">
+      <span class="eyebrow">История версий</span>
+      <h1 class="jk-display">Что нового</h1>
+      <p class="jk-body-sm jk-muted">Все изменения StreamHata по версиям.</p>
+    </section>
+    @for (item of versions(); track item.version) {
+      <section class="jk-card changelog-card">
+        <header>
+          <strong>Версия {{ item.version }}</strong>
+          <span class="jk-caption">{{ item.date }}</span>
+          <a href="https://github.com/p7x-dev/rgg-inventory-2/commits/main" target="_blank" rel="noopener" tuiLink>Коммиты</a>
+        </header>
+        @for (section of item.sections; track section.title) {
+          <h3>{{ section.title }}</h3>
+          <ul>
+            @for (entry of section.items; track entry.text) {
+              <li>
+                {{ entry.text }}
+                @if (entry.url) {
+                  <a [href]="entry.url" target="_blank" rel="noopener" tuiLink>{{ entry.linkLabel || 'commit' }}</a>
+                }
+              </li>
+            }
+          </ul>
+        }
+      </section>
+    } @empty {
+      <div class="jk-card jk-empty"><tui-icon icon="@tui.book-open" /><span>Патчноут пока пуст</span></div>
+    }
+  </div>
+</div>

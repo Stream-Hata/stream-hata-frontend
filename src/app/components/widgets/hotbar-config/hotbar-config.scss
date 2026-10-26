@@ -1,0 +1,133 @@
+:host {
+	display: block;
+}
+
+.hotbar-config {
+	display: flex;
+	gap: var(--space-md);
+	flex-direction: column;
+}
+
+.hotbar-head {
+	display: flex;
+	gap: var(--space-md);
+	align-items: flex-end;
+	justify-content: space-between;
+}
+
+.hotbar-actions {
+	display: flex;
+	gap: var(--space-xs);
+	align-items: center;
+}
+
+.hotbar-select {
+	width: 240px;
+}
+
+.hotbar-slots {
+	display: grid;
+	grid-template-columns: repeat(10, minmax(0, 1fr));
+	gap: 6px;
+}
+
+.hotbar-slot {
+	position: relative;
+	display: flex;
+	gap: 2px;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	aspect-ratio: 1;
+	padding: 4px;
+	border: 1px solid var(--border-normal);
+	border-radius: var(--radius-sm);
+	background: var(--surface-elevated-2);
+	cursor: grab;
+
+	transition: border-color var(--motion-micro) var(--ease-standard);
+}
+
+.hotbar-slot:hover {
+	border-color: var(--accent-primary);
+}
+
+.hotbar-slot-empty {
+	border-style: dashed;
+	background: transparent;
+	cursor: default;
+}
+
+.hotbar-slot-icon {
+	width: 54%;
+	height: 54%;
+	object-fit: contain;
+}
+
+.hotbar-slot-name {
+	overflow: hidden;
+	width: 100%;
+	color: var(--text-secondary);
+	font: 500 9px/11px var(--font-ui);
+	text-align: center;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.hotbar-slot-remove {
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	display: none;
+	align-items: center;
+	justify-content: center;
+	width: 16px;
+	height: 16px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: var(--surface-elevated-1);
+	color: var(--text-secondary);
+	cursor: pointer;
+}
+
+.hotbar-slot:hover .hotbar-slot-remove {
+	display: flex;
+}
+
+.hotbar-slot-plus {
+	color: var(--text-tertiary);
+	font: 500 18px/1 var(--font-ui);
+}
+
+.hotbar-preview-wrap {
+	display: flex;
+	gap: var(--space-sm);
+	flex-direction: column;
+	padding: var(--space-sm);
+	border: 1px solid var(--border-divider);
+	border-radius: var(--radius-md);
+	background: var(--surface-elevated-1);
+}
+
+.hotbar-options {
+	display: flex;
+	flex-direction: column;
+}
+
+@media (width <= 1100px) {
+	.hotbar-slots {
+		grid-template-columns: repeat(5, minmax(0, 1fr));
+	}
+}
+
+@media (width <= 640px) {
+	.hotbar-head {
+		align-items: stretch;
+		flex-direction: column;
+	}
+
+	.hotbar-slots {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}

@@ -1,0 +1,211 @@
+:host {
+	display: block;
+}
+
+.stream-grid {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 380px);
+	gap: var(--space-md);
+	align-items: start;
+}
+
+.main-col,
+.side-col {
+	display: flex;
+	gap: var(--space-md);
+	flex-direction: column;
+	min-width: 0;
+}
+
+.obs-card,
+.channel-card,
+.notify-card,
+.api-card {
+	display: flex;
+	gap: var(--space-sm);
+	flex-direction: column;
+	padding: var(--space-lg);
+}
+
+.card-head {
+	display: flex;
+	gap: var(--space-sm);
+	align-items: center;
+	justify-content: space-between;
+}
+
+.connect-row {
+	display: flex;
+	gap: var(--space-sm);
+	flex-wrap: wrap;
+}
+
+.connect-url {
+	width: 240px;
+}
+
+.connect-password {
+	flex: 1;
+	min-width: 180px;
+}
+
+.error-text {
+	color: var(--tui-text-negative);
+	font: var(--font-caption);
+}
+
+.danger-action {
+	color: var(--tui-text-negative);
+}
+
+.scenes {
+	display: flex;
+	gap: var(--space-2xs);
+	flex-wrap: wrap;
+}
+
+.scene-chip {
+	cursor: pointer;
+}
+
+.obs-split {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 240px);
+	gap: var(--space-lg);
+	margin-top: var(--space-xs);
+}
+
+.inputs,
+.outputs {
+	display: flex;
+	gap: var(--space-xs);
+	flex-direction: column;
+}
+
+.input-row,
+.output-row {
+	display: flex;
+	gap: var(--space-sm);
+	align-items: center;
+	justify-content: space-between;
+	min-height: 32px;
+	border-bottom: 1px solid var(--border-divider);
+}
+
+.input-row:last-child,
+.output-row:last-child {
+	border-bottom: 0;
+}
+
+.input-name {
+	overflow: hidden;
+	font: var(--font-body-sm);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.channel-row {
+	display: flex;
+	gap: var(--space-sm);
+	flex-wrap: wrap;
+}
+
+.channel-field {
+	flex: 1;
+	min-width: 200px;
+}
+
+.channel-actions {
+	display: flex;
+	gap: var(--space-xl);
+	flex-wrap: wrap;
+	margin-top: var(--space-xs);
+}
+
+.action-item {
+	display: flex;
+	gap: var(--space-sm);
+	align-items: center;
+}
+
+.cfg-label {
+	font: 500 14px/20px var(--tui-font-text);
+}
+
+.cfg-text {
+	display: flex;
+	gap: 1px;
+	flex-direction: column;
+}
+
+.ad-buttons {
+	display: flex;
+	gap: var(--space-2xs);
+}
+
+.notify-toggles {
+	display: flex;
+	gap: var(--space-md);
+	flex-wrap: wrap;
+	margin-top: var(--space-xs);
+}
+
+.notify-toggle {
+	display: flex;
+	gap: var(--space-xs);
+	align-items: center;
+	cursor: pointer;
+}
+
+.notify-actions {
+	display: flex;
+	gap: var(--space-xs);
+	margin-top: var(--space-xs);
+}
+
+.api-row {
+	display: flex;
+	gap: var(--space-sm);
+	align-items: center;
+	justify-content: space-between;
+	padding: var(--space-xs) var(--space-sm);
+	border: 1px solid var(--border-divider);
+	border-radius: var(--radius-md);
+	background: rgb(11, 6, 18, 0.5);
+}
+
+.api-url {
+	overflow: hidden;
+	font-family: var(--tui-font-text-mono);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (width <= 1024px) {
+	.stream-grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.obs-split {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+@media (width <= 760px) {
+	.connect-url,
+	.connect-password {
+		width: 100%;
+	}
+}
+
+.stream-timer {
+	display: flex;
+	gap: var(--space-sm);
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.stream-timer app-timer-preview {
+	width: 100%;
+}

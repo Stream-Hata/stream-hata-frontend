@@ -1,0 +1,66 @@
+@if (visible()) {
+  <div
+    class="search-overlay"
+    [class.search-overlay-closing]="closing()"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="title()"
+    (click)="closed.emit()"
+  >
+    <div class="search-panel" (click)="$event.stopPropagation()">
+      <tui-textfield class="search-field">
+        <tui-icon icon="@tui.search" />
+        <input
+          type="search"
+          [attr.aria-label]="title()"
+          [placeholder]="placeholder()"
+          [value]="query()"
+          (input)="onInput($event)"
+          (keydown)="onKeydown($event)"
+          tuiAutoFocus
+          tuiInput
+          />
+        </tui-textfield>
+
+        <div class="search-results">
+          @for (section of groups(); track section.group) {
+            <div class="search-group">
+              <span class="search-group-label">{{ section.label }}</span>
+
+              @for (item of section.items; track item.id) {
+                <button
+                  class="search-result"
+                  type="button"
+                  [class.search-result-active]="isActive(item)"
+                  (click)="select(item)"
+                >
+                  <span class="search-result-icon">
+                    @if (item.thumbnail) {
+                      <img class="search-result-thumb" [alt]="item.title" [src]="item.thumbnail" />
+                    } @else {
+                      <tui-icon [icon]="item.icon" />
+                    }
+                  </span>
+                  <span class="search-result-text">
+                    <span class="search-result-title">{{ item.title }}</span>
+                    <span class="search-result-subtitle">{{ item.subtitle }}</span>
+                  </span>
+                  <tui-icon class="search-result-arrow" icon="@tui.corner-down-left" />
+                </button>
+              }
+            </div>
+          } @empty {
+          <div class="search-empty">
+            <tui-icon icon="@tui.search-x" />
+            <span>Ничего не найдено</span>
+          </div>
+        }
+      </div>
+
+      <footer class="search-footer">
+        <span>{{ hint() }}</span>
+        <span>Ctrl+F / Alt+K</span>
+      </footer>
+    </div>
+  </div>
+}

@@ -1,0 +1,949 @@
+<div class="jk-page">
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">Колесо</h1>
+      <p class="jk-caption">Казино-активность для чата: ставки, лоты, шансы и множители.</p>
+    </div>
+
+
+
+    <div class="jk-page-actions">
+      <button appearance="secondary" tuiButton type="button" [tuiButtonCopy]="overlayUrl">
+        <tui-icon icon="@tui.copy" />
+        URL оверлея
+      </button>
+      <button appearance="secondary-destructive" tuiButton type="button" (click)="resetWheel()">
+        <tui-icon icon="@tui.trash-2" />
+        Сбросить данные колеса
+      </button>
+      @if (round() && roundState() !== 'finished' && !round()?.refunded) {
+        <button appearance="secondary" tuiButton type="button" (click)="refundWheel()">
+          <tui-icon icon="@tui.undo-2" />
+          Вернуть баллы
+        </button>
+      }
+      <button appearance="primary" tuiButton type="button" (click)="save()">
+        {{ saved() ? 'Сохранено' : 'Сохранить' }}
+      </button>
+    </div>
+  </header>
+
+  <div class="wheel-layout">
+    <section class="jk-card wheel-stage-card">
+      <div class="stage-top">
+        <span appearance="info" tuiBadge>{{ statusLabel() }}</span>
+        <span class="stage-countdown">{{ countdown() }}</span>
+      </div>
+
+      <div class="wheel-big-wrap" [style.width.px]="appearance().size">
+        <span class="wheel-pointer" [style.border-top-color]="appearance().pointerColor" [style.filter]="'drop-shadow(0 0 8px ' + appearance().pointerColor + ')'"></span>
+        @if (refreshingWheel()) {
+          <span class="wheel-recalc-sweep" aria-hidden="true"></span>
+        }
+        <div
+          class="wheel-big"
+          [class.wheel-big-has-luck]="hasLuck()"
+          [style.transform]="'rotate(' + wheelAngle() + 'deg)'"
+          [style.--wheel-duration]="spinDuration() + 's'"
+          [style.background]="appearance().background"
+          [style.border-color]="appearance().borderColor"
+          [style.border-width.px]="appearance().borderWidth"
+          [style.box-shadow]="wheelGlow()"
+        >
+          <svg
+            class="wheel-svg"
+            role="img"
+            aria-label="Колесо"
+            [class.wheel-has-hover]="hovered() !== null"
+            viewBox="0 0 400 400"
+            [class.wheel-svg-refresh]="refreshingWheel()"
+          >
+            <circle
+              cx="200"
+              cy="200"
+              r="194"
+              [attr.fill]="appearance().background"
+              [attr.stroke]="appearance().borderColor"
+              stroke-width="3"
+            ></circle>
+              @if (displaySectors().length === 1) {
+                <circle
+                  cx="200"
+                  cy="200"
+                  r="190"
+                  [attr.fill]="displaySectors()[0].color"
+                ></circle>
+              } @else {
+                @for (sector of displaySectors(); track sector.id) {
+                  <path
+                    class="wheel-sector"
+                    [class.wheel-sector-hovered]="hovered() === sector.index"
+                    [attr.d]="sector.path"
+                    [attr.fill]="sector.color"
+                    (mouseenter)="hovered.set(sector.index)"
+                    (mouseleave)="hovered.set(null)"
+                    />
+                  @if (appearance().showLabels) {
+                      <text
+                        class="wheel-sector-text"
+                        [attr.x]="sector.labelX"
+                        [attr.y]="sector.labelY"
+                        [style.fill]="appearance().labelColor"
+                        [style.font-size.px]="appearance().labelSize"
+                        [style.font-family]="fontFamilyCss()"
+                        [style.stroke]="appearance().labelStrokeColor"
+                        [style.stroke-width.px]="appearance().labelStrokeWidth"
+                        [style.paint-order]="'stroke fill'"
+                      >
+                        <tspan [attr.x]="sector.labelX">{{ sector.label }}</tspan>
+                        @if (appearance().showChances) {
+                          <tspan [attr.x]="sector.labelX" dy="12" style="font-size: 9px; opacity: 0.7">{{ (sector.chance ?? 0) | number: '1.0-0' }}%</tspan>
+                        }
+                      </text>
+                  }
+                }
+              }
+                <circle
+                  cx="200"
+                  cy="200"
+                  r="44"
+                  [attr.fill]="appearance().centerColor"
+                  [attr.stroke]="appearance().centerTextColor"
+                  stroke-width="3"
+                ></circle>
+                </svg>
+              </div>
+
+              @if (centerUrl()) {
+                <span
+                  class="wheel-big-center wheel-big-center-image"
+                  [style.border-color]="appearance().centerTextColor"
+                >
+                  <img alt="Мем колеса" [src]="centerUrl()">
+                </span>
+              } @else {
+                <span class="wheel-big-center">NS</span>
+              }
+
+              @if (hoveredSector(); as sector) {
+                <div class="sector-tooltip">
+                  <span class="sector-tooltip-dot" [style.background]="sector.color"></span>
+                  <strong>{{ sector.label }}</strong>
+                  <span>{{ sector.chance | number: '1.0-1' }}%</span>
+                </div>
+              }
+            </div>
+
+            @if (spinPending()) {
+              <div class="page-wheel-popup page-wheel-popup-pending">
+                <span class="page-wheel-popup-kicker">ПОДГОТОВКА</span>
+                <strong>Приготовьтесь…</strong>
+              </div>
+            }
+
+            @if (isElimination() && !spinActive() && recentEliminated()) {
+              <div class="page-wheel-popup page-wheel-popup-eliminated">
+                <span class="page-wheel-popup-kicker">ВЫБЫЛ</span>
+                <strong>{{ recentEliminated()?.lot || recentEliminated()?.displayName || eliminatedView()[eliminatedView().length - 1]?.label }}</strong>
+              </div>
+            }
+
+            @if (winnerView(); as champion) {
+              @if (!spinActive()) {
+              <div class="page-wheel-popup page-wheel-popup-winner">
+                <div class="winner-particles" aria-hidden="true">
+                  @for (particle of winnerParticles; track $index) {
+                    <span
+                      [style.left.%]="particle.left"
+                      [style.background]="particle.color"
+                      [style.width.px]="particle.size"
+                      [style.height.px]="particle.size"
+                      [style.animation-delay.s]="particle.delay"
+                      [style.animation-duration.s]="particle.duration"
+                    ></span>
+                  }
+                </div>
+                <tui-icon class="page-wheel-winner-icon" icon="@tui.crown" />
+                <span class="page-wheel-popup-kicker">ПОБЕДИЛ</span>
+                <strong class="page-wheel-winner-name">{{ champion.label }}</strong>
+                @if (labelMode() === 'lot') {
+                  <span class="page-wheel-winner-sub">{{ champion.displayName }}</span>
+                } @else if (champion.lot) {
+                  <span class="page-wheel-winner-sub">{{ champion.lot }}</span>
+                }
+                @if (winnerLuck() > 1) {
+                  <span class="page-wheel-winner-luck">🍀 ×{{ winnerLuck() }}</span>
+                }
+              </div>
+              }
+            }
+
+            <div class="stage-bottom">
+              <div class="stage-info">
+                <span class="stage-title">{{ round()?.title || 'Колесо ждёт запуска' }}</span>
+                <span class="jk-caption">
+                  @if (round()) {
+                    Банк: {{ round()?.pot }} · участников: {{ participantsCount() }} · победитель: {{ winnerName() }}
+                    @if (winnerLuck() > 1) {
+                      · 🍀 ×{{ winnerLuck() }}
+                    }
+                  } @else {
+                    Запустите раунд или ждите команду !wheel в чате.
+                  }
+                </span>
+              </div>
+
+              <div class="wheel-actions">
+                <button appearance="primary" tuiButton type="button" (click)="start()">
+                  <tui-icon icon="@tui.play" />
+                  Запустить
+                </button>
+                <button appearance="secondary" tuiButton type="button" (click)="spin()">
+                  <tui-icon icon="@tui.refresh-cw" />
+                  Крутить
+                </button>
+                <button appearance="flat" tuiButton type="button" (click)="testSpin()">
+                  Тест-спин
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section class="jk-card rewards-card">
+            <h2 class="jk-h4">Награды и автоматический вход</h2>
+            <p class="jk-body-sm jk-muted">
+              В Channel Points создайте награду с действием <strong>«Колесо»</strong>. Payload — название раунда,
+              например <code>TBoI</code>. Зритель автоматически попадёт в текущий раунд или запустит новый.
+            </p>
+            <p class="jk-body-sm jk-muted">
+              Слово <strong>«удача»</strong> (или <strong>luck</strong>) в названии награды включает рулетку
+              множителей ×2 / ×3 / ×5 для победителя.
+            </p>
+          </section>
+
+          <aside class="jk-card lots-card">
+            <div class="lots-head">
+              <h2 class="jk-h4">Лоты</h2>
+              <div class="lots-head-actions">
+                <span class="jk-caption">шанс ∝ ставке</span>
+                @if (hasAvailableBoost()) {
+                  <button class="lot-boost" type="button" (click)="openFirstBoost()">
+                    🍀 Рулетка бустов
+                  </button>
+                }
+              </div>
+            </div>
+
+            <div class="lot-header">
+              <span>#</span>
+              <span>Зритель</span>
+              <span>Ставка</span>
+              <span>Лот</span>
+              <span>Удача</span>
+              <span>Шанс</span>
+              <span></span>
+            </div>
+
+            <div class="lots-list">
+              @for (participant of lotRows(); track participant.userId; let index = $index) {
+                <div
+                  animate.enter="lot-enter"
+                  animate.leave="lot-leave"
+                  class="lot-row"
+                  [class.lot-winner]="round()?.winner?.userId === participant.userId"
+                  [class.lot-gold-row]="participant.boostAvailable"
+                  [class.lot-flash]="flashUserId() === participant.userId"
+                  [class.lot-removing]="removingLots().has(participant.userId)"
+                  (click)="openBoost(participant)"
+                >
+                  <span class="lot-rank">{{ index + 1 }}</span>
+                  <span class="lot-name">{{ participant.displayName }}</span>
+                  <span class="lot-bet">{{ participant.bet }}</span>
+                  <span class="lot-lot" (mouseenter)="hintUserId.set(participant.userId)" tuiHintAppearance="floating" [tuiHint]="lotHint">
+                    <span class="lot-lot-title">{{ participant.lot || round()?.title }}</span>
+                    @if (participant.metaLoading) {
+                      <tui-loader size="xs" />
+                    }
+                  </span>
+                  <span class="lot-luck-cell">
+                    @if (participant.boostAvailable) {
+                      🍀
+                    } @else if (participant.boostUsed || boostedLots().has(participant.userId)) {
+                      ×{{ participant.boost ?? 0 }}
+                    } @else {
+                      —
+                    }
+                  </span>
+                  <span class="lot-chance" [class.lot-chance-flash]="chanceFlash()">{{ (participant.chance ?? 0) | number: '1.0-1' }}%</span>
+                  <button
+                    class="lot-remove"
+                    size="xs"
+                    type="button"
+                    aria-label="Удалить ставку"
+                    (click)="$event.stopPropagation(); removeLot(participant.userId)"
+                    iconStart="@tui.trash-2"
+                    tuiIconButton
+                  ></button>
+                </div>
+              } @empty {
+              <div class="lots-empty">
+                <tui-icon icon="@tui.users" />
+                <span>Лотов пока нет</span>
+                <span class="jk-caption">Зрители входят командой !wheel {{ round()?.title || '<игра>' }} &lt;ставка&gt;</span>
+              </div>
+            }
+          </div>
+
+          <div class="manual-lot">
+            <span class="jk-label">Добавить лот вручную</span>
+            <div class="manual-lot-row">
+              <tui-textfield>
+                <input
+                  tuiInput
+                  aria-label="Название лота"
+                  placeholder="Название лота"
+                  [value]="lotName()"
+                  (input)="lotName.set($any($event.target).value)"
+                >
+              </tui-textfield>
+              <tui-textfield>
+                <input
+                  tuiInput
+                  aria-label="Зритель лота"
+                  placeholder="Зритель (необязательно)"
+                  [value]="lotViewer()"
+                  (input)="lotViewer.set($any($event.target).value)"
+                >
+              </tui-textfield>
+
+              <div class="lot-type-row">
+                <tui-segmented [activeItemIndex]="lotTypeIndex()" (activeItemIndexChange)="setLotType($event)">
+                  @for (label of lotTypeLabels; track label) {
+                    <button type="button">{{ label }}</button>
+                  }
+                </tui-segmented>
+                <button appearance="flat" size="s" tuiButton type="button" (click)="checkLot()">
+                  Проверить
+                </button>
+              </div>
+
+              <tui-textfield class="manual-bet-field">
+                <input type="number" tuiInput
+                  aria-label="Ставка лота"
+                  min="1"
+                  [value]="lotBet()"
+                  (input)="lotBet.set(+$any($event.target).value)"
+                >
+              </tui-textfield>
+              <label class="lot-luck-toggle">
+                <input
+                  type="checkbox"
+                  aria-label="Удача"
+                  [checked]="lotLuck()"
+                  (change)="lotLuck.set($any($event.target).checked)"
+                  tuiSwitch
+                >
+                🍀
+              </label>
+              <button appearance="secondary" size="m" tuiButton type="button" (click)="addLot()">
+                Добавить лот
+              </button>
+            </div>
+            @if (lotPreview()) {
+              <span class="jk-caption">Предпросмотр: {{ lotPreview() }}</span>
+            }
+
+            @if (lotMetaLoading()) {
+              <div class="lot-meta lot-meta-loading">
+                <tui-loader size="s" />
+                <span class="jk-caption">Загружаем информацию о лоте…</span>
+              </div>
+            }
+
+            @if (lotMeta(); as meta) {
+              <div class="lot-meta">
+                @if (meta.image) {
+                  <img alt="" [src]="meta.image">
+                }
+                <div class="lot-meta-copy">
+                  <strong>{{ meta.title }}</strong>
+                  <span class="jk-caption">
+                    {{ meta.type }} · {{ meta.subtitle }} · {{ meta.year }} · {{ meta.genre }}
+                  </span>
+                  <span class="jk-body-sm jk-muted">{{ meta.description }}</span>
+                </div>
+              </div>
+            }
+
+            @if (lotMetaError()) {
+              <span class="error-text">{{ lotMetaError() }}</span>
+            }
+          </div>
+
+          <div class="lot-pot">
+            <span>Банк раунда</span>
+            <strong>{{ round()?.pot ?? 0 }}</strong>
+          </div>
+        </aside>
+      </div>
+
+      <div class="wheel-config-grid">
+        <section class="jk-card wheel-settings">
+          <h2 class="jk-h4">Параметры</h2>
+
+          <form [formGroup]="settingsForm" class="settings-form">
+
+          <span class="cfg-label">Режим</span>
+          <tui-segmented [activeItemIndex]="modeIndex()" (activeItemIndexChange)="setMode($event)">
+            <button type="button">Обычное</button>
+            <button type="button">На выбывание</button>
+          </tui-segmented>
+
+          <span class="cfg-label">Что показывать на колесе</span>
+          <tui-segmented [activeItemIndex]="labelModeIndex()" (activeItemIndexChange)="setLabelMode($event)">
+            <button type="button">Названия лотов</button>
+            <button type="button">Имена зрителей</button>
+          </tui-segmented>
+
+          <span class="cfg-label">Пауза между прокрутками, сек</span>
+          <tui-textfield>
+            <input
+              aria-label="Пауза между прокрутками"
+              [min]="0"
+              [max]="60"
+              formControlName="spinCooldown"
+              tuiInputNumber
+            ></tui-textfield>
+
+          <span class="cfg-label">Пауза перед прокруткой, сек</span>
+          <tui-textfield>
+            <input
+              aria-label="Пауза перед прокруткой"
+              [min]="0"
+              [max]="30"
+              formControlName="spinDelay"
+              tuiInputNumber
+            ></tui-textfield>
+
+          <span class="cfg-label">Раунд, сек</span>
+          <tui-textfield>
+            <input
+              aria-label="Длительность раунда"
+              [min]="10"
+              formControlName="roundSeconds"
+              tuiInputNumber
+            ></tui-textfield>
+
+            <span class="cfg-label">Мин. ставка</span>
+            <tui-textfield>
+              <input
+                aria-label="Минимальная ставка"
+                [min]="1"
+                formControlName="minBet"
+                tuiInputNumber
+              ></tui-textfield>
+
+              <span class="cfg-label">Макс. ставка</span>
+              <tui-textfield>
+                <input
+                  aria-label="Максимальная ставка"
+                  [min]="1"
+                  formControlName="maxBet"
+                  tuiInputNumber
+                ></tui-textfield>
+
+                <span class="cfg-label">Музыка колеса (URL)</span>
+                <div class="center-url-row">
+                  <tui-textfield>
+                    <input
+                      aria-label="Музыка колеса"
+                      placeholder="https://.../track.mp3, .ogg, .m4a, .wav"
+                      formControlName="soundUrl"
+                      (blur)="resolveSound()"
+                      tuiInput
+                    ></tui-textfield>
+                  <button
+                    appearance="secondary"
+                    size="s"
+                    tuiButton
+                    type="button"
+                    [disabled]="soundResolving() || soundUploading()"
+                    (click)="resolveSound()"
+                  >
+                    {{ soundResolving() ? 'Ищем…' : 'Подтянуть трек' }}
+                  </button>
+                  <input #soundFile hidden type="file" accept="audio/*" (change)="uploadSound($event)">
+                  <button
+                    appearance="secondary"
+                    size="s"
+                    tuiButton
+                    type="button"
+                    [disabled]="soundUploading()"
+                    (click)="soundFile.click()"
+                  >
+                    {{ soundUploading() ? 'Загрузка…' : 'Файл' }}
+                  </button>
+                </div>
+                @if (soundError()) {
+                  <span class="error-text">{{ soundError() }}</span>
+                }
+
+                  <span class="cfg-label">Мем в центре (URL)</span>
+                  <div class="center-url-row">
+                    <tui-textfield>
+                      <input
+                        aria-label="Мем в центре колеса"
+                        placeholder="https://.../meme.png или Tenor"
+                        formControlName="centerUrl"
+                        (blur)="resolveCenter()"
+                        tuiInput
+                      ></tui-textfield>
+                    <button
+                      appearance="secondary"
+                      size="s"
+                      tuiButton
+                      type="button"
+                      [disabled]="centerResolving()"
+                      (click)="resolveCenter()"
+                    >
+                      {{ centerResolving() ? 'Ищем…' : 'Подтянуть GIF' }}
+                    </button>
+                  </div>
+                  <span class="jk-caption">Для Tenor/Giphy можно вставить ссылку на страницу — GIF подтянется автоматически.</span>
+
+                    <span class="cfg-label">Название раунда</span>
+                    <tui-textfield>
+                      <input
+                        aria-label="Название раунда"
+                        placeholder="TBoI"
+                        formControlName="title"
+                        tuiInput
+                      ></tui-textfield>
+
+                      <span class="cfg-label">Ставка запуска</span>
+                      <tui-textfield>
+                        <input
+                          aria-label="Ставка запуска"
+                          [min]="1"
+                          formControlName="bet"
+                          tuiInputNumber
+                        ></tui-textfield>
+                      </form>
+                      </section>
+
+                      <section class="jk-card appearance-card">
+                        <div class="segments-head">
+                          <div>
+                            <h2 class="jk-h4">Внешний вид колеса</h2>
+                            <p class="jk-caption">Размер, цвета, свечение, подписи и шрифт.</p>
+                          </div>
+                        </div>
+
+                        <form [formGroup]="appearanceForm" class="appearance-form">
+                        <div class="appearance-grid">
+                          <label class="cfg-field">
+                            <span>Размер</span>
+                            <tui-textfield>
+                              <input tuiInputNumber [min]="220" [max]="720" formControlName="size">
+                            </tui-textfield>
+                          </label>
+                          <label class="cfg-field">
+                            <span>Толщина обода</span>
+                            <tui-textfield>
+                              <input tuiInputNumber [min]="0" [max]="24" formControlName="borderWidth">
+                            </tui-textfield>
+                          </label>
+                          <label class="cfg-field">
+                            <span>Свечение</span>
+                            <tui-textfield>
+                              <input tuiInputNumber [min]="0" [max]="120" formControlName="glowSize">
+                            </tui-textfield>
+                          </label>
+                          <label class="cfg-field">
+                            <span>Размер подписей</span>
+                            <tui-textfield>
+                              <input tuiInputNumber [min]="8" [max]="24" formControlName="labelSize">
+                            </tui-textfield>
+                          </label>
+                        </div>
+
+                        <div class="appearance-colors">
+                          <label class="cfg-field">
+                            <span>Фон</span>
+                            <tui-textfield><input tuiInputColor formControlName="background"></tui-textfield>
+                          </label>
+                          <label class="cfg-field">
+                            <span>Обод</span>
+                            <tui-textfield><input tuiInputColor formControlName="borderColor"></tui-textfield>
+                          </label>
+                          <label class="cfg-field">
+                            <span>Свечение</span>
+                            <tui-textfield><input tuiInputColor formControlName="glowColor"></tui-textfield>
+                          </label>
+                          <label class="cfg-field">
+                            <span>Указатель</span>
+                            <tui-textfield><input tuiInputColor formControlName="pointerColor"></tui-textfield>
+                          </label>
+                          <label class="cfg-field">
+                            <span>Центр</span>
+                            <tui-textfield><input tuiInputColor formControlName="centerColor"></tui-textfield>
+                          </label>
+                          <label class="cfg-field">
+                            <span>Текст центра</span>
+                            <tui-textfield><input tuiInputColor formControlName="centerTextColor"></tui-textfield>
+                          </label>
+                          <label class="cfg-field">
+                            <span>Подписи</span>
+                            <tui-textfield><input tuiInputColor formControlName="labelColor"></tui-textfield>
+                          </label>
+                          <label class="cfg-field">
+                            <span>Обводка подписей</span>
+                            <tui-textfield><input tuiInputColor formControlName="labelStrokeColor"></tui-textfield>
+                          </label>
+                          <label class="cfg-field">
+                            <span>Толщина обводки</span>
+                            <tui-textfield><input tuiInputNumber [min]="0" [max]="12" formControlName="labelStrokeWidth"></tui-textfield>
+                          </label>
+                        </div>
+
+                        <div class="appearance-grid appearance-grid-two">
+                          <label class="cfg-field">
+                            <span>Текст в центре</span>
+                            <tui-textfield><input tuiInput formControlName="centerText"></tui-textfield>
+                          </label>
+                          <label class="cfg-field">
+                            <span>Шрифт</span>
+                            <tui-textfield><input tuiInput placeholder="inherit" formControlName="fontFamily"></tui-textfield>
+                          </label>
+                          <label class="cfg-field">
+                            <span>URL шрифта</span>
+                            <tui-textfield><input tuiInput placeholder="https://.../font.woff2" formControlName="fontUrl"></tui-textfield>
+                          </label>
+                        </div>
+
+                        <div class="appearance-switches">
+                          <label class="cfg-row">Показывать названия
+                            <input tuiSwitch type="checkbox" formControlName="showLabels">
+                          </label>
+                          <label class="cfg-row">Показывать шансы
+                            <input tuiSwitch type="checkbox" formControlName="showChances">
+                          </label>
+                        </div>
+                        </form>
+                      </section>
+                      <section class="jk-card segments-card">
+                        <div class="segments-head">
+                          <div>
+                            <h2 class="jk-h4">Сектора</h2>
+                            <p class="jk-caption">Вес — вероятность, цвет — на колесе.</p>
+                          </div>
+                          <div class="segment-actions">
+                            <button
+                              size="s"
+                              type="button"
+                              (click)="applyPreset('classic')"
+                              appearance="flat"
+                              tuiButton
+                            >Классика</button>
+                            <button
+                              size="s"
+                              type="button"
+                              (click)="applyPreset('generous')"
+                              appearance="flat"
+                              tuiButton
+                            >Щедрое</button>
+                            <button
+                              size="s"
+                              type="button"
+                              (click)="applyPreset('hardcore')"
+                              appearance="flat"
+                              tuiButton
+                            >Хардкор</button>
+                            <button
+                              size="s"
+                              type="button"
+                              (click)="addSegment()"
+                              appearance="secondary"
+                              tuiButton
+                            >
+                              <tui-icon icon="@tui.plus" />
+                              Добавить
+                            </button>
+                          </div>
+                        </div>
+
+                        <div class="segments-list">
+                          @for (segment of segments(); track segment.id; let index = $index) {
+                            <div class="segment-row">
+                              <tui-textfield class="segment-color-field">
+                                <input
+                                  tuiInputColor
+                                  aria-label="Цвет сектора"
+                                  [formControl]="segmentColor(index)"
+                                >
+                              </tui-textfield>
+                              <tui-textfield class="segment-name-field">
+                                <input
+                                  tuiInput
+                                  aria-label="Название сектора"
+                                  [value]="segment.label"
+                                  (input)="updateSegment(index, 'label', $any($event.target).value)"
+                                >
+                              </tui-textfield>
+                              <tui-textfield>
+                                <input type="number" tuiInput
+                                  aria-label="Множитель"
+                                  min="0"
+                                  [value]="segment.multiplier"
+                                  (input)="updateSegment(index, 'multiplier', +$any($event.target).value)"
+                                >
+                              </tui-textfield>
+                              <tui-textfield>
+                                <input type="number" tuiInput
+                                  aria-label="Вес"
+                                  min="1"
+                                  [value]="segment.weight"
+                                  (input)="updateSegment(index, 'weight', +$any($event.target).value)"
+                                >
+                              </tui-textfield>
+                                      <button
+                                        size="s"
+                                        type="button"
+                                        aria-label="Удалить сектор"
+                                        (click)="removeSegment(index)"
+                                        appearance="flat"
+                                        iconStart="@tui.trash-2"
+                                        tuiIconButton
+                                      ></button>
+                                    </div>
+                                  } @empty {
+                                  <p
+                                    class="jk-body-sm jk-muted"
+                                  >Секторов нет — добавьте хотя бы два.</p>
+                                }
+                              </div>
+                            </section>
+
+                            <section class="jk-card boosts-card">
+                              <div class="segments-head">
+                                <div>
+                                  <h2 class="jk-h4">Множители удачи</h2>
+                                  <p
+                                    class="jk-caption"
+                                  >Выпадают в рулетке бустов. Вес — вероятность.</p>
+                                </div>
+                                <button
+                                  size="s"
+                                  type="button"
+                                  (click)="addBoost()"
+                                  appearance="secondary"
+                                  tuiButton
+                                >
+                                  <tui-icon icon="@tui.plus" />
+                                  Добавить
+                                </button>
+                              </div>
+
+                              <div class="boost-list">
+                                @for (boost of boostRows(); track $index; let index = $index) {
+                                  <div class="boost-row">
+                                    <span class="boost-value">×{{ boost.value }}</span>
+                                    <tui-textfield>
+                                      <input type="number" tuiInput
+                                        aria-label="Вес множителя"
+                                        min="1"
+                                        [value]="boost.weight"
+                                        (input)="updateBoost(index, 'weight', +$any($event.target).value)"
+                                      >
+                                    </tui-textfield>
+                                    <span class="boost-chance">{{ boost.chance | number: '1.0-1' }}%</span>
+                                    <button
+                                      size="s"
+                                      type="button"
+                                      aria-label="Удалить множитель"
+                                      (click)="removeBoost(index)"
+                                      appearance="flat"
+                                      iconStart="@tui.trash-2"
+                                      tuiIconButton
+                                    ></button>
+                                  </div>
+                                }
+                              </div>
+                              </section>
+
+
+                            </div>
+                          
+  @if (boostParticipant()) {
+    <app-wheel-boost-dialog
+      [boosts]="activeBoosts()"
+      [participant]="boostParticipant()"
+      [multipliers]="boostValues()"
+      (applied)="applyBoost($event)"
+      (closed)="closeBoost()"
+    />
+  }
+<ng-template #lotHint>
+  @if (hintRow(); as row) {
+    <div
+      class="lot-hint"
+      [class.lot-hint-game]="row.metaType === 'game'"
+      [class.lot-hint-movie]="row.metaType === 'movie'"
+      [class.lot-hint-music]="row.metaType === 'music'"
+    >
+      <div class="lot-hint-hero">
+        @if (row.metaLoading) {
+          <tui-loader size="l" />
+        } @else if (row.meta?.image) {
+          <img class="lot-hint-image" alt="" [src]="row.meta?.image">
+        } @else {
+          <tui-icon class="lot-hint-fallback" icon="@tui.image" />
+        }
+        @if (row.metaTypeLabel) {
+          <span class="lot-hint-type">{{ row.metaTypeLabel }}</span>
+        }
+        @if (!row.metaLoading && row.metaSourceLabel) {
+          <span class="lot-hint-source">{{ row.metaSourceLabel }}</span>
+        }
+        @if (row.metaRating) {
+          <span class="lot-hint-rating">★ {{ row.metaRating | number: '1.0-0' }}</span>
+        }
+      </div>
+
+      <div class="lot-hint-body">
+        <div class="lot-hint-heading">
+          <strong class="lot-hint-title">{{ row.metaTitle }}</strong>
+          @if (row.metaYear) {
+            <span class="lot-hint-year">{{ row.metaYear }}</span>
+          }
+        </div>
+
+        @if (row.metaOriginalTitle) {
+          <span class="lot-hint-original">{{ row.metaOriginalTitle }}</span>
+        }
+
+        @if (row.metaLoading) {
+          <span class="lot-hint-loading-text">{{ lotLabels().loading }}</span>
+          <span class="lot-hint-skeleton"></span>
+          <span class="lot-hint-skeleton lot-hint-skeleton-short"></span>
+        } @else {
+          @if (row.metaTest) {
+            <div class="lot-hint-section">
+              <span class="lot-hint-muted">Тестовый лот — поиск информации не выполняется.</span>
+            </div>
+          }
+
+          @if (row.metaFacts.length) {
+            <div class="lot-hint-section">
+              <span class="lot-hint-section-title">{{ lotLabels().details }}</span>
+              <div class="lot-hint-facts">
+                @for (fact of row.metaFacts; track fact.label) {
+                  <span class="lot-hint-fact-label">{{ fact.label }}</span>
+                  <span class="lot-hint-fact-value">{{ fact.value }}</span>
+                }
+              </div>
+            </div>
+          }
+
+          <div class="lot-hint-section">
+            <span class="lot-hint-section-title">{{ lotLabels().description }}</span>
+            @if (row.metaDescription) {
+              <p class="lot-hint-description">{{ row.metaDescription }}</p>
+            } @else {
+              <p class="lot-hint-muted">{{ lotLabels().noDescription }}</p>
+            }
+          </div>
+
+          @if (row.metaStoryline) {
+            <div class="lot-hint-section">
+              <span class="lot-hint-section-title">{{ lotLabels().storyline }}</span>
+              <p class="lot-hint-description">{{ row.metaStoryline }}</p>
+            </div>
+          }
+
+          @if (row.metaCompletion; as completion) {
+            @if (completion.hastilyHours || completion.normallyHours || completion.completelyHours) {
+              <div class="lot-hint-section">
+                <span class="lot-hint-section-title">{{ lotLabels().completion }}</span>
+                <div class="lot-hint-times">
+                  @if (completion.hastilyHours) {
+                    <span class="lot-hint-time">
+                      <b>~{{ completion.hastilyHours | number: '1.0-1' }} ч</b>
+                      <small>{{ lotLabels().hastily }}</small>
+                    </span>
+                  }
+                  @if (completion.normallyHours) {
+                    <span class="lot-hint-time lot-hint-time-main">
+                      <b>~{{ completion.normallyHours | number: '1.0-1' }} ч</b>
+                      <small>{{ lotLabels().normally }}</small>
+                    </span>
+                  }
+                  @if (completion.completelyHours) {
+                    <span class="lot-hint-time">
+                      <b>~{{ completion.completelyHours | number: '1.0-1' }} ч</b>
+                      <small>{{ lotLabels().completely }}</small>
+                    </span>
+                  }
+                </div>
+              </div>
+            }
+          }
+
+          @if (row.metaDlc.length) {
+            <div class="lot-hint-section">
+              <span class="lot-hint-section-title">{{ lotLabels().dlc }} · {{ row.metaDlcCount }}</span>
+              <div class="lot-hint-dlc-list">
+                @for (dlc of row.metaDlc; track dlc) {
+                  <span class="lot-hint-chip">{{ dlc }}</span>
+                }
+              </div>
+            </div>
+          }
+
+          @if (row.metaEditions.length) {
+            <div class="lot-hint-section">
+              <span class="lot-hint-section-title">{{ lotLabels().editions }} · {{ row.metaEditions.length }}</span>
+              <div class="lot-hint-dlc-list">
+                @for (edition of row.metaEditions; track $index) {
+                  <span class="lot-hint-chip">{{ edition }}</span>
+                }
+              </div>
+            </div>
+          }
+
+          @if (row.metaMods.length || row.metaModsUrl) {
+            <div class="lot-hint-section">
+              <span class="lot-hint-section-title">{{ lotLabels().mods }}</span>
+              @if (row.metaMods.length) {
+                <div class="lot-hint-dlc-list">
+                  @for (mod of row.metaMods; track mod) {
+                    <span class="lot-hint-chip">{{ mod }}</span>
+                  }
+                </div>
+              }
+              @if (row.metaModsUrl) {
+                <a class="lot-hint-link" [href]="row.metaModsUrl" target="_blank" rel="noopener noreferrer">Nexus Mods</a>
+              }
+            </div>
+          }
+
+          @if (row.metaWebsite) {
+            <a class="lot-hint-link" [href]="row.metaWebsite" target="_blank" rel="noopener noreferrer">
+              {{ lotLabels().website }}
+            </a>
+          }
+        }
+
+        <div class="lot-hint-stats">
+          <span class="lot-hint-pill">🎟 {{ row.displayName }}</span>
+          <span class="lot-hint-pill">{{ lotLabels().bet }} <b>{{ row.bet }}</b></span>
+          <span class="lot-hint-pill">{{ lotLabels().chance }} <b>{{ (row.chance ?? 0) | number: '1.0-1' }}%</b></span>
+          @if (row.luck) {
+            <span class="lot-hint-pill lot-hint-luck">🍀 {{ lotLabels().luck }}</span>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</ng-template>
+</div>

@@ -1,0 +1,32 @@
+<div class="jk-page">
+  <header class="jk-page-header">
+    <div>
+      <h1 class="jk-h1">{{ i18n.t('notifications.title') }}</h1>
+      <p class="jk-caption">{{ i18n.t('notifications.subtitle') }}</p>
+    </div>
+    @if (saved()) { <span appearance="positive" tuiBadge>{{ i18n.t('notifications.saved') }}</span> }
+  </header>
+  <section class="jk-card cfg-section">
+    @if (settings(); as value) {
+      @for (row of rows(); track row[0]) {
+        <div class="cfg-row">
+          <div class="cfg-text">
+            <span class="cfg-label">{{ row[1] }}</span>
+            @if (row[2]) { <span class="jk-caption">{{ row[2] }}</span> }
+          </div>
+          <label class="notif-switch-hit" (click)="toggleValue(row[0]); $event.preventDefault()">
+            <input
+              type="checkbox"
+              [attr.aria-label]="row[1]"
+              [checked]="value[row[0]]"
+              tuiSwitch
+            />
+            <span class="notif-switch-hit-area" aria-hidden="true"></span>
+          </label>
+        </div>
+      }
+    } @else {
+      <div class="jk-empty"><tui-icon icon="@tui.loader" /><span>{{ i18n.t('notifications.loading') }}</span></div>
+    }
+  </section>
+</div>

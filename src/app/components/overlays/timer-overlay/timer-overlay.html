@@ -1,0 +1,37 @@
+<div
+  class="overlay-stage"
+  [style.alignItems]="verticalItems()"
+  [style.justifyContent]="justifyItems()"
+>
+  <article
+    class="timer-card"
+    [class.timer-card-running]="running()"
+    [class.timer-card-countdown]="countdown()"
+    [class.timer-card-countup]="!countdown()"
+    [class.timer-large]="size() === 'large'"
+    [class.timer-medium]="size() === 'medium'"
+    [class.timer-small]="size() === 'small'"
+    [style.alignItems]="alignItems()"
+    [style.textAlign]="textAlign()"
+  >
+    @if (showLabel()) {
+      <span class="timer-label" [style.color]="textColor()">{{ label() }}</span>
+    }
+
+    <strong
+      class="timer-value"
+      [style.font-family]="fontFamily()"
+      [style.color]="textColor()"
+    >{{ time() }}</strong>
+
+    @if (showProgress()) {
+      <span class="timer-progress">
+        <span
+          class="timer-progress-fill"
+          [style.width.%]="progress()"
+          [style.background]="progressColor()"
+        ></span>
+      </span>
+    }
+  </article>
+</div>

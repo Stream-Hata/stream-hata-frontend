@@ -1,0 +1,190 @@
+.update-notice {
+	position: fixed;
+	right: 20px;
+	bottom: 20px;
+	z-index: 120;
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	max-width: min(440px, calc(100vw - 40px));
+	padding: 12px 14px;
+	border: 1px solid var(--border-normal);
+	border-radius: var(--radius-lg);
+	background: color-mix(in hsl, var(--surface-elevated-2) 94%, transparent);
+	color: var(--text-primary);
+	box-shadow: 0 18px 54px rgb(0 0 0 / 45%);
+	backdrop-filter: blur(16px);
+	animation: update-in 0.3s ease-out;
+}
+
+.update-notice-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	border-radius: var(--radius-full);
+	background: var(--neutral-1);
+	color: var(--accent-secondary);
+	font-size: 20px;
+}
+
+.update-notice-text {
+	display: flex;
+	gap: 2px;
+	flex-direction: column;
+	min-width: 0;
+	font: var(--font-body-sm);
+}
+
+.update-notice-text strong {
+	font: var(--font-h4);
+}
+
+.update-notice-text span {
+	color: var(--text-secondary);
+}
+
+.update-notice button {
+	padding: 7px 12px;
+	border: 0;
+	border-radius: var(--radius-sm);
+	background: var(--accent-primary);
+	color: var(--text-on-accent);
+	font: var(--font-label);
+	cursor: pointer;
+}
+
+.update-notice-close {
+	padding: 4px 8px;
+	background: transparent;
+	color: var(--text-tertiary);
+	font-size: 18px;
+}
+
+@keyframes update-in {
+	from { opacity: 0; transform: translateY(12px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+
+@media (width <= 560px) {
+	.update-notice {
+		right: 10px;
+		bottom: 10px;
+		left: 10px;
+		max-width: none;
+	}
+}
+
+.update-notes { margin: 4px 0 0; padding-left: 16px; color: var(--text-secondary); font: var(--font-caption); }
+
+.whats-new-backdrop {
+	position: fixed;
+	inset: 0;
+	z-index: 130;
+	display: grid;
+	place-items: center;
+	padding: 20px;
+	background: rgb(5 3 9 / 72%);
+	backdrop-filter: blur(10px);
+}
+
+.whats-new {
+	width: min(560px, 100%);
+	max-height: min(680px, calc(100vh - 40px));
+	overflow: auto;
+	padding: 24px;
+	border: 1px solid var(--border-normal);
+	border-radius: var(--radius-lg);
+	background: var(--surface-elevated-1);
+	color: var(--text-primary);
+	box-shadow: 0 28px 90px rgb(0 0 0 / 55%);
+}
+
+.whats-new-head {
+	display: flex;
+	justify-content: space-between;
+	gap: 16px;
+	align-items: flex-start;
+}
+
+.whats-new-head h2 {
+	margin: 4px 0 0;
+	font: var(--font-h2);
+}
+
+.eyebrow {
+	color: var(--accent-secondary);
+	font: var(--font-label);
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+}
+
+.whats-new-close {
+	padding: 4px 8px;
+	border: 0;
+	background: transparent;
+	color: var(--text-tertiary);
+	font-size: 22px;
+	cursor: pointer;
+}
+
+.whats-new-notes {
+	display: flex;
+	gap: 8px;
+	flex-direction: column;
+	margin: 20px 0;
+	padding-left: 20px;
+	color: var(--text-secondary);
+	font: var(--font-body-sm);
+}
+
+.whats-new-notes li::marker {
+	color: var(--accent-primary);
+}
+
+.whats-new-empty {
+	margin: 20px 0;
+	color: var(--text-secondary);
+}
+
+.whats-new-actions {
+	display: flex;
+	gap: 12px;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+.whats-new-actions a {
+	margin-right: auto;
+	color: var(--accent-secondary);
+	font: var(--font-label);
+	text-decoration: none;
+}
+
+.whats-new-actions button {
+	padding: 9px 14px;
+	border: 0;
+	border-radius: var(--radius-sm);
+	background: var(--accent-primary);
+	color: var(--text-on-accent);
+	font: var(--font-label);
+	cursor: pointer;
+}
+
+.whats-new-actions .whats-new-later {
+	background: var(--neutral-1);
+	color: var(--text-primary);
+}
+
+.whats-new-actions .whats-new-never {
+	margin-left: auto;
+	padding: 0;
+	background: transparent;
+	color: var(--text-tertiary);
+	font: var(--font-caption);
+}
+
+.whats-new-actions .whats-new-never:hover {
+	color: var(--text-secondary);
+}

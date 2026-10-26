@@ -1,0 +1,179 @@
+:host {
+	display: block;
+	width: 100%;
+}
+
+.donation-widget {
+	display: flex;
+	gap: 10px;
+	flex-direction: column;
+	align-items: center;
+	width: min(var(--donation-width, 460px), 100%);
+	color: var(--donation-text, #f5eaff);
+	font-family: var(--donation-font, Inter, sans-serif);
+	transform: scale(var(--donation-scale, 1));
+	transform-origin: top center;
+}
+
+.donation-card {
+	display: flex;
+	gap: 5px;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+	padding: 18px 24px;
+	border: 1px solid var(--donation-border);
+	border-radius: 18px;
+	background: var(--donation-bg);
+	box-shadow:
+		0 18px 50px rgb(0 0 0 / 45%),
+		0 0 32px var(--donation-glow);
+	text-align: center;
+	backdrop-filter: blur(var(--donation-blur, 16px));
+	animation-duration: 0.45s;
+	animation-fill-mode: both;
+}
+
+.donation-kicker {
+	color: var(--donation-accent);
+	font: 700 12px/16px var(--font-ui, sans-serif);
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+}
+
+.donation-user {
+	font: 700 24px/32px var(--font-ui, sans-serif);
+}
+
+.donation-amount {
+	color: var(--donation-accent);
+	font: 700 22px/28px var(--font-ui, sans-serif);
+}
+
+.donation-message {
+	max-width: 60ch;
+	margin: 0;
+	color: color-mix(in hsl, var(--donation-text) 78%, transparent);
+	font: 500 14px/20px var(--font-ui, sans-serif);
+	overflow-wrap: anywhere;
+}
+
+.donation-anim-pop {
+	animation-name: donation-pop;
+}
+
+.donation-anim-slide-up {
+	animation-name: donation-slide-up;
+}
+
+.donation-anim-slide-left {
+	animation-name: donation-slide-left;
+}
+
+.donation-anim-flip {
+	animation-name: donation-flip;
+}
+
+.donation-anim-glitch {
+	animation-name: donation-glitch;
+}
+
+.donation-anim-bounce {
+	animation-name: donation-bounce;
+}
+
+.donation-table {
+	width: 100%;
+	overflow: hidden;
+	border: 1px solid var(--donation-border);
+	border-radius: 14px;
+	background: var(--donation-bg);
+	box-shadow: 0 12px 34px rgb(0 0 0 / 35%);
+	backdrop-filter: blur(var(--donation-blur, 16px));
+}
+
+.donation-table-head,
+.donation-table-row {
+	display: grid;
+	grid-template-columns: minmax(90px, 0.8fr) minmax(70px, 0.5fr) minmax(0, 2fr);
+	gap: 8px;
+	align-items: center;
+	padding: 7px 12px;
+}
+
+.donation-table-head {
+	color: var(--donation-accent);
+	font: 700 10px/14px var(--font-ui, sans-serif);
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.donation-table-row {
+	border-top: 1px solid color-mix(in hsl, var(--donation-border) 60%, transparent);
+	color: var(--donation-text);
+	font: 500 12px/16px var(--font-ui, sans-serif);
+}
+
+.donation-table-latest {
+	background: color-mix(in hsl, var(--donation-accent) 12%, transparent);
+}
+
+.donation-table-user {
+	font-weight: 700;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.donation-table-amount {
+	color: var(--donation-accent);
+	font-weight: 700;
+	white-space: nowrap;
+}
+
+.donation-table-message {
+	overflow: hidden;
+	color: color-mix(in hsl, var(--donation-text) 72%, transparent);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.donation-preview {
+	pointer-events: none;
+	transform: scale(0.9);
+	transform-origin: top center;
+}
+
+@keyframes donation-pop {
+	from { opacity: 0; transform: translateY(8px) scale(0.94); }
+	to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes donation-slide-up {
+	from { opacity: 0; transform: translateY(36px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes donation-slide-left {
+	from { opacity: 0; transform: translateX(48px); }
+	to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes donation-flip {
+	from { opacity: 0; transform: perspective(600px) rotateX(-70deg); }
+	to { opacity: 1; transform: perspective(600px) rotateX(0); }
+}
+
+@keyframes donation-glitch {
+	0% { opacity: 0; transform: translateX(-10px); filter: hue-rotate(90deg); }
+	25% { opacity: 1; transform: translateX(8px); }
+	50% { transform: translateX(-4px); filter: hue-rotate(0); }
+	100% { opacity: 1; transform: translateX(0); filter: none; }
+}
+
+@keyframes donation-bounce {
+	0% { opacity: 0; transform: scale(0.7); }
+	55% { opacity: 1; transform: scale(1.04); }
+	75% { transform: scale(0.98); }
+	100% { transform: scale(1); }
+}

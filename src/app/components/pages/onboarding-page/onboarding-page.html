@@ -1,0 +1,77 @@
+<div class="onboarding">
+  <div class="onboard-card">
+    <app-logo />
+
+    <tui-stepper [(activeItemIndex)]="step" class="onboard-stepper">
+      <button icon="@tui.link" tuiStep type="button">Twitch</button>
+      <button icon="@tui.sliders-horizontal" tuiStep type="button">AI</button>
+      <button icon="@tui.blocks" tuiStep type="button">Виджеты</button>
+    </tui-stepper>
+
+    <div class="onboard-body">
+      @switch (step()) {
+        @case (0) {
+        <span class="jk-icon-tile onboard-icon">
+          <img alt="" class="twitch-img" src="icons/svg/twitch.svg" />
+        </span>
+        <h1 class="jk-h3">Подключите Twitch</h1>
+        <p class="jk-body-sm jk-muted onboard-sub">
+          Nameless StreamHata читает чат, чтобы превращать советы зрителей в голосования — и
+          управляет виджетами от вашего имени.
+        </p>
+        <button appearance="primary" size="l" tuiButton type="button" (click)="next()">
+          <img alt="" class="twitch-img" src="icons/svg/twitch.svg" />
+          Подключить аккаунт
+        </button>
+      }
+      @case (1) {
+      <span class="jk-icon-tile jk-icon-tile-cyan onboard-icon">
+        <tui-icon icon="@tui.sliders-horizontal" />
+      </span>
+      <h1 class="jk-h3">Настройте порог AI</h1>
+      <p class="jk-body-sm jk-muted onboard-sub">
+        Советы ниже порога не попадут в жюри. Сейчас порог — {{ threshold() }}%: чат не увидит
+        спам, но не пропустит живые идеи.
+      </p>
+      <div class="onboard-slider">
+        <input
+          aria-label="Порог доверия AI"
+          max="100"
+          min="0"
+          type="range"
+          [value]="threshold()"
+          (input)="threshold.set(+$any($event.target).value)"
+          tuiSlider
+          />
+          <span class="onboard-value jk-numeric">{{ threshold() }}%</span>
+        </div>
+      }
+      @default {
+      <span class="jk-icon-tile jk-icon-tile-green onboard-icon">
+        <tui-icon icon="@tui.blocks" />
+      </span>
+      <h1 class="jk-h3">Добавьте первый виджет</h1>
+      <p class="jk-body-sm jk-muted onboard-sub">
+        Скопируйте URL источника и вставьте его в OBS. Прозрачный фон и автозапуск уже
+        настроены.
+      </p>
+      <a appearance="primary" size="l" tuiButton routerLink="/app/widgets">
+        Открыть библиотеку виджетов
+      </a>
+    }
+  }
+</div>
+
+<footer class="onboard-foot">
+  <button appearance="flat" tuiButton type="button" [disabled]="step() === 0" (click)="prev()">
+    Назад
+  </button>
+
+  @if (step() < 2) {
+    <button appearance="jkit-tint" tuiButton type="button" (click)="next()">Далее</button>
+  } @else {
+    <a appearance="jkit-tint" tuiButton routerLink="/app/dashboard">В панель</a>
+  }
+</footer>
+</div>
+</div>

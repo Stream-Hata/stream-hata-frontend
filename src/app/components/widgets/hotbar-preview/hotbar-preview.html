@@ -1,0 +1,19 @@
+<div class="hotbar-preview" [class]="'hotbar-preview-' + size()">
+  @for (cell of cells(); track $index) {
+    <div class="hotbar-cell" [class.hotbar-cell-empty]="!cell.platform">
+      @if (cell.platform) {
+        <img
+          alt=""
+          class="hotbar-icon"
+          [alt]="cell.platform.name"
+          [src]="icon(cell.platform)"
+          />
+          @if (labels()) {
+            <span class="hotbar-label">{{ cell.platform.name }}</span>
+          }
+        } @else {
+          <span class="hotbar-empty">+</span>
+        }
+      </div>
+    }
+  </div>

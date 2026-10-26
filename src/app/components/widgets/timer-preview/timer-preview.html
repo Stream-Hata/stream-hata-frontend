@@ -1,0 +1,35 @@
+<div
+  class="timer"
+  [style.alignItems]="alignItems()"
+  [style.textAlign]="textAlign()"
+  [class.timer-running]="running()"
+  [class.timer-countdown]="countdown()"
+  [class.timer-countup]="!countdown()"
+  [class.timer-large]="size() === 'large'"
+  [class.timer-medium]="size() === 'medium'"
+  [class.timer-small]="size() === 'small'"
+>
+  @if (showModeLabel()) {
+    <span class="mode-label">{{ modeLabel() }}</span>
+  }
+
+  @if (style() === 'labelled' && showLabel()) {
+    <span class="label" [style.color]="textColor()">{{ label() }}</span>
+  }
+
+  <span
+    class="value"
+    [style.font-family]="fontFamily()"
+    [style.color]="textColor()"
+  >{{ time() }}</span>
+
+  @if (showProgress()) {
+    <span class="progress">
+      <span
+        class="progress-fill"
+        [style.width.%]="progress()"
+        [style.background]="progressColor()"
+      ></span>
+    </span>
+  }
+</div>

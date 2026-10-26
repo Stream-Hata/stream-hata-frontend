@@ -1,0 +1,172 @@
+<div class="jk-page">
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">События</h1>
+      <p class="jk-caption">План эфиров, голосования, таймеры и достижения канала.</p>
+    </div>
+
+    <div class="jk-page-actions">
+      <button appearance="primary" tuiButton type="button" (click)="formOpen.set(!formOpen())">
+        <tui-icon icon="@tui.plus" />
+        {{ formOpen() ? 'Скрыть форму' : 'Создать событие' }}
+      </button>
+    </div>
+  </header>
+
+  @if (formOpen()) {
+    <section class="jk-card event-form" [formGroup]="eventForm">
+      <h2 class="jk-h4">Новое событие</h2>
+
+      <tui-textfield>
+        <input
+          aria-label="Название события"
+          placeholder="Например: Забег по чату"
+          formControlName="title"
+          tuiInput
+          /></tui-textfield>
+
+        <tui-textfield tuiChevron>
+          <input
+            aria-label="Тип события"
+            [readonly]="true"
+            [value]="typeLabels[typeValues.indexOf(eventForm.controls.type.value)]"
+            tuiInput
+            tuiSelectLike
+          />
+          <tui-data-list-wrapper
+            *tuiDropdown
+            [items]="typeLabels"
+            (itemClick)="eventForm.controls.type.setValue(typeValues[typeLabels.indexOf($event)])"
+          ></tui-data-list-wrapper>
+        </tui-textfield>
+
+        <tui-textfield>
+          <input
+            aria-label="Дата и время события"
+            type="datetime-local"
+            formControlName="startsAt"
+            tuiInput
+            /></tui-textfield>
+
+            <div class="editor-actions">
+            <button
+              type="button"
+              [disabled]="!title().trim()"
+              (click)="create()"
+              appearance="primary"
+              tuiButton
+            >
+              Создать
+            </button>
+            <button appearance="secondary" tuiButton type="button" (click)="formOpen.set(false)">
+              Отмена
+            </button>
+          </div>
+        </section>
+      }
+
+      <div class="toolbar">
+        <tui-textfield class="toolbar-search">
+          <tui-icon icon="@tui.search" />
+          <input
+            aria-label="Поиск событий"
+            placeholder="Поиск событий..."
+            type="search"
+            [value]="search()"
+            (input)="search.set($any($event.target).value)"
+            tuiInput
+            /></tui-textfield>
+
+            <div class="toolbar-chips">
+            @for (item of filters; track item.value) {
+            <button
+                class="jk-chip toolbar-chip"
+                type="button"
+                [class.jk-chip-active]="filter() === item.value"
+                (click)="filter.set(item.value)"
+              >
+                {{ item.label }}
+              </button>
+            }
+          </div>
+
+          <button
+            class="toolbar-reset"
+            size="s"
+            type="button"
+            (click)="reset()"
+            appearance="flat"
+            tuiButton
+          >
+            Сбросить
+          </button>
+        </div>
+
+        @if (rows().length) {
+          <div class="table-wrap">
+            <table tuiTable>
+              <thead tuiThead>
+                <tr>
+                  <th tuiTh>Событие</th>
+                  <th tuiTh>Тип</th>
+                  <th tuiTh>Дата</th>
+                  <th tuiTh>Статус</th>
+                  <th tuiTh>Действия</th>
+                </tr>
+              </thead>
+
+              <tbody tuiTbody>
+                @for (event of rows(); track event.id) {
+                  <tr>
+                    <td tuiTd>
+                      <span class="event-cell">
+                        <span class="event-cell-icon">
+                          <tui-icon [icon]="event.typeIcon" />
+                        </span>
+                        {{ event.title }}
+                      </span>
+                    </td>
+                    <td tuiTd>{{ event.typeLabel }}</td>
+                    <td tuiTd>{{ event.dateLabel }}</td>
+                    <td tuiTd>
+                      <span [appearance]="event.statusBadge" tuiBadge>{{ event.statusLabel }}</span>
+                    </td>
+                    <td tuiTd class="td-actions">
+                      @if (event.status !== 'done') {
+                        <button
+                          size="s"
+                          type="button"
+                          aria-label="Завершить событие"
+                          (click)="setStatus(event.id, 'done')"
+                          appearance="flat"
+                          iconStart="@tui.check"
+                          tuiIconButton
+                        ></button>
+                      }
+                      <button
+                        class="danger-action"
+                        size="s"
+                        type="button"
+                        aria-label="Удалить событие"
+                        (click)="remove(event.id)"
+                        appearance="flat"
+                        iconStart="@tui.trash-2"
+                        tuiIconButton
+                      ></button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="jk-card jk-empty">
+            <span class="jk-empty-icon"><tui-icon icon="@tui.calendar-days" /></span>
+            <span class="jk-h4">Событий пока нет</span>
+            <span
+              class="jk-body-sm jk-muted"
+            >Создайте первое событие — оно появится здесь и на дашборде.</span
+          >
+        </div>
+      }
+    </div>

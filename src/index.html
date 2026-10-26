@@ -1,13 +1,44 @@
 <!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<title>RGG Inventory</title>
-		<base href="/" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="icon" type="image/x-icon" href="favicon.ico" />
-	</head>
-	<body>
-		<app-root></app-root>
-	</body>
-</html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <title>Nameless StreamHata — чат решает. Стрим живёт.</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Nameless StreamHata — чат-жюри, OBS-виджеты, события и таймеры для стримеров Twitch."
+      />
+      <meta name="theme-color" content="#0F0817" />
+      <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+      <link rel="alternate icon" type="image/x-icon" href="favicon.ico" />
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Audiowide&family=Bebas+Neue&family=Bungee&family=Caveat:wght@400;700&family=Chakra+Petch:wght@400;600;700&family=Cinzel:wght@600;700&family=Comfortaa:wght@400;600;700&family=Exo+2:wght@400;600;700&family=Fira+Code:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600;700&family=Inconsolata:wght@400;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Jost:wght@400;600;700&family=Lobster&family=Manrope:wght@400;600;700;800&family=Michroma&family=Monoton&family=Montserrat:wght@400;600;700&family=Nunito:wght@400;600;700;800&family=Orbitron:wght@400..900&family=Oswald:wght@400;600;700&family=Pacifico&family=Playfair+Display:wght@600;700&family=Poppins:wght@400;600;700&family=Press+Start+2P&family=Rajdhani:wght@400;600;700&family=Raleway:wght@400;600;700&family=Righteous&family=Roboto+Mono:wght@400;600;700&family=Rubik:wght@400;600;700&family=Russo+One&family=Saira+Stencil+One&family=Silkscreen:wght@400;700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syncopate:wght@400;700&family=Tektur:wght@400..900&family=Unbounded:wght@400..900&family=VT323&display=swap"
+        rel="stylesheet"
+        />
+      <link
+        href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css"
+        rel="stylesheet"
+        />
+      </head>
+      <body>
+        <div id="boot-loader" class="boot-loader" role="status" aria-label="Загрузка приложения">
+          <span class="boot-spinner"></span>
+          <strong>Nameless StreamHata</strong>
+          <span>Загружаем панель…</span>
+        </div>
+        <app-root></app-root>
+        <style>
+          html, body { margin: 0; min-height: 100%; background: #0f0817; color: #f5eaff; }
+          .boot-loader { position: fixed; inset: 0; z-index: 99999; display: flex; gap: 14px; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(700px 420px at 50% 0%, #35142d, #0f0817 70%); font-family: Inter, system-ui, sans-serif; }
+          .boot-loader strong { font-size: 18px; letter-spacing: .01em; }
+          .boot-loader span:last-child { color: #b9a8cf; font-size: 12px; }
+          .boot-spinner { width: 34px; height: 34px; border: 3px solid #3b214d; border-top-color: var(--accent-primary); border-radius: 50%; animation: boot-spin .8s linear infinite; }
+          .boot-loader { transition: opacity .25s ease; }
+          .boot-loader-hidden { pointer-events: none; opacity: 0; }
+          @keyframes boot-spin { to { transform: rotate(360deg); } }
+        </style>
+      </body>
+    </html>

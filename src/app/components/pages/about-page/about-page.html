@@ -1,0 +1,93 @@
+<div class="about">
+  <div class="container">
+    <header class="about-nav">
+      <a routerLink="/" class="about-logo">
+        <app-logo />
+      </a>
+      <a routerLink="/" tuiLink>← На главную</a>
+    </header>
+
+    <section class="about-hero">
+      <span class="about-avatar">NA</span>
+      <div class="about-copy">
+        <span class="eyebrow">Стример</span>
+        <h1 class="jk-display">NamelessAdventure</h1>
+        <p class="about-lead">
+          Стример, который превращает чат в соучастника: зрители голосуют, советуют, спорят и
+          решают, что будет дальше. Nameless StreamHata вырос из этих эфиров.
+        </p>
+
+        <div class="about-links">
+          <a
+            class="jk-btn jk-btn-secondary"
+            href="https://www.twitch.tv/namelessadventure"
+            rel="noopener"
+            target="_blank"
+            tuiButton
+          >
+            <tui-icon icon="@tui.tv" />
+            Twitch
+          </a>
+          <a
+            class="jk-btn jk-btn-secondary"
+            href="https://t.me/"
+            rel="noopener"
+            target="_blank"
+            tuiButton
+          >
+            <tui-icon icon="@tui.send" />
+            Telegram
+          </a>
+          <a
+            class="jk-btn jk-btn-secondary"
+            href="https://youtube.com/"
+            rel="noopener"
+            target="_blank"
+            tuiButton
+          >
+            <tui-icon icon="@tui.play" />
+            YouTube
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="about-grid">
+      <article class="jk-card about-card">
+        <h2 class="jk-h4">Что на стримах</h2>
+        <ul class="about-list">
+          <li>Сюжетные забеги и хардкорные челленджи</li>
+          <li>Чат-жюри: зрители решают, доверять ли совету</li>
+          <li>Ретро и современные консоли, коллекции</li>
+          <li>Интерактив: баллы, дуэли, викторины</li>
+        </ul>
+      </article>
+
+      <article class="jk-card about-card">
+        <h2 class="jk-h4">Расписание</h2>
+        <ul class="about-list">
+          <li>Среда, пятница, выходные — вечерние эфиры</li>
+          <li>Анонсы и переносы — в Telegram</li>
+          <li>Записи и нарезки — на YouTube</li>
+        </ul>
+        <p class="jk-caption">Время и дни могут меняться — следите за анонсами.</p>
+      </article>
+
+      <article class="jk-card about-card">
+        <h2 class="jk-h4">Почему Nameless StreamHata</h2>
+        <p class="jk-body-sm jk-muted">
+          Инструменты для эфира делались под конкретный канал: чат-жюри, виджеты OBS, музыка из
+          ссылок, донаты и баллы. Теперь это доступно всем стримерам.
+        </p>
+        <a class="jk-action-link" routerLink="/app/dashboard">
+          Открыть панель
+          <tui-icon icon="@tui.arrow-right" />
+        </a>
+      </article>
+    </section>
+
+    <footer class="about-footer jk-caption">
+      Nameless StreamHata · сделано для стримеров, которые слушают чат
+    </footer>
+  </div>
+</div>

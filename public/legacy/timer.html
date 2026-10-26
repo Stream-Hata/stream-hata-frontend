@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Timer — legacy</title>
+<style>
+html, body {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	background: transparent;
+	overflow: hidden;
+}
+canvas {
+	display: block;
+	width: 460px;
+	height: 180px;
+}
+</style>
+</head>
+<body>
+<canvas id="timer" width="460" height="180"></canvas>
+<script>
+(function () {
+	var canvas = document.getElementById('timer');
+	var ctx = canvas.getContext('2d');
+	var base = 0;
+	var running = false;
+	var syncedAt = Date.now();
+
+	function load() {
+		var request = new XMLHttpRequest();
+		request.open('GET', '/rgg-sync', true);
+		request.onload = function () {
+			try {
+				var state = JSON.parse(request.responseText).timerState;
+				var time = state.time || {};
+				base = (time.hours || 0) * 3600 + (time.minutes || 0) * 60 + (time.seconds || 0);
+				running = state.mode !== 'pause';
+				syncedAt = Date.now();
+			} catch (error) {}
+		};
+		request.send();
+	}
+
+	function format(total) {
+		var hours = Math.floor(total / 3600);
+		var minutes = Math.floor((total % 3600) / 60);
+		var seconds = total % 60;
+		return ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2) + ':' + ('0' + seconds).slice(-2);
+	}
+
+	function draw() {
+		var elapsed = running ? Math.max(0, Math.floor((Date.now() - syncedAt) / 1000)) : 0;
+		var value = format(base + elapsed);
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'middle';
+		ctx.fillStyle = 'rgba(196,181,215,0.9)';
+		ctx.font = '600 12px sans-serif';
+		ctx.fillText('ДО СТАРТА СОБЫТИЯ', 230, 42);
+		ctx.fillStyle = running ? '#ff2ea6' : '#f5eaff';
+		ctx.font = '800 44px sans-serif';
+		ctx.fillText(value, 230, 92);
+		ctx.fillStyle = '#ff2ea6';
+		ctx.beginPath();
+		ctx.arc(196, 134, 4, 0, Math.PI * 2);
+		ctx.fill();
+		ctx.textAlign = 'left';
+		ctx.font = '700 12px sans-serif';
+		ctx.fillText(running ? 'LIVE' : 'PAUSE', 208, 134);
+	}
+
+	load();
+	setInterval(load, 1000);
+	setInterval(draw, 200);
+	draw();
+})();
+</script>
+</body>
+</html>

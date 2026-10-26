@@ -1,0 +1,66 @@
+:host {
+	display: block;
+	padding: 16px;
+	color: var(--text-primary);
+	font-family: var(--font-ui);
+}
+
+.overlay-stage {
+	display: flex;
+	min-height: 100vh;
+}
+
+.timer-card {
+	display: flex;
+	gap: var(--space-xs);
+	flex-direction: column;
+	align-items: flex-start;
+	width: 100%;
+	max-width: 340px;
+}
+
+.timer-label {
+	color: var(--text-secondary);
+	font: 600 11px/14px var(--font-ui);
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.timer-value {
+	font: 700 64px/68px var(--tui-font-text-mono);
+	letter-spacing: 0.01em;
+	font-variant-numeric: tabular-nums;
+}
+
+.timer-medium .timer-value {
+	font-size: 48px;
+	line-height: 52px;
+}
+
+.timer-small .timer-value {
+	font-size: 28px;
+	line-height: 32px;
+}
+
+.timer-progress {
+	width: 100%;
+	height: 4px;
+	overflow: hidden;
+	border-radius: 999px;
+	background: rgb(255, 255, 255, 0.1);
+}
+
+ .timer-progress-fill {
+	display: block;
+	height: 100%;
+	transition: width 0.3s linear;
+	border-radius: inherit;
+	background: #22e0ff;
+}
+
+@media (width <= 560px) {
+	.timer-value {
+		font-size: 48px;
+		line-height: 52px;
+	}
+}

@@ -16,7 +16,7 @@ import {
 	withState,
 } from '@ngrx/signals';
 import { DateTime } from 'luxon';
-import { map, tap } from 'rxjs';
+import { map, switchMap, tap, timer } from 'rxjs';
 import { HotbarService } from '../../../shared/services/hotbar.service';
 
 interface AppState {
@@ -40,7 +40,17 @@ export const HotbarStore = signalStore(
 		onInit: () => {
 			service
 				.initialLoad()
-				.pipe(takeUntilDestroyed(destroyRef))
+				.pipe(
+					tap((data) => {
+						patchState(state, {
+							state: data,
+							isLoading: false,
+						});
+					}),
+					switchMap(() => timer(1000, 1000)),
+					switchMap(() => service.initialLoad()),
+					takeUntilDestroyed(destroyRef),
+				)
 				.subscribe({
 					next: (data) => {
 						patchState(state, {
@@ -105,11 +115,7 @@ export const HotbarStore = signalStore(
 		};
 		return {
 			start: (time: DateTime) => {
-				const current = time.plus({
-					second: 1,
-				});
-
-				return sendTime(current, 'play');
+				return sendTime(time, 'play');
 			},
 			pause: (time: DateTime) => {
 				return sendTime(time, 'pause');

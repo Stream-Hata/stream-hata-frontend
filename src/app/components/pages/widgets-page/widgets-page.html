@@ -1,0 +1,593 @@
+<div class="jk-page">
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">{{ i18n.t('widgets.title') }}</h1>
+      <p
+        class="jk-caption"
+      >{{ i18n.t('widgets.subtitle') }}</p>
+    </div>
+  </header>
+
+  <div class="widgets-grid">
+    @if (desktop) {
+      <article class="widget-card">
+        <div class="stage system-stage">
+          <app-system-stats-widget />
+        </div>
+
+        <div class="meta">
+          <div class="meta-row">
+            <div class="meta-text">
+              <h2 class="widget-name">{{ i18n.t('system.title') }}</h2>
+              @if (systemEnabled()) {
+                <span appearance="positive" tuiBadge>{{ i18n.t('common.enabled') }}</span>
+              } @else {
+                <span appearance="neutral" tuiBadge>{{ i18n.t('common.disabled') }}</span>
+              }
+            </div>
+            <input
+              [attr.aria-label]="i18n.t('system.toggleAria')"
+              type="checkbox"
+              [checked]="systemEnabled()"
+              (change)="toggleSystem($any($event.target).checked)"
+              tuiSwitch
+            />
+          </div>
+
+          <div class="widget-actions">
+            <a routerLink="/app/widgets/system/config" tuiLink>{{ i18n.t('common.configure') }}</a>
+            <button
+              size="s"
+              type="button"
+              [tuiButtonCopy]="systemUrl()"
+              appearance="flat"
+              tuiButton
+            >
+              Копировать URL
+            </button>
+          </div>
+        </div>
+      </article>
+    }
+
+    <article class="widget-card">
+      <div class="stage jk-checkerboard">
+        <app-hotbar-preview [slots]="hotbarConfig().hotbarSlots ?? []" />
+      </div>
+
+      <div class="meta">
+        <div class="meta-row">
+          <div class="meta-text">
+            <h2 class="widget-name">{{ i18n.t('widgets.hotbar') }}</h2>
+            @if (isEnabled('hotbar')) {
+              <span appearance="positive" tuiBadge>{{ i18n.t('common.enabled') }}</span>
+            } @else {
+              <span appearance="neutral" tuiBadge>{{ i18n.t('common.disabled') }}</span>
+            }
+          </div>
+          <input
+            [attr.aria-label]="i18n.t('widgets.enable') + ' ' + i18n.t('widgets.hotbar')"
+            type="checkbox"
+            [checked]="isEnabled('hotbar')"
+            (change)="toggle('hotbar', $any($event.target).checked)"
+            tuiSwitch
+            />
+          </div>
+
+          <div class="widget-actions">
+            <a routerLink="/app/widgets/hotbar/config" tuiLink>{{ i18n.t('common.configure') }}</a>
+            <a routerLink="/app/roulette" tuiLink>{{ i18n.t('widgets.spinRoulette') }}</a>
+            <button
+              size="s"
+              type="button"
+              [tuiButtonCopy]="overlayUrl('hotbar')"
+              appearance="flat"
+              tuiButton
+            >
+              Копировать URL
+            </button>
+          </div>
+        </div>
+      </article>
+
+    <article class="widget-card">
+      <div class="stage jk-checkerboard">
+        <app-mini-wheel [accent]="rouletteConfig().appearance.accent" />
+      </div>
+
+      <div class="meta">
+        <div class="meta-row">
+          <div class="meta-text">
+            <h2 class="widget-name">{{ i18n.t('widgets.roulette') }}</h2>
+            @if (isEnabled('roulette')) {
+              <span appearance="positive" tuiBadge>{{ i18n.t('common.enabled') }}</span>
+            } @else {
+              <span appearance="neutral" tuiBadge>{{ i18n.t('common.disabled') }}</span>
+            }
+          </div>
+          <input
+            [attr.aria-label]="i18n.t('widgets.enable') + ' ' + i18n.t('widgets.roulette')"
+            type="checkbox"
+            [checked]="isEnabled('roulette')"
+            (change)="toggle('roulette', $any($event.target).checked)"
+            tuiSwitch
+            />
+          </div>
+
+          <div class="widget-actions">
+            <a routerLink="/app/widgets/roulette/config" tuiLink>{{ i18n.t('common.configure') }}</a>
+            <a routerLink="/app/roulette" tuiLink>{{ i18n.t('widgets.launch') }}</a>
+            <button
+              size="s"
+              type="button"
+              [tuiButtonCopy]="overlayUrl('roulette')"
+              appearance="flat"
+              tuiButton
+            >
+              Копировать URL
+            </button>
+          </div>
+        </div>
+      </article>
+
+    <article class="widget-card">
+      <div class="stage jk-checkerboard">
+        <app-jury-preview [compact]="true" />
+      </div>
+
+      <div class="meta">
+        <div class="meta-row">
+          <div class="meta-text">
+            <h2 class="widget-name">{{ i18n.t('widgets.jury') }}</h2>
+            @if (isEnabled('jury')) {
+              <span appearance="positive" tuiBadge>{{ i18n.t('common.enabled') }}</span>
+            } @else {
+              <span appearance="neutral" tuiBadge>{{ i18n.t('common.disabled') }}</span>
+            }
+          </div>
+          <input
+            [attr.aria-label]="i18n.t('widgets.enable') + ' ' + i18n.t('widgets.jury')"
+            type="checkbox"
+            [checked]="isEnabled('jury')"
+            (change)="toggle('jury', $any($event.target).checked)"
+            tuiSwitch
+            />
+          </div>
+
+          <div class="widget-actions">
+            <a routerLink="/app/widgets/jury/config" tuiLink>{{ i18n.t('common.configure') }}</a>
+            <button
+              size="s"
+              type="button"
+              [tuiButtonCopy]="overlayUrl('jury')"
+              appearance="flat"
+              tuiButton
+            >
+              Копировать URL
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="widget-card">
+        <div class="stage jk-checkerboard timer-stage">
+          <app-timer-preview [showMode]="true" />
+          <app-timer class="timer-controls-only" />
+        </div>
+
+        <div class="meta">
+          <div class="meta-row">
+            <div class="meta-text">
+              <h2 class="widget-name">{{ i18n.t('widgets.timer') }}</h2>
+              @if (isEnabled('timer')) {
+                <span appearance="positive" tuiBadge>{{ i18n.t('common.enabled') }}</span>
+              } @else {
+                <span appearance="neutral" tuiBadge>{{ i18n.t('common.disabled') }}</span>
+              }
+            </div>
+            <input
+              [attr.aria-label]="i18n.t('widgets.enable') + ' ' + i18n.t('widgets.timer')"
+              type="checkbox"
+              [checked]="isEnabled('timer')"
+            (change)="toggle('timer', $any($event.target).checked)"
+              tuiSwitch
+              />
+            </div>
+
+            <div class="widget-actions">
+              <a routerLink="/app/widgets/timer/config" tuiLink>{{ i18n.t('common.configure') }}</a>
+              <button
+                size="s"
+                type="button"
+                [tuiButtonCopy]="overlayUrl('timer')"
+                appearance="flat"
+                tuiButton
+              >
+                Копировать URL
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <article class="widget-card">
+          <div class="stage jk-checkerboard">
+            <app-alert-preview />
+          </div>
+
+          <div class="meta">
+            <div class="meta-row">
+              <div class="meta-text">
+                <h2 class="widget-name">{{ i18n.t('widgets.alerts') }}</h2>
+                @if (isEnabled('alerts')) {
+                  <span appearance="positive" tuiBadge>{{ i18n.t('common.enabled') }}</span>
+                } @else {
+                  <span appearance="neutral" tuiBadge>{{ i18n.t('common.disabled') }}</span>
+                }
+              </div>
+              <input
+                [attr.aria-label]="i18n.t('widgets.enable') + ' ' + i18n.t('widgets.alerts')"
+                type="checkbox"
+                [checked]="isEnabled('alerts')"
+            (change)="toggle('alerts', $any($event.target).checked)"
+                tuiSwitch
+                />
+              </div>
+
+              <div class="widget-actions">
+                <a routerLink="/app/widgets/alerts/config" tuiLink>{{ i18n.t('common.configure') }}</a>
+                <button
+                  size="s"
+                  type="button"
+                  [tuiButtonCopy]="overlayUrl('alerts')"
+                  appearance="flat"
+                  tuiButton
+                >
+                  Копировать URL
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="widget-card">
+            <div class="stage jk-checkerboard">
+              <div class="event-preview">
+                <div class="event-preview-row">
+                  <tui-icon icon="@tui.plus" />
+                  <div class="event-preview-text">
+                    <span>{{ i18n.t('widgets.channelEvent') }}</span>
+                    <span class="jk-caption">{{ i18n.t('widgets.realtime') }}</span>
+                  </div>
+                </div>
+                <span class="event-preview-active">
+                  <span class="jk-dot jk-dot-online"></span>
+                  {{ i18n.t('widgets.active') }}
+                </span>
+              </div>
+            </div>
+
+            <div class="meta">
+              <div class="meta-row">
+                <div class="meta-text">
+                  <h2 class="widget-name">{{ i18n.t('widgets.events') }}</h2>
+                  @if (isEnabled('events')) {
+                    <span appearance="positive" tuiBadge>{{ i18n.t('common.enabled') }}</span>
+                  } @else {
+                    <span appearance="neutral" tuiBadge>{{ i18n.t('common.disabled') }}</span>
+                  }
+                </div>
+                <input
+                  [attr.aria-label]="i18n.t('widgets.enable') + ' ' + i18n.t('widgets.events')"
+                  type="checkbox"
+                  [checked]="isEnabled('events')"
+            (change)="toggle('events', $any($event.target).checked)"
+                  tuiSwitch
+                  />
+                </div>
+
+                <div class="widget-actions">
+                  <a routerLink="/app/widgets/events/config" tuiLink>{{ i18n.t('common.configure') }}</a>
+                  <button
+                    size="s"
+                    type="button"
+                    [tuiButtonCopy]="overlayUrl('events')"
+                    appearance="flat"
+                    tuiButton
+                  >
+                    Копировать URL
+                  </button>
+                </div>
+              </div>
+            </article>
+
+            <article class="widget-card">
+              <div class="stage jk-checkerboard">
+                <div class="audio-preview">
+                  <tui-icon icon="@tui.volume-2" />
+                  <span class="jk-caption">{{ i18n.t('widgets.alertSound') }}</span>
+                </div>
+              </div>
+
+              <div class="meta">
+                <div class="meta-row">
+                  <div class="meta-text">
+                    <h2 class="widget-name">{{ i18n.t('widgets.audio') }}</h2>
+                    @if (isEnabled('audio')) {
+                      <span appearance="positive" tuiBadge>{{ i18n.t('common.enabled') }}</span>
+                    } @else {
+                      <span appearance="neutral" tuiBadge>{{ i18n.t('common.disabled') }}</span>
+                    }
+                  </div>
+                  <input
+                    [attr.aria-label]="i18n.t('widgets.enable') + ' ' + i18n.t('widgets.audio')"
+                    type="checkbox"
+                    [checked]="isEnabled('audio')"
+            (change)="toggle('audio', $any($event.target).checked)"
+                    tuiSwitch
+                    />
+                  </div>
+
+                  <div class="widget-actions">
+                    <a routerLink="/app/widgets/audio/config" tuiLink>{{ i18n.t('common.configure') }}</a>
+                    <button
+                      size="s"
+                      type="button"
+                      [tuiButtonCopy]="overlayUrl('audio')"
+                      appearance="flat"
+                      tuiButton
+                    >
+                      Копировать URL
+                    </button>
+                  </div>
+                </div>
+              </article>
+
+              <article class="widget-card">
+                <div class="stage jk-checkerboard">
+                  <app-mini-wheel accent="#22E0FF" variant="wheel" />
+                </div>
+
+                <div class="meta">
+                  <div class="meta-row">
+                    <div class="meta-text">
+                      <h2 class="widget-name">Wheel</h2>
+                      @if (isEnabled('wheel')) {
+                        <span appearance="positive" tuiBadge>{{ i18n.t('common.enabled') }}</span>
+                      } @else {
+                        <span appearance="neutral" tuiBadge>{{ i18n.t('common.disabled') }}</span>
+                      }
+                    </div>
+                    <input
+                      aria-label="Включить виджет Wheel"
+                      type="checkbox"
+                      [checked]="isEnabled('wheel')"
+            (change)="toggle('wheel', $any($event.target).checked)"
+                      tuiSwitch
+                      />
+                    </div>
+
+                    <div class="widget-actions">
+                      <a routerLink="/app/widgets/wheel/config" tuiLink>{{ i18n.t('common.configure') }}</a>
+                      <button
+                        size="s"
+                        type="button"
+                        [tuiButtonCopy]="overlayUrl('wheel')"
+                        appearance="flat"
+                        tuiButton
+                      >
+                        Копировать URL
+                      </button>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="widget-card">
+                  <div class="stage jk-checkerboard">
+                    <div class="audio-preview">
+                      <tui-icon icon="@tui.message-circle" />
+                      <span class="jk-caption">Live chat · OBS</span>
+                    </div>
+                  </div>
+
+                  <div class="meta">
+                    <div class="meta-row">
+                      <div class="meta-text">
+                        <h2 class="widget-name">Chat</h2>
+                        @if (isEnabled('chat')) {
+                          <span appearance="positive" tuiBadge>{{ i18n.t('common.enabled') }}</span>
+                        } @else {
+                          <span appearance="neutral" tuiBadge>{{ i18n.t('common.disabled') }}</span>
+                        }
+                      </div>
+                      <input
+                        aria-label="Включить виджет Chat"
+                        type="checkbox"
+                        [checked]="isEnabled('chat')"
+            (change)="toggle('chat', $any($event.target).checked)"
+                        tuiSwitch
+                        />
+                      </div>
+
+                      <div class="widget-actions">
+                        <a routerLink="/app/widgets/chat/config" tuiLink>{{ i18n.t('common.configure') }}</a>
+                        <button
+                          size="s"
+                          type="button"
+                          [tuiButtonCopy]="overlayUrl('chat')"
+                          appearance="flat"
+                          tuiButton
+                        >
+                          Копировать URL
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+
+                  <article class="widget-card">
+                    <div class="stage jk-checkerboard">
+                      <div class="audio-preview">
+                        <tui-icon icon="@tui.trophy" />
+                        <span class="jk-caption">Top points · OBS</span>
+                      </div>
+                    </div>
+
+                    <div class="meta">
+                      <div class="meta-row">
+                        <div class="meta-text">
+                          <h2 class="widget-name">Top Points</h2>
+                          @if (isEnabled('points')) {
+                            <span appearance="positive" tuiBadge>{{ i18n.t('common.enabled') }}</span>
+                          } @else {
+                            <span appearance="neutral" tuiBadge>{{ i18n.t('common.disabled') }}</span>
+                          }
+                        </div>
+                        <input
+                          aria-label="Включить виджет Top Points"
+                          type="checkbox"
+                          [checked]="isEnabled('points')"
+            (change)="toggle('points', $any($event.target).checked)"
+                          tuiSwitch
+                          />
+                        </div>
+
+                        <div class="widget-actions">
+                          <a routerLink="/app/widgets/points/config" tuiLink>{{ i18n.t('common.configure') }}</a>
+                          <button
+                            size="s"
+                            type="button"
+                            [tuiButtonCopy]="overlayUrl('points')"
+                            appearance="flat"
+                            tuiButton
+                          >
+                            Копировать URL
+                          </button>
+                        </div>
+                      </div>
+                    </article>
+
+                    <article class="widget-card">
+                      <div class="stage jk-checkerboard">
+                        <div class="audio-preview">
+                          <tui-icon icon="@tui.music" />
+                          <span class="jk-caption">Now playing · OBS</span>
+                        </div>
+                      </div>
+
+                      <div class="meta">
+                        <div class="meta-row">
+                          <div class="meta-text">
+                            <h2 class="widget-name">Music</h2>
+                            @if (isEnabled('music')) {
+                              <span appearance="positive" tuiBadge>{{ i18n.t('common.enabled') }}</span>
+                            } @else {
+                              <span appearance="neutral" tuiBadge>{{ i18n.t('common.disabled') }}</span>
+                            }
+                          </div>
+                          <input
+                            aria-label="Включить виджет Music"
+                            type="checkbox"
+                            [checked]="isEnabled('music')"
+            (change)="toggle('music', $any($event.target).checked)"
+                            tuiSwitch
+                            />
+                          </div>
+
+                          <div class="widget-actions">
+                            <a routerLink="/app/widgets/music/config" tuiLink>{{ i18n.t('common.configure') }}</a>
+                            <button
+                              size="s"
+                              type="button"
+                              [tuiButtonCopy]="overlayUrl('music')"
+                              appearance="flat"
+                              tuiButton
+                            >
+                              Копировать URL
+                            </button>
+                          </div>
+                        </div>
+                      </article>
+
+                      <article class="widget-card">
+                        <div class="stage jk-checkerboard">
+                          <div class="audio-preview">
+                            <tui-icon icon="@tui.music" />
+                            <span class="jk-caption">Now playing · OBS</span>
+                          </div>
+                        </div>
+
+                        <div class="meta">
+                          <div class="meta-row">
+                            <div class="meta-text">
+                              <h2 class="widget-name">Now Playing</h2>
+                              @if (isEnabled('nowplaying')) {
+                                <span appearance="positive" tuiBadge>{{ i18n.t('common.enabled') }}</span>
+                              } @else {
+                                <span appearance="neutral" tuiBadge>{{ i18n.t('common.disabled') }}</span>
+                              }
+                            </div>
+                            <input
+                              aria-label="Включить виджет Now Playing"
+                              type="checkbox"
+                              [checked]="isEnabled('nowplaying')"
+                              (change)="toggle('nowplaying', $any($event.target).checked)"
+                              tuiSwitch
+                            />
+                          </div>
+
+                          <div class="widget-actions">
+                            <a routerLink="/app/widgets/nowplaying/config" tuiLink>{{ i18n.t('common.configure') }}</a>
+                            <button
+                              size="s"
+                              type="button"
+                              [tuiButtonCopy]="overlayUrl('nowplaying')"
+                              appearance="flat"
+                              tuiButton
+                            >
+                              Копировать URL
+                            </button>
+                          </div>
+                        </div>
+                      </article>
+
+                      <article class="widget-card">
+                        <div class="stage jk-checkerboard">
+                          <div class="audio-preview">
+                            <tui-icon icon="@tui.flame" />
+                            <span class="jk-caption">Watch streak · OBS</span>
+                          </div>
+                        </div>
+
+                        <div class="meta">
+                          <div class="meta-row">
+                            <div class="meta-text">
+                              <h2 class="widget-name">Watch Streak</h2>
+                              @if (isEnabled('streaks')) {
+                                <span appearance="positive" tuiBadge>{{ i18n.t('common.enabled') }}</span>
+                              } @else {
+                                <span appearance="neutral" tuiBadge>{{ i18n.t('common.disabled') }}</span>
+                              }
+                            </div>
+                            <input
+                              aria-label="Включить виджет Watch Streak"
+                              type="checkbox"
+                              [checked]="isEnabled('streaks')"
+            (change)="toggle('streaks', $any($event.target).checked)"
+                              tuiSwitch
+                              />
+                            </div>
+
+                            <div class="widget-actions">
+                              <a routerLink="/app/widgets/streaks/config" tuiLink>{{ i18n.t('common.configure') }}</a>
+                              <button
+                                size="s"
+                                type="button"
+                                [tuiButtonCopy]="overlayUrl('streaks')"
+                                appearance="flat"
+                                tuiButton
+                              >
+                                Копировать URL
+                              </button>
+                            </div>
+                          </div>
+                        </article>
+                      </div>
+                    </div>

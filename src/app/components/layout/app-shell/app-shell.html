@@ -1,0 +1,244 @@
+<div class="shell" [class.shell-sidebar-collapsed]="sidebarCollapsed()">
+  @if (onboarding.virusMode() || onboarding.virusClosing()) {
+    <aside class="virus-banner" [class.virus-banner-closing]="onboarding.virusClosing()" role="alert">
+      <strong>Это приложение является вирусом</strong>
+      <span>Вы решили, что это приложение является вирусом, и используете его на свой страх и риск.</span>
+    </aside>
+  }
+
+  <aside class="sidebar" [class.sidebar-open]="menuOpen()">
+    @if (showSidebarHeader()) {
+      <div class="sidebar-head">
+        <a class="logo" [routerLink]="logoLink" (click)="menuOpen.set(false)">
+          <app-logo />
+        </a>
+        <button
+          class="sidebar-collapse sidebar-collapse-head"
+          type="button"
+          appearance="flat"
+          size="xs"
+          tuiButton
+          (click)="toggleSidebar()"
+        >
+          {{ sidebarCollapsed() ? '»' : '«' }}
+        </button>
+      </div>
+    } @else {
+      <button
+        class="sidebar-collapse sidebar-collapse-floating"
+        type="button"
+        appearance="flat"
+        size="xs"
+        tuiButton
+        (click)="toggleSidebar()"
+      >
+        {{ sidebarCollapsed() ? '»' : '«' }}
+      </button>
+    }
+
+    <nav class="nav">
+      <span class="nav-group">{{ labels().main }}</span>
+
+      @for (item of mainNav(); track item.link) {
+        <a
+          class="nav-item"
+          [routerLink]="item.link"
+          (click)="menuOpen.set(false)"
+          routerLinkActive="nav-item-active"
+        >
+          <tui-icon [icon]="item.icon" />
+          <span>{{ item.label }}</span>
+        </a>
+      }
+
+      <span class="nav-group">{{ labels().system }}</span>
+
+      <a
+        class="nav-item"
+        (click)="menuOpen.set(false)"
+        routerLink="/app/settings"
+        routerLinkActive="nav-item-active"
+      >
+        <tui-icon icon="@tui.settings" />
+        <span>{{ labels().settings }}</span>
+      </a>
+
+      <a class="nav-item" routerLink="/changelog" (click)="menuOpen.set(false)">
+        <tui-icon icon="@tui.sparkles" />
+        <span>{{ i18n.t('nav.whatsNew') }}</span>
+      </a>
+
+      <a class="nav-item" [href]="faqUrl" target="_blank" rel="noopener" (click)="openFaq($event); menuOpen.set(false)">
+        <tui-icon icon="@tui.circle-help" />
+        <span>FAQ и справка</span>
+      </a>
+
+
+    </nav>
+
+    <a class="sidebar-foot" routerLink="/app/twitch" (click)="menuOpen.set(false)">
+      <tui-icon icon="@tui.alert-triangle" />
+      <span class="foot-text">
+        <span class="foot-title">{{ streamOnline() ? 'В эфире' : labels().offline }}</span>
+        <span class="foot-link">{{ labels().checkTwitch }}</span>
+      </span>
+    </a>
+  </aside>
+
+  @if (menuOpen()) {
+    <button
+      class="backdrop"
+      type="button"
+      aria-label="Закрыть меню"
+      (click)="menuOpen.set(false)"
+    ></button>
+  }
+
+  <div class="main">
+    @if (!desktop) {
+      <header class="topbar">
+        <button
+          class="burger"
+          type="button"
+          aria-label="Открыть меню"
+          (click)="menuOpen.set(true)"
+          appearance="flat"
+          iconStart="@tui.menu"
+          tuiIconButton
+        ></button>
+
+        <h1 class="topbar-title">{{ title() }}</h1>
+
+        <div class="topbar-right">
+          <tui-textfield
+            class="search"
+            tuiTextfieldSize="m"
+            (click)="openSearch()"
+          >
+            <tui-icon icon="@tui.search" />
+            <input
+              [readonly]="true"
+              type="search"
+              [attr.aria-label]="labels().searchLabel"
+              [placeholder]="labels().search"
+              (focus)="openSearch()"
+              tuiInput
+              />
+            </tui-textfield>
+
+            @if (loggedIn()) {
+              <a
+                class="notify"
+                [attr.aria-label]="labels().notifications"
+                routerLink="/app/notifications"
+              >
+                <tui-icon icon="@tui.bell" />
+                @if (unreadCount() > 0) {
+                  <span class="notify-count">{{ unreadCount() > 99 ? '99+' : unreadCount() }}</span>
+                }
+              </a>
+            }
+
+            <a
+              class="profile-link"
+              [attr.aria-label]="labels().profile"
+              routerLink="/app/profile"
+              (mouseenter)="preloadProfile()"
+              (focus)="preloadProfile()"
+            >
+              @if (twitch()?.user?.avatar) {
+                <img class="jk-avatar jk-avatar-purple" [alt]="initials()" [src]="twitch()?.user?.avatar" />
+              } @else {
+                <span class="jk-avatar jk-avatar-purple">{{ initials() }}</span>
+              }
+            </a>
+          </div>
+  </header>
+    }
+
+      <main class="page">
+        <router-outlet />
+      </main>
+    </div>
+  </div>
+
+  @if (desktop) {
+    <div class="desktop-dock" [class.desktop-dock-open]="dockOpen()">
+      <div class="dock-actions" [attr.inert]="dockOpen() ? null : ''" [attr.aria-hidden]="!dockOpen()">
+        <button
+          class="dock-action"
+          type="button"
+          [attr.aria-label]="labels().searchLabel"
+          (click)="openSearch(); dockOpen.set(false)"
+        >
+          <tui-icon icon="@tui.search" />
+          <span>{{ labels().search }}</span>
+        </button>
+
+        <a
+          class="dock-profile"
+          [attr.aria-label]="labels().profile"
+          routerLink="/app/profile"
+          (click)="dockOpen.set(false)"
+          (mouseenter)="preloadProfile()"
+          (focus)="preloadProfile()"
+        >
+          @if (twitch()?.user?.avatar) {
+            <img class="jk-avatar jk-avatar-purple" [alt]="initials()" [src]="twitch()?.user?.avatar" />
+          } @else {
+            <span class="jk-avatar jk-avatar-purple">{{ initials() }}</span>
+          }
+        </a>
+
+        @if (steamMe()?.player; as player) {
+          <a
+            class="dock-profile dock-steam"
+            [attr.aria-label]="'Steam: ' + player.personaName"
+            routerLink="/app/profile"
+            (click)="dockOpen.set(false)"
+            (mouseenter)="preloadProfile()"
+            (focus)="preloadProfile()"
+          >
+            <img
+              class="dock-steam-avatar"
+              [alt]="player.personaName"
+              [src]="player.avatarFull || player.avatar"
+              loading="lazy"
+            />
+          </a>
+        }
+      </div>
+
+      <button
+        class="dock-toggle"
+        type="button"
+        [attr.aria-label]="dockOpen() ? 'Закрыть меню' : 'Открыть меню'"
+        [attr.aria-expanded]="dockOpen()"
+        (click)="dockOpen.set(!dockOpen())"
+      >
+        <tui-icon [icon]="dockOpen() ? '@tui.x' : '@tui.user-round'" />
+      </button>
+    </div>
+  }
+
+  <app-update-notice />
+
+  @if (toast(); as item) {
+    <div class="app-toast" role="status">
+      <strong class="app-toast-title">{{ item.title }}</strong>
+      <span class="app-toast-text">{{ item.text }}</span>
+    </div>
+  }
+
+  <app-search
+    [open]="searchOpen()"
+    [items]="searchItems()"
+    [gameResults]="gameResults()"
+    [title]="labels().searchTitle"
+    [placeholder]="labels().searchPlaceholder"
+    [groupLabels]="{ games: labels().searchGames, pages: labels().searchPages, settings: labels().searchSettings, widgets: labels().searchWidgets }"
+    (queryChange)="search($event)"
+    [hint]="labels().searchHint"
+    (closed)="closeSearch()"
+    (navigate)="navigateSearch($event)"
+  />

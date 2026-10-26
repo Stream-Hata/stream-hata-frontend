@@ -1,15 +1,15 @@
 <div class="slot">
-	@if (data()) {
-		<ng-template [appPlatformGuard]="data()" let-slot>
-			<div class="icon">
-				<img [src]="'icons/platforms/' + slot.icon" alt="" />
-			</div>
-			<div class="text">
-				<span class="name">{{ slot?.name }}</span>
-				<span class="counter">
-					{{ slot?.completedGamesCount }}
-				</span>
-			</div>
-		</ng-template>
-	}
+  @if (data()) {
+    <ng-template [appPlatformGuard]="data()" let-slot>
+      <div class="icon">
+        <img [src]="'icons/platforms/' + slot.icon" alt="" />
+      </div>
+      <div class="text">
+        <span class="name">{{ slot?.name }}</span>
+        <span class="counter">
+          {{ slot?.completedGamesCount }}
+        </span>
+      </div>
+    </ng-template>
+  }
 </div>

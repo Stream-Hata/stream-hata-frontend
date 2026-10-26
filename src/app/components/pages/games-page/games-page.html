@@ -1,0 +1,367 @@
+<div class="jk-page games-page">
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">Игры</h1>
+      <p class="jk-caption">Каталог игр по платформам, тирам и эмуляторам.</p>
+    </div>
+    <div class="jk-page-actions">
+      @if (canImport()) {
+        <button
+          type="button"
+          [disabled]="importing()"
+          [(tuiDropdownOpen)]="importOpen"
+          [tuiDropdown]="importPanel"
+          appearance="primary"
+          tuiButton
+          tuiChevron
+        >
+          {{ importing() ? 'Импортируем…' : 'Импорт из сервиса' }}
+        </button>
+      }
+      <span appearance="info" tuiBadge>{{ response().total }} игр</span>
+    </div>
+
+    <ng-template #importPanel>
+      <div class="import-panel">
+        <span class="jk-label">Источник</span>
+        <tui-textfield tuiChevron>
+          <input
+            aria-label="Источник импорта"
+            [readonly]="true"
+            [formControl]="importSourceControl"
+            tuiInput
+            tuiSelectLike
+            />
+            <tui-data-list-wrapper
+              *tuiDropdown
+              [items]="importSources"
+              (itemClick)="importSourceControl.setValue($event)"
+            ></tui-data-list-wrapper>
+          </tui-textfield>
+
+          <span class="jk-label">Сортировка</span>
+          <tui-textfield tuiChevron>
+            <input
+              aria-label="Сортировка импорта"
+              [readonly]="true"
+              [formControl]="importOrderControl"
+              tuiInput
+              tuiSelectLike
+              />
+              <tui-data-list-wrapper
+                *tuiDropdown
+                [items]="importOrderValues"
+                (itemClick)="importOrderControl.setValue($event)"
+              ></tui-data-list-wrapper>
+            </tui-textfield>
+
+            <div class="import-field">
+              <span class="jk-caption">Лимит</span>
+              <tui-textfield>
+                <input tuiInputNumber
+                  aria-label="Лимит импорта" [min]="10" [max]="5000"
+                 
+                  [formControl]="importLimitControl"
+                  />
+                </tui-textfield>
+              </div>
+
+              <div class="import-field">
+                <span class="jk-caption">Мин. рейтинг</span>
+                <tui-textfield>
+                  <input tuiInputNumber
+                    aria-label="Минимальный рейтинг" [min]="0" [max]="100"
+                   
+                    [formControl]="importMinRatingControl"
+                    />
+                  </tui-textfield>
+                </div>
+
+                <div class="import-field">
+                  <span class="jk-caption">Год от</span>
+                  <tui-textfield>
+                    <input tuiInputNumber
+                      aria-label="Год от" [min]="1950" [max]="2030"
+                     
+                      [formControl]="importYearFromControl"
+                      />
+                    </tui-textfield>
+                  </div>
+
+                  <div class="import-field">
+                    <span class="jk-caption">Год до</span>
+                    <tui-textfield>
+                      <input tuiInputNumber
+                        aria-label="Год до" [min]="1950" [max]="2030"
+                       
+                        [formControl]="importYearToControl"
+                        />
+                      </tui-textfield>
+                    </div>
+
+                    <label class="import-toggle">
+                      <input
+                        aria-label="Только игры, которых нет в RGG"
+                        type="checkbox"
+                        [formControl]="importOnlyMissingControl"
+                        tuiSwitch
+                        />
+                        <span class="jk-caption">Только игры, которых нет в RGG</span>
+                      </label>
+
+                      <button
+                        type="button"
+                        [disabled]="importing()"
+                        (click)="importCatalog()"
+                        appearance="primary"
+                        tuiButton
+                      >
+                        Импортировать
+                      </button>
+
+                      @if (importResult()) {
+                        <span class="import-result jk-caption">{{ importResult() }}</span>
+                      }
+
+                      <form
+                        class="import-search"
+                        (submit)="$event.preventDefault(); importByQuery()"
+                      >
+                        <span class="jk-label">Найти и добавить по названию</span>
+                        <div class="import-search-row">
+                          <tui-textfield class="import-search-input">
+                            <input
+                              aria-label="Название игры для импорта"
+                              placeholder="The Elder Scrolls: Arena"
+                              tuiInput
+                              [formControl]="importQueryControl"
+                            />
+                          </tui-textfield>
+                          <button
+                            type="submit"
+                            appearance="secondary"
+                            tuiButton
+                            [disabled]="importSearching()"
+                          >
+                            {{ importSearching() ? 'Ищем…' : 'Найти и добавить' }}
+                          </button>
+                        </div>
+                        @if (importSearchText()) {
+                          <span class="import-result jk-caption">{{ importSearchText() }}</span>
+                        }
+                      </form>
+                    </div>
+                  </ng-template>
+                </header>
+
+                <section class="games-filters jk-card" [formGroup]="form">
+                  <tui-textfield class="games-search">
+                    <tui-icon icon="@tui.search" />
+                    <input
+                      aria-label="Поиск игры"
+                      placeholder="Название игры…"
+                      type="search"
+                      formControlName="q"
+                      tuiInput
+                      />
+                    </tui-textfield>
+
+                    <tui-textfield tuiChevron>
+                      <input
+                        aria-label="Платформа"
+                        [readonly]="true"
+                        formControlName="platform"
+                        tuiInput
+                        tuiSelectLike
+                        />
+                        <tui-data-list-wrapper
+                          *tuiDropdown
+                          [items]="platformValues()"
+                          (itemClick)="form.controls.platform.setValue($event)"
+                        ></tui-data-list-wrapper>
+                      </tui-textfield>
+
+                      <tui-textfield tuiChevron>
+                        <input
+                          aria-label="Тир"
+                          [readonly]="true"
+                          formControlName="tier"
+                          tuiInput
+                          tuiSelectLike
+                          />
+                          <tui-data-list-wrapper
+                            *tuiDropdown
+                            [items]="tierSelectValues"
+                            (itemClick)="form.controls.tier.setValue($event)"
+                          ></tui-data-list-wrapper>
+                        </tui-textfield>
+
+                        <tui-textfield tuiChevron>
+                          <input
+                            aria-label="Возраст"
+                            [readonly]="true"
+                            formControlName="age"
+                            tuiInput
+                            tuiSelectLike
+                            />
+                            <tui-data-list-wrapper
+                              *tuiDropdown
+                              [items]="ageSelectValues"
+                              (itemClick)="form.controls.age.setValue($event)"
+                            ></tui-data-list-wrapper>
+                          </tui-textfield>
+
+                          <tui-textfield tuiChevron>
+                            <input
+                              aria-label="Эмулятор"
+                              [readonly]="true"
+                              formControlName="emulator"
+                              tuiInput
+                              tuiSelectLike
+                              />
+                              <tui-data-list-wrapper
+                                *tuiDropdown
+                                [items]="emulatorSelectValues"
+                                (itemClick)="form.controls.emulator.setValue($event)"
+                              ></tui-data-list-wrapper>
+                            </tui-textfield>
+
+                            <label class="games-verified">
+                              <input
+                                aria-label="Только из сервисов"
+                                type="checkbox"
+                                formControlName="verified"
+                                tuiSwitch
+                                />
+                                <span class="jk-caption">Только из сервисов</span>
+                              </label>
+                            </section>
+
+                            @if (loading()) {
+                              <div class="games-state jk-card">
+                                <tui-icon icon="@tui.loader" />
+                                <span>Загружаем игры…</span>
+                              </div>
+                            } @else if (response().items.length) {
+                              <div class="games-grid">
+                                @for (game of response().items; track game.slug) {
+                                  <a class="game-card" [routerLink]="['/app/games', game.slug]">
+                                    <div class="game-cover">
+                                      @if (game.cover) {
+                                        <img alt="" [attr.src]="imageUrl(game.cover)" loading="lazy" />
+                                      } @else {
+                                        <span
+                                          class="game-cover-fallback"
+                                        >{{ initials(game.title) }}</span>
+                                      }
+
+                                      @if (game.tier !== 'none') {
+                                        <span class="game-tier" [class]="'game-tier-' + game.tier">
+                                          {{ tierLabel(game.tier) }}
+                                        </span>
+                                      }
+                                    </div>
+
+                                    <div class="game-body">
+                                      <h2 class="game-title">{{ game.title }}</h2>
+                                      <span
+                                        class="game-year"
+                                      >{{ game.year || 'Год неизвестен' }}</span>
+                                      <span
+                                        class="game-emulator"
+                                        [class.game-emulator-off]="!game.emulatorsRequired"
+                                      >
+                                        {{ emulatorLabel(game) }}
+                                      </span>
+                                    </div>
+                                  </a>
+                                }
+                              </div>
+
+                              <footer class="games-pagination">
+                                <button
+                                  size="s"
+                                  type="button"
+                                  [disabled]="page() <= 1"
+                                  (click)="setPage(page() - 1)"
+                                  appearance="flat"
+                                  tuiButton
+                                >
+                                  Назад
+                                </button>
+                                <button
+                                  appearance="flat"
+                                  size="s"
+                                  tuiButton
+                                  type="button"
+                                  tuiDropdownDirection="top"
+                                  tuiDropdownLimitWidth="auto"
+                                  [tuiDropdown]="pagesDropdown"
+                                  tuiDropdownHover
+                                >
+                                  <span class="games-page-label">Страница {{ page() }} из {{ totalPages() }}</span>
+                                </button>
+                                <button
+                                  size="s"
+                                  type="button"
+                                  [disabled]="page() >= totalPages()"
+                                  (click)="setPage(page() + 1)"
+                                  appearance="flat"
+                                  tuiButton
+                                >
+                                  Вперёд
+                                </button>
+
+                              </footer>
+
+    <ng-template #pagesDropdown>
+      <div class="pages-dropdown">
+        <tui-segmented
+          class="pages-dropdown-modes"
+          [activeItemIndex]="pageMode() === 'buttons' ? 0 : 1"
+          (activeItemIndexChange)="pageMode.set($event === 0 ? 'buttons' : 'input')"
+        >
+          <button type="button">Кнопки</button>
+          <button type="button">Поле ввода</button>
+        </tui-segmented>
+
+        @if (pageMode() === 'buttons') {
+          <span class="pages-dropdown-label">Страницы</span>
+
+          <div class="pages-grid">
+            @for (item of pageList(); track item) {
+              <button
+                type="button"
+                [class.pages-dropdown-active]="item === page()"
+                (click)="setPage(item)"
+              >
+                {{ item }}
+              </button>
+            }
+          </div>
+        } @else {
+          <span class="pages-dropdown-label">Перейти к странице</span>
+
+          <form class="pages-dropdown-jump" (submit)="$event.preventDefault(); goToPage()">
+            <tui-textfield class="pages-dropdown-input" tuiTextfieldSize="s">
+              <input
+                aria-label="Номер страницы"
+                placeholder="Номер страницы"
+                tuiInputNumber
+                [min]="1"
+                [max]="totalPages()"
+                [formControl]="pageControl"
+              />
+            </tui-textfield>
+            <button class="pages-dropdown-go" type="submit">Перейти</button>
+          </form>
+        }
+      </div>
+    </ng-template>
+                            } @else {
+                              <div class="games-state jk-card">
+                                <tui-icon icon="@tui.search-x" />
+                                <span>Игры не найдены. Попробуйте другой запрос или фильтры.</span>
+                              </div>
+                            }
+                          </div>

@@ -1,0 +1,113 @@
+:host {
+	display: block;
+}
+
+.about {
+	min-height: 100dvh;
+	padding-bottom: var(--space-3xl);
+	background:
+		radial-gradient(900px 460px at 15% -10%, color-mix(in srgb, var(--accent-primary) 12%, transparent), transparent 60%),
+		radial-gradient(700px 420px at 95% 10%, rgb(34, 224, 255, 0.08), transparent 60%),
+		var(--surface-base);
+}
+
+.about-nav {
+	display: flex;
+	gap: var(--space-md);
+	align-items: center;
+	justify-content: space-between;
+	border-bottom: 1px solid var(--border-divider);
+	padding-block: var(--space-lg);
+}
+
+.about-logo {
+	text-decoration: none;
+}
+
+.about-hero {
+	display: flex;
+	gap: var(--space-xl);
+	align-items: flex-start;
+	padding-block: var(--space-4xl) var(--space-3xl);
+}
+
+.about-avatar {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	width: 96px;
+	height: 96px;
+	border: 1px solid var(--border-normal);
+	border-radius: var(--radius-full);
+	background: linear-gradient(135deg, color-mix(in srgb, var(--accent-primary) 25%, transparent), rgb(34, 224, 255, 0.2));
+	font: 700 28px/32px var(--tui-font-heading);
+}
+
+.about-copy {
+	display: flex;
+	gap: var(--space-sm);
+	flex-direction: column;
+	align-items: flex-start;
+	max-width: 720px;
+}
+
+.eyebrow {
+	color: var(--text-tertiary);
+	font: 600 11px/14px var(--tui-font-text);
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+}
+
+.about-lead {
+	max-width: 62ch;
+	color: var(--text-secondary);
+	font: 400 16px/26px var(--tui-font-text);
+}
+
+.about-links {
+	display: flex;
+	gap: var(--space-sm);
+	flex-wrap: wrap;
+	margin-top: var(--space-sm);
+}
+
+.about-grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: var(--space-md);
+}
+
+.about-card {
+	display: flex;
+	gap: var(--space-sm);
+	flex-direction: column;
+	padding: var(--space-lg);
+}
+
+.about-list {
+	display: flex;
+	gap: var(--space-xs);
+	flex-direction: column;
+	padding-left: 1.1em;
+	color: var(--text-secondary);
+	font: var(--font-body-sm);
+}
+
+.about-footer {
+	margin-top: var(--space-3xl);
+	text-align: center;
+}
+
+@media (width <= 900px) {
+	.about-grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+@media (width <= 760px) {
+	.about-hero {
+		flex-direction: column;
+		padding-block: var(--space-3xl);
+	}
+}

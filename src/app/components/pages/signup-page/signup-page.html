@@ -1,0 +1,65 @@
+<app-auth-layout>
+  <div class="auth-head">
+    <h1 class="jk-h2">Создайте аккаунт</h1>
+    <p class="jk-caption">Пять минут до первого голосования в эфире.</p>
+  </div>
+
+  <div class="auth-form">
+    <tui-textfield>
+      <label tuiLabel>Email</label>
+      <input
+        placeholder="kira@example.com"
+        type="email"
+        [value]="email()"
+        (input)="email.set($any($event.target).value)"
+        tuiInput
+        /></tui-textfield>
+
+        <tui-textfield>
+        <label tuiLabel>Пароль</label>
+        <input
+          placeholder="Минимум 6 символов"
+          type="password"
+          [value]="password()"
+          (input)="password.set($any($event.target).value)"
+          tuiInput
+          /></tui-textfield>
+
+          <label class="terms">
+          <input
+            type="checkbox"
+            [checked]="terms()"
+            (change)="terms.set(check($event))"
+            tuiCheckbox
+            />
+            <span class="terms-text jk-body-sm">
+              Принимаю условия использования и политику конфиденциальности
+            </span>
+          </label>
+
+          <button
+            size="l"
+            type="button"
+            [disabled]="!valid()"
+            [routerLink]="valid() ? '/onboarding' : null"
+            appearance="primary"
+            tuiButton
+          >
+            Создать аккаунт
+          </button>
+        </div>
+
+        <div class="auth-divider">
+          <span>или</span>
+        </div>
+
+        <a appearance="jkit-tint" size="l" tuiButton routerLink="/onboarding">
+          <img alt="" class="twitch-icon" src="icons/svg/twitch.svg" />
+          Зарегистрироваться через Twitch
+        </a>
+
+        <p class="auth-foot">
+          Уже есть аккаунт?
+          <a routerLink="/login" tuiLink>Войти</a>
+        </p>
+      </app-auth-layout>

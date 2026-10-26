@@ -1,0 +1,115 @@
+<div class="public-page">
+  <div class="container">
+    <header class="public-nav">
+      <a class="public-logo" routerLink="/"><app-logo /></a>
+      <nav class="public-links">
+        <a routerLink="/suggest-game" tuiLink>Предложить игру</a>
+        <a routerLink="/" tuiLink>На главную</a>
+        <a routerLink="/app/dashboard" tuiLink>В панель</a>
+      </nav>
+    </header>
+
+    <section class="faq-hero">
+      <span class="eyebrow">Справка</span>
+      <h1 class="jk-display">FAQ</h1>
+      <p class="faq-lead">
+        Всё о панели Nameless StreamHata: вход, игры, хотбар, рулетка, баллы, виджеты, музыка,
+        донаты, Steam и решение типичных проблем.
+      </p>
+
+      <tui-textfield class="faq-search">
+        <tui-icon icon="@tui.search" />
+        <input
+          type="search"
+          aria-label="Поиск по FAQ"
+          placeholder="Найти ответ: OBS, Steam, рулетка, донаты…"
+          #searchInput
+          [value]="query()"
+          (input)="query.set($any($event.target).value)"
+          tuiInput
+          />
+        </tui-textfield>
+        <span class="jk-caption">Клавиши Ctrl+F или Alt+K — быстрый поиск по справке</span>
+      </section>
+
+      <div class="faq-layout">
+        <aside class="faq-sidebar">
+          <button
+            class="faq-category"
+            type="button"
+            [class.faq-category-active]="category() === 'all'"
+            (click)="setCategory('all')"
+          >
+            <tui-icon icon="@tui.layers" />
+            <span>Все разделы</span>
+            <b>{{ items.length }}</b>
+          </button>
+
+          @for (item of categories; track item.id) {
+            <button
+              class="faq-category"
+              type="button"
+              [class.faq-category-active]="category() === item.id"
+              (click)="setCategory(item.id)"
+            >
+              <tui-icon [icon]="item.icon" />
+              <span>{{ item.title }}</span>
+              <b>{{ categoryCounts().get(item.id) ?? 0 }}</b>
+            </button>
+          }
+        </aside>
+
+        <section class="faq-content">
+          <div class="faq-toolbar">
+            <span class="jk-caption">Найдено: {{ filtered().length }}</span>
+            @if (query() || category() !== 'all') {
+              <button class="faq-reset" type="button" (click)="query.set(''); category.set('all')">
+                Сбросить
+              </button>
+            }
+          </div>
+
+          @for (item of filtered(); track item.id) {
+            <details class="faq-item" [id]="'faq-' + item.id">
+              <summary>
+                <span class="faq-question">{{ item.question }}</span>
+                <span class="faq-category-label">{{ categoryTitle(item.category) }}</span>
+                <tui-icon class="faq-chevron" icon="@tui.chevron-down" />
+              </summary>
+              <div class="faq-answer">
+                @for (paragraph of item.paragraphs; track $index) {
+                  <p>{{ paragraph }}</p>
+                }
+                @if (item.steps?.length) {
+                  <ol>
+                    @for (step of item.steps; track $index) {
+                      <li>{{ step }}</li>
+                    }
+                  </ol>
+                }
+              </div>
+            </details>
+          } @empty {
+          <div class="jk-empty faq-empty">
+            <tui-icon icon="@tui.search-x" />
+            <span class="jk-h4">Ничего не найдено</span>
+            <span class="jk-caption">Попробуйте другой запрос или выберите раздел.</span>
+            <button
+              type="button"
+              (click)="query.set(''); category.set('all')"
+              appearance="flat"
+              tuiButton
+            >
+              Сбросить поиск
+            </button>
+          </div>
+        }
+      </section>
+    </div>
+
+    <footer class="faq-footer jk-caption">
+      Не нашли ответ? <a routerLink="/suggest-game" tuiLink>Предложите игру</a> или напишите в чат
+      стримера. · <a routerLink="/terms" tuiLink>Пользовательское соглашение</a>
+    </footer>
+  </div>
+</div>

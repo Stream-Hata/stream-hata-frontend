@@ -1,0 +1,80 @@
+:host {
+	display: block;
+}
+
+.roulette-layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 320px;
+	gap: var(--space-md);
+	align-items: start;
+}
+
+.roulette-board {
+	display: flex;
+	gap: var(--space-md);
+	flex-direction: column;
+	align-items: stretch;
+	padding: var(--space-lg);
+}
+
+.roulette-controls {
+	display: flex;
+	gap: var(--space-sm);
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+}
+
+.roulette-mode {
+	width: 240px;
+}
+
+.roulette-error {
+	color: var(--status-negative);
+	font: var(--font-body-sm);
+}
+
+.roulette-side {
+	display: flex;
+	gap: var(--space-md);
+	flex-direction: column;
+}
+
+.roulette-summary,
+.roulette-history {
+	display: flex;
+	gap: var(--space-xs);
+	flex-direction: column;
+}
+
+.roulette-history-row {
+	display: flex;
+	gap: 2px;
+	flex-direction: column;
+	padding: var(--space-xs) 0;
+	border-bottom: 1px solid var(--border-divider);
+	color: inherit;
+	text-decoration: none;
+}
+
+.roulette-history-row:last-child {
+	border-bottom: 0;
+}
+
+.roulette-history-title {
+	overflow: hidden;
+	font: var(--font-body-sm);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+@media (width <= 1024px) {
+	.roulette-layout {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+app-roulette-stage {
+	display: block;
+	width: 100%;
+}

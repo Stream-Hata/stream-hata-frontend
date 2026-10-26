@@ -1,0 +1,265 @@
+:host {
+	display: block;
+}
+
+.profile-page {
+	max-width: 760px;
+}
+
+.profile-card {
+	display: flex;
+	gap: var(--space-lg);
+	align-items: center;
+	padding: var(--space-xl);
+}
+
+.profile-info {
+	display: flex;
+	gap: var(--space-2xs);
+	flex-direction: column;
+}
+
+.profile-name {
+	font: var(--font-h2);
+}
+
+.profile-badges {
+	display: flex;
+	gap: var(--space-2xs);
+	flex-wrap: wrap;
+	margin-top: var(--space-2xs);
+}
+
+.info-card {
+	display: flex;
+	flex-direction: column;
+	padding: var(--space-md) var(--space-xl);
+}
+
+.info-row {
+	display: flex;
+	gap: var(--space-md);
+	align-items: center;
+	justify-content: space-between;
+	min-height: 52px;
+	border-bottom: 1px solid var(--border-divider);
+}
+
+.info-row:last-child {
+	border-bottom: 0;
+}
+
+.info-value {
+	font: 500 14px/20px var(--tui-font-text);
+	text-align: right;
+}
+
+@media (width <= 760px) {
+	.profile-card {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.info-row {
+		gap: 2px;
+		flex-direction: column;
+		align-items: flex-start;
+		justify-content: center;
+		padding-block: var(--space-xs);
+	}
+
+	.info-value {
+		text-align: left;
+	}
+}
+
+img.jk-avatar {
+	object-fit: cover;
+}
+
+
+.steam-games {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	gap: var(--space-xs);
+	margin-top: var(--space-md);
+}
+
+.steam-game {
+	display: flex;
+	gap: var(--space-xs);
+	align-items: center;
+	min-width: 0;
+	padding: var(--space-xs) var(--space-sm);
+	border: 1px solid var(--border-divider);
+	border-radius: var(--radius-md);
+	background: var(--surface-base);
+}
+
+.steam-game img {
+	width: 24px;
+	height: 24px;
+	border-radius: var(--radius-xs);
+}
+
+.steam-game span:nth-child(2) {
+	overflow: hidden;
+	flex: 1;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.profile-accounts {
+	gap: var(--space-xl);
+	justify-content: space-between;
+	flex-wrap: wrap;
+}
+
+.profile-account {
+	display: flex;
+	gap: var(--space-md);
+	align-items: center;
+	min-width: 0;
+	flex: 1 1 360px;
+}
+
+.profile-segmented {
+	align-self: flex-start;
+}
+
+.profile-info-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: var(--space-md);
+}
+
+.profile-toolbar {
+	display: flex;
+	gap: var(--space-md);
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	margin-bottom: var(--space-md);
+}
+
+.profile-toolbar tui-textfield {
+	min-width: 280px;
+	flex: 1;
+}
+
+.steam-games-list {
+	display: flex;
+	gap: var(--space-2xs);
+	flex-direction: column;
+}
+
+.steam-game-row {
+	display: flex;
+	gap: var(--space-sm);
+	align-items: center;
+	padding: var(--space-sm);
+	border: 1px solid var(--border-divider);
+	border-radius: var(--radius-md);
+	background: var(--surface-base);
+}
+
+.steam-game-row img {
+	width: 32px;
+	height: 32px;
+	border-radius: var(--radius-xs);
+}
+
+.steam-game-text {
+	display: flex;
+	gap: 2px;
+	flex-direction: column;
+	flex: 1;
+	min-width: 0;
+}
+
+.steam-game-text strong {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.steam-game-links {
+	display: flex;
+	gap: var(--space-sm);
+	flex-shrink: 0;
+}
+
+.steam-inventory {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	gap: var(--space-sm);
+}
+
+.steam-inventory-item {
+	display: flex;
+	gap: var(--space-xs);
+	align-items: center;
+	padding: var(--space-xs);
+	border: 1px solid var(--border-divider);
+	border-radius: var(--radius-md);
+	background: var(--surface-base);
+}
+
+.steam-inventory-item img {
+	width: 48px;
+	height: 48px;
+	border-radius: var(--radius-xs);
+	object-fit: contain;
+}
+
+.steam-inventory-item strong {
+	overflow: hidden;
+	flex: 1;
+	font: var(--font-body-sm);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.steam-achievements {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	max-height: 520px;
+	overflow: auto;
+}
+
+.steam-achievement-row {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	padding: 10px 12px;
+	border: 1px solid var(--border-subtle);
+	border-radius: 12px;
+	background: var(--surface-raised);
+
+	tui-icon {
+		flex-shrink: 0;
+		color: var(--accent-primary);
+	}
+}
+
+.profile-pager {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	justify-content: center;
+	padding-top: 14px;
+}
+
+.achievement-icon {
+	width: 40px;
+	height: 40px;
+	border-radius: 8px;
+	object-fit: cover;
+}
+
+.achievement-description {
+	color: var(--text-secondary);
+	font: var(--font-body-sm);
+	line-height: 1.35;
+}

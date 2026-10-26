@@ -1,0 +1,691 @@
+<div class="jk-page">
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">Баллы и вовлечение</h1>
+      <p class="jk-caption">Лояльность, магазин, чат-игры, цитаты и channel points.</p>
+    </div>
+
+    <div class="jk-page-actions">
+      <button appearance="jkit-tint" tuiButton type="button" (click)="saveRates()">
+        {{ saved() ? 'Сохранено' : 'Сохранить ставки' }}
+      </button>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button
+      class="jk-chip"
+      type="button"
+      [class.jk-chip-active]="tab() === 'board'"
+      (click)="tab.set('board')"
+    >
+      Лидерборд
+    </button>
+    <button
+      class="jk-chip"
+      type="button"
+      [class.jk-chip-active]="tab() === 'shop'"
+      (click)="tab.set('shop')"
+    >
+      Магазин
+    </button>
+    <button
+      class="jk-chip"
+      type="button"
+      [class.jk-chip-active]="tab() === 'games'"
+      (click)="tab.set('games')"
+    >
+      Игры
+    </button>
+    <button
+      class="jk-chip"
+      type="button"
+      [class.jk-chip-active]="tab() === 'quotes'"
+      (click)="tab.set('quotes')"
+    >
+      Цитаты
+    </button>
+    <button
+      class="jk-chip"
+      type="button"
+      [class.jk-chip-active]="tab() === 'redemptions'"
+      (click)="tab.set('redemptions')"
+    >
+      Channel Points
+    </button>
+  </div>
+
+  @switch (tab()) {
+    @case ('board') {
+    <div class="points-grid">
+      <section class="main-col">
+        <div class="board-head">
+          <h2 class="jk-h4">Топ зрителей</h2>
+          <tui-textfield class="board-search">
+            <tui-icon icon="@tui.search" />
+            <input
+              aria-label="Поиск зрителя"
+              placeholder="Поиск..."
+              type="search"
+              [value]="search()"
+              (input)="search.set(value($event))"
+              tuiInput
+              />
+            </tui-textfield>
+          </div>
+
+          @if (filteredTop().length) {
+            <div class="table-wrap">
+              <table tuiTable>
+                <thead tuiThead>
+                  <tr>
+                    <th tuiTh class="col-index">#</th>
+                    <th tuiTh>Зритель</th>
+                    <th tuiTh>Баланс</th>
+                    <th tuiTh>Заработано</th>
+                    <th tuiTh>Потрачено</th>
+                  </tr>
+                </thead>
+
+                <tbody tuiTbody>
+                  @for (wallet of filteredTop(); track wallet.userId; let index = $index) {
+                    <tr>
+                      <td tuiTd class="col-index jk-caption">{{ index + 1 }}</td>
+                      <td tuiTd class="name-cell">{{ wallet.displayName || wallet.login }}</td>
+                      <td tuiTd class="balance-cell jk-numeric">{{ wallet.balance }}</td>
+                      <td tuiTd class="jk-numeric">+{{ wallet.totalEarned }}</td>
+                      <td tuiTd class="jk-numeric">
+                        @if (wallet.totalSpent > 0) {
+                          −{{ wallet.totalSpent }}
+                        } @else {
+                          0
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          } @else {
+            <div class="jk-card jk-empty">
+              <span class="jk-empty-icon"><tui-icon icon="@tui.coins" /></span>
+              <span class="jk-h4">Кошельков пока нет</span>
+              <span class="jk-body-sm jk-muted">Баллы начнут капать, как только чат оживёт.</span>
+            </div>
+          }
+        </section>
+
+        <aside class="jk-card side-col settings-card" [class.settings-collapsed]="!settingsOpen()">
+          <div class="side-head">
+            <h2 class="jk-h4">Начисление</h2>
+            <div class="side-head-actions">
+              <input
+                aria-label="Включить баллы"
+                type="checkbox"
+                [checked]="state().settings.enabled"
+                (change)="togglePoints($event)"
+                tuiSwitch
+                />
+              <button
+                appearance="flat"
+                size="s"
+                type="button"
+                [attr.aria-label]="settingsOpen() ? 'Свернуть настройки' : 'Развернуть настройки'"
+                [iconStart]="settingsOpen() ? '@tui.chevron-up' : '@tui.chevron-down'"
+                (click)="settingsOpen.set(!settingsOpen())"
+                tuiIconButton
+              ></button>
+            </div>
+          </div>
+
+          <div class="settings-body">
+            @for (
+            rate of [
+            { field: 'pointsPerMessage', label: 'Баллов за сообщение' },
+            { field: 'messageCooldownSeconds', label: 'Кулдаун сообщений, сек' },
+            { field: 'pointsPerMinute', label: 'Баллов за минуту просмотра' },
+            { field: 'streakBonusPerLevel', label: 'Бонус за уровень стрика' },
+            { field: 'subscribeBonus', label: 'Бонус за подписку' },
+            { field: 'giftBonus', label: 'Бонус за подарочную подписку' },
+            { field: 'cheerBonusPerBit', label: 'Баллов за 1 битс' },
+            ];
+            track rate.field
+            ) {
+            <div class="rate-row">
+              <span class="jk-label">{{ rate.label }}</span>
+              <tui-textfield class="rate-input">
+                <input type="number" tuiInput
+                  aria-label="{{ rate.label }}" min="0"
+                 
+                  [value]="rateValue(rate.field)"
+                  (input)="setRate(rate.field, $event)"
+                  />
+                </tui-textfield>
+              </div>
+            }
+
+            <h2 class="jk-h4 side-subtitle">Последние транзакции</h2>
+
+            @for (transaction of state().transactions.slice(0, 8); track transaction.id) {
+              <div class="tx-row">
+                <span class="tx-delta" [class.negative]="transaction.delta < 0">
+                  {{ transaction.delta > 0 ? '+' : '' }}{{ transaction.delta }}
+                </span>
+                <div class="tx-text">
+                  <span class="tx-name">{{ transaction.login }}</span>
+                  <span class="jk-caption">{{ transaction.reason }}</span>
+                </div>
+              </div>
+            }
+          </div>
+          </aside>
+        </div>
+      }
+
+      @case ('shop') {
+      <div class="points-grid">
+        <section class="main-col">
+          <h2 class="jk-h4">Награды</h2>
+
+          @if (state().rewards.length) {
+            <div class="table-wrap">
+              <table tuiTable>
+                <thead tuiThead>
+                  <tr>
+                    <th tuiTh>Название</th>
+                    <th tuiTh>Стоимость</th>
+                    <th tuiTh>Ответ</th>
+                    <th tuiTh class="col-actions"><span class="sr-only">Действия</span></th>
+                  </tr>
+                </thead>
+
+                <tbody tuiTbody>
+                  @for (reward of state().rewards; track reward.id) {
+                    <tr>
+                      <td tuiTd class="name-cell">{{ reward.name }}</td>
+                      <td tuiTd class="balance-cell jk-numeric">{{ reward.cost }}</td>
+                      <td tuiTd class="response-cell">{{ reward.response }}</td>
+                      <td tuiTd class="col-actions">
+                        <button
+                          size="s"
+                          type="button"
+                          aria-label="Редактировать"
+                          (click)="editReward(reward)"
+                          appearance="flat"
+                          iconStart="@tui.pencil"
+                          tuiIconButton
+                        ></button>
+                        <button
+                          class="danger-action"
+                          size="s"
+                          type="button"
+                          aria-label="Удалить"
+                          (click)="removeReward(reward.id)"
+                          appearance="flat"
+                          iconStart="@tui.trash-2"
+                          tuiIconButton
+                        ></button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          } @else {
+            <div class="jk-card jk-empty">
+              <span class="jk-empty-icon"><tui-icon icon="@tui.gift" /></span>
+              <span class="jk-h4">Магазин пуст</span>
+              <span
+                class="jk-body-sm jk-muted"
+              >Добавьте первую награду — чат купит её через !redeem.</span
+            >
+          </div>
+        }
+      </section>
+
+      <aside class="jk-card side-col">
+        <h2 class="jk-h4">{{ editingReward() ? 'Редактирование' : 'Новая награда' }}</h2>
+
+        <span class="jk-label">Название</span>
+        <tui-textfield>
+          <input
+            aria-label="Название награды"
+            placeholder="Сменить игру"
+            type="text"
+            [value]="rewardName()"
+            (input)="rewardName.set(value($event))"
+            tuiInput
+            />
+          </tui-textfield>
+
+          <span class="jk-label">Стоимость</span>
+          <tui-textfield>
+            <input type="number" tuiInput
+              aria-label="Стоимость" min="1"
+             
+              [value]="rewardCost()"
+              (input)="rewardCost.set(number($event))"
+              />
+            </tui-textfield>
+
+            <span class="jk-label">Ответ в чат</span>
+            <tui-textfield>
+              <textarea
+                aria-label="Вопросы викторины"
+                rows="4"
+                [value]="questionsDraft()"
+                (input)="triviaQuestions.set(value($event))"
+                tuiTextarea
+              ></textarea>
+            </tui-textfield>
+            <span class="jk-caption">Переменные: $(user), $(channel)</span>
+
+            <div class="editor-actions">
+              <button appearance="primary" tuiButton type="button" (click)="saveReward()">
+                {{ editingReward() ? 'Сохранить' : 'Создать' }}
+              </button>
+              @if (editingReward()) {
+                <button
+                  type="button"
+                  (click)="editingReward.set(null); rewardName.set(''); rewardResponse.set('')"
+                  appearance="flat"
+                  tuiButton
+                >
+                  Отмена
+                </button>
+              }
+            </div>
+          </aside>
+        </div>
+      }
+
+      @case ('games') {
+      @if (games(); as settings) {
+        <div class="points-grid">
+          <section class="main-col">
+            <h2 class="jk-h4">Игры чата</h2>
+
+            <div class="jk-card game-card">
+              <div class="game-row">
+                <div class="cfg-text">
+                  <span class="cfg-label">Слоты</span>
+                  <span class="jk-caption">!slots &lt;ставка&gt; · три в ряд ×10, пара ×2</span>
+                </div>
+                <input
+                  aria-label="Слоты"
+                  type="checkbox"
+                  [checked]="settings.slotsEnabled"
+                  (change)="toggleGame('slotsEnabled', $event)"
+                  tuiSwitch
+                  />
+                </div>
+
+                <div class="game-row">
+                  <div class="cfg-text">
+                    <span class="cfg-label">Колесо</span>
+                    <span class="jk-caption">!wheel &lt;ставка&gt; · от ×0 до ×5</span>
+                  </div>
+                  <input
+                    aria-label="Колесо"
+                    type="checkbox"
+                    [checked]="settings.wheelEnabled"
+                    (change)="toggleGame('wheelEnabled', $event)"
+                    tuiSwitch
+                    />
+                  </div>
+
+                  <div class="game-row">
+                    <div class="cfg-text">
+                      <span class="cfg-label">Режим колеса</span>
+                      <span
+                        class="jk-caption"
+                      >Обычное — приз за спин; на выбывание — раунд по ставкам</span
+                    >
+                  </div>
+                  <tui-textfield tuiChevron>
+                    <input
+                      aria-label="Режим колеса"
+                      [readonly]="true"
+                      [value]="wheelModeLabels[wheelModeValues.indexOf(wheelModeControl.value)]"
+                      tuiInput
+                      tuiSelectLike
+                    />
+                    <tui-data-list-wrapper
+                      *tuiDropdown
+                      [items]="wheelModeLabels"
+                      (itemClick)="setWheelModeLabel($event)"
+                    ></tui-data-list-wrapper>
+                  </tui-textfield>
+                </div>
+
+                <div class="game-row">
+                  <div class="cfg-text">
+                    <span class="cfg-label">Раунд колеса, сек</span>
+                    <span class="jk-caption">Сколько ждать ставок и участников</span>
+                  </div>
+                  <tui-textfield class="cfg-control">
+                    <input type="number" tuiInput
+                      aria-label="Длительность раунда колеса" min="10"
+                     
+                      [value]="wheelRoundSeconds()"
+                      (input)="wheelRoundSeconds.set(number($event))"
+                      /></tui-textfield>
+                      </div>
+
+                      <div class="game-row cfg-row-column">
+                      <span class="cfg-label">Колесо на выбывание: запуск</span>
+                      <tui-textfield>
+                      <input
+                        aria-label="Название игры для колеса"
+                        placeholder="TBoI"
+                        [value]="wheelTitle()"
+                        (input)="wheelTitle.set(value($event))"
+                        tuiInput
+                        /></tui-textfield>
+                        <tui-textfield>
+                        <input type="number" tuiInput
+                          aria-label="Ставка колеса" min="1"
+                         
+                          [value]="wheelBet()"
+                          (input)="wheelBet.set(number($event))"
+                          /></tui-textfield>
+                          <div class="editor-actions">
+                          <button
+                            size="s"
+                            type="button"
+                            (click)="startWheel()"
+                            tuiButton
+                          >Запустить</button>
+                          <button
+                            size="s"
+                            type="button"
+                            (click)="spinWheel()"
+                            appearance="secondary"
+                            tuiButton
+                          >
+                            Крутить
+                          </button>
+                        </div>
+                      </div>
+
+                      <div class="game-row">
+                        <div class="cfg-text">
+                          <span class="cfg-label">Викторина</span>
+                          <span
+                            class="jk-caption"
+                          >!trivia · первый правильный ответ забирает баллы</span>
+                        </div>
+                        <input
+                          aria-label="Викторина"
+                          type="checkbox"
+                          [checked]="settings.triviaEnabled"
+                          (change)="toggleGame('triviaEnabled', $event)"
+                          tuiSwitch
+                          />
+                        </div>
+                      </div>
+                    </section>
+
+                    <aside class="jk-card side-col">
+                      <h2 class="jk-h4">Параметры</h2>
+
+                      <span class="jk-label">Мин. ставка</span>
+                      <tui-textfield>
+                        <input type="number" tuiInput
+                          aria-label="Минимальная ставка" min="1"
+                         
+                          [value]="gameMinBet() || settings.minBet"
+                          (input)="gameMinBet.set(number($event))"
+                          />
+                        </tui-textfield>
+
+                        <span class="jk-label">Макс. ставка</span>
+                        <tui-textfield>
+                          <input type="number" tuiInput
+                            aria-label="Максимальная ставка" min="1"
+                           
+                            [value]="gameMaxBet() || settings.maxBet"
+                            (input)="gameMaxBet.set(number($event))"
+                            />
+                          </tui-textfield>
+
+                          <span class="jk-label">Баллов за ответ в викторине</span>
+                          <tui-textfield>
+                            <input type="number" tuiInput
+                              aria-label="Баллы за викторину" min="1"
+                             
+                              [value]="triviaPoints() || settings.triviaPoints"
+                              (input)="triviaPoints.set(number($event))"
+                              />
+                            </tui-textfield>
+
+                            <span class="jk-label">Вопросы (формат: вопрос | ответ)</span>
+                            <tui-textfield>
+                              <textarea
+                                aria-label="Вопросы викторины"
+                                rows="4"
+                                [value]="questionsDraft()"
+                                (input)="triviaQuestions.set(value($event))"
+                                tuiTextarea
+                              ></textarea>
+                            </tui-textfield>
+
+                            <div class="editor-actions">
+                              <button
+                                type="button"
+                                (click)="saveGames()"
+                                appearance="primary"
+                                tuiButton
+                              >
+                                Сохранить
+                              </button>
+                            </div>
+                          </aside>
+                        </div>
+                      }
+                    }
+
+                    @case ('quotes') {
+                    <div class="points-grid">
+                      <section class="main-col">
+                        <h2 class="jk-h4">Цитаты</h2>
+
+                        @if (quotes().quotes.length) {
+                          <div class="quote-list">
+                            @for (quote of quotes().quotes; track quote.id) {
+                              <div class="quote-card jk-card">
+                                <span class="quote-number jk-caption">#{{ quote.number }}</span>
+                                <div class="quote-text">
+                                  <span>«{{ quote.text }}»</span>
+                                  <span
+                                    class="jk-caption"
+                                  >{{ quote.author }} · добавил {{ quote.addedBy }}</span>
+                                </div>
+                                <button
+                                  class="danger-action"
+                                  size="s"
+                                  type="button"
+                                  aria-label="Удалить цитату"
+                                  (click)="removeQuote(quote.id)"
+                                  appearance="flat"
+                                  iconStart="@tui.trash-2"
+                                  tuiIconButton
+                                ></button>
+                              </div>
+                            }
+                          </div>
+                        } @else {
+                          <div class="jk-card jk-empty">
+                            <span class="jk-empty-icon"><tui-icon icon="@tui.message-square" /></span>
+                            <span class="jk-h4">Цитат нет</span>
+                            <span
+                              class="jk-body-sm jk-muted"
+                            >Чат добавляет их командой !quote add, вы — формой справа.</span
+                          >
+                        </div>
+                      }
+                    </section>
+
+                    <aside class="jk-card side-col">
+                      <h2 class="jk-h4">Новая цитата</h2>
+
+                      <span class="jk-label">Текст</span>
+                      <tui-textfield>
+                        <textarea
+                          aria-label="Текст цитаты"
+                          rows="3"
+                          [value]="quoteText()"
+                          (input)="quoteText.set(value($event))"
+                          tuiTextarea
+                        ></textarea>
+                      </tui-textfield>
+
+                      <span class="jk-label">Автор</span>
+                      <tui-textfield>
+                        <input
+                          aria-label="Автор цитаты"
+                          placeholder="Название награды"
+                          type="text"
+                          [value]="quoteAuthor()"
+                          (input)="quoteAuthor.set(value($event))"
+                          tuiInput
+                          />
+                        </tui-textfield>
+
+                        <div class="editor-actions">
+                          <button type="button" (click)="addQuote()" appearance="primary" tuiButton>
+                            Добавить
+                          </button>
+                        </div>
+                      </aside>
+                    </div>
+                  }
+
+                  @case ('redemptions') {
+                  <div class="points-grid">
+                    <section class="main-col">
+                      <h2 class="jk-h4">Привязки наград</h2>
+
+                      @if (redemptions().mappings.length) {
+                        <div class="table-wrap">
+                          <table tuiTable>
+                            <thead tuiThead>
+                              <tr>
+                                <th tuiTh>Награда Twitch</th>
+                                <th tuiTh>Действие</th>
+                                <th tuiTh>Параметр</th>
+                                <th tuiTh class="col-actions"><span class="sr-only">Действия</span></th>
+                              </tr>
+                            </thead>
+
+                            <tbody tuiTbody>
+                              @for (mapping of redemptions().mappings; track mapping.id) {
+                                <tr>
+                                  <td tuiTd class="name-cell">{{ mapping.rewardTitle }}</td>
+                                  <td tuiTd>{{ actionLabel(mapping.action) }}</td>
+                                  <td tuiTd class="response-cell">{{ mapping.payload }}</td>
+                                  <td tuiTd class="col-actions">
+                                    <button
+                                      class="danger-action"
+                                      size="s"
+                                      type="button"
+                                      aria-label="Удалить"
+                                      (click)="removeMapping(mapping.id)"
+                                      appearance="flat"
+                                      iconStart="@tui.trash-2"
+                                      tuiIconButton
+                                    ></button>
+                                  </td>
+                                </tr>
+                              }
+                            </tbody>
+                          </table>
+                        </div>
+                      } @else {
+                        <div class="jk-card jk-empty">
+                          <span class="jk-empty-icon"><tui-icon icon="@tui.gift" /></span>
+                          <span class="jk-h4">Привязок нет</span>
+                          <span class="jk-body-sm jk-muted">
+                            Назовите награду в Twitch так же, как здесь, и выкуп будет выполняться
+                            автоматически.
+                          </span>
+                        </div>
+                      }
+
+                      <h2 class="jk-h4">Последние выкупы</h2>
+
+                      @for (record of redemptions().recent.slice(0, 8); track record.id) {
+                        <div class="redemption-row">
+                          <span class="jk-avatar jk-avatar-s jk-avatar-cyan">
+                            {{ record.userName.slice(0, 2).toUpperCase() }}
+                          </span>
+                          <div class="cfg-text">
+                            <span class="cfg-label">{{ record.userName }}</span>
+                            <span
+                              class="jk-caption"
+                            >{{ record.rewardTitle }} · {{ formatTime(record.createdAt) }}</span
+                          >
+                        </div>
+                        <span appearance="positive" tuiBadge>{{ record.status }}</span>
+                      </div>
+                    }
+                  </section>
+
+                  <aside class="jk-card side-col">
+                    <h2 class="jk-h4">Новая привязка</h2>
+
+                    <span class="jk-label">Название награды в Twitch</span>
+                    <tui-textfield>
+                      <input
+                        aria-label="Название награды"
+                        placeholder="Спрятаться за бочкой"
+                        type="text"
+                        [value]="mappingTitle()"
+                        (input)="mappingTitle.set(value($event))"
+                        tuiInput
+                        />
+                      </tui-textfield>
+
+                      <span class="jk-label">Действие</span>
+                      <tui-textfield tuiChevron>
+                        <input
+                          aria-label="Действие"
+                          [readonly]="true"
+                          [value]="mappingActionLabels[mappingActionValues.indexOf(mappingActionControl.value)]"
+                          tuiInput
+                          tuiSelectLike
+                        />
+                        <tui-data-list-wrapper
+                          *tuiDropdown
+                          [items]="mappingActionLabels"
+                          (itemClick)="setMappingActionLabel($event)"
+                        ></tui-data-list-wrapper>
+                      </tui-textfield>
+
+                      <span class="jk-label">Параметр (текст / баллы / секунды)</span>
+                      <tui-textfield>
+                        <input
+                          aria-label="Параметр"
+                          placeholder="$(user) выкупил награду!"
+                          type="text"
+                          [value]="mappingPayload()"
+                          (input)="mappingPayload.set(value($event))"
+                          tuiInput
+                          />
+                        </tui-textfield>
+
+                        <div class="editor-actions">
+                          <button
+                            type="button"
+                            (click)="saveMapping()"
+                            appearance="primary"
+                            tuiButton
+                          >
+                            Создать
+                          </button>
+                        </div>
+                      </aside>
+                    </div>
+                  }
+                }
+              </div>

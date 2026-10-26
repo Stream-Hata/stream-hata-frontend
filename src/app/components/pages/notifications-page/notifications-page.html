@@ -1,0 +1,40 @@
+<div class="jk-page notifications-page">
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">Уведомления</h1>
+      <p class="jk-caption">События канала, жюри и виджетов.</p>
+    </div>
+
+    <div class="jk-page-actions">
+      <a routerLink="/app/notifications/settings" appearance="flat" tuiButton>Настроить уведомления</a>
+      <button
+        type="button"
+        [disabled]="!hasUnread"
+        (click)="markAllRead()"
+        appearance="jkit-tint"
+        tuiButton
+      >
+        Отметить все прочитанными
+      </button>
+    </div>
+  </header>
+
+  <section class="jk-card notice-list">
+    @for (notice of notices(); track notice.id) {
+      <div class="notice" [class.notice-unread]="notice.unread">
+        <span class="notice-icon" [class]="notice.tone">
+          <tui-icon [icon]="notice.icon" />
+        </span>
+
+        <div class="notice-text">
+          <span class="notice-title">{{ notice.title }}</span>
+          <span class="jk-caption">{{ notice.time }}</span>
+        </div>
+
+        @if (notice.unread) {
+          <span class="notice-dot" aria-label="Непрочитанное"></span>
+        }
+      </div>
+    }
+  </section>
+</div>

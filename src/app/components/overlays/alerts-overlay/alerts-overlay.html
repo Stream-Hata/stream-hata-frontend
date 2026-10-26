@@ -1,0 +1,14 @@
+@if (active(); as event) {
+  <div class="overlay-stage">
+    <article class="alert-card">
+      <span class="alert-kicker">{{ typeLabel() }}</span>
+      <strong class="alert-user">{{ event.username || 'Зритель' }}</strong>
+      @if (event.message) {
+        <p class="alert-message">{{ event.message }}</p>
+      }
+      @if (event.amount) {
+        <span class="alert-amount">{{ event.amount }}</span>
+      }
+    </article>
+  </div>
+}

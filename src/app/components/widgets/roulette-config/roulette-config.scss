@@ -1,0 +1,56 @@
+:host {
+	display: block;
+}
+
+.roulette-config {
+	display: flex;
+	flex-direction: column;
+}
+
+.cfg-row-wrap {
+	flex-wrap: wrap;
+}
+
+.roulette-weights {
+	display: flex;
+	gap: var(--space-sm);
+	flex-wrap: wrap;
+}
+
+.roulette-weights label {
+	display: flex;
+	gap: 4px;
+	align-items: center;
+	color: var(--text-secondary);
+	font: var(--font-caption);
+}
+
+.roulette-weights input {
+	width: 62px;
+}
+
+.roulette-colors {
+	display: flex;
+	gap: var(--space-xs);
+}
+
+.roulette-colors input {
+	width: 42px;
+	height: 32px;
+	padding: 0;
+	border: 1px solid var(--border-normal);
+	border-radius: var(--radius-sm);
+	background: transparent;
+}
+
+.roulette-save {
+	display: flex;
+	gap: var(--space-sm);
+	align-items: center;
+	margin-top: var(--space-md);
+}
+
+.roulette-error {
+	color: var(--status-negative);
+	font: var(--font-caption);
+}

@@ -1,0 +1,170 @@
+<div class="jk-page">
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">Опросы и предикты</h1>
+      <p class="jk-caption">Нативные голосования Twitch — создание, зеркало и история.</p>
+    </div>
+
+    <div class="jk-page-actions">
+      <button
+        type="button"
+        [disabled]="state().current?.status !== 'ACTIVE'"
+        (click)="end()"
+        appearance="jkit-tint"
+        tuiButton
+      >
+        Завершить опрос
+      </button>
+    </div>
+  </header>
+
+  <div class="polls-grid">
+    <div class="main-col">
+      @if (state().current; as poll) {
+        <section class="jk-card poll-card">
+          <div class="poll-head">
+            <h2 class="jk-h4">{{ poll.title }}</h2>
+            <span [appearance]="poll.status === 'ACTIVE' ? 'positive' : 'neutral'" tuiBadge>
+              {{ poll.status }}
+            </span>
+          </div>
+
+          <p class="jk-caption">
+            До конца: {{ formatDate(poll.endsAt) }} · голосов: {{ totalVotes() }}
+          </p>
+
+          <div class="poll-choices">
+            @for (choice of poll.choices; track choice.title) {
+              <div class="choice-row">
+                <span class="choice-title">{{ choice.title }}</span>
+                <span class="choice-bar">
+                  <span class="choice-fill" [style.width.%]="percent(choice.votes)"></span>
+                </span>
+                <span class="choice-count jk-numeric">{{ choice.votes }}</span>
+                <span class="choice-pct jk-caption">{{ percent(choice.votes) }}%</span>
+              </div>
+            }
+          </div>
+        </section>
+      } @else {
+        <div class="jk-card jk-empty">
+          <span class="jk-empty-icon"><tui-icon icon="@tui.bar-chart-3" /></span>
+          <span class="jk-h4">Активного опроса нет</span>
+          <span
+            class="jk-body-sm jk-muted"
+          >Создайте опрос справа — он появится прямо в чате Twitch.</span
+        >
+      </div>
+    }
+
+    @if (state().prediction; as prediction) {
+      <section class="jk-card poll-card">
+        <div class="poll-head">
+          <h2 class="jk-h4">{{ prediction.title }}</h2>
+          <span appearance="info" tuiBadge>{{ prediction.status }}</span>
+        </div>
+
+        <div class="poll-choices">
+          @for (outcome of prediction.outcomes; track outcome.title) {
+            <div class="choice-row">
+              <span class="choice-title">{{ outcome.title }}</span>
+              <span class="choice-bar">
+                <span
+                  class="choice-fill cyan"
+                  [style.width.%]="predictionPercent(outcome.votes)"
+                ></span>
+              </span>
+              <span class="choice-count jk-numeric">{{ outcome.votes }}</span>
+            </div>
+          }
+        </div>
+      </section>
+    }
+
+    <section class="history">
+      <h2 class="jk-h4">История</h2>
+
+      @if (state().history.length) {
+        <div class="table-wrap">
+          <table tuiTable>
+            <thead tuiThead>
+              <tr>
+                <th tuiTh>Опрос</th>
+                <th tuiTh>Варианты</th>
+                <th tuiTh>Итог</th>
+              </tr>
+            </thead>
+
+            <tbody tuiTbody>
+              @for (poll of state().history; track poll.id) {
+                <tr>
+                  <td tuiTd class="name-cell">{{ poll.title }}</td>
+                  <td tuiTd>{{ poll.choices.length }}</td>
+                  <td tuiTd>
+                    @for (choice of poll.choices; track choice.title) {
+                      <span class="jk-caption">{{ choice.title }} — {{ choice.votes }} · </span>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <p class="jk-body-sm jk-muted">Завершённые опросы появятся здесь.</p>
+      }
+    </section>
+  </div>
+
+  <aside class="jk-card side-col">
+    <h2 class="jk-h4">Новый опрос</h2>
+
+    <span class="jk-label">Вопрос</span>
+    <tui-textfield>
+      <input
+        aria-label="Вопрос опроса"
+        placeholder="Куда идём дальше?"
+        type="text"
+        [value]="title()"
+        (input)="title.set(value($event))"
+        tuiInput
+        />
+      </tui-textfield>
+
+      <span class="jk-label">Варианты (по одному на строку)</span>
+      <tui-textfield>
+        <textarea
+          aria-label="Варианты опроса"
+          rows="4"
+          [value]="choices()"
+          (input)="choices.set(value($event))"
+          tuiTextarea
+        ></textarea>
+      </tui-textfield>
+
+      <span class="jk-label">Длительность, сек</span>
+      <tui-textfield>
+        <input type="number" tuiInput
+          aria-label="Длительность опроса" max="1800" min="15"
+         
+          [value]="duration()"
+          (input)="duration.set(+value($event))"
+          />
+        </tui-textfield>
+
+        @if (error(); as message) {
+          <p class="error-text">{{ message }}</p>
+        }
+
+        <div class="create-actions">
+          <button appearance="primary" tuiButton type="button" (click)="create()">
+            Запустить опрос
+          </button>
+        </div>
+
+        <p class="jk-caption">
+          Предикты и опросы, запущенные вручную в Twitch, тоже зеркалируются сюда автоматически.
+        </p>
+      </aside>
+    </div>
+  </div>

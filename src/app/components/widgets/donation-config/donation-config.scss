@@ -1,0 +1,64 @@
+.donation-config {
+	display: flex;
+	gap: var(--space-md);
+	flex-direction: column;
+}
+
+.donation-config-grid {
+	display: flex;
+	gap: var(--space-lg);
+	flex-direction: column;
+}
+
+.donation-config-form {
+	display: flex;
+	gap: var(--space-sm);
+	flex-direction: column;
+}
+
+.donation-colors tui-textfield {
+	min-width: 120px;
+}
+
+.donation-preview {
+	display: flex;
+	gap: var(--space-sm);
+	flex-direction: column;
+	align-items: center;
+	padding: var(--space-md);
+	border: 1px solid var(--border-divider);
+	border-radius: var(--radius-lg);
+	background: var(--surface-elevated-1);
+}
+
+@media (width <= 1000px) {
+	.donation-config-grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.donation-preview {
+		position: static;
+	}
+}
+
+.donation-config .cfg-row {
+	display: flex;
+	gap: var(--space-xs);
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.donation-config .cfg-row tui-textfield {
+	min-width: 170px;
+	flex: 1 1 170px;
+}
+
+.donation-config .cfg-head {
+	display: flex;
+	gap: var(--space-xs);
+	flex-direction: column;
+}
+
+.donation-config .cfg-title {
+	font: var(--font-h4);
+}

@@ -1,0 +1,50 @@
+<div class="widget-surface" [style]="surfaceStyle()">
+@switch (kind()) {
+  @case ('jury') {
+  <app-jury-overlay />
+}
+@case ('timer') {
+<app-timer-overlay />
+}
+@case ('alerts') {
+<app-alerts-overlay />
+}
+@case ('donations') {
+<app-donations-overlay />
+}
+@case ('events') {
+<app-events-overlay />
+}
+@case ('hotbar') {
+<app-hotbar-overlay />
+}
+@case ('audio') {
+<app-audio-overlay />
+}
+@case ('chat') {
+<app-chat-overlay />
+}
+@case ('points') {
+<app-points-overlay />
+}
+@case ('music') {
+<app-music-overlay />
+}
+@case ('nowplaying') {
+<app-nowplaying-overlay />
+}
+@case ('streaks') {
+<app-streaks-overlay />
+}
+@case ('roulette') {
+<app-roulette-overlay />
+}
+@case ('wheel') {
+<app-wheel-overlay />
+}
+@default {
+<div class="overlay-unknown">Неизвестный виджет: {{ kind() }}</div>
+}
+}
+
+</div>

@@ -1,0 +1,789 @@
+<div class="jk-page">
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">{{ labels().title }}</h1>
+      <p class="jk-caption">{{ labels().subtitle }}</p>
+    </div>
+    <div class="jk-page-actions">
+      @if (saved()) {
+        <span appearance="positive" tuiBadge>{{ i18n.t('settings.saved') }}</span>
+      }
+      <button appearance="primary" size="m" tuiButton type="button" (click)="saveSettings()">
+        {{ i18n.t('settings.save') }}
+      </button>
+    </div>
+  </header>
+
+  <div class="settings-grid">
+    <tui-tabs
+      class="settings-nav"
+      [activeItemIndex]="activeIndex()"
+      (activeItemIndexChange)="selectSection($event)"
+      vertical="start"
+    >
+      @for (item of sections(); track item.id) {
+        <button tuiTab type="button">
+          <tui-icon [icon]="item.icon" />
+          {{ item.label }}
+        </button>
+      }
+    </tui-tabs>
+
+    <div class="settings-content">
+      @switch (section()) {
+        @case ('general') {
+        <section class="cfg-section">
+          <header class="cfg-head">
+            <h2 class="cfg-title">{{ labels().general }}</h2>
+            <p class="jk-caption">{{ labels().languageHint }}</p>
+          </header>
+
+          <div class="cfg-row">
+            <span class="cfg-label">{{ labels().language }}</span>
+            <tui-textfield tuiChevron class="cfg-control">
+              <input type="text"
+                [attr.aria-label]="labels().language"
+                [formControl]="languageControl" tuiInput tuiSelectLike>
+              <tui-data-list-wrapper
+                *tuiDropdown
+                [items]="languageValues"
+                (itemClick)="language.set($event)"
+              ></tui-data-list-wrapper>
+            </tui-textfield>
+          </div>
+
+          <div class="cfg-row">
+            <span class="cfg-label">{{ labels().timezone }}</span>
+            <tui-textfield tuiChevron class="cfg-control">
+              <input type="text"
+                [attr.aria-label]="labels().timezone"
+                [formControl]="timezoneControl" tuiInput tuiSelectLike>
+              <tui-data-list-wrapper
+                *tuiDropdown
+                [items]="timezoneValues"
+                (itemClick)="timezone.set($event)"
+              ></tui-data-list-wrapper>
+            </tui-textfield>
+          </div>
+
+          <div class="cfg-row">
+            <span class="cfg-label">{{ i18n.t('settings.searchHotkey') }}</span>
+            <tui-textfield tuiChevron class="cfg-control">
+              <input
+                aria-label="Хоткей поиска"
+                [readonly]="true"
+                [value]="searchHotkeyLabels[searchHotkeyValues.indexOf(searchHotkeyControl.value)]"
+                tuiInput
+                tuiSelectLike
+              />
+              <tui-data-list-wrapper
+                *tuiDropdown
+                [items]="searchHotkeyLabels"
+                (itemClick)="searchHotkeyControl.setValue($any(searchHotkeyValues[searchHotkeyLabels.indexOf($event)]))"
+              ></tui-data-list-wrapper>
+            </tui-textfield>
+          </div>
+
+          <div class="cfg-row">
+            <div class="cfg-text">
+              <span class="cfg-label">{{ labels().autoOpen }}</span>
+              <span class="jk-caption">{{ labels().autoOpenHint }}</span>
+            </div>
+            <input
+              aria-label="Авто-открытие жюри"
+              type="checkbox"
+              [formControl]="autoOpenControl"
+              tuiSwitch
+              />
+            </div>
+
+            <div class="cfg-row">
+              <span class="cfg-label">{{ labels().reset }}</span>
+              <button appearance="secondary-destructive" size="s" tuiButton type="button">
+                {{ labels().resetAll }}
+              </button>
+            </div>
+          </section>
+        }
+
+        @case ('appearance') {
+        <section class="cfg-section">
+          <header class="cfg-head">
+            <h2 class="cfg-title">{{ i18n.t('settings.appearanceTitle') }}</h2>
+            <p class="jk-caption">{{ i18n.t('settings.appearanceHint') }}</p>
+          </header>
+
+          <div class="cfg-row">
+            <span class="cfg-label">{{ i18n.t('settings.theme') }}</span>
+            <tui-segmented
+              [activeItemIndex]="themeIndex()"
+              (activeItemIndexChange)="setTheme($event)"
+            >
+              <button type="button" (click)="setTheme(0)">Dark</button>
+              <button type="button" (click)="setTheme(1)">Light</button>
+              <button type="button" (click)="setTheme(2)">System</button>
+            </tui-segmented>
+          </div>
+
+          <div class="cfg-row">
+            <span class="cfg-label">{{ i18n.t('settings.density') }}</span>
+            <tui-segmented
+              [activeItemIndex]="densityIndex()"
+              (activeItemIndexChange)="setDensity($event)"
+            >
+              <button type="button" (click)="setDensity(0)">Compact</button>
+              <button type="button" (click)="setDensity(1)">Default</button>
+            </tui-segmented>
+          </div>
+
+          <div class="cfg-row cfg-row-column">
+            <div class="cfg-text">
+              <span class="cfg-label">{{ i18n.t('settings.accent') }}</span>
+              <span class="jk-caption">
+                {{ i18n.t('settings.contrast') }} {{ accentDraftContrast() }}:1 · {{ i18n.t('settings.minContrast') }}
+              </span>
+            </div>
+
+            <div class="accent-controls">
+              <tui-textfield class="accent-input">
+                <input
+                  aria-label="Акцентный цвет"
+                  [formControl]="accentDraftControl"
+                  tuiInputColor
+                  /></tui-textfield>
+
+                  @for (preset of accentPresets; track preset) {
+                  <button
+                    class="accent-swatch"
+                    type="button"
+                    [style.background]="preset"
+                    [attr.aria-label]="preset"
+                    (click)="setAccent(preset)"
+                  ></button>
+                }
+              </div>
+
+              @if (accentError()) {
+                <p class="error-text">
+                  {{ i18n.t('settings.lowContrast') }}
+                  <button appearance="link" size="xs" tuiButton type="button" (click)="fixAccent()">
+                    {{ i18n.t('settings.pickReadable') }}
+                  </button>
+                </p>
+              }
+            </div>
+
+            <section class="settings-preview" [style.--preview-accent]="accent()">
+              <div class="preview-head">
+                <span class="preview-badge">AI 88%</span>
+                <span class="preview-title">{{ i18n.t('settings.previewTitle') }}</span>
+              </div>
+              <p class="preview-text">
+                {{ i18n.t('settings.previewText') }}
+              </p>
+              <div class="preview-actions">
+                <span class="preview-button">{{ i18n.t('settings.primaryButton') }}</span>
+                <span class="preview-ghost">{{ i18n.t('settings.secondaryButton') }}</span>
+              </div>
+            
+        @if (onboarding.virusMode()) {
+          <div class="cfg-row" data-no-tauri-switch (click)="onVirusSwitch()">
+            <div class="cfg-text">
+              <span class="cfg-label">{{ i18n.t('settings.virusMode') }}</span>
+              <span class="jk-caption">{{ i18n.t('settings.virusModeHint') }}</span>
+            </div>
+            <button
+              class="virus-toggle"
+              type="button"
+              role="switch"
+              aria-checked="true"
+              [attr.aria-label]="i18n.t('settings.disableVirus')"
+              (click)="onVirusSwitch(); $event.stopPropagation()"
+            >
+              <span></span>
+            </button>
+          </div>
+        }
+
+        <div class="cfg-row" data-no-tauri-switch>
+          <div class="cfg-text">
+            <span class="cfg-label">{{ i18n.t('settings.sidebarHeader') }}</span>
+            <span class="jk-caption">{{ i18n.t('settings.sidebarHeaderHint') }}</span>
+          </div>
+          <div class="sidebar-switch-hit">
+            <input
+              type="checkbox"
+              [checked]="appSettings.showSidebarHeader()"
+              tuiSwitch
+            />
+            <span
+              class="sidebar-switch-hit-area"
+              aria-hidden="true"
+              (click)="toggleSidebarHeader(); $event.preventDefault()"
+            ></span>
+          </div>
+        </div>
+</section>
+
+            <div class="cfg-row">
+              <div class="cfg-text">
+                <span class="cfg-label">{{ i18n.t('settings.fontScale') }}</span>
+                <span
+                  class="jk-caption"
+                >{{ i18n.t('settings.fontScaleHint') }} · {{ fontScale() }}%</span
+              >
+            </div>
+            <input
+              aria-label="Масштаб шрифта"
+              class="cfg-slider"
+              max="100"
+              min="0"
+              type="range"
+              [value]="fontScale()"
+              (input)="fontScale.set($any($event.target).value)"
+              tuiSlider
+              />
+            </div>
+          </section>
+        }
+
+        @case ('twitch') {
+        <section class="cfg-section">
+          <header class="cfg-head">
+            <h2 class="cfg-title">Twitch</h2>
+            <p class="jk-caption">Подключение канала и права доступа.</p>
+          </header>
+
+          <div class="cfg-row">
+            <div class="cfg-text">
+              <span class="cfg-label">Канал</span>
+              <span class="jk-caption">
+                {{ twitchName() }} ·
+                {{ twitchConnected() ? 'соединение активно' : 'не подключён' }}
+              </span>
+            </div>
+            @if (twitchConnected()) {
+              <span appearance="positive" tuiBadge>Подключено</span>
+            } @else {
+              <span appearance="warning" tuiBadge>Не подключено</span>
+            }
+          </div>
+
+          <div class="cfg-row">
+            <span class="cfg-label">Фолловеры / сабы</span>
+            <span class="jk-caption">{{ twitchFollowers() }} / {{ twitchSubscribers() }}</span>
+          </div>
+
+          <div class="cfg-row">
+            <span class="cfg-label">Управление доступом</span>
+            @if (twitchConnected()) {
+              <button
+                size="s"
+                type="button"
+                (click)="disconnectTwitch()"
+                appearance="secondary-destructive"
+                tuiButton
+              >
+                Отключить
+              </button>
+            } @else {
+              <button
+                size="s"
+                type="button"
+                (click)="connectTwitch()"
+                appearance="jkit-tint"
+                tuiButton
+              >
+                Подключить Twitch
+              </button>
+            }
+          </div>
+        </section>
+      }
+
+      @case ('jury') {
+      <section class="cfg-section">
+        <header class="cfg-head">
+          <h2 class="cfg-title">Чат-жюри</h2>
+          <p class="jk-caption">Порог AI и поведение голосований.</p>
+        </header>
+
+        <div class="cfg-row">
+          <div class="cfg-text">
+            <span class="cfg-label">Порог доверия AI</span>
+            <span
+              class="jk-caption"
+            >Советы ниже порога не попадают в жюри · сейчас {{ threshold() }}%</span
+          >
+        </div>
+        <input
+          aria-label="Порог доверия AI"
+          class="cfg-slider"
+          max="100"
+          min="0"
+          type="range"
+          [value]="threshold()"
+          (input)="threshold.set($any($event.target).value)"
+          tuiSlider
+          />
+        </div>
+
+        <div class="cfg-row">
+          <span class="cfg-label">Длительность голосования</span>
+          <tui-textfield tuiChevron class="cfg-control">
+            <input type="text"
+              aria-label="Длительность голосования"
+              [formControl]="durationControl" tuiInput tuiSelectLike>
+            <tui-data-list-wrapper
+              *tuiDropdown
+              [items]="durationValues"></tui-data-list-wrapper>
+            </tui-textfield>
+        </div>
+
+        <div class="cfg-row">
+          <span class="cfg-label">Кворум</span>
+          <tui-textfield tuiChevron class="cfg-control">
+            <input type="text"
+              aria-label="Кворум"
+              [formControl]="quorumControl" tuiInput tuiSelectLike>
+            <tui-data-list-wrapper
+              *tuiDropdown
+              [items]="quorumValues"></tui-data-list-wrapper>
+            </tui-textfield>
+        </div>
+      </section>
+    }
+
+    @case ('widgets') {
+    <section class="cfg-section">
+      <header class="cfg-head">
+        <h2 class="cfg-title">Виджеты</h2>
+        <p class="jk-caption">Общие правила для всех OBS-оверлеев.</p>
+      </header>
+
+      <div class="cfg-row">
+        <div class="cfg-text">
+          <span class="cfg-label">Обновлять автоматически</span>
+          <span class="jk-caption">Виджеты получают состояние без перезапуска OBS</span>
+        </div>
+        <input
+          aria-label="Обновлять автоматически"
+          type="checkbox"
+          [formControl]="autoWidgetsControl"
+          tuiSwitch
+          />
+        </div>
+
+        <div class="cfg-row">
+          <div class="cfg-text">
+            <span class="cfg-label">Бренд Nameless StreamHata</span>
+            <span class="jk-caption">Подпись в углу виджета</span>
+          </div>
+          <input
+            aria-label="Бренд Nameless StreamHata"
+            type="checkbox"
+            [formControl]="showBrandControl"
+            tuiSwitch
+            />
+          </div>
+
+          <div class="cfg-row">
+            <span class="cfg-label">Библиотека</span>
+            <a appearance="jkit-tint" routerLink="/app/widgets" size="s" tuiButton>
+              Открыть виджеты
+            </a>
+          </div>
+        </section>
+      }
+
+      @case ('notifications') {
+      <section class="cfg-section">
+        <header class="cfg-head">
+          <h2 class="cfg-title">Уведомления</h2>
+          <p class="jk-caption">Что и куда присылать.</p>
+        </header>
+
+        @if (desktop) {
+          <div class="cfg-row">
+            <div class="cfg-text">
+              <span class="cfg-label">Системные уведомления</span>
+              <span class="jk-caption">Новая версия, фолловеры, сабы, рейды, чатеры и зрители</span>
+            </div>
+            <a appearance="flat" routerLink="/app/notifications/settings" tuiButton>Настроить</a>
+          </div>
+        }
+
+        <div class="cfg-row">
+          <span class="cfg-label">Голосования</span>
+          <input
+            aria-label="Уведомления о голосованиях"
+            type="checkbox"
+            [formControl]="notifyVotesControl"
+            tuiSwitch
+            />
+          </div>
+
+          <div class="cfg-row">
+            <span class="cfg-label">События канала</span>
+            <input
+              aria-label="Уведомления о событиях"
+              type="checkbox"
+              [formControl]="notifyEventsControl"
+              tuiSwitch
+              />
+            </div>
+
+            <div class="cfg-row">
+              <span class="cfg-label">Ошибки виджетов</span>
+              <input
+                aria-label="Уведомления об ошибках виджетов"
+                type="checkbox"
+                [formControl]="notifyWidgetErrorsControl"
+                tuiSwitch
+                />
+              </div>
+
+              <div class="cfg-row">
+                <div class="cfg-text">
+                  <span class="cfg-label">Дайджест</span>
+                  <span class="jk-caption">Итоги стрима раз в день</span>
+                </div>
+                <input
+                  aria-label="Дайджест"
+                  type="checkbox"
+                  [formControl]="digestControl"
+                  tuiSwitch
+                  />
+                </div>
+
+                <div class="cfg-row">
+                  <div class="cfg-text">
+                    <span class="cfg-label">Telegram / Discord</span>
+                    <span class="jk-caption">Уведомления о стриме, алертах и донатах</span>
+                  </div>
+                  <input
+                    aria-label="Включить Telegram и Discord"
+                    type="checkbox"
+                    [formControl]="notifyEnabledControl"
+                    tuiSwitch
+                    />
+                  </div>
+
+                  <div class="cfg-row cfg-row-column">
+                    <span class="cfg-label">Discord webhook URL</span>
+                    <tui-textfield>
+                      <input
+                        aria-label="Discord webhook"
+                        placeholder="https://discord.com/api/webhooks/..."
+                        [value]="discordWebhook()"
+                        (input)="discordWebhook.set($any($event.target).value)"
+                        tuiInput
+                        />
+                      </tui-textfield>
+                    </div>
+
+                    <div class="cfg-row cfg-row-column">
+                      <span class="cfg-label">Telegram bot token</span>
+                      <tui-textfield>
+                        <input
+                          aria-label="Telegram bot token"
+                          placeholder="123456:ABC..."
+                          [value]="telegramToken()"
+                          (input)="telegramToken.set($any($event.target).value)"
+                          tuiInput
+                          />
+                        </tui-textfield>
+                      </div>
+
+                      <div class="cfg-row cfg-row-column">
+                        <span class="cfg-label">Telegram chat ID</span>
+                        <tui-textfield>
+                          <input
+                            aria-label="Telegram chat ID"
+                            placeholder="-100123456789"
+                            [value]="telegramChatId()"
+                            (input)="telegramChatId.set($any($event.target).value)"
+                            tuiInput
+                            />
+                          </tui-textfield>
+                        </div>
+
+                        <div class="cfg-row">
+                          <span class="cfg-label">Проверка</span>
+                          <div class="cfg-actions">
+                            <button
+                              size="s"
+                              type="button"
+                              (click)="testNotify()"
+                              appearance="secondary"
+                              tuiButton
+                            >
+                              Тест
+                            </button>
+                            <button
+                              size="s"
+                              type="button"
+                              (click)="saveNotify()"
+                              appearance="primary"
+                              tuiButton
+                            >
+                              {{ notifySaved() ? 'Сохранено' : 'Сохранить' }}
+                            </button>
+                          </div>
+                        </div>
+
+                        <div class="cfg-row">
+                          <span class="cfg-label">Email</span>
+                          <input
+                            aria-label="Канал email"
+                            type="checkbox"
+                            [formControl]="emailChannelControl"
+                            tuiSwitch
+                            />
+                          </div>
+
+                          <div class="cfg-row">
+                            <span class="cfg-label">Discord</span>
+                            <input
+                              aria-label="Канал Discord"
+                              type="checkbox"
+                              [formControl]="discordChannelControl"
+                              tuiSwitch
+                              />
+                            </div>
+                          </section>
+                        }
+
+                        @case ('network') {
+                        <section class="cfg-section">
+                          <header class="cfg-head">
+                            <h2 class="cfg-title">{{ labels().network }}</h2>
+                            <p class="jk-caption">{{ labels().proxyHint }}</p>
+                          </header>
+
+                          <div class="cfg-row">
+                            <div class="cfg-text">
+                              <span class="cfg-label">{{ labels().proxy }}</span>
+                              <span class="jk-caption">http://127.0.0.1:1080</span>
+                            </div>
+                            <input
+                              aria-label="Включить прокси"
+                              type="checkbox"
+                              [formControl]="proxyEnabledControl"
+                              tuiSwitch
+                              />
+                            </div>
+
+                            <div class="cfg-row cfg-row-column">
+                              <span class="cfg-label">Proxy URL</span>
+                              <tui-textfield>
+                                <input
+                                  aria-label="Proxy URL"
+                                  placeholder="http://127.0.0.1:1080"
+                                  [value]="proxyUrl()"
+                                  (input)="proxyUrl.set($any($event.target).value)"
+                                  tuiInput
+                                  />
+                                </tui-textfield>
+                              </div>
+
+                              <div class="cfg-row">
+                                <span class="cfg-label">Проверка сети</span>
+                                <div class="cfg-actions">
+                                  <button
+                                    size="s"
+                                    type="button"
+                                    (click)="testNetwork()"
+                                    appearance="secondary"
+                                    tuiButton
+                                  >
+                                    Тест
+                                  </button>
+                                  <button
+                                    size="s"
+                                    type="button"
+                                    (click)="saveNetwork()"
+                                    appearance="primary"
+                                    tuiButton
+                                  >
+                                    {{ networkSaved() ? 'Сохранено' : 'Сохранить' }}
+                                  </button>
+                                </div>
+                              </div>
+
+                              <header class="cfg-head">
+                                <h2 class="cfg-title">{{ labels().metrics }}</h2>
+                                <p class="jk-caption">Сводка сессии, донатов, баллов и музыки.</p>
+                              </header>
+
+                              <div class="metrics-grid">
+                                <div class="metric-tile">
+                                  <span class="jk-caption">Пик зрителей</span>
+                                  <strong>{{ metrics()?.session?.peakViewers ?? 0 }}</strong>
+                                </div>
+                                <div class="metric-tile">
+                                  <span class="jk-caption">Среднее</span>
+                                  <strong>{{ metrics()?.session?.avgViewers ?? 0 }}</strong>
+                                </div>
+                                <div class="metric-tile">
+                                  <span class="jk-caption">Сообщений</span>
+                                  <strong>{{ metrics()?.session?.messages ?? 0 }}</strong>
+                                </div>
+                                <div class="metric-tile">
+                                  <span class="jk-caption">Донатов</span>
+                                  <strong>{{ metrics()?.donations?.totalCount ?? 0 }}</strong>
+                                </div>
+                                <div class="metric-tile">
+                                  <span class="jk-caption">Треков</span>
+                                  <strong>{{ metrics()?.music?.totalTracks ?? 0 }}</strong>
+                                </div>
+                              </div>
+
+                              <div class="cfg-row">
+                                <span class="cfg-label">Дайджест в Telegram</span>
+                                <button
+                                  size="s"
+                                  type="button"
+                                  (click)="sendMetrics()"
+                                  appearance="primary"
+                                  tuiButton
+                                >
+                                  {{ metricsSent() ? 'Отправлено' : 'Отправить' }}
+                                </button>
+                              </div>
+                            </section>
+                          }
+
+                          @case ('integrations') {
+                          <section class="cfg-section">
+                            <header class="cfg-head">
+                              <h2 class="cfg-title">Интеграции</h2>
+                              <p
+                                class="jk-caption"
+                              >Подключение и отключение подсистем без перезапуска.</p>
+                            </header>
+
+                            @for (integration of integrations(); track integration.id) {
+                              <div class="cfg-row">
+                                <div class="cfg-text">
+                                  <span class="cfg-label">{{ integration.name }}</span>
+                                  <span class="jk-caption">{{ integration.status }}</span>
+                                </div>
+                                <input
+                                  aria-label="Включить интеграцию"
+                                  type="checkbox"
+                                  [checked]="integration.enabled"
+                                  (change)="toggleIntegration(integration.id, $event)"
+                                  tuiSwitch
+                                  />
+                                </div>
+                              }
+
+                              <div class="cfg-row">
+                                <div class="cfg-text">
+                                  <span class="cfg-label">DonationAlerts · авторизация</span>
+                                  <span
+                                    class="jk-caption"
+                                  >OAuth-подключение канала для приёма донатов</span>
+                                </div>
+                                <div class="da-connect">
+                                  @if (donationAlertsState()?.state === 'connected') {
+                                    <button size="s" type="button" appearance="positive" disabled tuiButton>Подключено</button>
+                                  } @else {
+                                    <button
+                                      size="s"
+                                      type="button"
+                                      (click)="connectDonationAlerts()"
+                                      appearance="jkit-tint"
+                                      tuiButton
+                                    >
+                                      Подключить
+                                    </button>
+                                  }
+                                  @if (donationError()) {
+                                    <span class="jk-caption da-error">{{ donationError() }}</span>
+                                  }
+                                </div>
+                              </div>
+                            </section>
+
+                            <section class="cfg-section">
+                              <header class="cfg-head">
+                                <h2 class="cfg-title">URL вебхуков</h2>
+                                <p class="jk-caption">
+                                  Вставьте адрес в настройках сервиса. Секрет задаётся в .env бэкенда.
+                                </p>
+                              </header>
+
+                              @for (provider of webhookProviders; track provider) {
+                                <div class="cfg-row">
+                                  <div class="cfg-text">
+                                    <span class="cfg-label">{{ provider }}</span>
+                                    <span
+                                      class="jk-caption webhook-url"
+                                    >{{ webhookUrl(provider) }}</span>
+                                  </div>
+                                  <button
+                                    size="s"
+                                    type="button"
+                                    [tuiButtonCopy]="webhookUrl(provider)"
+                                    appearance="flat"
+                                    tuiButton
+                                  >
+                                    Копировать URL
+                                  </button>
+                                </div>
+                              }
+                            </section>
+                          }
+
+                          @case ('accessibility') {
+                          <section class="cfg-section">
+                            <header class="cfg-head">
+                              <h2 class="cfg-title">Доступность</h2>
+                              <p class="jk-caption">Движение, контраст и размер текста.</p>
+                            </header>
+
+                            <div class="cfg-row">
+                              <div class="cfg-text">
+                                <span class="cfg-label">Уменьшить движение</span>
+                                <span class="jk-caption">Гасит пульсации и переходы</span>
+                              </div>
+                              <input
+                                aria-label="Уменьшить движение"
+                                type="checkbox"
+                                [formControl]="reducedMotionControl"
+                                tuiSwitch
+                                />
+                              </div>
+
+                              <div class="cfg-row">
+                                <div class="cfg-text">
+                                  <span class="cfg-label">Повышенный контраст</span>
+                                  <span class="jk-caption">Усиливает границы и текст</span>
+                                </div>
+                                <input
+                                  aria-label="Повышенный контраст"
+                                  type="checkbox"
+                                  [formControl]="highContrastControl"
+                                  tuiSwitch
+                                  />
+                                </div>
+
+                                <div class="cfg-row">
+                                  <span class="cfg-label">Размер текста</span>
+                                  <tui-segmented
+                                    [activeItemIndex]="textSizeIndex()"
+                                    (activeItemIndexChange)="setTextSize($event)"
+                                  >
+                                    <button type="button">S</button>
+                                    <button type="button">M</button>
+                                    <button type="button">L</button>
+                                  </tui-segmented>
+                                </div>
+                              </section>
+                            }
+                          }
+                        </div>
+                      </div>
+                    </div>

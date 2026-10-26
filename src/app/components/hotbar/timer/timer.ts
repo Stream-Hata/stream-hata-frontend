@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject } from
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HotbarStore } from '@app/stores/hotbar.store';
 import { TuiButton } from '@taiga-ui/core';
-import { Subject, switchMap, takeUntil, tap, timer } from 'rxjs';
+import { Subject, takeUntil, tap } from 'rxjs';
 import { TimeRow } from './time-row/time-row';
 
 @Component({
@@ -24,13 +24,13 @@ export class Timer extends Subject<void> {
 	});
 
 	startTimer() {
-		timer(0, 1000)
+		this.store
+			.start(this.time())
 			.pipe(
-				switchMap(() => {
-					return this.store.start(this.time());
-				}),
+				tap(() => this.next()),
+				takeUntil(this),
+				takeUntilDestroyed(this.destroy),
 			)
-			.pipe(takeUntil(this), takeUntilDestroyed(this.destroy))
 			.subscribe();
 	}
 

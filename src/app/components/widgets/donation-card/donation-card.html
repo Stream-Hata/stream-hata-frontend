@@ -1,0 +1,37 @@
+<div
+  class="donation-widget"
+  [class.donation-preview]="preview()"
+  [class.donation-layout-table]="layout() === 'table'"
+  [class.donation-layout-combined]="layout() === 'combined'"
+  [style]="style()"
+>
+  @if (layout() !== 'table' && event(); as donation) {
+    <article class="donation-card" [class]="animationClass()">
+      <span class="donation-kicker">{{ config().kicker || 'ДОНАТ' }}</span>
+      <strong class="donation-user">{{ donation.username || 'Зритель' }}</strong>
+      @if (config().showAmount) {
+        <span class="donation-amount">{{ donation.amount }} {{ donation.currency }}</span>
+      }
+      @if (config().showMessage && donation.message) {
+        <p class="donation-message">{{ donation.message }}</p>
+      }
+    </article>
+  }
+
+  @if (layout() !== 'card' && rows().length) {
+    <div class="donation-table">
+      <div class="donation-table-head">
+        <span>Зритель</span>
+        <span>Сумма</span>
+        <span>Сообщение</span>
+      </div>
+      @for (row of rows(); track row.id) {
+        <div class="donation-table-row" [class.donation-table-latest]="row.id === event()?.id">
+          <span class="donation-table-user">{{ row.username || 'Зритель' }}</span>
+          <span class="donation-table-amount">{{ row.amount }} {{ row.currency }}</span>
+          <span class="donation-table-message">{{ row.message || '—' }}</span>
+        </div>
+      }
+    </div>
+  }
+</div>

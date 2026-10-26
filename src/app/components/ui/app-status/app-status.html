@@ -1,0 +1,16 @@
+@if (status.loading()) {
+  <div class="route-loader" role="status" aria-label="Загрузка">
+    <span class="route-loader-bar"></span>
+  </div>
+}
+
+@if (status.error(); as error) {
+  <div class="app-error" role="alertdialog" aria-modal="true">
+    <div class="app-error-card">
+      <tui-icon icon="@tui.triangle-alert" />
+      <strong>Ошибка приложения</strong>
+      <span>{{ error }}</span>
+      <button appearance="primary" tuiButton type="button" (click)="reload()">Обновить</button>
+    </div>
+  </div>
+}

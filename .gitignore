@@ -44,4 +44,12 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Local secrets and agent state
 .env
+.env.*
+!.env.example
+agents-state/
+agent-state/
+.opencode/
+.claude/

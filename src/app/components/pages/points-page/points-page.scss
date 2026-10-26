@@ -1,0 +1,259 @@
+:host {
+	display: block;
+}
+
+.tabs {
+	display: flex;
+	gap: var(--space-2xs);
+	flex-wrap: wrap;
+}
+
+.points-grid {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 360px);
+	gap: var(--space-md);
+	align-items: start;
+}
+
+.main-col,
+.side-col {
+	display: flex;
+	gap: var(--space-md);
+	flex-direction: column;
+	min-width: 0;
+}
+
+.side-col {
+	position: sticky;
+	top: calc(var(--layout-header) + var(--space-xl));
+	padding: var(--space-lg);
+}
+
+.board-head {
+	display: flex;
+	gap: var(--space-md);
+	align-items: center;
+	justify-content: space-between;
+}
+
+.board-search {
+	width: 240px;
+}
+
+.table-wrap {
+	overflow: hidden;
+	border: 1px solid var(--border-normal);
+	border-radius: var(--radius-lg);
+	background: var(--surface-elevated-1);
+}
+
+.table-wrap table {
+	width: 100%;
+}
+
+.game-row.cfg-row-column {
+	flex-direction: column;
+	align-items: stretch;
+	gap: var(--space-sm);
+	padding-block: var(--space-sm);
+}
+
+.game-row > tui-textfield {
+	min-width: 180px;
+}
+
+.col-index {
+	width: 48px;
+	color: var(--text-tertiary);
+}
+
+.name-cell {
+	font-weight: 500;
+	white-space: nowrap;
+}
+
+.balance-cell {
+	color: var(--accent-primary);
+	font-weight: 600;
+}
+
+.response-cell {
+	overflow: hidden;
+	max-width: 260px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.col-actions {
+	width: 96px;
+	text-align: right;
+}
+
+.danger-action {
+	color: var(--tui-text-negative);
+}
+
+.side-head {
+	display: flex;
+	gap: var(--space-sm);
+	align-items: center;
+	justify-content: space-between;
+}
+
+.side-subtitle {
+	margin-top: var(--space-sm);
+}
+
+.rate-row {
+	display: flex;
+	gap: var(--space-sm);
+	align-items: center;
+	justify-content: space-between;
+}
+
+.rate-input {
+	width: 96px;
+}
+
+.tx-row {
+	display: flex;
+	gap: var(--space-sm);
+	align-items: center;
+}
+
+.tx-delta {
+	min-width: 2.5rem;
+	color: var(--tui-text-positive);
+	font: 600 13px/18px var(--tui-font-text);
+	font-variant-numeric: tabular-nums;
+}
+
+.tx-delta.negative {
+	color: var(--tui-text-negative);
+}
+
+.tx-text {
+	display: flex;
+	gap: 1px;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.tx-name {
+	font: 500 13px/18px var(--tui-font-text);
+}
+
+.editor-actions {
+	display: flex;
+	gap: var(--space-xs);
+	margin-top: var(--space-sm);
+}
+
+/* Games */
+.game-card {
+	display: flex;
+	flex-direction: column;
+}
+
+.game-row {
+	display: flex;
+	gap: var(--space-md);
+	align-items: center;
+	justify-content: space-between;
+	min-height: 52px;
+	border-bottom: 1px solid var(--border-divider);
+	padding-block: var(--space-xs);
+}
+
+.game-row:last-child {
+	border-bottom: 0;
+}
+
+.cfg-label {
+	font: 500 14px/20px var(--tui-font-text);
+}
+
+.cfg-text {
+	display: flex;
+	gap: 1px;
+	flex-direction: column;
+}
+
+/* Quotes */
+.quote-list {
+	display: flex;
+	gap: var(--space-xs);
+	flex-direction: column;
+}
+
+.quote-card {
+	display: flex;
+	gap: var(--space-sm);
+	align-items: flex-start;
+}
+
+.quote-number {
+	min-width: 2.5rem;
+	color: var(--accent-secondary);
+}
+
+.quote-text {
+	display: flex;
+	gap: 2px;
+	flex-direction: column;
+	min-width: 0;
+}
+
+/* Redemptions */
+.redemption-row {
+	display: flex;
+	gap: var(--space-sm);
+	align-items: center;
+	border-bottom: 1px solid var(--border-divider);
+	padding-block: var(--space-2xs);
+}
+
+.redemption-row:last-child {
+	border-bottom: 0;
+}
+
+.redemption-row span[tuiBadge] {
+	margin-left: auto;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (width <= 1024px) {
+	.points-grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.side-col {
+		position: static;
+	}
+}
+
+@media (width <= 760px) {
+	.board-head {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.board-search {
+		width: 100%;
+	}
+}
+
+.settings-card {
+	background: color-mix(in hsl, var(--surface-elevated-1) 82%, transparent);
+	backdrop-filter: blur(12px);
+}
+
+.side-head-actions {
+	display: flex;
+	gap: var(--space-xs);
+	align-items: center;
+}
+
+.settings-collapsed .settings-body {
+	display: none;
+}

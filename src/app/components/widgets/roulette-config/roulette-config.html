@@ -1,0 +1,147 @@
+<section class="roulette-config" [formGroup]="form">
+  <header class="cfg-head">
+    <h2 class="cfg-title">Рулетка игр</h2>
+    <p class="jk-caption">Сервер выбирает игру по фильтрам, весам и истории.</p>
+  </header>
+
+  <div class="cfg-row">
+    <span class="cfg-label">Режим</span>
+    <tui-textfield class="cfg-control" tuiChevron>
+      <input [readonly]="true" [value]="modeText()" tuiInput tuiSelectLike />
+      <tui-data-list-wrapper
+        *tuiDropdown
+        [items]="modeLabels"
+        (itemClick)="setMode($event)"
+      ></tui-data-list-wrapper>
+    </tui-textfield>
+  </div>
+
+  <div class="cfg-row cfg-row-column">
+    <span class="cfg-label">Платформы</span>
+    <tui-textfield>
+      <input formControlName="platforms" placeholder="ps1, ps2, snes (пусто — все)" tuiInput />
+    </tui-textfield>
+  </div>
+
+  <div class="cfg-row">
+    <span class="cfg-label">Эмулятор</span>
+    <tui-textfield class="cfg-control" tuiChevron>
+      <input [readonly]="true" [value]="emulatorText()" tuiInput tuiSelectLike />
+      <tui-data-list-wrapper
+        *tuiDropdown
+        [items]="emulatorLabels"
+        (itemClick)="setEmulator($event)"
+      ></tui-data-list-wrapper>
+    </tui-textfield>
+  </div>
+
+  <div class="cfg-row">
+    <div class="cfg-text">
+      <span class="cfg-label">Без повторов</span>
+      <span class="jk-caption">Не показывать последние N игр</span>
+    </div>
+    <tui-textfield class="cfg-control">
+      <input formControlName="avoidRecent" tuiInputNumber />
+    </tui-textfield>
+  </div>
+
+  <div class="cfg-row cfg-row-wrap">
+    <span class="cfg-label">Веса тиров</span>
+    <div class="roulette-weights">
+      <label>Gold <tui-textfield><input formControlName="tierGold" tuiInputNumber /></tui-textfield></label>
+      <label>Diamond <tui-textfield><input formControlName="tierDiamond" tuiInputNumber /></tui-textfield></label>
+      <label>Platinum <tui-textfield><input formControlName="tierPlatinum" tuiInputNumber /></tui-textfield></label>
+      <label>None <tui-textfield><input formControlName="tierNone" tuiInputNumber /></tui-textfield></label>
+    </div>
+  </div>
+
+  <div class="cfg-row cfg-row-wrap">
+    <span class="cfg-label">Внешний вид</span>
+    <div class="roulette-colors">
+      <tui-textfield><input aria-label="Фон" formControlName="background" tuiInputColor /></tui-textfield>
+      <tui-textfield><input aria-label="Акцент" formControlName="accent" tuiInputColor /></tui-textfield>
+      <tui-textfield><input aria-label="Текст" formControlName="text" tuiInputColor /></tui-textfield>
+    </div>
+  </div>
+
+  <div class="cfg-row">
+    <span class="cfg-label">Шрифт</span>
+    <tui-textfield class="cfg-control">
+      <input formControlName="fontFamily" tuiInput />
+    </tui-textfield>
+  </div>
+
+  <div class="cfg-row">
+    <span class="cfg-label">URL шрифта</span>
+    <tui-textfield class="cfg-control">
+      <input formControlName="fontUrl" placeholder="https://.../font.woff2" tuiInput />
+    </tui-textfield>
+  </div>
+
+  <div class="cfg-row">
+    <span class="cfg-label">Мем</span>
+    <tui-textfield class="cfg-control">
+      <input formControlName="memeUrl" placeholder="https://.../meme.gif" tuiInput />
+    </tui-textfield>
+  </div>
+
+  <div class="cfg-row">
+    <span class="cfg-label">Музыка</span>
+    <tui-textfield class="cfg-control">
+      <input formControlName="musicUrl" placeholder="https://.../spin.mp3" tuiInput />
+    </tui-textfield>
+  </div>
+
+  <div class="cfg-row">
+    <span class="cfg-label">Звук результата</span>
+    <tui-textfield class="cfg-control">
+      <input formControlName="revealUrl" placeholder="https://.../win.mp3" tuiInput />
+    </tui-textfield>
+  </div>
+
+  <div class="cfg-row">
+    <div class="cfg-text">
+      <span class="cfg-label">Громкость</span>
+      <span class="jk-caption">{{ form.controls.volume.value }}%</span>
+    </div>
+    <input class="cfg-slider" formControlName="volume" max="100" min="0" type="range" tuiSlider />
+  </div>
+
+  <div class="cfg-row">
+    <div class="cfg-text">
+      <span class="cfg-label">Кот в мешке</span>
+      <span class="jk-caption">Показывать картинку кота в результате</span>
+    </div>
+    <input formControlName="showCat" tuiSwitch type="checkbox" />
+  </div>
+
+  <div class="cfg-row">
+    <span class="cfg-label">Картинка кота</span>
+    <tui-textfield class="cfg-control">
+      <input formControlName="catImage" placeholder="https://.../cat.png" tuiInput />
+    </tui-textfield>
+  </div>
+
+  <div class="cfg-row">
+    <span class="cfg-label">Шаблон результата</span>
+    <tui-textfield class="cfg-control">
+      <input formControlName="titleTemplate" tuiInput />
+    </tui-textfield>
+  </div>
+
+  <div class="cfg-row">
+    <span class="cfg-label">Длительность результата</span>
+    <tui-textfield class="cfg-control">
+      <input formControlName="durationSeconds" tuiInputNumber />
+    </tui-textfield>
+  </div>
+
+  <div class="roulette-save">
+    <button appearance="primary" tuiButton type="button" (click)="save()">
+      {{ saved() ? 'Сохранено' : 'Сохранить настройки рулетки' }}
+    </button>
+    @if (error()) {
+      <span class="roulette-error">{{ error() }}</span>
+    }
+  </div>
+</section>

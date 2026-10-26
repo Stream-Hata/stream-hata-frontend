@@ -1,12 +1,12 @@
 <button
-	[tuiDropdown]="dropdown"
-	(tuiDropdownOpenChange)="open.set($event)"
-	(click)="open.set(!open())"
-	tuiButton
-	tuiIconButton
-	iconEnd="@tui.settings"
+  [tuiDropdown]="dropdown"
+  (tuiDropdownOpenChange)="open.set($event)"
+  (click)="open.set(!open())"
+  tuiButton
+  tuiIconButton
+  iconEnd="@tui.settings"
 ></button>
 
 <ng-template #dropdown>
-	<app-settings-dropdown></app-settings-dropdown>
+  <app-settings-dropdown></app-settings-dropdown>
 </ng-template>

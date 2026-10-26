@@ -1,0 +1,38 @@
+<div class="overlay-stage">
+  @if (current(); as jury) {
+    <article class="jury-card">
+      <header class="jury-head">
+        <span class="jury-kicker">ЧАТ-ЖЮРИ</span>
+        <span class="jury-confidence">AI {{ confidence() }}%</span>
+      </header>
+
+      <p class="jury-question">{{ question() }}</p>
+      <p class="jury-author">Совет от {{ author() }}</p>
+
+      <div class="jury-body">
+        <app-approval-ring [size]="128" [stroke]="8" [value]="approval()" />
+
+        <div class="jury-votes">
+          <div class="vote-row vote-yea">
+            <span>За</span>
+            <strong>{{ yea() }}</strong>
+          </div>
+          <div class="vote-row vote-nei">
+            <span>Против</span>
+            <strong>{{ nei() }}</strong>
+          </div>
+          <span class="jury-total">Всего голосов: {{ total() }}</span>
+        </div>
+      </div>
+
+      @if (verdict()) {
+        <p class="jury-verdict">{{ verdict() }}</p>
+      }
+    </article>
+  } @else {
+    <article class="jury-card jury-empty">
+      <span class="jury-kicker">ЧАТ-ЖЮРИ</span>
+      <p class="jury-question">Ждём совет от чата…</p>
+    </article>
+  }
+</div>

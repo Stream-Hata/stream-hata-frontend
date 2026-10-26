@@ -1,0 +1,14 @@
+:host {
+	display: block;
+	width: 100%;
+}
+
+.hotbar-overlay {
+	display: flex;
+	justify-content: center;
+	padding: 16px;
+}
+
+.hotbar-overlay app-hotbar-preview {
+	width: min(720px, 100%);
+}
