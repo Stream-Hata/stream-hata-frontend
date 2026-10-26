@@ -10,7 +10,18 @@
 }
 
 .settings-nav {
+	position: sticky;
+	top: calc(var(--layout-header) + 120px);
+	z-index: 20;
 	align-self: start;
+	max-height: calc(100dvh - var(--layout-header) - 140px);
+	overflow-y: auto;
+	padding-right: 4px;
+}
+
+html[data-tauri] .settings-nav {
+	top: 120px;
+	max-height: calc(100dvh - 140px);
 }
 
 .settings-content {
