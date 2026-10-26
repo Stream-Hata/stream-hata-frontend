@@ -205,6 +205,24 @@
           </div>
         }
 
+        @if (desktop) {
+          <div class="cfg-row">
+            <div class="cfg-text">
+              <span class="cfg-label">Фон приложения</span>
+              <span class="jk-caption">Своя картинка за интерфейсом</span>
+            </div>
+            <div class="background-actions">
+              @if (backgroundImage()) {
+                <button appearance="flat" size="s" tuiButton type="button" (click)="clearBackground()">Убрать</button>
+              }
+              <label class="background-upload">
+                Выбрать
+                <input type="file" accept="image/*" (change)="onBackgroundFile($event)" />
+              </label>
+            </div>
+          </div>
+        }
+
         <div class="cfg-row" data-no-tauri-switch>
           <div class="cfg-text">
             <span class="cfg-label">{{ i18n.t('settings.sidebarHeader') }}</span>
@@ -737,7 +755,46 @@
                             </section>
                           }
 
-                          @case ('accessibility') {
+                          @case ('about') {
+          <section class="cfg-section">
+            <header class="cfg-head">
+              <h2 class="cfg-title">{{ i18n.t('settings.about') }}</h2>
+              <p class="jk-caption">{{ i18n.t('settings.aboutHint') }}</p>
+            </header>
+
+            <div class="cfg-row">
+              <span class="cfg-label">{{ i18n.t('settings.version') }}</span>
+              <span class="jk-caption">{{ desktopUpdate.currentVersion() || '—' }}</span>
+            </div>
+
+            <div class="cfg-row">
+              <div class="cfg-text">
+                <span class="cfg-label">{{ i18n.t('settings.updates') }}</span>
+                <span class="jk-caption">{{ i18n.t('settings.updatesHint') }}</span>
+              </div>
+              <div class="background-actions">
+                @if (desktopUpdate.available()) {
+                  <button appearance="primary" size="s" tuiButton type="button" [disabled]="desktopUpdate.installing()" (click)="desktopUpdate.install()">
+                    {{ i18n.t('settings.installUpdate') }} {{ desktopUpdate.version() }}
+                  </button>
+                } @else {
+                  <button appearance="flat" size="s" tuiButton type="button" (click)="desktopUpdate.check()">
+                    {{ i18n.t('settings.checkUpdate') }}
+                  </button>
+                }
+              </div>
+            </div>
+
+            @if (desktopUpdate.installing()) {
+              <p class="jk-caption">{{ i18n.t('settings.updating') }}</p>
+            }
+            @if (desktopUpdate.error()) {
+              <p class="error-text">{{ desktopUpdate.error() }}</p>
+            }
+          </section>
+        }
+
+        @case ('accessibility') {
                           <section class="cfg-section">
                             <header class="cfg-head">
                               <h2 class="cfg-title">{{ i18n.t('settings.accessibilityTitle') }}</h2>

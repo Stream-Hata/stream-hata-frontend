@@ -25,6 +25,7 @@ interface PersistedSettings {
 	searchHotkey: SearchHotkey;
 	showSidebarHeader: boolean;
 	sidebarCollapsed: boolean;
+	backgroundImage: string;
 }
 
 const STORAGE_KEY = 'nsh.app-settings';
@@ -40,6 +41,7 @@ const DEFAULTS: PersistedSettings = {
 	searchHotkey: 'both',
 	showSidebarHeader: !(typeof navigator !== 'undefined' && navigator.userAgent.includes('NamelessStreamHataDesktop')),
 	sidebarCollapsed: false,
+	backgroundImage: '',
 };
 
 const ACCENT_BACKGROUND = '#0F0817';
@@ -96,6 +98,7 @@ export class AppSettingsService {
 	readonly searchHotkey = signal<SearchHotkey>(DEFAULTS.searchHotkey);
 	readonly showSidebarHeader = signal(DEFAULTS.showSidebarHeader);
 	readonly sidebarCollapsed = signal(DEFAULTS.sidebarCollapsed);
+	readonly backgroundImage = signal(DEFAULTS.backgroundImage);
 	readonly accentContrast = computed(() =>
 		contrastRatio(this.accent(), ACCENT_BACKGROUND).toFixed(1),
 	);
@@ -131,6 +134,7 @@ export class AppSettingsService {
 			searchHotkey: this.searchHotkey(),
 			showSidebarHeader: this.showSidebarHeader(),
 			sidebarCollapsed: this.sidebarCollapsed(),
+			backgroundImage: this.backgroundImage(),
 		};
 	}
 
@@ -155,6 +159,11 @@ export class AppSettingsService {
 		root.dataset['textSize'] = settings.textSize;
 		root.style.colorScheme = resolvedTheme;
 		root.style.setProperty('--app-zoom', (textScale * fontScale).toFixed(3));
+		root.style.setProperty(
+			'--app-background-image',
+			settings.backgroundImage ? `url("${settings.backgroundImage}")` : 'none',
+		);
+		root.classList.toggle('has-app-background', Boolean(settings.backgroundImage));
 		this.applyAccent(root, settings.accent);
 		this.applyThemeVars(root, resolvedTheme === 'light');
 		this.applyDensityVars(root, settings.density === 'compact');
@@ -284,6 +293,7 @@ export class AppSettingsService {
 			this.searchHotkey.set(parsed.searchHotkey ?? DEFAULTS.searchHotkey);
 			this.showSidebarHeader.set(parsed.showSidebarHeader ?? DEFAULTS.showSidebarHeader);
 			this.sidebarCollapsed.set(parsed.sidebarCollapsed ?? DEFAULTS.sidebarCollapsed);
+			this.backgroundImage.set(parsed.backgroundImage ?? DEFAULTS.backgroundImage);
 		} catch {
 			// ignore broken storage
 		}

@@ -852,3 +852,25 @@ label[tuiOption]:hover,
 .tui-option:hover {
 	background: color-mix(in srgb, var(--accent-primary) 14%, transparent) !important;
 }
+
+html.has-app-background body {
+	background-image: var(--app-background-image);
+	background-position: center;
+	background-size: cover;
+	background-attachment: fixed;
+}
+
+html.has-app-background .shell,
+html.has-app-background .main {
+	background: transparent;
+}
+
+html.has-app-background .sidebar {
+	background: color-mix(in hsl, var(--surface-base) 78%, transparent);
+	backdrop-filter: blur(18px);
+}
+
+html.has-app-background .page {
+	background: color-mix(in hsl, var(--surface-base) 30%, transparent);
+	backdrop-filter: blur(2px);
+}

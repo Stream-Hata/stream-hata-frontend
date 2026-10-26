@@ -10,6 +10,7 @@ import { AppSettingsService } from '@shared/services/app-settings.service';
 import { DonationsService } from '@shared/services/donations.service';
 import { I18nService } from '@shared/services/i18n.service';
 import { OnboardingService } from '@shared/services/onboarding.service';
+import { DesktopUpdateService } from '@shared/services/desktop-update.service';
 import { IntegrationsService } from '@shared/services/integrations.service';
 import { MetricsService, NetworkService } from '@shared/services/ops.services';
 import { NotifyService } from '@shared/services/stream.services';
@@ -36,6 +37,7 @@ import {
 import { catchError, map, of, switchMap, timer } from 'rxjs';
 
 type Section =
+	| 'about'
 	| 'general'
 	| 'appearance'
 	| 'twitch'
@@ -70,6 +72,7 @@ const SECTION_DEFS: { id: Section; labelKey: TranslationKey; icon: string }[] = 
 	{ id: 'integrations', labelKey: 'settings.integrations', icon: '@tui.plug' },
 	{ id: 'accessibility', labelKey: 'settings.accessibility', icon: '@tui.accessibility' },
 	{ id: 'network', labelKey: 'settings.network', icon: '@tui.wifi' },
+	{ id: 'about', labelKey: 'settings.about', icon: '@tui.info' },
 ];
 
 @Component({
@@ -103,6 +106,7 @@ const SECTION_DEFS: { id: Section; labelKey: TranslationKey; icon: string }[] = 
 export default class SettingsPage {
 	readonly i18n = inject(I18nService);
 	readonly onboarding = inject(OnboardingService);
+	readonly desktopUpdate = inject(DesktopUpdateService);
 	private readonly injector = inject(Injector);
 	readonly desktop = navigator.userAgent.includes('NamelessStreamHataDesktop') || '__TAURI_INTERNALS__' in window;
 	readonly section = signal<Section>('general');
@@ -153,9 +157,41 @@ export default class SettingsPage {
 
 	readonly appSettings = inject(AppSettingsService);
 	readonly saved = signal(false);
+	readonly backgroundImage = this.appSettings.backgroundImage;
 
 	disableVirusMode(): void {
 		void this.onboarding.disableVirusMode();
+	}
+
+	onBackgroundFile(event: Event): void {
+		const input = event.target as HTMLInputElement;
+		const file = input.files?.[0];
+
+		if (!file || !file.type.startsWith('image/')) {
+			return;
+		}
+
+		const reader = new FileReader();
+		reader.onload = () => {
+			const image = new Image();
+			image.onload = () => {
+				const max = 1920;
+				const scale = Math.min(1, max / Math.max(image.width, image.height));
+				const canvas = document.createElement('canvas');
+				canvas.width = Math.round(image.width * scale);
+				canvas.height = Math.round(image.height * scale);
+				const context = canvas.getContext('2d');
+				context?.drawImage(image, 0, 0, canvas.width, canvas.height);
+				this.appSettings.backgroundImage.set(canvas.toDataURL('image/jpeg', 0.82));
+			};
+			image.src = String(reader.result);
+		};
+		reader.readAsDataURL(file);
+		input.value = '';
+	}
+
+	clearBackground(): void {
+		this.appSettings.backgroundImage.set('');
 	}
 
 	saveSettings(): void {
