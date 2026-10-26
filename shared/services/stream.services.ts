@@ -14,44 +14,47 @@ import { defer, of } from 'rxjs';
 export class ObsService {
 	private readonly http = inject(HttpClient);
 	private readonly local = inject(ObsLocalService);
-	private readonly desktop =
-		typeof window !== 'undefined' &&
-		('__TAURI_INTERNALS__' in window ||
-			(window as unknown as Record<string, unknown>)['__STREAMHATA_DESKTOP__'] === true ||
-			navigator.userAgent.includes('NamelessStreamHataDesktop'));
+	private isDesktop(): boolean {
+		return (
+			typeof window !== 'undefined' &&
+			('__TAURI_INTERNALS__' in window ||
+				(window as unknown as Record<string, unknown>)['__STREAMHATA_DESKTOP__'] === true ||
+				navigator.userAgent.includes('NamelessStreamHataDesktop'))
+		);
+	}
 
 	status() {
-		return this.desktop
+		return this.isDesktop()
 			? defer(() => this.local.status())
 			: this.http.get<ObsStatus>('rgg-sync/obs');
 	}
 
 	connect(url: string, password: string) {
-		return this.desktop
+		return this.isDesktop()
 			? defer(() => this.local.connect(url, password))
 			: this.http.post<ObsStatus>('rgg-sync/obs/connect', { url, password });
 	}
 
 	disconnect() {
-		return this.desktop
+		return this.isDesktop()
 			? defer(() => this.local.disconnect())
 			: this.http.post<ObsStatus>('rgg-sync/obs/disconnect', {});
 	}
 
 	scene(scene: string) {
-		return this.desktop
+		return this.isDesktop()
 			? defer(() => this.local.scene(scene))
 			: this.http.post<unknown>('rgg-sync/obs/action', { type: 'scene', scene });
 	}
 
 	mute(input: string) {
-		return this.desktop
+		return this.isDesktop()
 			? defer(() => this.local.mute(input))
 			: this.http.post<{ muted: boolean }>('rgg-sync/obs/action', { type: 'mute', input });
 	}
 
 	output(output: string, action: string) {
-		return this.desktop
+		return this.isDesktop()
 			? defer(() => this.local.output(output, action))
 			: this.http.post<unknown>('rgg-sync/obs/action', { type: 'output', output, action });
 	}
