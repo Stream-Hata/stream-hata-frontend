@@ -88,6 +88,9 @@
         <span class="foot-title">{{ streamOnline() ? 'В эфире' : labels().offline }}</span>
         <span class="foot-link">{{ labels().checkTwitch }}</span>
       </span>
+      @if (desktop && desktopUpdate.currentVersion()) {
+        <span class="foot-version">v{{ desktopUpdate.currentVersion() }}</span>
+      }
     </a>
   </aside>
 

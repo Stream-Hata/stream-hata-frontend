@@ -8,6 +8,7 @@ import { AlertsService } from '@shared/services/alerts.service';
 import { AppSettingsService } from '@shared/services/app-settings.service';
 import { I18nService } from '@shared/services/i18n.service';
 import { OnboardingService } from '@shared/services/onboarding.service';
+import { DesktopUpdateService } from '@shared/services/desktop-update.service';
 import { TwitchService } from '@shared/services/twitch.service';
 import { GamesCatalogService } from '@shared/services/games-catalog.service';
 import { ProfileDataService } from '@shared/services/profile-data.service';
@@ -134,6 +135,7 @@ const WIDGET_ITEMS = [
 export default class AppShell {
 	readonly i18n = inject(I18nService);
 	readonly onboarding = inject(OnboardingService);
+	readonly desktopUpdate = inject(DesktopUpdateService);
 	readonly twitchUrl = TWITCH_CHANNEL_URL;
 	private readonly router = inject(Router);
 	private readonly twitchService = inject(TwitchService);

@@ -567,3 +567,9 @@
 	border-radius: 50%;
 	object-fit: cover;
 }
+
+.foot-version {
+	color: var(--text-tertiary);
+	font: var(--font-caption);
+	font-variant-numeric: tabular-nums;
+}
