@@ -2,18 +2,39 @@
 	display: block;
 }
 
-.games-filters {
+.games-sticky {
 	position: sticky;
-	top: calc(var(--layout-header) + 112px);
-	z-index: 25;
+	top: var(--layout-header);
+	z-index: 35;
+	margin: calc(-1 * var(--space-xl)) calc(-1 * var(--space-xl)) var(--space-lg);
+	padding: var(--space-xl);
+	background: color-mix(in hsl, var(--surface-base) 88%, transparent);
+	box-shadow: 0 18px 36px -24px rgb(0 0 0 / 55%);
+	backdrop-filter: blur(18px);
+}
+
+html[data-tauri] .games-sticky {
+	top: 0;
+}
+
+.games-page .jk-page-header {
+	position: static;
+	margin: 0 0 var(--space-md);
+	padding: 0;
+	background: transparent;
+	box-shadow: none;
+	backdrop-filter: none;
+}
+
+.games-filters {
+	position: static;
+	z-index: auto;
 	display: grid;
 	grid-template-columns: minmax(0, 1.6fr) repeat(4, minmax(0, 1fr)) max-content;
 	gap: var(--space-sm);
 	align-items: center;
-	margin-bottom: var(--space-lg);
+	margin-bottom: 0;
 	background: color-mix(in hsl, var(--surface-elevated-1) 92%, transparent);
-	backdrop-filter: blur(14px);
-	box-shadow: 0 14px 34px rgb(0 0 0 / 28%);
 }
 
 .games-verified {
@@ -324,8 +345,4 @@
 	.games-state tui-icon {
 		animation: none;
 	}
-}
-
-html[data-tauri] .games-filters {
-	top: 112px;
 }
