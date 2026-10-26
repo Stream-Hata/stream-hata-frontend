@@ -251,31 +251,31 @@
         <section class="cfg-section">
           <header class="cfg-head">
             <h2 class="cfg-title">Twitch</h2>
-            <p class="jk-caption">Подключение канала и права доступа.</p>
+            <p class="jk-caption">{{ i18n.t('settings.twitchHint') }}</p>
           </header>
 
           <div class="cfg-row">
             <div class="cfg-text">
-              <span class="cfg-label">Канал</span>
+              <span class="cfg-label">{{ i18n.t('settings.channel') }}</span>
               <span class="jk-caption">
                 {{ twitchName() }} ·
-                {{ twitchConnected() ? 'соединение активно' : 'не подключён' }}
+                {{ twitchConnected() ? i18n.t('settings.connectionActive') : i18n.t('settings.notConnectedShort') }}
               </span>
             </div>
             @if (twitchConnected()) {
-              <span appearance="positive" tuiBadge>Подключено</span>
+              <span appearance="positive" tuiBadge>{{ i18n.t('settings.connected') }}</span>
             } @else {
-              <span appearance="warning" tuiBadge>Не подключено</span>
+              <span appearance="warning" tuiBadge>{{ i18n.t('settings.notConnected') }}</span>
             }
           </div>
 
           <div class="cfg-row">
-            <span class="cfg-label">Фолловеры / сабы</span>
+            <span class="cfg-label">{{ i18n.t('settings.followersSubs') }}</span>
             <span class="jk-caption">{{ twitchFollowers() }} / {{ twitchSubscribers() }}</span>
           </div>
 
           <div class="cfg-row">
-            <span class="cfg-label">Управление доступом</span>
+            <span class="cfg-label">{{ i18n.t('settings.access') }}</span>
             @if (twitchConnected()) {
               <button
                 size="s"
@@ -304,16 +304,16 @@
       @case ('jury') {
       <section class="cfg-section">
         <header class="cfg-head">
-          <h2 class="cfg-title">Чат-жюри</h2>
-          <p class="jk-caption">Порог AI и поведение голосований.</p>
+          <h2 class="cfg-title">{{ i18n.t('settings.juryTitle') }}</h2>
+          <p class="jk-caption">{{ i18n.t('settings.juryHint') }}</p>
         </header>
 
         <div class="cfg-row">
           <div class="cfg-text">
-            <span class="cfg-label">Порог доверия AI</span>
+            <span class="cfg-label">{{ i18n.t('settings.aiThreshold') }}</span>
             <span
               class="jk-caption"
-            >Советы ниже порога не попадают в жюри · сейчас {{ threshold() }}%</span
+            >{{ i18n.t('settings.aiThresholdHint') }} · {{ threshold() }}%</span
           >
         </div>
         <input
@@ -329,7 +329,7 @@
         </div>
 
         <div class="cfg-row">
-          <span class="cfg-label">Длительность голосования</span>
+          <span class="cfg-label">{{ i18n.t('settings.voteDuration') }}</span>
           <tui-textfield tuiChevron class="cfg-control">
             <input type="text"
               aria-label="Длительность голосования"
@@ -341,7 +341,7 @@
         </div>
 
         <div class="cfg-row">
-          <span class="cfg-label">Кворум</span>
+          <span class="cfg-label">{{ i18n.t('settings.quorum') }}</span>
           <tui-textfield tuiChevron class="cfg-control">
             <input type="text"
               aria-label="Кворум"
@@ -357,14 +357,14 @@
     @case ('widgets') {
     <section class="cfg-section">
       <header class="cfg-head">
-        <h2 class="cfg-title">Виджеты</h2>
+        <h2 class="cfg-title">{{ i18n.t('settings.widgetsTitle') }}</h2>
         <p class="jk-caption">Общие правила для всех OBS-оверлеев.</p>
       </header>
 
       <div class="cfg-row">
         <div class="cfg-text">
           <span class="cfg-label">Обновлять автоматически</span>
-          <span class="jk-caption">Виджеты получают состояние без перезапуска OBS</span>
+          <span class="jk-caption">{{ i18n.t('settings.widgetsHint') }} OBS</span>
         </div>
         <input
           aria-label="Обновлять автоматически"
@@ -377,7 +377,7 @@
         <div class="cfg-row">
           <div class="cfg-text">
             <span class="cfg-label">Бренд Nameless StreamHata</span>
-            <span class="jk-caption">Подпись в углу виджета</span>
+            <span class="jk-caption">{{ i18n.t('settings.brandHint') }}</span>
           </div>
           <input
             aria-label="Бренд Nameless StreamHata"
@@ -399,15 +399,15 @@
       @case ('notifications') {
       <section class="cfg-section">
         <header class="cfg-head">
-          <h2 class="cfg-title">Уведомления</h2>
-          <p class="jk-caption">Что и куда присылать.</p>
+          <h2 class="cfg-title">{{ i18n.t('settings.notificationsTitle') }}</h2>
+          <p class="jk-caption">{{ i18n.t('settings.notificationsHint') }}</p>
         </header>
 
         @if (desktop) {
           <div class="cfg-row">
             <div class="cfg-text">
-              <span class="cfg-label">Системные уведомления</span>
-              <span class="jk-caption">Новая версия, фолловеры, сабы, рейды, чатеры и зрители</span>
+              <span class="cfg-label">{{ i18n.t('settings.systemNotifications') }}</span>
+              <span class="jk-caption">{{ i18n.t('settings.versionNotify') }}</span>
             </div>
             <a appearance="flat" routerLink="/app/notifications/settings" tuiButton>Настроить</a>
           </div>
@@ -445,8 +445,8 @@
 
               <div class="cfg-row">
                 <div class="cfg-text">
-                  <span class="cfg-label">Дайджест</span>
-                  <span class="jk-caption">Итоги стрима раз в день</span>
+                  <span class="cfg-label">{{ i18n.t('settings.digest') }}</span>
+                  <span class="jk-caption">{{ i18n.t('settings.digestHint') }}</span>
                 </div>
                 <input
                   aria-label="Дайджест"
@@ -588,7 +588,7 @@
                               </div>
 
                               <div class="cfg-row">
-                                <span class="cfg-label">Проверка сети</span>
+                                <span class="cfg-label">{{ i18n.t('settings.networkHint') }}</span>
                                 <div class="cfg-actions">
                                   <button
                                     size="s"
@@ -657,7 +657,7 @@
                           @case ('integrations') {
                           <section class="cfg-section">
                             <header class="cfg-head">
-                              <h2 class="cfg-title">Интеграции</h2>
+                              <h2 class="cfg-title">{{ i18n.t('settings.integrationsTitle') }}</h2>
                               <p
                                 class="jk-caption"
                               >Подключение и отключение подсистем без перезапуска.</p>
@@ -740,14 +740,14 @@
                           @case ('accessibility') {
                           <section class="cfg-section">
                             <header class="cfg-head">
-                              <h2 class="cfg-title">Доступность</h2>
-                              <p class="jk-caption">Движение, контраст и размер текста.</p>
+                              <h2 class="cfg-title">{{ i18n.t('settings.accessibilityTitle') }}</h2>
+                              <p class="jk-caption">{{ i18n.t('settings.accessibilityHint') }}</p>
                             </header>
 
                             <div class="cfg-row">
                               <div class="cfg-text">
-                                <span class="cfg-label">Уменьшить движение</span>
-                                <span class="jk-caption">Гасит пульсации и переходы</span>
+                                <span class="cfg-label">{{ i18n.t('settings.reduceMotion') }}</span>
+                                <span class="jk-caption">{{ i18n.t('settings.reduceMotionHint') }}</span>
                               </div>
                               <input
                                 aria-label="Уменьшить движение"
@@ -759,8 +759,8 @@
 
                               <div class="cfg-row">
                                 <div class="cfg-text">
-                                  <span class="cfg-label">Повышенный контраст</span>
-                                  <span class="jk-caption">Усиливает границы и текст</span>
+                                  <span class="cfg-label">{{ i18n.t('settings.highContrast') }}</span>
+                                  <span class="jk-caption">{{ i18n.t('settings.highContrastHint') }}</span>
                                 </div>
                                 <input
                                   aria-label="Повышенный контраст"
@@ -771,7 +771,7 @@
                                 </div>
 
                                 <div class="cfg-row">
-                                  <span class="cfg-label">Размер текста</span>
+                                  <span class="cfg-label">{{ i18n.t('settings.textSize') }}</span>
                                   <tui-segmented
                                     [activeItemIndex]="textSizeIndex()"
                                     (activeItemIndexChange)="setTextSize($event)"
