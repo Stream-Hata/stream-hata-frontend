@@ -822,3 +822,18 @@ details.faq-item > .faq-answer {
 		transform: translateY(0) scale(1);
 	}
 }
+
+/* Dropdown option buttons use accent colors */
+button[tuiOption],
+a[tuiOption],
+label[tuiOption],
+.tui-option {
+	color: var(--accent-primary) !important;
+}
+
+button[tuiOption]:hover,
+a[tuiOption]:hover,
+label[tuiOption]:hover,
+.tui-option:hover {
+	background: color-mix(in srgb, var(--accent-primary) 14%, transparent) !important;
+}

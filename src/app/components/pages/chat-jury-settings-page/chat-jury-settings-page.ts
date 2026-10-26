@@ -1,6 +1,7 @@
 import { Component, computed, DestroyRef, inject, Injector, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TriggersService } from '@shared/services/ops.services';
+import { I18nService } from '@shared/services/i18n.service';
 import type { Trigger } from '@shared/types/automation';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -62,21 +63,22 @@ const SELECT_LABELS: Record<string, string> = {
 })
 export default class ChatJurySettingsPage {
 	private readonly injector = inject(Injector);
+	readonly i18n = inject(I18nService);
 	private readonly triggers = inject(TriggersService);
 	private readonly destroyRef = inject(DestroyRef);
 	readonly saved = signal(false);
 	readonly section = signal<Section>('main');
 
-	readonly sections = [
-		{ id: 'main' as const, label: 'Основное', icon: '@tui.sliders-horizontal' },
-		{ id: 'appearance' as const, label: 'Появление', icon: '@tui.palette' },
-		{ id: 'access' as const, label: 'Доступ', icon: '@tui.shield' },
-	];
+	readonly sections = computed(() => [
+		{ id: 'main' as const, label: this.i18n.t('jurySettings.main'), icon: '@tui.sliders-horizontal' },
+		{ id: 'appearance' as const, label: this.i18n.t('jurySettings.appearance'), icon: '@tui.palette' },
+		{ id: 'access' as const, label: this.i18n.t('jurySettings.access'), icon: '@tui.shield' },
+	]);
 
 	readonly activeIndex = computed(() =>
 		Math.max(
 			0,
-			this.sections.findIndex((item) => item.id === this.section()),
+			this.sections().findIndex((item) => item.id === this.section()),
 		),
 	);
 
@@ -94,7 +96,11 @@ export default class ChatJurySettingsPage {
 	readonly style = signal('standard');
 	readonly styleControl = signalControl(this.style, this.injector);
 	readonly styleValues = ['standard', 'compact', 'minimal'];
-	readonly styleLabels = ['Standard', 'Compact', 'Minimal'];
+	readonly styleLabels = computed(() => [
+		this.i18n.t('jurySettings.standard'),
+		this.i18n.t('jurySettings.compact'),
+		this.i18n.t('jurySettings.minimal'),
+	]);
 	readonly theme = signal<'dark' | 'light' | 'auto'>('dark');
 	readonly themeIndex = computed(() => ['dark', 'light', 'auto'].indexOf(this.theme()));
 	readonly showAuthors = signal(true);
@@ -155,6 +161,6 @@ export default class ChatJurySettingsPage {
 	}
 
 	selectSection(index: number): void {
-		this.section.set(this.sections[index]?.id ?? 'main');
+		this.section.set(this.sections()[index]?.id ?? 'main');
 	}
 }

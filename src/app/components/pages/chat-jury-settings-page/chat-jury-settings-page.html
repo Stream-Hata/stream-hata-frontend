@@ -21,7 +21,7 @@
       (activeItemIndexChange)="selectSection($event)"
       vertical="start"
     >
-      @for (item of sections; track item.id) {
+      @for (item of sections(); track item.id) {
         <button tuiTab type="button">
           <tui-icon [icon]="item.icon" />
           {{ item.label }}
@@ -34,7 +34,7 @@
         @case ('main') {
         <section class="cfg-section">
           <header class="cfg-head">
-            <h2 class="cfg-title">Основное</h2>
+            <h2 class="cfg-title">{{ i18n.t('jurySettings.main') }}</h2>
             <p class="jk-caption">Шаблоны вопросов и правила голосования.</p>
           </header>
 
@@ -113,12 +113,12 @@
         @case ('appearance') {
         <section class="cfg-section">
           <header class="cfg-head">
-            <h2 class="cfg-title">Появление</h2>
+            <h2 class="cfg-title">{{ i18n.t('jurySettings.appearance') }}</h2>
             <p class="jk-caption">Как жюри выглядит в панели и в эфире.</p>
           </header>
 
           <div class="cfg-row">
-            <span class="cfg-label">Стиль</span>
+            <span class="cfg-label">{{ i18n.t('jurySettings.style') }}</span>
             <tui-textfield tuiChevron class="cfg-control">
               <input type="text"
                 aria-label="Стиль"
@@ -130,14 +130,14 @@
           </div>
 
           <div class="cfg-row">
-            <span class="cfg-label">Тема</span>
+            <span class="cfg-label">{{ i18n.t('jurySettings.theme') }}</span>
             <tui-segmented
               [activeItemIndex]="themeIndex()"
               (activeItemIndexChange)="setTheme($event)"
             >
-              <button type="button">Dark</button>
-              <button type="button">Light</button>
-              <button type="button">Auto</button>
+              <button type="button">{{ i18n.t('jurySettings.dark') }}</button>
+              <button type="button">{{ i18n.t('jurySettings.light') }}</button>
+              <button type="button">{{ i18n.t('jurySettings.auto') }}</button>
             </tui-segmented>
           </div>
 
@@ -185,12 +185,12 @@
             @case ('access') {
             <section class="cfg-section">
               <header class="cfg-head">
-                <h2 class="cfg-title">Доступ</h2>
+                <h2 class="cfg-title">{{ i18n.t('jurySettings.access') }}</h2>
                 <p class="jk-caption">Команды чата для управления жюри.</p>
               </header>
 
               <div class="cfg-row">
-                <span class="cfg-label">Команда голоса «за»</span>
+                <span class="cfg-label">{{ i18n.t('jurySettings.voteYea') }}</span>
                 <tui-textfield class="cfg-control">
                   <input
                     aria-label="Команда голоса за"
@@ -203,7 +203,7 @@
               </div>
 
               <div class="cfg-row">
-                <span class="cfg-label">Команда голоса «против»</span>
+                <span class="cfg-label">{{ i18n.t('jurySettings.voteNei') }}</span>
                 <tui-textfield class="cfg-control">
                   <input
                     aria-label="Команда голоса против"
