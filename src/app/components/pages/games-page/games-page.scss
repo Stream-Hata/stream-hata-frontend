@@ -29,8 +29,8 @@
 
 .game-card {
 	display: flex;
-	overflow: hidden;
 	flex-direction: column;
+	overflow: hidden;
 	border: 1px solid var(--border-normal);
 	border-radius: var(--radius-lg);
 	background: var(--surface-elevated-1);
@@ -52,28 +52,32 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	aspect-ratio: 3 / 4;
 	background:
-		radial-gradient(circle at 30% 20%, color-mix(in srgb, var(--accent-primary) 24%, transparent), transparent 55%),
+		radial-gradient(
+			circle at 30% 20%,
+			color-mix(in srgb, var(--accent-primary) 24%, transparent),
+			transparent 55%
+		),
 		radial-gradient(circle at 75% 80%, rgb(34, 224, 255, 0.18), transparent 55%),
 		var(--surface-elevated-2);
+	aspect-ratio: 3 / 4;
 }
 
 .game-cover img {
+	object-fit: cover;
 	width: 100%;
 	height: 100%;
-	object-fit: cover;
 }
 
 .game-cover-fallback {
 	position: absolute;
-	inset: 0;
 	display: grid;
-	place-items: center;
 	color: var(--text-primary);
 	font: 700 44px/1 var(--font-ui);
 	letter-spacing: 0.06em;
 	opacity: 0.7;
+	inset: 0;
+	place-items: center;
 }
 
 .game-tier {
@@ -133,12 +137,20 @@
 }
 
 .games-pagination {
+	position: sticky;
+	bottom: calc(-1 * var(--space-xl));
+	z-index: 20;
 	display: flex;
-	flex-wrap: wrap;
 	gap: var(--space-sm);
+	flex-wrap: wrap;
 	align-items: center;
 	justify-content: center;
-	margin-top: var(--space-xl);
+	margin: var(--space-xl) calc(-1 * var(--space-xl)) calc(-1 * var(--space-xl));
+	padding: var(--space-md) var(--space-xl);
+	border-top: 1px solid var(--border-divider);
+	background: color-mix(in hsl, var(--surface-base) 88%, transparent);
+	backdrop-filter: blur(14px);
+	box-shadow: 0 -14px 34px rgb(0 0 0 / 32%);
 }
 
 .games-page-label {
