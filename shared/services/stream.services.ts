@@ -7,33 +7,51 @@ import type {
 } from '@shared/types/stream';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { ObsLocalService } from '@shared/services/obs-local.service';
+import { defer, of } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ObsService {
 	private readonly http = inject(HttpClient);
+	private readonly local = inject(ObsLocalService);
+	private readonly desktop =
+		typeof window !== 'undefined' &&
+		('__TAURI_INTERNALS__' in window || navigator.userAgent.includes('NamelessStreamHataDesktop'));
 
 	status() {
-		return this.http.get<ObsStatus>('rgg-sync/obs');
+		return this.desktop
+			? defer(() => this.local.status())
+			: this.http.get<ObsStatus>('rgg-sync/obs');
 	}
 
 	connect(url: string, password: string) {
-		return this.http.post<ObsStatus>('rgg-sync/obs/connect', { url, password });
+		return this.desktop
+			? defer(() => this.local.connect(url, password))
+			: this.http.post<ObsStatus>('rgg-sync/obs/connect', { url, password });
 	}
 
 	disconnect() {
-		return this.http.post<ObsStatus>('rgg-sync/obs/disconnect', {});
+		return this.desktop
+			? defer(() => this.local.disconnect())
+			: this.http.post<ObsStatus>('rgg-sync/obs/disconnect', {});
 	}
 
 	scene(scene: string) {
-		return this.http.post<unknown>('rgg-sync/obs/action', { type: 'scene', scene });
+		return this.desktop
+			? defer(() => this.local.scene(scene))
+			: this.http.post<unknown>('rgg-sync/obs/action', { type: 'scene', scene });
 	}
 
 	mute(input: string) {
-		return this.http.post<{ muted: boolean }>('rgg-sync/obs/action', { type: 'mute', input });
+		return this.desktop
+			? defer(() => this.local.mute(input))
+			: this.http.post<{ muted: boolean }>('rgg-sync/obs/action', { type: 'mute', input });
 	}
 
 	output(output: string, action: string) {
-		return this.http.post<unknown>('rgg-sync/obs/action', { type: 'output', output, action });
+		return this.desktop
+			? defer(() => this.local.output(output, action))
+			: this.http.post<unknown>('rgg-sync/obs/action', { type: 'output', output, action });
 	}
 }
 
