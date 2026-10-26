@@ -1,387 +1,388 @@
 <div class="landing">
-  <header class="nav">
-    <div class="container nav-inner">
-      <a class="logo" routerLink="/">
-        <app-logo />
-      </a>
+	<header class="nav">
+		<div class="container nav-inner">
+			<a class="logo" routerLink="/">
+				<app-logo />
+			</a>
 
-      <nav class="nav-links">
-        <a href="#features">Возможности</a>
-        <a href="#widgets">Виджеты</a>
-        <a routerLink="/faq" routerLinkActive="nav-link-active">FAQ</a>
-        <a routerLink="/suggest-game" routerLinkActive="nav-link-active">Предложить игру</a>
-        <a routerLink="/about" routerLinkActive="nav-link-active">О стримере</a>
-      </nav>
+			<nav class="nav-links">
+				<a href="#features">Возможности</a>
+				<a href="#widgets">Виджеты</a>
+				<a routerLink="/faq" routerLinkActive="nav-link-active">FAQ</a>
+				<a routerLink="/suggest-game" routerLinkActive="nav-link-active">Предложить игру</a>
+				<a routerLink="/about" routerLinkActive="nav-link-active">О стримере</a>
+			</nav>
 
-      <a class="nav-cta" [href]="downloadUrl" appearance="primary" tuiButton>Скачать приложение</a>
-    </div>
-  </header>
+			<a class="nav-link" routerLink="/events" tuiLink>События</a>
+			<a class="nav-cta" [href]="downloadUrl" appearance="primary" tuiButton>Скачать приложение</a>
+		</div>
+	</header>
 
-  <main>
-    <section class="hero">
-      <div class="container hero-grid">
-        <div class="hero-copy">
-          <span class="eyebrow">Для стримеров Twitch</span>
-          <h1 class="hero-title">Чат решает.<br />Стрим живёт.</h1>
-          <p class="hero-sub">
-            Nameless StreamHata превращает советы из чата в голосования. AI оценивает совет, зрители
-            голосуют, виджеты выводят результат в эфир — без ручного туринга. Панель работает как
-            desktop-приложение; лендинг нужен только для установки и справки.
-          </p>
+	<main>
+		<section class="hero">
+			<div class="container hero-grid">
+				<div class="hero-copy">
+					<span class="eyebrow">Для стримеров Twitch</span>
+					<h1 class="hero-title">Чат решает.<br />Стрим живёт.</h1>
+					<p class="hero-sub">
+						Nameless StreamHata превращает советы из чата в голосования. AI оценивает совет, зрители
+						голосуют, виджеты выводят результат в эфир — без ручного туринга. Панель работает как
+						desktop-приложение; лендинг нужен только для установки и справки.
+					</p>
 
-          <div class="hero-actions">
-            <a appearance="primary" size="l" tuiButton [href]="downloadUrl">Скачать приложение</a>
-            <a appearance="secondary" size="l" tuiButton routerLink="/faq">FAQ и справка</a>
-            <a appearance="flat" size="l" tuiButton routerLink="/suggest-game">Предложить игру</a>
-          </div>
-        </div>
+					<div class="hero-actions">
+						<a appearance="primary" size="l" tuiButton [href]="downloadUrl">Скачать приложение</a>
+						<a appearance="secondary" size="l" tuiButton routerLink="/faq">FAQ и справка</a>
+						<a appearance="flat" size="l" tuiButton routerLink="/suggest-game">Предложить игру</a>
+					</div>
+				</div>
 
-        <div class="hero-preview">
-          <div class="browser">
-            <div class="browser-bar">
-              <span class="browser-dots">
-                <span class="browser-dot dot-red"></span>
-                <span class="browser-dot dot-yellow"></span>
-                <span class="browser-dot dot-green"></span>
-              </span>
-              <span class="browser-url">obs://jurykit/chat-jury</span>
-            </div>
+				<div class="hero-preview">
+					<div class="browser">
+						<div class="browser-bar">
+							<span class="browser-dots">
+								<span class="browser-dot dot-red"></span>
+								<span class="browser-dot dot-yellow"></span>
+								<span class="browser-dot dot-green"></span>
+							</span>
+							<span class="browser-url">obs://jurykit/chat-jury</span>
+						</div>
 
-            <div class="browser-body">
-              <app-jury-preview />
-              <p class="browser-caption">Живой превью-виджет прямо на сцене</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+						<div class="browser-body">
+							<app-jury-preview />
+							<p class="browser-caption">Живой превью-виджет прямо на сцене</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
 
-    <section class="section" id="features">
-      <div class="container">
-        <header class="section-header">
-          <h2 class="jk-h2">Все возможности</h2>
-          <p class="jk-body-sm jk-muted">
-            Чат-жюри, виджеты, игры, модерация и интеграции — всё в одном приложении.
-          </p>
-        </header>
+		<section class="section" id="features">
+			<div class="container">
+				<header class="section-header">
+					<h2 class="jk-h2">Все возможности</h2>
+					<p class="jk-body-sm jk-muted">
+						Чат-жюри, виджеты, игры, модерация и интеграции — всё в одном приложении.
+					</p>
+				</header>
 
-        <div class="features-grid">
-          <article class="feature-card">
-            <span class="jk-icon-tile">
-              <tui-icon icon="@tui.hand" />
-            </span>
-            <h3 class="jk-h3">Чат-жюри</h3>
-            <p class="jk-body-sm jk-muted">
-              Советы из чата превращаются в голосование. AI отсекает шум, зрители решают.
-            </p>
-            <a class="more-link" [href]="downloadUrl" tuiLink>
-              Подробнее
-              <tui-icon icon="@tui.chevron-right" />
-            </a>
-          </article>
+				<div class="features-grid">
+					<article class="feature-card">
+						<span class="jk-icon-tile">
+							<tui-icon icon="@tui.hand" />
+						</span>
+						<h3 class="jk-h3">Чат-жюри</h3>
+						<p class="jk-body-sm jk-muted">
+							Советы из чата превращаются в голосование. AI отсекает шум, зрители решают.
+						</p>
+						<a class="more-link" [href]="downloadUrl" tuiLink>
+							Подробнее
+							<tui-icon icon="@tui.chevron-right" />
+						</a>
+					</article>
 
-          <article class="feature-card">
-            <span class="jk-icon-tile jk-icon-tile-cyan">
-              <tui-icon icon="@tui.blocks" />
-            </span>
-            <h3 class="jk-h3">Виджеты OBS</h3>
-            <p class="jk-body-sm jk-muted">
-              Компактные оверлеи с прозрачным фоном: жюри, таймер, алерты.
-            </p>
-            <a class="more-link" [href]="downloadUrl" tuiLink>
-              Подробнее
-              <tui-icon icon="@tui.chevron-right" />
-            </a>
-          </article>
+					<article class="feature-card">
+						<span class="jk-icon-tile jk-icon-tile-cyan">
+							<tui-icon icon="@tui.blocks" />
+						</span>
+						<h3 class="jk-h3">Виджеты OBS</h3>
+						<p class="jk-body-sm jk-muted">
+							Компактные оверлеи с прозрачным фоном: жюри, таймер, алерты.
+						</p>
+						<a class="more-link" [href]="downloadUrl" tuiLink>
+							Подробнее
+							<tui-icon icon="@tui.chevron-right" />
+						</a>
+					</article>
 
-          <article class="feature-card">
-            <span class="jk-icon-tile jk-icon-tile-yellow">
-              <tui-icon icon="@tui.calendar-days" />
-            </span>
-            <h3 class="jk-h3">События</h3>
-            <p class="jk-body-sm jk-muted">
-              Планирование, таймлайн и участники. Рекорды, таймеры и достижения.
-            </p>
-            <a class="more-link" [href]="downloadUrl" tuiLink>
-              Подробнее
-              <tui-icon icon="@tui.chevron-right" />
-            </a>
-          </article>
+					<article class="feature-card">
+						<span class="jk-icon-tile jk-icon-tile-yellow">
+							<tui-icon icon="@tui.calendar-days" />
+						</span>
+						<h3 class="jk-h3">События</h3>
+						<p class="jk-body-sm jk-muted">
+							Планирование, таймлайн и участники. Рекорды, таймеры и достижения.
+						</p>
+						<a class="more-link" [href]="downloadUrl" tuiLink>
+							Подробнее
+							<tui-icon icon="@tui.chevron-right" />
+						</a>
+					</article>
 
-          <article class="feature-card">
-            <span class="jk-icon-tile jk-icon-tile-green">
-              <tui-icon icon="@tui.timer" />
-            </span>
-            <h3 class="jk-h3">Таймеры</h3>
-            <p class="jk-body-sm jk-muted">
-              Countdown и count-up на любой вкус: минимальные, с подписью, компактные.
-            </p>
-            <a class="more-link" [href]="downloadUrl" tuiLink>
-              Подробнее
-              <tui-icon icon="@tui.chevron-right" />
-            </a>
-          </article>
+					<article class="feature-card">
+						<span class="jk-icon-tile jk-icon-tile-green">
+							<tui-icon icon="@tui.timer" />
+						</span>
+						<h3 class="jk-h3">Таймеры</h3>
+						<p class="jk-body-sm jk-muted">
+							Countdown и count-up на любой вкус: минимальные, с подписью, компактные.
+						</p>
+						<a class="more-link" [href]="downloadUrl" tuiLink>
+							Подробнее
+							<tui-icon icon="@tui.chevron-right" />
+						</a>
+					</article>
 
-          <article class="feature-card">
-            <span class="jk-icon-tile">
-              <tui-icon icon="@tui.coins" />
-            </span>
-            <h3 class="jk-h3">Баллы и магазин</h3>
-            <p class="jk-body-sm jk-muted">
-              Лояльность за сообщения и просмотр, награды за баллы и топы зрителей.
-            </p>
-            <a class="more-link" [href]="downloadUrl" tuiLink>
-              Подробнее
-              <tui-icon icon="@tui.chevron-right" />
-            </a>
-          </article>
+					<article class="feature-card">
+						<span class="jk-icon-tile">
+							<tui-icon icon="@tui.coins" />
+						</span>
+						<h3 class="jk-h3">Баллы и магазин</h3>
+						<p class="jk-body-sm jk-muted">
+							Лояльность за сообщения и просмотр, награды за баллы и топы зрителей.
+						</p>
+						<a class="more-link" [href]="downloadUrl" tuiLink>
+							Подробнее
+							<tui-icon icon="@tui.chevron-right" />
+						</a>
+					</article>
 
-          <article class="feature-card">
-            <span class="jk-icon-tile jk-icon-tile-cyan">
-              <tui-icon icon="@tui.disc" />
-            </span>
-            <h3 class="jk-h3">Чат-игры</h3>
-            <p class="jk-body-sm jk-muted">
-              Слоты, колесо, викторина и дуэли — настраиваемые команды и ставки.
-            </p>
-            <a class="more-link" [href]="downloadUrl" tuiLink>
-              Подробнее
-              <tui-icon icon="@tui.chevron-right" />
-            </a>
-          </article>
+					<article class="feature-card">
+						<span class="jk-icon-tile jk-icon-tile-cyan">
+							<tui-icon icon="@tui.disc" />
+						</span>
+						<h3 class="jk-h3">Чат-игры</h3>
+						<p class="jk-body-sm jk-muted">
+							Слоты, колесо, викторина и дуэли — настраиваемые команды и ставки.
+						</p>
+						<a class="more-link" [href]="downloadUrl" tuiLink>
+							Подробнее
+							<tui-icon icon="@tui.chevron-right" />
+						</a>
+					</article>
 
-          <article class="feature-card">
-            <span class="jk-icon-tile jk-icon-tile-yellow">
-              <tui-icon icon="@tui.shield" />
-            </span>
-            <h3 class="jk-h3">Модерация</h3>
-            <p class="jk-body-sm jk-muted">
-              Фильтры слов, ссылок и капса, AI-проверка токсичности и лог действий.
-            </p>
-            <a class="more-link" [href]="downloadUrl" tuiLink>
-              Подробнее
-              <tui-icon icon="@tui.chevron-right" />
-            </a>
-          </article>
+					<article class="feature-card">
+						<span class="jk-icon-tile jk-icon-tile-yellow">
+							<tui-icon icon="@tui.shield" />
+						</span>
+						<h3 class="jk-h3">Модерация</h3>
+						<p class="jk-body-sm jk-muted">
+							Фильтры слов, ссылок и капса, AI-проверка токсичности и лог действий.
+						</p>
+						<a class="more-link" [href]="downloadUrl" tuiLink>
+							Подробнее
+							<tui-icon icon="@tui.chevron-right" />
+						</a>
+					</article>
 
-          <article class="feature-card">
-            <span class="jk-icon-tile jk-icon-tile-green">
-              <tui-icon icon="@tui.music" />
-            </span>
-            <h3 class="jk-h3">Музыка и донаты</h3>
-            <p class="jk-body-sm jk-muted">
-              Трек-лист из чата, 7TV-эмоты, DonationAlerts и выгрузка в Telegram.
-            </p>
-            <a class="more-link" [href]="downloadUrl" tuiLink>
-              Подробнее
-              <tui-icon icon="@tui.chevron-right" />
-            </a>
-          </article>
-        </div>
-      </div>
-    </section>
+					<article class="feature-card">
+						<span class="jk-icon-tile jk-icon-tile-green">
+							<tui-icon icon="@tui.music" />
+						</span>
+						<h3 class="jk-h3">Музыка и донаты</h3>
+						<p class="jk-body-sm jk-muted">
+							Трек-лист из чата, 7TV-эмоты, DonationAlerts и выгрузка в Telegram.
+						</p>
+						<a class="more-link" [href]="downloadUrl" tuiLink>
+							Подробнее
+							<tui-icon icon="@tui.chevron-right" />
+						</a>
+					</article>
+				</div>
+			</div>
+		</section>
 
-    <section class="section" id="jury">
-      <div class="container how-grid">
-        <div class="how-left">
-          <header class="section-header">
-            <h2 class="jk-h2">Как это работает</h2>
-            <p class="jk-body-sm jk-muted">
-              AI классифицирует совет → зрители голосуют → виджет показывает итог.
-            </p>
-          </header>
+		<section class="section" id="jury">
+			<div class="container how-grid">
+				<div class="how-left">
+					<header class="section-header">
+						<h2 class="jk-h2">Как это работает</h2>
+						<p class="jk-body-sm jk-muted">
+							AI классифицирует совет → зрители голосуют → виджет показывает итог.
+						</p>
+					</header>
 
-          <div class="how-cards">
-            <article class="jk-card how-card">
-              <span class="how-icon green">
-                <tui-icon icon="@tui.check" />
-              </span>
-              <div class="how-text">
-                <h3 class="jk-h4">AI и зрители — два разных сигнала</h3>
-                <p class="jk-body-sm jk-muted">
-                  Уверенность AI оценивает качество совета. Одобрение — реакцию зрителей. Они
-                  никогда не смешиваются в одном показателе.
-                </p>
-              </div>
-            </article>
+					<div class="how-cards">
+						<article class="jk-card how-card">
+							<span class="how-icon green">
+								<tui-icon icon="@tui.check" />
+							</span>
+							<div class="how-text">
+								<h3 class="jk-h4">AI и зрители — два разных сигнала</h3>
+								<p class="jk-body-sm jk-muted">
+									Уверенность AI оценивает качество совета. Одобрение — реакцию зрителей. Они
+									никогда не смешиваются в одном показателе.
+								</p>
+							</div>
+						</article>
 
-            <article class="jk-card how-card">
-              <span class="how-icon magenta">
-                <tui-icon icon="@tui.blocks" />
-              </span>
-              <div class="how-text">
-                <h3 class="jk-h4">Виджеты живут отдельно</h3>
-                <p class="jk-body-sm jk-muted">
-                  OBS-виджеты — не часть панели. Компактные, прозрачные, готовые к эфиру.
-                </p>
-                <a class="more-link how-link" [href]="downloadUrl" tuiLink>
-                  Открыть виджеты
-                  <tui-icon icon="@tui.arrow-right" />
-                </a>
-              </div>
-            </article>
-          </div>
-        </div>
+						<article class="jk-card how-card">
+							<span class="how-icon magenta">
+								<tui-icon icon="@tui.blocks" />
+							</span>
+							<div class="how-text">
+								<h3 class="jk-h4">Виджеты живут отдельно</h3>
+								<p class="jk-body-sm jk-muted">
+									OBS-виджеты — не часть панели. Компактные, прозрачные, готовые к эфиру.
+								</p>
+								<a class="more-link how-link" [href]="downloadUrl" tuiLink>
+									Открыть виджеты
+									<tui-icon icon="@tui.arrow-right" />
+								</a>
+							</div>
+						</article>
+					</div>
+				</div>
 
-        <aside class="flow-card">
-          <span class="jk-label">Поток решения</span>
+				<aside class="flow-card">
+					<span class="jk-label">Поток решения</span>
 
-          <ol class="flow">
-            <li class="flow-step">
-              <span class="flow-num">1</span>
-              <div class="flow-content">
-                <span class="flow-title">Сообщение в чате</span>
-                <span class="flow-desc">зритель: «спрячьтесь за бочкой»</span>
-              </div>
-            </li>
-            <li class="flow-step">
-              <span class="flow-num">2</span>
-              <div class="flow-content">
-                <span class="flow-title">AI классифицирует как совет</span>
-                <span class="flow-desc">доверие 88% · кандидат в жюри</span>
-              </div>
-            </li>
-            <li class="flow-step">
-              <span class="flow-num">3</span>
-              <div class="flow-content">
-                <span class="flow-title">Голосование открыто</span>
-                <span class="flow-desc">YEA 18 · NEI 7 · до конца 00:12</span>
-              </div>
-            </li>
-            <li class="flow-step">
-              <span class="flow-num">4</span>
-              <div class="flow-content">
-                <span class="flow-title">Вердикт в эфире</span>
-                <span class="flow-desc">одобрение 72% · действие применено</span>
-              </div>
-            </li>
-          </ol>
+					<ol class="flow">
+						<li class="flow-step">
+							<span class="flow-num">1</span>
+							<div class="flow-content">
+								<span class="flow-title">Сообщение в чате</span>
+								<span class="flow-desc">зритель: «спрячьтесь за бочкой»</span>
+							</div>
+						</li>
+						<li class="flow-step">
+							<span class="flow-num">2</span>
+							<div class="flow-content">
+								<span class="flow-title">AI классифицирует как совет</span>
+								<span class="flow-desc">доверие 88% · кандидат в жюри</span>
+							</div>
+						</li>
+						<li class="flow-step">
+							<span class="flow-num">3</span>
+							<div class="flow-content">
+								<span class="flow-title">Голосование открыто</span>
+								<span class="flow-desc">YEA 18 · NEI 7 · до конца 00:12</span>
+							</div>
+						</li>
+						<li class="flow-step">
+							<span class="flow-num">4</span>
+							<div class="flow-content">
+								<span class="flow-title">Вердикт в эфире</span>
+								<span class="flow-desc">одобрение 72% · действие применено</span>
+							</div>
+						</li>
+					</ol>
 
-          <div class="flow-widget">
-            <span class="flow-widget-title">«Спрятаться»</span>
-            <span class="flow-widget-bar">
-              <span class="flow-widget-fill"></span>
-            </span>
-            <span class="flow-widget-caption">вердикт · одобрение 72%</span>
-          </div>
-        </aside>
-      </div>
-    </section>
+					<div class="flow-widget">
+						<span class="flow-widget-title">«Спрятаться»</span>
+						<span class="flow-widget-bar">
+							<span class="flow-widget-fill"></span>
+						</span>
+						<span class="flow-widget-caption">вердикт · одобрение 72%</span>
+					</div>
+				</aside>
+			</div>
+		</section>
 
-    <section class="section" id="widgets">
-      <div class="container">
-        <header class="section-header">
-          <h2 class="jk-h2">Виджеты для эфира</h2>
-          <p class="jk-body-sm jk-muted">
-            Три пресета из библиотеки — копируйте URL и добавьте источник в OBS.
-          </p>
-        </header>
+		<section class="section" id="widgets">
+			<div class="container">
+				<header class="section-header">
+					<h2 class="jk-h2">Виджеты для эфира</h2>
+					<p class="jk-body-sm jk-muted">
+						Три пресета из библиотеки — копируйте URL и добавьте источник в OBS.
+					</p>
+				</header>
 
-        <div class="widgets-grid">
-          <a class="widget-card" [href]="downloadUrl">
-            <div class="widget-stage jk-checkerboard">
-              <span class="widget-kind">Chat Jury</span>
-              <app-jury-preview [compact]="true" />
-              <span class="widget-status">
-                <span class="jk-dot jk-dot-online"></span>
-                Active
-              </span>
-            </div>
-            <div class="widget-meta">
-              <h3 class="jk-h4">Чат-жюри</h3>
-              <p class="jk-caption">Вопрос, голоса и таймер — читается за секунду.</p>
-            </div>
-          </a>
+				<div class="widgets-grid">
+					<a class="widget-card" [href]="downloadUrl">
+						<div class="widget-stage jk-checkerboard">
+							<span class="widget-kind">Chat Jury</span>
+							<app-jury-preview [compact]="true" />
+							<span class="widget-status">
+								<span class="jk-dot jk-dot-online"></span>
+								Active
+							</span>
+						</div>
+						<div class="widget-meta">
+							<h3 class="jk-h4">Чат-жюри</h3>
+							<p class="jk-caption">Вопрос, голоса и таймер — читается за секунду.</p>
+						</div>
+					</a>
 
-          <a class="widget-card" [href]="downloadUrl">
-            <div class="widget-stage jk-checkerboard">
-              <span class="widget-kind">Timer</span>
-              <app-timer-preview />
-              <span class="widget-status">
-                <span class="jk-dot jk-dot-online"></span>
-                Active
-              </span>
-            </div>
-            <div class="widget-meta">
-              <h3 class="jk-h4">Таймер</h3>
-              <p class="jk-caption">Countdown и count-up с tabular-цифрами.</p>
-            </div>
-          </a>
+					<a class="widget-card" [href]="downloadUrl">
+						<div class="widget-stage jk-checkerboard">
+							<span class="widget-kind">Timer</span>
+							<app-timer-preview />
+							<span class="widget-status">
+								<span class="jk-dot jk-dot-online"></span>
+								Active
+							</span>
+						</div>
+						<div class="widget-meta">
+							<h3 class="jk-h4">Таймер</h3>
+							<p class="jk-caption">Countdown и count-up с tabular-цифрами.</p>
+						</div>
+					</a>
 
-          <a class="widget-card" [href]="downloadUrl">
-            <div class="widget-stage jk-checkerboard">
-              <span class="widget-kind">Alerts</span>
-              <app-alert-preview />
-              <span class="widget-status">
-                <span class="jk-dot jk-dot-online"></span>
-                Active
-              </span>
-            </div>
-            <div class="widget-meta">
-              <h3 class="jk-h4">Алерты</h3>
-              <p class="jk-caption">Подписки и донаты — поверх сцены, без панелей.</p>
-            </div>
-          </a>
-        </div>
+					<a class="widget-card" [href]="downloadUrl">
+						<div class="widget-stage jk-checkerboard">
+							<span class="widget-kind">Alerts</span>
+							<app-alert-preview />
+							<span class="widget-status">
+								<span class="jk-dot jk-dot-online"></span>
+								Active
+							</span>
+						</div>
+						<div class="widget-meta">
+							<h3 class="jk-h4">Алерты</h3>
+							<p class="jk-caption">Подписки и донаты — поверх сцены, без панелей.</p>
+						</div>
+					</a>
+				</div>
 
-        <a class="more-link widgets-link" [href]="downloadUrl" tuiLink>
-          Открыть библиотеку виджетов
-          <tui-icon icon="@tui.arrow-right" />
-        </a>
-      </div>
-    </section>
+				<a class="more-link widgets-link" [href]="downloadUrl" tuiLink>
+					Открыть библиотеку виджетов
+					<tui-icon icon="@tui.arrow-right" />
+				</a>
+			</div>
+		</section>
 
-    <section class="section section-tight" id="twitch">
-      <div class="container">
-        <div class="twitch-strip">
-          <span class="jk-icon-tile twitch-tile">
-            <img src="icons/svg/twitch.svg" alt="" />
-          </span>
+		<section class="section section-tight" id="twitch">
+			<div class="container">
+				<div class="twitch-strip">
+					<span class="jk-icon-tile twitch-tile">
+						<img src="icons/svg/twitch.svg" alt="" />
+					</span>
 
-          <div class="twitch-copy">
-            <h3 class="jk-h4">Подключите Twitch</h3>
-            <p class="jk-body-sm jk-muted">
-              Чтение чата, события канала и управление виджетами в один клик.
-            </p>
-          </div>
+					<div class="twitch-copy">
+						<h3 class="jk-h4">Подключите Twitch</h3>
+						<p class="jk-body-sm jk-muted">
+							Чтение чата, события канала и управление виджетами в один клик.
+						</p>
+					</div>
 
-          <a class="twitch-cta" [href]="downloadUrl" appearance="primary" tuiButton>Скачать</a>
-        </div>
-      </div>
-    </section>
+					<a class="twitch-cta" [href]="downloadUrl" appearance="primary" tuiButton>Скачать</a>
+				</div>
+			</div>
+		</section>
 
-    <section class="cta">
-      <div class="container cta-inner">
-        <h2 class="jk-h2">Готовы дать чату власть?</h2>
-        <p class="jk-body-sm jk-muted">Пять минут до первого голосования в эфире.</p>
-        <a class="cta-btn" size="l" [href]="downloadUrl" appearance="primary" tuiButton>
-          Скачать приложение
-        </a>
-      </div>
-    </section>
-  </main>
+		<section class="cta">
+			<div class="container cta-inner">
+				<h2 class="jk-h2">Готовы дать чату власть?</h2>
+				<p class="jk-body-sm jk-muted">Пять минут до первого голосования в эфире.</p>
+				<a class="cta-btn" size="l" [href]="downloadUrl" appearance="primary" tuiButton>
+					Скачать приложение
+				</a>
+			</div>
+		</section>
+	</main>
 
-  <footer class="footer">
-    <div class="container footer-inner">
-      <a class="logo" routerLink="/">
-        <app-logo />
-      </a>
+	<footer class="footer">
+		<div class="container footer-inner">
+			<a class="logo" routerLink="/">
+				<app-logo />
+			</a>
 
-      <nav class="footer-links">
-        <a href="#features">Возможности</a>
-        <a href="#widgets">Виджеты</a>
-        <a routerLink="/faq">FAQ</a>
-        <a routerLink="/suggest-game">Предложить игру</a>
-        <a routerLink="/about">О стримере</a>
-        <a target="_blank" rel="noopener" [href]="twitchUrl">Twitch</a>
-      </nav>
+			<nav class="footer-links">
+				<a href="#features">Возможности</a>
+				<a href="#widgets">Виджеты</a>
+				<a routerLink="/faq">FAQ</a>
+				<a routerLink="/suggest-game">Предложить игру</a>
+				<a routerLink="/about">О стримере</a>
+				<a target="_blank" rel="noopener" [href]="twitchUrl">Twitch</a>
+			</nav>
 
-      <span class="footer-status">
-        <span class="jk-dot jk-dot-online"></span>
-        Все системы работают
-      </span>
+			<span class="footer-status">
+				<span class="jk-dot jk-dot-online"></span>
+				Все системы работают
+			</span>
 
-      <span class="jk-caption">© 2026 Nameless StreamHata</span>
-    </div>
-  </footer>
+			<span class="jk-caption">© 2026 Nameless StreamHata</span>
+		</div>
+	</footer>
 </div>
