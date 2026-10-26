@@ -63,10 +63,10 @@
         <span>{{ labels().settings }}</span>
       </a>
 
-      <a class="nav-item" routerLink="/changelog" (click)="menuOpen.set(false)">
+      <button class="nav-item nav-item-button" type="button" (click)="openChangelog()">
         <tui-icon icon="@tui.sparkles" />
         <span>{{ i18n.t('nav.whatsNew') }}</span>
-      </a>
+      </button>
 
       <a class="nav-item" [href]="faqUrl" target="_blank" rel="noopener" (click)="openFaq($event); menuOpen.set(false)">
         <tui-icon icon="@tui.circle-help" />

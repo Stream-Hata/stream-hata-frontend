@@ -3,11 +3,12 @@ import { gameResolver } from './components/pages/game-details-page/game-resolver
 import { gamesResolver } from './components/pages/games-page/games-resolver';
 import { profileResolver } from './components/pages/profile-page/profile-resolver';
 import { rouletteResolver } from './components/pages/roulette-page/roulette-resolver';
-import { desktopGuard } from './guards/desktop.guard';
+import { desktopGuard, landingGuard } from './guards/desktop.guard';
 
 export const routes: Routes = [
 	{
 		path: '',
+		canActivate: [landingGuard],
 		loadComponent: () => import('./components/pages/landing-page/landing-page'),
 		title: 'Nameless StreamHata — чат решает. Стрим живёт.',
 	},

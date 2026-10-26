@@ -9,3 +9,11 @@ export const desktopGuard: CanActivateFn = () => {
 
 	return desktop ? true : inject(Router).parseUrl('/');
 };
+
+export const landingGuard: CanActivateFn = () => {
+	const desktop =
+		navigator.userAgent.includes('NamelessStreamHataDesktop') ||
+		'__TAURI_INTERNALS__' in window;
+
+	return desktop ? inject(Router).parseUrl('/app/dashboard') : true;
+};

@@ -168,6 +168,20 @@ export default class AppShell {
 		}
 	}
 
+	openChangelog(): void {
+		const internals = (window as unknown as Record<string, unknown>)['__TAURI_INTERNALS__'] as
+			| { invoke?: (command: string) => Promise<unknown> }
+			| undefined;
+
+		if (internals?.invoke) {
+			void internals.invoke('open_changelog');
+		} else {
+			location.href = '/changelog';
+		}
+
+		this.menuOpen.set(false);
+	}
+
 	openFaq(event: MouseEvent): void {
 		event.preventDefault();
 		if (this.desktop) {
