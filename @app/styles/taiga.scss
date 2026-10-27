@@ -230,3 +230,19 @@
 [tuiAppearance][data-appearance='jkit-tint-cyan']:active {
 	background: rgb(34, 224, 255, 0.26);
 }
+
+/* Accent text inside Taiga popups (dropdown options and hints) */
+tui-data-list,
+tui-data-list *,
+tui-opt-group,
+tui-opt-group *,
+[tuiOption],
+[tuiOption] *,
+tui-hint,
+tui-hint * {
+	color: var(--accent-primary) !important;
+}
+
+tui-textfield input[tuiSelectLike] {
+	color: var(--accent-primary) !important;
+}
