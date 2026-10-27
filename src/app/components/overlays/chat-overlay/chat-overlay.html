@@ -4,7 +4,7 @@
       <div class="chat-line">
         <span class="chat-badges">
           @for (badge of row.badges; track badge.set_id + badge.version) {
-            @if (badgeUrl(badge.set_id); as url) {
+            @if (badgeUrl(badge.set_id, badge.version); as url) {
               <img class="chat-badge" [attr.title]="badgeLabel(badge.set_id)" [src]="url" />
             } @else {
               <tui-icon

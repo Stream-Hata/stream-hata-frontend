@@ -124,15 +124,7 @@ export class NowPlayingOverlay {
 		effect(() => {
 			const videoId = this.currentId();
 			this.reloadKey();
-			try {
-				if (videoId) {
-					localStorage.setItem('nsh.nowplaying.current', videoId);
-				} else {
-					localStorage.removeItem('nsh.nowplaying.current');
-				}
-			} catch {
-				// storage may be unavailable
-			}
+			this.persistCurrent(videoId);
 			this.music.setCurrent(videoId).subscribe({ error: () => undefined });
 			this.thumbnailFailed.set(false);
 			this.playbackStarted.set(false);
@@ -148,7 +140,14 @@ export class NowPlayingOverlay {
 			this.scheduleEnd(duration);
 		});
 
+		const heartbeat = setInterval(() => {
+			if (this.currentId() && this.playbackStarted()) {
+				this.persistCurrent(this.currentId());
+			}
+		}, 5000);
+
 		this.destroyRef.onDestroy(() => {
+			clearInterval(heartbeat);
 			this.clearEndTimer();
 			this.clearGestureTimer();
 		});
@@ -370,9 +369,34 @@ export class NowPlayingOverlay {
 
 	private storedCurrentId(): string | null {
 		try {
-			return localStorage.getItem('nsh.nowplaying.current');
+			const raw = localStorage.getItem('nsh.nowplaying.current');
+
+			if (!raw) {
+				return null;
+			}
+
+			const saved = JSON.parse(raw) as { id?: string; at?: number };
+			if (!saved.id || !saved.at || Date.now() - saved.at > 15000) {
+				localStorage.removeItem('nsh.nowplaying.current');
+
+				return null;
+			}
+
+			return saved.id;
 		} catch {
 			return null;
+		}
+	}
+
+	private persistCurrent(videoId: string | null): void {
+		try {
+			if (videoId) {
+				localStorage.setItem('nsh.nowplaying.current', JSON.stringify({ id: videoId, at: Date.now() }));
+			} else {
+				localStorage.removeItem('nsh.nowplaying.current');
+			}
+		} catch {
+			// storage may be unavailable
 		}
 	}
 

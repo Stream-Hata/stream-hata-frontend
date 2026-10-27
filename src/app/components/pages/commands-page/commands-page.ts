@@ -301,6 +301,10 @@ export default class CommandsPage {
 		);
 	}
 
+	openTriggers(): void {
+		this.tab.set('triggers');
+	}
+
 	saveTriggers(): void {
 		this.triggersService.save(this.triggerDraft()).subscribe({
 			next: (response) => {

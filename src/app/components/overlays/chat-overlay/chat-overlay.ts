@@ -58,6 +58,11 @@ export class ChatOverlay {
 		{ initialValue: [] as LiveChatMessage[] },
 	);
 
+	private readonly badges = toSignal(
+		timer(0, 60000).pipe(switchMap(() => this.service.badges().pipe(catchError(() => of(null))))),
+		{ initialValue: null as { badges: Record<string, string> } | null },
+	);
+
 	private readonly emotes = toSignal(
 		timer(0, 60000).pipe(switchMap(() => this.service.emotes().pipe(catchError(() => of(null))))),
 		{ initialValue: null as EmotesResponse | null },
@@ -79,7 +84,13 @@ export class ChatOverlay {
 		})),
 	);
 
-	badgeUrl(setId: string): string | null {
+	badgeUrl(setId: string, version: string): string | null {
+		const resolved = this.badges()?.badges[`${setId}/${version}`];
+
+		if (resolved) {
+			return resolved;
+		}
+
 		const image = BADGE_IMAGES[setId];
 
 		return image ? `https://static-cdn.jtvnw.net/badges/v1/${image}/2` : null;

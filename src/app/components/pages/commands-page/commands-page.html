@@ -133,6 +133,35 @@
         }
       </section>
 
+      <section class="automation-main">
+        <div class="triggers-head">
+          <h2 class="jk-h4">Системные команды</h2>
+          <button appearance="flat" tuiButton type="button" (click)="openTriggers()">Настроить</button>
+        </div>
+        <div class="table-wrap">
+          <table tuiTable>
+            <thead tuiThead>
+              <tr>
+                <th tuiTh>Команда</th>
+                <th tuiTh>Действие</th>
+                <th tuiTh>Алиасы</th>
+                <th tuiTh>Вкл</th>
+              </tr>
+            </thead>
+            <tbody tuiTbody>
+              @for (trigger of triggerDraft(); track trigger.action) {
+                <tr>
+                  <td tuiTd class="name-cell">{{ trigger.command }}</td>
+                  <td tuiTd>{{ trigger.description }}</td>
+                  <td tuiTd class="response-cell">{{ trigger.aliases.join(', ') }}</td>
+                  <td tuiTd>{{ trigger.enabled ? 'Да' : 'Нет' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       <aside class="jk-card editor">
         <h2 class="jk-h4">{{ editing() ? 'Редактирование' : 'Новая команда' }}</h2>
         <span class="jk-label">Имя</span>

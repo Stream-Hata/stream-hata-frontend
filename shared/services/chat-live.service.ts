@@ -13,4 +13,8 @@ export class ChatLiveService {
 	emotes() {
 		return this.http.get<EmotesResponse>('rgg-sync/emotes');
 	}
+
+	badges() {
+		return this.http.get<{ badges: Record<string, string> }>('rgg-sync/chat/badges');
+	}
 }
