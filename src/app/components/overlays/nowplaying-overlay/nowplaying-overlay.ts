@@ -1,5 +1,5 @@
 import type { MusicListResponse, Track } from '@shared/types/music';
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { DomSanitizer, type SafeResourceUrl } from '@angular/platform-browser';
 import { MusicService } from '@shared/services/music.service';
@@ -29,6 +29,12 @@ export class NowPlayingOverlay {
 		{ initialValue: { config: {} as WidgetConfig } },
 	);
 	readonly current = computed<Track | null>(() => this.state()?.tracks?.[0] ?? null);
+	readonly thumbnailFailed = signal(false);
+	readonly thumbnailUrl = computed(() => {
+		const videoId = this.current()?.videoId;
+
+		return videoId ? `rgg-sync/music/thumbnail?id=${encodeURIComponent(videoId)}` : '';
+	});
 	readonly showVideo = computed(() => this.config().config.showVideo !== false);
 	readonly videoUrl = computed<SafeResourceUrl | null>(() => {
 		const track = this.current();
@@ -41,6 +47,13 @@ export class NowPlayingOverlay {
 			`https://www.youtube.com/embed/${encodeURIComponent(track.videoId)}?autoplay=1&mute=1&controls=0&loop=1&playlist=${encodeURIComponent(track.videoId)}&modestbranding=1&rel=0`,
 		);
 	});
+	constructor() {
+		effect(() => {
+			this.current()?.videoId;
+			this.thumbnailFailed.set(false);
+		});
+	}
+
 	readonly duration = computed(() => {
 		const seconds = this.current()?.durationSeconds ?? 0;
 

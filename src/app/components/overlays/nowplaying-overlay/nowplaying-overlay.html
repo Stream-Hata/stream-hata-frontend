@@ -10,8 +10,15 @@
           allow="autoplay; encrypted-media"
           referrerpolicy="strict-origin-when-cross-origin"
         ></iframe>
-      } @else if (track.thumbnail) {
-        <img class="nowplaying-cover" [alt]="track.title" [src]="track.thumbnail" />
+      } @else if (thumbnailUrl() && !thumbnailFailed()) {
+        <img
+          class="nowplaying-cover"
+          [alt]="track.title"
+          [src]="thumbnailUrl()"
+          (error)="thumbnailFailed.set(true)"
+        />
+      } @else {
+        <span class="nowplaying-cover nowplaying-cover-empty" aria-hidden="true">♪</span>
       }
       <strong class="nowplaying-title">{{ track.title }}</strong>
       <span class="nowplaying-author">{{ track.author }} · {{ duration() }}</span>
