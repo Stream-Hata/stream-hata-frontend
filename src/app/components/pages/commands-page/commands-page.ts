@@ -1,4 +1,4 @@
-import type { ChatCommand, MessageTimer, Trigger, TwitchReward, TwitchRewardsState } from '@shared/types/automation';
+import type { ChatCommand, CommandVariable, MessageTimer, Trigger, TwitchReward, TwitchRewardsState } from '@shared/types/automation';
 import { Component, computed, DestroyRef, effect, inject, Injector, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -97,7 +97,7 @@ export default class CommandsPage {
 	private readonly destroyRef = inject(DestroyRef);
 	private readonly injector = inject(Injector);
 
-	readonly tab = signal<'commands' | 'timers' | 'triggers' | 'rewards'>('commands');
+	readonly tab = signal<'commands' | 'timers' | 'triggers' | 'rewards' | 'variables'>('commands');
 	readonly refresh = signal(0);
 
 	readonly commands = toSignal(
@@ -133,7 +133,21 @@ export default class CommandsPage {
 	readonly cooldown = signal(5);
 	readonly action = signal('say');
 	readonly actionControl = signalControl(this.action, this.injector);
-	readonly variables = ['$(user)', '$(login)', '$(channel)', '$(count)', '$(date)', '$(time)', '$(now)', '$(lastmusic)', '$(lasttrack)', '$(np)'];
+	readonly builtInVariables = ['$(user)', '$(login)', '$(channel)', '$(count)', '$(date)', '$(time)', '$(now)', '$(lastmusic)', '$(lasttrack)', '$(np)'];
+	readonly customVariables = toSignal(
+		merge(timer(0, 15000), toObservable(this.refresh)).pipe(
+			switchMap(() => this.service.variables().pipe(catchError(() => of({ variables: [] as CommandVariable[] })))),
+		),
+		{ initialValue: { variables: [] as CommandVariable[] } },
+	);
+	readonly variables = computed(() => [
+		...this.builtInVariables,
+		...this.customVariables().variables.map((variable) => `$(${variable.name})`),
+	]);
+	readonly variableEditingId = signal<string | null>(null);
+	readonly variableName = signal('');
+	readonly variableValue = signal('');
+	readonly variableAction = signal('');
 	readonly actionValues = ['say', 'points', 'timeout', 'wheel', 'music', 'clip', 'lastmusic'];
 	readonly actionLabels = ['Сообщение в чат', 'Начислить баллы', 'Таймаут', 'Колесо', 'Добавить музыку', 'Создать клип', 'Ссылка на текущую музыку'];
 	readonly level = signal('everyone');
@@ -327,6 +341,39 @@ export default class CommandsPage {
 			},
 			error: (response) => this.error.set(response.error?.error ?? 'Не удалось сохранить триггеры'),
 		});
+	}
+
+	editVariable(variable: CommandVariable): void {
+		this.variableEditingId.set(variable.id);
+		this.variableName.set(variable.name);
+		this.variableValue.set(variable.value);
+		this.variableAction.set(variable.action);
+	}
+
+	resetVariableForm(): void {
+		this.variableEditingId.set(null);
+		this.variableName.set('');
+		this.variableValue.set('');
+		this.variableAction.set('');
+	}
+
+	saveVariable(): void {
+		this.service.saveVariable({
+			id: this.variableEditingId() ?? undefined,
+			name: this.variableName(),
+			value: this.variableValue(),
+			action: this.variableAction(),
+		}).subscribe({
+			next: () => {
+				this.resetVariableForm();
+				this.refresh.update((value) => value + 1);
+			},
+			error: (response) => this.error.set(response.error?.error ?? 'Не удалось сохранить переменную'),
+		});
+	}
+
+	removeVariable(id: string): void {
+		this.service.removeVariable(id).subscribe(() => this.refresh.update((value) => value + 1));
 	}
 
 	insertVariable(variable: string): void {

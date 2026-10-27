@@ -42,6 +42,15 @@
       >
         Награды
       </button>
+      <button
+        type="button"
+        [class.active-tab]="tab() === 'variables'"
+        (click)="tab.set('variables')"
+        appearance="jkit-tint"
+        tuiButton
+      >
+        Переменные
+      </button>
     </div>
   </header>
 
@@ -78,14 +87,15 @@
                       <span appearance="neutral" tuiBadge>{{ levelLabel(command.userLevel) }}</span>
                     </td>
                     <td tuiTd>
-                      <input
-                        aria-label="Включить команду"
-                        type="checkbox"
-                        class="blue-switch"
-                        [checked]="commandEnabled(command)"
-                        (change)="toggleCommand(command)"
-                        tuiSwitch
-                      />
+                      <label class="switch-wrap" (click)="toggleCommand(command); $event.preventDefault()">
+                        <input
+                          aria-label="Включить команду"
+                          type="checkbox"
+                          class="blue-switch"
+                          [checked]="commandEnabled(command)"
+                          tuiSwitch
+                        />
+                      </label>
                       </td>
                       <td tuiTd class="col-actions">
                         <button
@@ -253,14 +263,15 @@
                   <td tuiTd class="response-cell">{{ item.messages.join(' · ') }}</td>
                   <td tuiTd>{{ formatInterval(item.intervalSeconds) }}</td>
                   <td tuiTd>
-                    <input
-                      aria-label="Включить таймер"
-                      type="checkbox"
-                      class="blue-switch"
-                      [checked]="timerEnabled(item)"
-                      (change)="toggleTimer(item)"
-                      tuiSwitch
-                    />
+                    <label class="switch-wrap" (click)="toggleTimer(item); $event.preventDefault()">
+                      <input
+                        aria-label="Включить таймер"
+                        type="checkbox"
+                        class="blue-switch"
+                        [checked]="timerEnabled(item)"
+                        tuiSwitch
+                      />
+                    </label>
                     </td>
                     <td tuiTd class="col-actions">
                       <button
@@ -468,6 +479,44 @@
           </div>
         </aside>
       </div>
+    } @else if (tab() === 'variables') {
+      <div class="automation-grid">
+        <section class="automation-main">
+          <h2 class="jk-h4">Переменные</h2>
+          <div class="table-wrap">
+            <table tuiTable>
+              <thead tuiThead><tr><th tuiTh>Имя</th><th tuiTh>Значение</th><th tuiTh>Действие</th><th tuiTh class="col-actions"></th></tr></thead>
+              <tbody tuiTbody>
+                @for (variable of customVariables().variables; track variable.id) {
+                  <tr>
+                    <td tuiTd class="name-cell">$ ({{ variable.name }})</td>
+                    <td tuiTd class="response-cell">{{ variable.value }}</td>
+                    <td tuiTd>{{ variable.action || '—' }}</td>
+                    <td tuiTd class="col-actions">
+                      <button size="s" type="button" aria-label="Редактировать" (click)="editVariable(variable)" appearance="flat" iconStart="@tui.pencil" tuiIconButton></button>
+                      <button class="danger-action" size="s" type="button" aria-label="Удалить" (click)="removeVariable(variable.id)" appearance="flat" iconStart="@tui.trash-2" tuiIconButton></button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </section>
+        <aside class="jk-card editor">
+          <h2 class="jk-h4">{{ variableEditingId() ? 'Редактирование переменной' : 'Новая переменная' }}</h2>
+          <span class="jk-label">Имя</span>
+          <tui-textfield><input aria-label="Имя переменной" tuiInput type="text" [value]="variableName()" (input)="variableName.set(value($event))" /></tui-textfield>
+          <span class="jk-label">Значение</span>
+          <tui-textfield><textarea aria-label="Значение переменной" rows="3" tuiTextarea [value]="variableValue()" (input)="variableValue.set(value($event))"></textarea></tui-textfield>
+          <span class="jk-label">Действие</span>
+          <tui-textfield><input aria-label="Действие переменной" tuiInput type="text" placeholder="lastmusic" [value]="variableAction()" (input)="variableAction.set(value($event))" /></tui-textfield>
+          @if (error(); as message) { <p class="error-text">{{ message }}</p> }
+          <div class="editor-actions">
+            <button type="button" (click)="saveVariable()" appearance="primary" tuiButton>{{ variableEditingId() ? 'Сохранить' : 'Создать' }}</button>
+            @if (variableEditingId()) { <button type="button" appearance="flat" tuiButton (click)="resetVariableForm()">Отмена</button> }
+          </div>
+        </aside>
+      </div>
     } @else {
       <section class="automation-main">
         <div class="triggers-head">
@@ -536,14 +585,15 @@
                       /></tui-textfield>
                   </td>
                   <td tuiTd>
-                    <input
-                      aria-label="Включить триггер"
-                      type="checkbox"
-                      class="blue-switch"
-                      [checked]="trigger.enabled"
-                      (change)="toggleTrigger(index)"
-                      tuiSwitch
-                    />
+                    <label class="switch-wrap" (click)="toggleTrigger(index); $event.preventDefault()">
+                      <input
+                        aria-label="Включить триггер"
+                        type="checkbox"
+                        class="blue-switch"
+                        [checked]="trigger.enabled"
+                        tuiSwitch
+                      />
+                    </label>
                     </td>
                     <td tuiTd class="col-actions">
                       <button

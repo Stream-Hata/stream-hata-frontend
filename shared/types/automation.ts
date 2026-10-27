@@ -11,6 +11,13 @@ export interface ChatCommand {
 	createdAt: string;
 }
 
+export interface CommandVariable {
+	id: string;
+	name: string;
+	value: string;
+	action: string;
+}
+
 export interface MessageTimer {
 	id: string;
 	name: string;

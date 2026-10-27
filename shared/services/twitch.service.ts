@@ -46,6 +46,16 @@ export class TwitchService {
 	}
 
 	connect(returnTo?: string) {
+		const internals = (window as unknown as Record<string, unknown>)['__TAURI_INTERNALS__'] as
+			| { invoke?: (command: string) => Promise<unknown> }
+			| undefined;
+
+		if (internals?.invoke) {
+			void internals.invoke('start_desktop_login');
+
+			return;
+		}
+
 		if (!returnTo) {
 			location.assign('/rgg-sync/twitch/authorize');
 

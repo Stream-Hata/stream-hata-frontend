@@ -180,3 +180,9 @@
 :host ::ng-deep tui-data-list [tuiOption] {
 	--tui-background-accent-1: var(--accent-primary);
 }
+
+.switch-wrap {
+	display: inline-flex;
+	align-items: center;
+	cursor: pointer;
+}

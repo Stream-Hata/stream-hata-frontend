@@ -1,4 +1,4 @@
-import type { ChatCommand, MessageTimer, TwitchReward, TwitchRewardsState } from '@shared/types/automation';
+import type { ChatCommand, CommandVariable, MessageTimer, TwitchReward, TwitchRewardsState } from '@shared/types/automation';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
@@ -38,6 +38,18 @@ export class CommandsService {
 
 	removeReward(id: string) {
 		return this.http.delete<void>(`rgg-sync/twitch-rewards/${id}`);
+	}
+
+	variables() {
+		return this.http.get<{ variables: CommandVariable[] }>('rgg-sync/command-variables');
+	}
+
+	saveVariable(variable: Partial<CommandVariable>) {
+		return this.http.post<CommandVariable>('rgg-sync/command-variables', variable);
+	}
+
+	removeVariable(id: string) {
+		return this.http.delete<void>(`rgg-sync/command-variables/${id}`);
 	}
 
 	timers() {

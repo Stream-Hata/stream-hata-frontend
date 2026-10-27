@@ -55,4 +55,5 @@ export interface StreamSession {
 export interface AnalyticsState {
 	current: StreamSession | null;
 	history: StreamSession[];
+	messages: number;
 }

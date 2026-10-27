@@ -34,7 +34,7 @@
       </div>
       <div class="stream-stat">
         <span class="jk-label">Сообщения</span>
-        <span class="stream-stat-value">{{ session().current?.messages ?? 0 }}</span>
+        <span class="stream-stat-value">{{ session().messages }}</span>
       </div>
       <div class="stream-stat">
         <span class="jk-label">Голосов</span>
@@ -72,7 +72,7 @@
     <article class="metric-card">
       <span class="jk-label">Сообщения</span>
       <div class="metric-row">
-        <span class="jk-metric">{{ session().current?.messages ?? 0 }}</span>
+        <span class="jk-metric">{{ session().messages }}</span>
         <span class="delta">за сессию</span>
       </div>
     </article>
@@ -217,7 +217,7 @@
       </div>
       <div class="analytics-row">
         <span class="jk-caption">Сообщений</span>
-        <span class="jk-numeric">{{ current.messages }}</span>
+        <span class="jk-numeric">{{ session().messages }}</span>
       </div>
     </div>
   } @else {

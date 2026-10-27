@@ -66,10 +66,10 @@ export default class DashboardPage {
 			switchMap(() =>
 				this.analytics
 					.state()
-					.pipe(catchError(() => of({ current: null, history: [] } as AnalyticsState))),
+					.pipe(catchError(() => of({ current: null, history: [], messages: 0 } as AnalyticsState))),
 			),
 		),
-		{ initialValue: { current: null, history: [] } as AnalyticsState },
+		{ initialValue: { current: null, history: [], messages: 0 } as AnalyticsState },
 	);
 
 	get analyticsExportUrl(): string {
