@@ -159,6 +159,7 @@ export class NowPlayingOverlay {
 				this.needsGesture.set(true);
 			}
 		}, 2500);
+		this.scheduleEnd();
 	}
 
 	resumePlayback(): void {
