@@ -20,14 +20,33 @@
           @for (message of messages(); track message.message_id) {
             <div class="chat-row">
               <span class="chat-time">{{ time(message.sent_at) }}</span>
-              <button
-                class="chat-author"
-                type="button"
-                [class.broadcaster]="isBroadcaster(message)"
-                (click)="openProfile(message)"
-              >
-                {{ message.author.display_name || message.author.login }}
-              </button>
+              <span class="chat-user">
+                @for (badge of message.badges ?? []; track badge.set_id + badge.version) {
+                  @if (badgeUrl(badge.set_id); as url) {
+                    <img
+                      class="chat-badge"
+                      [attr.alt]="badgeLabel(badge.set_id)"
+                      [attr.title]="badgeLabel(badge.set_id)"
+                      [src]="url"
+                    />
+                  } @else {
+                    <tui-icon
+                      class="chat-badge-icon"
+                      [attr.title]="badgeLabel(badge.set_id)"
+                      [icon]="badgeIcon(badge.set_id)"
+                    />
+                  }
+                }
+                <button
+                  class="chat-author"
+                  type="button"
+                  [class.broadcaster]="isBroadcaster(message)"
+                  [style.color]="authorColor(message)"
+                  (click)="openProfile(message)"
+                >
+                  {{ message.author.display_name || message.author.login }}
+                </button>
+              </span>
               <span class="chat-text">
                 @for (segment of segments(message); track $index) {
                   @if (segment.type === 'emote') {

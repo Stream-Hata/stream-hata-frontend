@@ -50,12 +50,14 @@ export class NowPlayingOverlay {
 	readonly thumbnailFailed = signal(false);
 	readonly playbackStarted = signal(false);
 	readonly needsGesture = signal(false);
+	readonly paused = signal(true);
 	readonly thumbnailUrl = computed(() => {
 		const videoId = this.currentId();
 
 		return videoId ? `rgg-sync/music/thumbnail?id=${encodeURIComponent(videoId)}` : '';
 	});
 	readonly showVideo = computed(() => this.config().config.showVideo !== false);
+	readonly showControls = computed(() => this.config().config.showControls !== false);
 	readonly videoUrl = computed<SafeResourceUrl | null>(() => {
 		const videoId = this.currentId();
 
@@ -170,16 +172,22 @@ export class NowPlayingOverlay {
 	}
 
 	resumePlayback(): void {
-		const frame = this.player?.nativeElement;
+		this.sendCommand('playVideo');
+		this.sendCommand('unMute');
+		this.sendCommand('setVolume', [100]);
+		this.paused.set(false);
+		this.needsGesture.set(false);
+	}
 
-		for (const func of ['playVideo', 'unMute', 'setVolume']) {
-			frame?.contentWindow?.postMessage(
-				JSON.stringify({ event: 'command', func, args: func === 'setVolume' ? [100] : [] }),
-				'*',
-			);
+	togglePlayback(): void {
+		if (this.paused()) {
+			this.resumePlayback();
+
+			return;
 		}
 
-		this.needsGesture.set(false);
+		this.sendCommand('pauseVideo');
+		this.paused.set(true);
 	}
 
 	skipTrack(): void {
@@ -251,13 +259,26 @@ export class NowPlayingOverlay {
 
 		if (state === 1 || state === 3) {
 			this.playbackStarted.set(true);
+			this.paused.set(state === 3);
 			this.needsGesture.set(false);
 			this.clearGestureTimer();
 
 			if (state === 1) {
+				this.paused.set(false);
 				this.scheduleEnd();
 			}
 		}
+
+		if (state === 2) {
+			this.paused.set(true);
+		}
+	}
+
+	private sendCommand(func: string, args: unknown[] = []): void {
+		this.player?.nativeElement.contentWindow?.postMessage(
+			JSON.stringify({ event: 'command', func, args }),
+			'*',
+		);
 	}
 
 	private parseMessage(data: unknown): { event?: string; info?: number | { playerState?: number } } | null {

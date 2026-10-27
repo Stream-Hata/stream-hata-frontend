@@ -93,6 +93,7 @@ export default class WidgetConfigPage {
 		streakEvery: new FormControl(5, { nonNullable: true }),
 		durationSeconds: new FormControl(10, { nonNullable: true }),
 		showVideo: new FormControl(true, { nonNullable: true }),
+		showControls: new FormControl(true, { nonNullable: true }),
 	});
 
 	constructor() {

@@ -57,6 +57,7 @@ export interface WidgetConfig {
 	hotbarEmptyColor?: string;
 	donation?: DonationWidgetConfig;
 	showVideo?: boolean;
+	showControls?: boolean;
 }
 
 @Injectable({ providedIn: 'root' })

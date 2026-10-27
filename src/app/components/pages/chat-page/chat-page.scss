@@ -41,11 +41,19 @@
 
 .chat-row {
 	display: grid;
-	grid-template-columns: 44px minmax(90px, max-content) minmax(0, 1fr);
+	grid-template-columns: 44px minmax(120px, max-content) minmax(0, 1fr);
 	gap: var(--space-xs);
 	align-items: start;
 	padding: 4px var(--space-xs);
 	border-radius: var(--radius-sm);
+	animation: chat-row-in 180ms cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+
+@keyframes chat-row-in {
+	from {
+		opacity: 0;
+		transform: translateY(6px);
+	}
 }
 
 .chat-row:hover {
@@ -57,6 +65,28 @@
 	font: var(--font-code);
 	font-size: 11px;
 	line-height: 24px;
+}
+
+.chat-user {
+	display: flex;
+	gap: 4px;
+	align-items: center;
+	min-width: 0;
+}
+
+.chat-badge {
+	width: 18px;
+	height: 18px;
+	flex: 0 0 auto;
+	object-fit: contain;
+}
+
+.chat-badge-icon {
+	width: 16px;
+	height: 16px;
+	flex: 0 0 auto;
+	color: var(--text-secondary);
+	font-size: 16px;
 }
 
 .chat-author {
@@ -150,5 +180,11 @@
 
 	.chat-text {
 		grid-column: 2;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.chat-row {
+		animation: none;
 	}
 }

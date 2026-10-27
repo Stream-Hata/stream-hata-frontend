@@ -32,9 +32,6 @@
       <div class="nowplaying-meta">
         <strong class="nowplaying-title">{{ track.title }}</strong>
         <span class="nowplaying-author">{{ track.author }} · {{ duration() }}</span>
-        <button class="nowplaying-skip" type="button" (click)="skipTrack()">
-          Пропустить трек →
-        </button>
       </div>
     } @else {
       <span class="jk-caption nowplaying-empty">
@@ -42,4 +39,14 @@
       </span>
     }
   </article>
+  @if (current() && showControls()) {
+    <div class="nowplaying-controls">
+      <button class="nowplaying-control" type="button" (click)="togglePlayback()">
+        {{ paused() ? '▶ Играть' : '❚❚ Пауза' }}
+      </button>
+      <button class="nowplaying-control" type="button" (click)="skipTrack()">
+        Пропустить →
+      </button>
+    </div>
+  }
 </div>
