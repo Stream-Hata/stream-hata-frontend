@@ -94,6 +94,9 @@ export default class WidgetConfigPage {
 		durationSeconds: new FormControl(10, { nonNullable: true }),
 		showVideo: new FormControl(true, { nonNullable: true }),
 		showControls: new FormControl(true, { nonNullable: true }),
+		juryYeaColor: new FormControl('#22c55e', { nonNullable: true }),
+		juryNeiColor: new FormControl('#ef4444', { nonNullable: true }),
+		juryShowTimer: new FormControl(true, { nonNullable: true }),
 	});
 
 	constructor() {
@@ -130,6 +133,7 @@ export default class WidgetConfigPage {
 					this.genericConfig.set(response.config);
 					this.hotbarConfig.set(response.config);
 					this.genericForm.patchValue(response.config, { emitEvent: false });
+					this.applyJurySettings(response.config);
 					this.applyTimerSettings(response.config);
 				},
 				error: () => undefined,
@@ -151,6 +155,28 @@ export default class WidgetConfigPage {
 		this.alertSoundEnabledControl.valueChanges
 			.pipe(takeUntilDestroyed(this.destroyRef))
 			.subscribe(() => this.saveAlertSettings());
+	}
+
+	private applyJurySettings(config: WidgetConfig): void {
+		if (this.kind() !== 'jury') {
+			return;
+		}
+
+		this.juryStyle.set(config.juryStyle ?? 'standard');
+		this.juryStyleControl.setValue(this.juryStyle(), { emitEvent: false });
+		this.theme.set(config.juryTheme ?? 'dark');
+		this.density.set(config.juryDensity ?? 'm');
+		this.showChannel.set(config.juryShowChannel !== false);
+		this.showChannelControl.setValue(this.showChannel(), { emitEvent: false });
+		this.showQuestion.set(config.juryShowQuestion !== false);
+		this.showQuestionControl.setValue(this.showQuestion(), { emitEvent: false });
+		this.showAuthors.set(config.juryShowAuthors !== false);
+		this.showAuthorsControl.setValue(this.showAuthors(), { emitEvent: false });
+		this.showProgress.set(config.juryShowProgress !== false);
+		this.showProgressControl.setValue(this.showProgress(), { emitEvent: false });
+		this.animation.set(config.juryAnimation !== false);
+		this.animationControl.setValue(this.animation(), { emitEvent: false });
+		this.speed.set(config.jurySpeed ?? 40);
 	}
 
 	private applyTimerSettings(config: WidgetConfig): void {
@@ -610,6 +636,20 @@ export default class WidgetConfigPage {
 							timerVerticalAlign: this.timerVerticalAlign(),
 						}
 					: { ...this.genericConfig(), ...this.genericForm.getRawValue() };
+
+		if (this.kind() === 'jury') {
+			Object.assign(config, {
+				juryStyle: this.juryStyle(),
+				juryTheme: this.theme(),
+				juryDensity: this.density(),
+				juryShowChannel: this.showChannel(),
+				juryShowQuestion: this.showQuestion(),
+				juryShowAuthors: this.showAuthors(),
+				juryShowProgress: this.showProgress(),
+				juryAnimation: this.animation(),
+				jurySpeed: this.speed(),
+			});
+		}
 
 		this.widgetConfig
 			.save(this.kind(), config)

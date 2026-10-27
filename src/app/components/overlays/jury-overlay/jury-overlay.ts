@@ -2,6 +2,7 @@ import type { ChatJuryPublic } from '@shared/types/chat-jury';
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ChatJuryService } from '@shared/services/chat-jury.service';
+import { WidgetConfigService, type WidgetConfig } from '@shared/services/widgets.service';
 import { catchError, of, switchMap, timer } from 'rxjs';
 import { ApprovalRing } from '../../ui/approval-ring/approval-ring';
 
@@ -13,6 +14,7 @@ import { ApprovalRing } from '../../ui/approval-ring/approval-ring';
 })
 export class JuryOverlay {
 	private readonly service = inject(ChatJuryService);
+	private readonly configService = inject(WidgetConfigService);
 
 	readonly current = toSignal(
 		timer(0, 2000).pipe(
@@ -23,6 +25,31 @@ export class JuryOverlay {
 		{ initialValue: null as ChatJuryPublic | null },
 	);
 
+	readonly config = toSignal(
+		this.configService.get('jury').pipe(catchError(() => of({ config: {} as WidgetConfig }))),
+		{ initialValue: { config: {} as WidgetConfig } },
+	);
+	private readonly tick = toSignal(timer(0, 1000), { initialValue: Date.now() });
+	readonly showProgress = computed(() => this.config().config.juryShowProgress !== false);
+	readonly showTimer = computed(() => this.config().config.juryShowTimer !== false);
+	readonly yeaColor = computed(() => this.config().config.juryYeaColor ?? 'var(--status-positive)');
+	readonly neiColor = computed(() => this.config().config.juryNeiColor ?? 'var(--status-negative)');
+	readonly remaining = computed(() => {
+		this.tick();
+
+		const end = Date.parse(this.current()?.ends_at ?? '');
+
+		return Number.isNaN(end) ? 0 : Math.max(0, Math.ceil((end - Date.now()) / 1000));
+	});
+	readonly remainingLabel = computed(() => {
+		if (this.current()?.status !== 'voting') {
+			return '';
+		}
+
+		const seconds = this.remaining();
+
+		return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+	});
 	readonly approval = computed(() => Math.round(this.current()?.approval_rate ?? 0));
 	readonly yea = computed(() => this.current()?.votes.yea ?? 0);
 	readonly nei = computed(() => this.current()?.votes.nei ?? 0);

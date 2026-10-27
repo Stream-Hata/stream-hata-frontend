@@ -58,6 +58,18 @@ export interface WidgetConfig {
 	donation?: DonationWidgetConfig;
 	showVideo?: boolean;
 	showControls?: boolean;
+	juryShowProgress?: boolean;
+	juryShowTimer?: boolean;
+	juryShowChannel?: boolean;
+	juryShowQuestion?: boolean;
+	juryShowAuthors?: boolean;
+	juryYeaColor?: string;
+	juryNeiColor?: string;
+	juryStyle?: string;
+	juryTheme?: 'dark' | 'light';
+	juryDensity?: 's' | 'm' | 'l';
+	juryAnimation?: boolean;
+	jurySpeed?: number;
 }
 
 @Injectable({ providedIn: 'root' })

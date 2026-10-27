@@ -330,6 +330,36 @@
                                                 tuiSwitch
                                                 />
                                               </div>
+                                            <div class="cfg-row">
+                                              <div class="cfg-text">
+                                                <span class="cfg-label">Таймер</span>
+                                                <span class="jk-caption">Оставшееся время голосования</span>
+                                              </div>
+                                              <input
+                                                aria-label="Таймер жюри"
+                                                type="checkbox"
+                                                [formControl]="genericForm.controls.juryShowTimer"
+                                                tuiSwitch
+                                                />
+                                              </div>
+                                            <div class="cfg-row">
+                                              <span class="cfg-label">Цвет «За»</span>
+                                              <tui-textfield class="cfg-control">
+                                                <input
+                                                  aria-label="Цвет полосы «За»"
+                                                  [formControl]="genericForm.controls.juryYeaColor"
+                                                  tuiInputColor
+                                                ></tui-textfield>
+                                              </div>
+                                            <div class="cfg-row">
+                                              <span class="cfg-label">Цвет «Против»</span>
+                                              <tui-textfield class="cfg-control">
+                                                <input
+                                                  aria-label="Цвет полосы «Против»"
+                                                  [formControl]="genericForm.controls.juryNeiColor"
+                                                  tuiInputColor
+                                                ></tui-textfield>
+                                              </div>
                                             </section>
 
                                             <section class="cfg-section">

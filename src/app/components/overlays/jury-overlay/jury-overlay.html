@@ -1,9 +1,18 @@
 <div class="overlay-stage">
   @if (current(); as jury) {
-    <article class="jury-card">
+    <article
+      class="jury-card"
+      [style.--jury-yea]="yeaColor()"
+      [style.--jury-nei]="neiColor()"
+    >
       <header class="jury-head">
         <span class="jury-kicker">ЧАТ-ЖЮРИ</span>
-        <span class="jury-confidence">AI {{ confidence() }}%</span>
+        <span class="jury-meta">
+          @if (showTimer() && remainingLabel()) {
+            <span class="jury-timer">{{ remainingLabel() }}</span>
+          }
+          <span class="jury-confidence">AI {{ confidence() }}%</span>
+        </span>
       </header>
 
       <p class="jury-question">{{ question() }}</p>
@@ -18,18 +27,22 @@
               <span>За</span>
               <strong>{{ yea() }}</strong>
             </div>
-            <span class="vote-bar">
-              <span [style.width.%]="yeaPercent()"></span>
-            </span>
+            @if (showProgress()) {
+              <span class="vote-bar">
+                <span [style.width.%]="yeaPercent()"></span>
+              </span>
+            }
           </div>
           <div class="vote-row vote-nei">
             <div class="vote-line">
               <span>Против</span>
               <strong>{{ nei() }}</strong>
             </div>
-            <span class="vote-bar">
-              <span [style.width.%]="neiPercent()"></span>
-            </span>
+            @if (showProgress()) {
+              <span class="vote-bar">
+                <span [style.width.%]="neiPercent()"></span>
+              </span>
+            }
           </div>
           <span class="jury-total">Всего голосов: {{ total() }}</span>
         </div>
