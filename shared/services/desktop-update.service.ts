@@ -64,19 +64,23 @@ export class DesktopUpdateService {
 				break;
 			case 'downloading':
 				this.checking.set(false);
+				this.available.set(true);
 				this.installing.set(true);
 				this.step.set('downloading');
 				break;
 			case 'installing':
+				this.available.set(true);
 				this.installing.set(true);
 				this.step.set('installing');
 				break;
 			case 'restarting':
+				this.available.set(true);
 				this.installing.set(true);
 				this.step.set('restarting');
 				break;
 			case 'error':
 				this.checking.set(false);
+				this.available.set(true);
 				this.installing.set(false);
 				this.error.set(state.error ?? 'Ошибка обновления');
 				break;
