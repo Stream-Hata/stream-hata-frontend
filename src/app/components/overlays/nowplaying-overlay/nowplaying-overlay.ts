@@ -63,7 +63,7 @@ export class NowPlayingOverlay {
 		}
 
 		return this.sanitizer.bypassSecurityTrustResourceUrl(
-			`https://www.youtube.com/embed/${encodeURIComponent(videoId)}?autoplay=1&controls=0&modestbranding=1&rel=0&playsinline=1&enablejsapi=1&origin=${encodeURIComponent(location.origin)}&reload=${this.reloadKey()}`,
+			`https://www.youtube.com/embed/${encodeURIComponent(videoId)}?autoplay=1&controls=1&autohide=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&fs=0&disablekb=1&cc_load_policy=0&playsinline=1&enablejsapi=1&origin=${encodeURIComponent(location.origin)}&reload=${this.reloadKey()}`,
 		);
 	});
 

@@ -1,6 +1,6 @@
 <div class="overlay-stage">
+  <span class="nowplaying-kicker">NOW PLAYING</span>
   <article class="nowplaying-card">
-    <span class="nowplaying-kicker">СЕЙЧАС ИГРАЕТ</span>
     @if (current(); as track) {
       @if (videoUrl(); as video) {
         <iframe
@@ -29,13 +29,15 @@
           ▶ Включить звук
         </button>
       }
-      <strong class="nowplaying-title">{{ track.title }}</strong>
-      <span class="nowplaying-author">{{ track.author }} · {{ duration() }}</span>
-      <button class="nowplaying-skip" type="button" (click)="skipTrack()">
-        Пропустить трек →
-      </button>
+      <div class="nowplaying-meta">
+        <strong class="nowplaying-title">{{ track.title }}</strong>
+        <span class="nowplaying-author">{{ track.author }} · {{ duration() }}</span>
+        <button class="nowplaying-skip" type="button" (click)="skipTrack()">
+          Пропустить трек →
+        </button>
+      </div>
     } @else {
-      <span class="jk-caption">Трек-лист пуст</span>
+      <span class="jk-caption nowplaying-empty">Трек-лист пуст</span>
     }
   </article>
 </div>
