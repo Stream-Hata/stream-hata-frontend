@@ -186,3 +186,15 @@
 	align-items: center;
 	cursor: pointer;
 }
+
+.switch-hit {
+	position: relative;
+	display: inline-flex;
+}
+
+.switch-hit-area {
+	position: absolute;
+	z-index: 2;
+	cursor: pointer;
+	inset: 0;
+}

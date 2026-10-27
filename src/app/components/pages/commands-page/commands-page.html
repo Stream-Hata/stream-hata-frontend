@@ -88,7 +88,7 @@
                       <span appearance="neutral" tuiBadge>{{ levelLabel(command.userLevel) }}</span>
                     </td>
                     <td tuiTd>
-                      <label class="switch-wrap" (click)="toggleCommand(command); $event.preventDefault()">
+                      <div class="switch-hit">
                         <input
                           aria-label="Включить команду"
                           type="checkbox"
@@ -96,7 +96,8 @@
                           [checked]="commandEnabled(command)"
                           tuiSwitch
                         />
-                      </label>
+                        <span class="switch-hit-area" (click)="toggleCommand(command); $event.preventDefault()"></span>
+                      </div>
                       </td>
                       <td tuiTd class="col-actions">
                         <button
@@ -264,7 +265,7 @@
                   <td tuiTd class="response-cell">{{ item.messages.join(' · ') }}</td>
                   <td tuiTd>{{ formatInterval(item.intervalSeconds) }}</td>
                   <td tuiTd>
-                    <label class="switch-wrap" (click)="toggleTimer(item); $event.preventDefault()">
+                    <div class="switch-hit">
                       <input
                         aria-label="Включить таймер"
                         type="checkbox"
@@ -272,7 +273,8 @@
                         [checked]="timerEnabled(item)"
                         tuiSwitch
                       />
-                    </label>
+                      <span class="switch-hit-area" (click)="toggleTimer(item); $event.preventDefault()"></span>
+                    </div>
                     </td>
                     <td tuiTd class="col-actions">
                       <button
@@ -586,7 +588,7 @@
                       /></tui-textfield>
                   </td>
                   <td tuiTd>
-                    <label class="switch-wrap" (click)="toggleTrigger(index); $event.preventDefault()">
+                    <div class="switch-hit">
                       <input
                         aria-label="Включить триггер"
                         type="checkbox"
@@ -594,7 +596,8 @@
                         [checked]="trigger.enabled"
                         tuiSwitch
                       />
-                    </label>
+                      <span class="switch-hit-area" (click)="toggleTrigger(index); $event.preventDefault()"></span>
+                    </div>
                     </td>
                     <td tuiTd class="col-actions">
                       <button
