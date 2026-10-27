@@ -11,7 +11,6 @@ import { DonationsService } from '@shared/services/donations.service';
 import { I18nService } from '@shared/services/i18n.service';
 import { OnboardingService } from '@shared/services/onboarding.service';
 import { DesktopUpdateService } from '@shared/services/desktop-update.service';
-import { UpdateService } from '@shared/services/update.service';
 import { IntegrationsService } from '@shared/services/integrations.service';
 import { MetricsService, NetworkService } from '@shared/services/ops.services';
 import { NotifyService } from '@shared/services/stream.services';
@@ -108,8 +107,6 @@ export default class SettingsPage {
 	readonly i18n = inject(I18nService);
 	readonly onboarding = inject(OnboardingService);
 	readonly desktopUpdate = inject(DesktopUpdateService);
-	private readonly updates = inject(UpdateService);
-	readonly siteVersion = this.updates.version;
 	private readonly injector = inject(Injector);
 	readonly desktop = navigator.userAgent.includes('NamelessStreamHataDesktop') || '__TAURI_INTERNALS__' in window;
 	readonly section = signal<Section>('general');
