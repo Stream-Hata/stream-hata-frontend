@@ -382,6 +382,48 @@
 
                 <article class="widget-card">
                   <div class="stage jk-checkerboard">
+                    <div class="dice-preview">
+                      <span class="dice-preview-cube">6</span>
+                      <span class="jk-caption">!dice 2d6</span>
+                    </div>
+                  </div>
+
+                  <div class="meta">
+                    <div class="meta-row">
+                      <div class="meta-text">
+                        <h2 class="widget-name">{{ i18n.t('widgets.dice') }}</h2>
+                        @if (isEnabled('dice')) {
+                          <span appearance="positive" tuiBadge>{{ i18n.t('common.enabled') }}</span>
+                        } @else {
+                          <span appearance="neutral" tuiBadge>{{ i18n.t('common.disabled') }}</span>
+                        }
+                      </div>
+                      <input
+                        [attr.aria-label]="i18n.t('widgets.enable') + ' ' + i18n.t('widgets.dice')"
+                        type="checkbox"
+                        [checked]="isEnabled('dice')"
+                        (change)="toggle('dice', $any($event.target).checked)"
+                        tuiSwitch
+                      />
+                    </div>
+
+                    <div class="widget-actions">
+                      <a routerLink="/app/widgets/dice/config" tuiLink>{{ i18n.t('common.configure') }}</a>
+                      <button
+                        size="s"
+                        type="button"
+                        [tuiButtonCopy]="overlayUrl('dice')"
+                        appearance="flat"
+                        tuiButton
+                      >
+                        Копировать URL
+                      </button>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="widget-card">
+                  <div class="stage jk-checkerboard">
                     <div class="audio-preview">
                       <tui-icon icon="@tui.message-circle" />
                       <span class="jk-caption">Live chat · OBS</span>

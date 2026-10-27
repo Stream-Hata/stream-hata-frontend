@@ -52,6 +52,7 @@ const KIND_TITLES: Record<string, string> = {
 	donations: 'Donations',
 	audio: 'Audio',
 	wheel: 'Wheel',
+	dice: 'Dice',
 	chat: 'Chat',
 	points: 'Top Points',
 	music: 'Audio list',
@@ -77,7 +78,7 @@ export default class WidgetConfigPage {
 	private readonly widgetConfig = inject(WidgetConfigService);
 	private readonly store = inject(HotbarStore);
 	readonly i18n = inject(I18nService);
-	readonly genericKinds = ['audio', 'wheel', 'chat', 'points', 'music', 'nowplaying', 'streaks'];
+	readonly genericKinds = ['audio', 'wheel', 'dice', 'chat', 'points', 'music', 'nowplaying', 'streaks'];
 	readonly isGeneric = computed(() => this.genericKinds.includes(this.kind()));
 	readonly genericConfig = signal<WidgetConfig>({});
 	readonly hotbarConfig = signal<WidgetConfig>({});

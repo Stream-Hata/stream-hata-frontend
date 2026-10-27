@@ -1,0 +1,20 @@
+<div class="dice-stage">
+  <div class="dice-card" [class.rolling]="rolling()">
+    <span class="dice-kicker">DICE</span>
+    <div class="dice-face" [attr.data-face]="result()">
+      <span class="dice-pips" aria-hidden="true">
+        @for (pip of [1, 2, 3, 4, 5, 6, 7, 8, 9]; track $index) {
+          <i [class.on]="pip <= result()"></i>
+        }
+      </span>
+      <strong class="dice-result">{{ result() }}</strong>
+    </div>
+    <strong class="dice-formula">{{ formula() }}</strong>
+    @if (rolls().length > 1) {
+      <span class="dice-rolls">{{ rolls().join(' + ') }}</span>
+    }
+    @if (viewer()) {
+      <span class="dice-viewer">{{ viewer() }}</span>
+    }
+  </div>
+</div>

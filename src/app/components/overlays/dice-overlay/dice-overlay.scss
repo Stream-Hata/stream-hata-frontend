@@ -1,0 +1,95 @@
+:host {
+	display: block;
+	padding: 16px;
+	color: var(--text-primary);
+	font-family: var(--font-ui);
+}
+
+.dice-stage {
+	display: flex;
+	justify-content: center;
+}
+
+.dice-card {
+	display: flex;
+	gap: 8px;
+	flex-direction: column;
+	align-items: center;
+	min-width: 220px;
+	padding: 22px 28px;
+	border: 1px solid rgb(255 255 255 / 12%);
+	border-radius: 22px;
+	background: rgb(18 18 24 / 92%);
+	backdrop-filter: blur(16px);
+	box-shadow: 0 18px 50px rgb(0 0 0 / 45%);
+}
+
+.dice-kicker {
+	color: var(--accent-primary);
+	font: 700 11px/16px var(--font-ui);
+	letter-spacing: 0.18em;
+}
+
+.dice-face {
+	position: relative;
+	display: grid;
+	place-items: center;
+	width: 128px;
+	height: 128px;
+	border: 3px solid var(--accent-primary);
+	border-radius: 24px;
+	background: rgb(255 255 255 / 7%);
+	transform: rotate(-4deg);
+}
+
+.dice-card.rolling .dice-face {
+	animation: dice-roll 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.dice-pips {
+	position: absolute;
+	display: grid;
+	grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+	gap: 8px;
+	width: 70px;
+	height: 70px;
+	opacity: 0.9;
+}
+
+.dice-pips i {
+	border-radius: 50%;
+	background: var(--accent-primary);
+	opacity: 0.12;
+}
+
+.dice-pips i.on {
+	opacity: 0.85;
+}
+
+.dice-result {
+	position: relative;
+	z-index: 1;
+	color: var(--widget-text, #f5eaff);
+	font: 800 48px/1 var(--font-ui);
+	text-shadow: 0 2px 12px rgb(0 0 0 / 65%);
+}
+
+.dice-formula {
+	color: var(--accent-primary);
+	font: 700 16px/22px var(--font-ui);
+	letter-spacing: 0.08em;
+}
+
+.dice-rolls,
+.dice-viewer {
+	color: var(--text-secondary);
+	font: 600 12px/18px var(--font-ui);
+}
+
+@keyframes dice-roll {
+	0% { transform: rotate(-4deg) scale(1); }
+	25% { transform: rotate(16deg) scale(1.12); }
+	50% { transform: rotate(-22deg) scale(0.94); }
+	75% { transform: rotate(12deg) scale(1.06); }
+	100% { transform: rotate(-4deg) scale(1); }
+}
