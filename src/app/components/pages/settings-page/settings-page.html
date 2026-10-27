@@ -793,7 +793,7 @@
                     {{ i18n.t('settings.installUpdate') }} {{ desktopUpdate.version() }}
                   </button>
                 } @else {
-                  <button appearance="flat" size="s" tuiButton type="button" [disabled]="desktopUpdate.checking()" (click)="desktopUpdate.check()">
+                  <button appearance="flat" size="s" tuiButton type="button" [disabled]="desktopUpdate.checking()" (click)="desktopUpdate.check(true)">
                     {{ desktopUpdate.checking() ? i18n.t('settings.checkingUpdate') : i18n.t('settings.checkUpdate') }}
                   </button>
                 }

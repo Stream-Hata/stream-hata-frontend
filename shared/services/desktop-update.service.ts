@@ -50,7 +50,7 @@ export class DesktopUpdateService {
 		}
 	}
 
-	async check(): Promise<void> {
+	async check(manual = false): Promise<void> {
 		if (this.checking()) {
 			return;
 		}
@@ -58,7 +58,7 @@ export class DesktopUpdateService {
 		this.checking.set(true);
 		this.checked.set(false);
 		this.error.set('');
-		const result = await this.invoke<UpdateInfo | null>('check_update');
+		const result = await this.invoke<UpdateInfo | null>(manual ? 'check_update_manual' : 'check_update');
 
 		this.checking.set(false);
 		this.checked.set(true);
