@@ -909,3 +909,22 @@ tui-datalist-wrapper + tui-hint,
 tui-data-list-wrapper + tui-hint {
 	color: currentcolor !important;
 }
+
+tui-data-list-wrapper,
+tui-data-list-wrapper *,
+tui-datalist-wrapper,
+tui-datalist-wrapper * {
+	color: var(--accent-primary) !important;
+}
+
+tui-data-list-wrapper [tuiOption],
+tui-data-list-wrapper button,
+tui-data-list-wrapper a,
+tui-data-list-wrapper label {
+	color: var(--accent-primary) !important;
+}
+
+tui-textfield input[tuiSelectLike],
+tui-textfield input[tuiInput] {
+	color: var(--accent-primary) !important;
+}

@@ -210,3 +210,7 @@
 .blue-switch:checked:before {
 	color: #fff !important;
 }
+
+.switch-hit input {
+	pointer-events: none;
+}
