@@ -84,7 +84,10 @@ export class DesktopUpdateService {
 	}
 
 	async syncState(): Promise<void> {
-		const state = await this.invoke<Parameters<DesktopUpdateService['applyState']>[0]>('update_ui_state');
+		const state = await this.invoke<Parameters<DesktopUpdateService['applyState']>[0]>(
+			'update_ui_state',
+			true,
+		);
 
 		if (state) {
 			this.applyState(state);
@@ -205,7 +208,7 @@ export class DesktopUpdateService {
 		);
 	}
 
-	private async invoke<T = unknown>(command: string): Promise<T | null> {
+	private async invoke<T = unknown>(command: string, silent = false): Promise<T | null> {
 		const internals = (window as unknown as Record<string, unknown>)['__TAURI_INTERNALS__'] as
 			| TauriInternals
 			| undefined;
@@ -221,7 +224,9 @@ export class DesktopUpdateService {
 		try {
 			return await invoke<T>(command);
 		} catch (error) {
-			this.error.set(String(error));
+			if (!silent) {
+				this.error.set(String(error));
+			}
 
 			return null;
 		}
