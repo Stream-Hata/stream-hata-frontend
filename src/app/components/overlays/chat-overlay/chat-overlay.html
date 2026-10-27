@@ -2,7 +2,20 @@
   <article class="chat-card">
     @for (row of rows(); track row.id) {
       <div class="chat-line">
-        <span class="chat-author" [class.broadcaster]="row.color">{{ row.author }}</span>
+        <span class="chat-badges">
+          @for (badge of row.badges; track badge.set_id + badge.version) {
+            @if (badgeUrl(badge.set_id); as url) {
+              <img class="chat-badge" [attr.title]="badgeLabel(badge.set_id)" [src]="url" />
+            } @else {
+              <tui-icon
+                class="chat-badge-icon"
+                [attr.title]="badgeLabel(badge.set_id)"
+                [icon]="badgeIcon(badge.set_id)"
+              />
+            }
+          }
+        </span>
+        <span class="chat-author" [style.color]="row.color">{{ row.author }}</span>
         <span class="chat-text">
           @for (segment of row.segments; track $index) {
             @if (segment.type === 'emote') {

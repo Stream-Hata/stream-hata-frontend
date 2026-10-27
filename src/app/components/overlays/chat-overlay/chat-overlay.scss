@@ -23,8 +23,39 @@
 }
 
 .chat-line {
+	display: flex;
+	gap: 4px;
+	align-items: baseline;
 	font: 500 14px/20px var(--font-ui);
 	overflow-wrap: anywhere;
+	animation: chat-line-in 180ms cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+
+@keyframes chat-line-in {
+	from {
+		opacity: 0;
+		transform: translateY(5px);
+	}
+}
+
+.chat-badges {
+	display: inline-flex;
+	gap: 2px;
+	align-items: center;
+	flex: 0 0 auto;
+}
+
+.chat-badge {
+	width: 16px;
+	height: 16px;
+	object-fit: contain;
+}
+
+.chat-badge-icon {
+	width: 14px;
+	height: 14px;
+	color: var(--text-secondary);
+	font-size: 14px;
 }
 
 .chat-author {
