@@ -94,9 +94,9 @@
                           type="checkbox"
                           class="blue-switch"
                           [checked]="commandEnabled(command)"
+                          (change)="toggleCommand(command)"
                           tuiSwitch
                         />
-                        <span class="switch-hit-area" (click)="toggleCommand(command); $event.preventDefault()"></span>
                       </div>
                       </td>
                       <td tuiTd class="col-actions">
@@ -344,6 +344,7 @@
                     <tui-textfield
                     ><input
                       aria-label="Команда"
+                      placeholder="!команда"
                       tuiInput
                       type="text"
                       [value]="trigger.command"
