@@ -227,9 +227,15 @@
                 <span class="cfg-label">Своё изображение</span>
                 <span class="jk-caption">PNG, SVG, GIF или WebP</span>
               </div>
-              <label class="background-upload">
-                Загрузить
-                <input type="file" accept="image/*" (change)="onCharacterFile($event)" />
+              <label class="background-file" tuiInputFiles>
+                <input
+                  accept="image/*"
+                  appearance="file"
+                  tuiInputFiles
+                  [formControl]="characterFileControl"
+                  [maxFileSize]="10 * 1024 * 1024"
+                />
+                <span>Загрузить</span>
               </label>
             </div>
           }
@@ -261,9 +267,15 @@
               @if (backgroundImage()) {
                 <button appearance="flat" size="s" tuiButton type="button" (click)="clearBackground()">Убрать</button>
               }
-              <label class="background-upload">
-                Выбрать
-                <input type="file" accept="image/*" (change)="onBackgroundFile($event)" />
+              <label class="background-file" tuiInputFiles>
+                <input
+                  accept="image/*"
+                  appearance="file"
+                  tuiInputFiles
+                  [formControl]="backgroundFileControl"
+                  [maxFileSize]="10 * 1024 * 1024"
+                />
+                <span>Выбрать</span>
               </label>
             </div>
           </div>

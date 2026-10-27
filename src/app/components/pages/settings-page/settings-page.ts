@@ -2,7 +2,7 @@ import type { TranslationKey } from '@shared/services/i18n.service';
 import type { NotifySettings } from '@shared/types/stream';
 import { Component, computed, DestroyRef, inject, Injector, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { contrastRatio } from '@shared/helpers/color';
 import { signalControl } from '@shared/helpers/form-control';
@@ -30,6 +30,8 @@ import {
 	TuiButtonCopy,
 	TuiDataListWrapper,
 	TuiInputColor,
+	TuiInputFiles,
+	TuiInputFilesDirective,
 	TuiSegmented,
 	TuiSwitch,
 	TuiTabs,
@@ -87,6 +89,8 @@ const SECTION_DEFS: { id: Section; labelKey: TranslationKey; icon: string }[] = 
 		TuiIcon,
 		TuiInput,
 		TuiInputColor,
+		TuiInputFiles,
+		TuiInputFilesDirective,
 		TuiSegmented,
 			TuiSelectLike,
 		TuiSlider,
@@ -158,15 +162,14 @@ export default class SettingsPage {
 	readonly appSettings = inject(AppSettingsService);
 	readonly saved = signal(false);
 	readonly backgroundImage = this.appSettings.backgroundImage;
+	readonly backgroundFileControl = new FormControl<File | null>(null);
+	readonly characterFileControl = new FormControl<File | null>(null);
 
 	disableVirusMode(): void {
 		void this.onboarding.disableVirusMode();
 	}
 
-	onBackgroundFile(event: Event): void {
-		const input = event.target as HTMLInputElement;
-		const file = input.files?.[0];
-
+	onBackgroundFile(file: File | null): void {
 		if (!file || !file.type.startsWith('image/')) {
 			return;
 		}
@@ -187,7 +190,6 @@ export default class SettingsPage {
 			image.src = String(reader.result);
 		};
 		reader.readAsDataURL(file);
-		input.value = '';
 	}
 
 	clearBackground(): void {
@@ -208,10 +210,7 @@ export default class SettingsPage {
 		this.appSettings.idleCharacter.set(character);
 	}
 
-	onCharacterFile(event: Event): void {
-		const input = event.target as HTMLInputElement;
-		const file = input.files?.[0];
-
+	onCharacterFile(file: File | null): void {
 		if (!file || !file.type.startsWith('image/')) {
 			return;
 		}
@@ -222,7 +221,6 @@ export default class SettingsPage {
 			this.appSettings.idleCharacter.set('custom');
 		};
 		reader.readAsDataURL(file);
-		input.value = '';
 	}
 
 	summonCat(): void {
@@ -377,6 +375,14 @@ export default class SettingsPage {
 		this.notifyEnabledControl.valueChanges
 			.pipe(takeUntilDestroyed(this.destroyRef))
 			.subscribe(() => this.saveNotify());
+
+		this.backgroundFileControl.valueChanges
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe((file) => this.onBackgroundFile(file));
+
+		this.characterFileControl.valueChanges
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe((file) => this.onCharacterFile(file));
 	}
 
 	private applyNotify(settings: NotifySettings): void {

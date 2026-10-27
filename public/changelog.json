@@ -1,5 +1,19 @@
 [
   {
+    "version": "0.6.30-pre-alpha",
+    "date": "2026-10-27",
+    "sections": [
+      {
+        "title": "Изменено",
+        "items": [
+          {
+            "text": "Загрузка фона и своего персонажа переведена на Taiga UI file input."
+          }
+        ]
+      }
+    ]
+  },
+  {
     "version": "0.6.29-pre-alpha",
     "date": "2026-10-27",
     "sections": [

@@ -297,3 +297,8 @@ html[data-tauri] .settings-nav {
 	background: var(--accent-primary);
 	transition: width 180ms ease;
 }
+
+.background-file {
+	display: inline-flex;
+	min-width: 120px;
+}
