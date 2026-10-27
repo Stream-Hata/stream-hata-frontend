@@ -7,6 +7,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HotbarStore } from '@app/stores/hotbar.store';
 import { signalControl } from '@shared/helpers/form-control';
 import { AlertsService } from '@shared/services/alerts.service';
+import { I18nService } from '@shared/services/i18n.service';
 import { WidgetConfigService } from '@shared/services/widgets.service';
 import {
 	TuiButton,
@@ -75,6 +76,7 @@ export default class WidgetConfigPage {
 	private readonly injector = inject(Injector);
 	private readonly widgetConfig = inject(WidgetConfigService);
 	private readonly store = inject(HotbarStore);
+	readonly i18n = inject(I18nService);
 	readonly genericKinds = ['audio', 'wheel', 'chat', 'points', 'music', 'nowplaying', 'streaks'];
 	readonly isGeneric = computed(() => this.genericKinds.includes(this.kind()));
 	readonly genericConfig = signal<WidgetConfig>({});
@@ -90,6 +92,7 @@ export default class WidgetConfigPage {
 		showEmotes: new FormControl(true, { nonNullable: true }),
 		showTimestamps: new FormControl(true, { nonNullable: true }),
 		chatAnimation: new FormControl(true, { nonNullable: true }),
+		chatOnlyOriginal: new FormControl(false, { nonNullable: true }),
 		streakMin: new FormControl(2, { nonNullable: true }),
 		streakEvery: new FormControl(5, { nonNullable: true }),
 		durationSeconds: new FormControl(10, { nonNullable: true }),
@@ -133,7 +136,10 @@ export default class WidgetConfigPage {
 				next: (response) => {
 					this.genericConfig.set(response.config);
 					this.hotbarConfig.set(response.config);
-					this.genericForm.patchValue(response.config, { emitEvent: false });
+					this.genericForm.patchValue(
+						{ ...response.config, chatOnlyOriginal: response.config.chatChannelMode === 'original' },
+						{ emitEvent: false },
+					);
 					this.applyJurySettings(response.config);
 					this.applyTimerSettings(response.config);
 				},
@@ -637,6 +643,12 @@ export default class WidgetConfigPage {
 							timerVerticalAlign: this.timerVerticalAlign(),
 						}
 					: { ...this.genericConfig(), ...this.genericForm.getRawValue() };
+
+		if (this.kind() === 'chat') {
+			Object.assign(config, {
+				chatChannelMode: this.genericForm.controls.chatOnlyOriginal.value ? 'original' : 'all',
+			});
+		}
 
 		if (this.kind() === 'jury') {
 			Object.assign(config, {

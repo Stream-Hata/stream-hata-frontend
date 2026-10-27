@@ -41,11 +41,12 @@ export class ChatOverlay {
 		{ initialValue: { config: {} as WidgetConfig } },
 	);
 	readonly animated = computed(() => this.config().config.chatAnimation !== false);
+	readonly channelMode = computed(() => this.config().config.chatChannelMode === 'original' ? 'original' : 'all');
 
 	private readonly messages = toSignal(
 		timer(0, 2000).pipe(
 			switchMap(() =>
-				this.service.recent(50).pipe(
+				this.service.recent(50, this.channelMode()).pipe(
 					map((response) => response.messages),
 					catchError(() => of(null)),
 				),

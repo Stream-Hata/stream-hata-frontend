@@ -146,10 +146,18 @@
                                 tuiSwitch
                               ></div>
                             <div class="cfg-row">
-                              <span class="cfg-label">Анимация сообщений</span>
+                              <span class="cfg-label">{{ i18n.t('chat.onlyOriginal') }}</span>
                               <input
                                 type="checkbox"
-                                aria-label="Анимация сообщений"
+                                [attr.aria-label]="i18n.t('chat.onlyOriginal')"
+                                [formControl]="genericForm.controls.chatOnlyOriginal"
+                                tuiSwitch
+                              ></div>
+                            <div class="cfg-row">
+                              <span class="cfg-label">{{ i18n.t('chat.animation') }}</span>
+                              <input
+                                type="checkbox"
+                                [attr.aria-label]="i18n.t('chat.animation')"
                                 [formControl]="genericForm.controls.chatAnimation"
                                 tuiSwitch
                               ></div>

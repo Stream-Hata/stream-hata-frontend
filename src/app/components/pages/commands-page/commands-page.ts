@@ -3,6 +3,7 @@ import { Component, computed, DestroyRef, effect, inject, Injector, signal } fro
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommandsService } from '@shared/services/commands.service';
+import { I18nService } from '@shared/services/i18n.service';
 import { signalControl } from '@shared/helpers/form-control';
 import { TriggersService } from '@shared/services/ops.services';
 import {
@@ -89,6 +90,7 @@ const LEVEL_LABELS: Record<string, string> = {
 })
 export default class CommandsPage {
 	private readonly service = inject(CommandsService);
+	readonly i18n = inject(I18nService);
 	private readonly triggersService = inject(TriggersService);
 	private readonly destroyRef = inject(DestroyRef);
 	private readonly injector = inject(Injector);

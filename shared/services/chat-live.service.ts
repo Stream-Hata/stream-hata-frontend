@@ -6,8 +6,10 @@ import { inject, Injectable } from '@angular/core';
 export class ChatLiveService {
 	private readonly http = inject(HttpClient);
 
-	recent(limit = 100) {
-		return this.http.get<{ messages: LiveChatMessage[] }>(`rgg-sync/chat/recent?limit=${limit}`);
+	recent(limit = 100, mode: 'all' | 'original' = 'all') {
+		return this.http.get<{ messages: LiveChatMessage[] }>(
+			`rgg-sync/chat/recent?limit=${limit}&mode=${mode}`,
+		);
 	}
 
 	emotes() {
