@@ -49,6 +49,7 @@ export default class DesktopAuthPage {
 		}
 
 		this.status.set('Передаём приложению…');
+		this.http.post('rgg-sync/twitch/reconnect', {}).subscribe({ error: () => undefined });
 		this.http.post<{ code: string }>('rgg-sync/desktop/code', {}).subscribe({
 			next: ({ code }) => {
 				const target = this.port

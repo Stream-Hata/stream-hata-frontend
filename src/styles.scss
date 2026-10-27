@@ -874,3 +874,26 @@ html.has-app-background .page {
 	background: color-mix(in hsl, var(--surface-base) 30%, transparent);
 	backdrop-filter: blur(2px);
 }
+
+/* Accent for Taiga popups, dropdown options and hints (portals live outside tui-root) */
+[tuiOption],
+[data-tui-option],
+.tui-option,
+tui-data-list button,
+tui-data-list a,
+tui-data-list label {
+	color: var(--accent-primary) !important;
+}
+
+tui-hint,
+tui-hint * {
+	color: var(--accent-primary) !important;
+}
+
+tui-data-list button:hover,
+tui-data-list a:hover,
+tui-data-list label:hover,
+[tuiOption]:hover,
+[data-tui-option]:hover {
+	background: color-mix(in srgb, var(--accent-primary) 14%, transparent) !important;
+}

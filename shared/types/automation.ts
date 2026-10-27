@@ -4,6 +4,7 @@ export interface ChatCommand {
 	aliases: string[];
 	action: string;
 	response: string;
+	reply?: string;
 	cooldownSeconds: number;
 	userLevel: string;
 	enabled: boolean;

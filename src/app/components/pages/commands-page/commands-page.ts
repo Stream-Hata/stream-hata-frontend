@@ -129,6 +129,7 @@ export default class CommandsPage {
 	readonly editingId = signal<string | null>(null);
 	readonly name = signal('');
 	readonly response = signal('');
+	readonly reply = signal('');
 	readonly aliases = signal('');
 	readonly cooldown = signal(5);
 	readonly action = signal('say');
@@ -426,6 +427,7 @@ export default class CommandsPage {
 		this.editingId.set(null);
 		this.name.set('');
 		this.response.set('');
+		this.reply.set('');
 		this.action.set('say');
 		this.aliases.set('');
 		this.cooldown.set(5);
@@ -440,6 +442,7 @@ export default class CommandsPage {
 		this.editingId.set(command.id);
 		this.name.set(command.name);
 		this.response.set(command.response);
+		this.reply.set(command.reply ?? '');
 		this.aliases.set(command.aliases.join(', '));
 		this.cooldown.set(command.cooldownSeconds);
 		this.level.set(command.userLevel);
@@ -456,6 +459,7 @@ export default class CommandsPage {
 			name: this.name().trim(),
 			action: this.action(),
 			response: this.response().trim(),
+			reply: this.reply().trim(),
 			aliases: this.aliases()
 				.split(',')
 				.map((item) => item.trim())
