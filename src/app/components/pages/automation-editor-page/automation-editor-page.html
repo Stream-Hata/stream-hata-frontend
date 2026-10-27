@@ -14,7 +14,7 @@
     <span class="jk-label">Тип</span>
     <tui-textfield tuiChevron>
       <input [readonly]="true" [value]="types[typeIndex()].label" tuiInput tuiSelectLike />
-      <tui-data-list-wrapper *tuiDropdown [items]="types.map(t => t.label)" (itemClick)="setType(types.map(t => t.label).indexOf($event))"></tui-data-list-wrapper>
+      <tui-data-list-wrapper *tuiDropdown [itemContent]="accentOption" [items]="types.map(t => t.label)" (itemClick)="setType(types.map(t => t.label).indexOf($event))"></tui-data-list-wrapper>
     </tui-textfield>
 
     @if (type() === 'command') {
@@ -23,7 +23,7 @@
       <span class="jk-label">Действие</span>
       <tui-textfield tuiChevron>
         <input [readonly]="true" [value]="actionLabels[actions.indexOf(commandAction())]" tuiInput tuiSelectLike />
-        <tui-data-list-wrapper *tuiDropdown [items]="actionLabels" (itemClick)="setCommandAction($event)"></tui-data-list-wrapper>
+        <tui-data-list-wrapper *tuiDropdown [itemContent]="accentOption" [items]="actionLabels" (itemClick)="setCommandAction($event)"></tui-data-list-wrapper>
       </tui-textfield>
       <span class="jk-label">Значение действия</span>
       <tui-textfield><textarea tuiTextarea rows="2" [value]="commandValue()" (input)="commandValue.set($any($event.target).value)"></textarea></tui-textfield>
@@ -33,7 +33,7 @@
       <tui-textfield><input tuiInput [value]="commandAliases()" (input)="commandAliases.set($any($event.target).value)" /></tui-textfield>
       <div class="row">
         <div><span class="jk-label">Кулдаун, сек</span><tui-textfield><input tuiInput type="number" [value]="commandCooldown()" (input)="commandCooldown.set(+$any($event.target).value)" /></tui-textfield></div>
-        <div><span class="jk-label">Доступ</span><tui-textfield tuiChevron><input [readonly]="true" [value]="levelLabels[levels.indexOf(commandLevel())]" tuiInput tuiSelectLike /><tui-data-list-wrapper *tuiDropdown [items]="levelLabels" (itemClick)="setCommandLevel($event)"></tui-data-list-wrapper></tui-textfield></div>
+        <div><span class="jk-label">Доступ</span><tui-textfield tuiChevron><input [readonly]="true" [value]="levelLabels[levels.indexOf(commandLevel())]" tuiInput tuiSelectLike /><tui-data-list-wrapper *tuiDropdown [itemContent]="accentOption" [items]="levelLabels" (itemClick)="setCommandLevel($event)"></tui-data-list-wrapper></tui-textfield></div>
       </div>
       <label class="switch"><input type="checkbox" tuiSwitch [checked]="commandEnabled()" (change)="commandEnabled.set($any($event.target).checked)" /> Включена</label>
     }
@@ -42,7 +42,7 @@
       <span class="jk-label">Действие</span>
       <tui-textfield tuiChevron>
         <input [readonly]="true" [value]="triggerAction()" tuiInput tuiSelectLike />
-        <tui-data-list-wrapper *tuiDropdown [items]="triggerActions" (itemClick)="setTriggerAction($event)"></tui-data-list-wrapper>
+        <tui-data-list-wrapper *tuiDropdown [itemContent]="accentOption" [items]="triggerActions" (itemClick)="setTriggerAction($event)"></tui-data-list-wrapper>
       </tui-textfield>
       <span class="jk-label">Команда</span>
       <tui-textfield><input tuiInput [value]="triggerCommand()" (input)="triggerCommand.set($any($event.target).value)" /></tui-textfield>
@@ -63,3 +63,7 @@
     @if (error()) { <p class="error-text">{{ error() }}</p> }
   </section>
 </div>
+
+<ng-template #accentOption let-item>
+  <span style="color: var(--accent-primary)">{{ item }}</span>
+</ng-template>

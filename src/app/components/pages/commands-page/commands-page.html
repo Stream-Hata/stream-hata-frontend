@@ -219,6 +219,7 @@
             />
             <tui-data-list-wrapper
               *tuiDropdown
+              [itemContent]="accentOption"
               [items]="rewardActionLabels"
               (itemClick)="setRewardActionLabel($event)"
             ></tui-data-list-wrapper>
@@ -235,6 +236,7 @@
               />
               <tui-data-list-wrapper
                 *tuiDropdown
+                [itemContent]="accentOption"
                 [items]="commandLabels()"
                 (itemClick)="setRewardCommandLabel($event)"
               ></tui-data-list-wrapper>
@@ -309,6 +311,7 @@
               />
               <tui-data-list-wrapper
                 *tuiDropdown
+                [itemContent]="accentOption"
                 [items]="triggerActionLabels"
                 (itemClick)="setTriggerActionLabel($event)"
               ></tui-data-list-wrapper>
@@ -394,3 +397,7 @@
         </section>
       }
     </div>
+
+<ng-template #accentOption let-item>
+  <span style="color: var(--accent-primary)">{{ item }}</span>
+</ng-template>
