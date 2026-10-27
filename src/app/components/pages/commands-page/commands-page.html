@@ -214,6 +214,7 @@
               aria-label="Действие награды"
               [readonly]="true"
               [value]="rewardActionLabels[rewardActionValues.indexOf(rewardAction())]"
+              [style.color]="accent()"
               tuiInput
               tuiSelectLike
             />
@@ -231,6 +232,7 @@
                 aria-label="Команда награды"
                 [readonly]="true"
                 [value]="rewardCommandLabel()"
+                [style.color]="accent()"
                 tuiInput
                 tuiSelectLike
               />
@@ -306,6 +308,7 @@
                 aria-label="Действие триггера"
                 [readonly]="true"
                 [value]="triggerActionLabels[triggerActionValues.indexOf(triggerActionControl.value)]"
+                [style.color]="accent()"
                 tuiInput
                 tuiSelectLike
               />
@@ -399,5 +402,5 @@
     </div>
 
 <ng-template #accentOption let-item>
-  <span style="color: var(--accent-primary)">{{ item }}</span>
+  <span [style.color]="accent()">{{ item }}</span>
 </ng-template>

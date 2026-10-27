@@ -4,6 +4,7 @@ import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-i
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommandsService } from '@shared/services/commands.service';
 import { I18nService } from '@shared/services/i18n.service';
+import { AppSettingsService } from '@shared/services/app-settings.service';
 import { RouterLink } from '@angular/router';
 import { signalControl } from '@shared/helpers/form-control';
 import { TriggersService } from '@shared/services/ops.services';
@@ -94,6 +95,7 @@ const LEVEL_LABELS: Record<string, string> = {
 export default class CommandsPage {
 	private readonly service = inject(CommandsService);
 	readonly i18n = inject(I18nService);
+	readonly accent = inject(AppSettingsService).accent;
 	private readonly triggersService = inject(TriggersService);
 	private readonly destroyRef = inject(DestroyRef);
 	private readonly injector = inject(Injector);

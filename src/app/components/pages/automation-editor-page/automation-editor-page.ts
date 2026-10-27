@@ -3,6 +3,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommandsService } from '@shared/services/commands.service';
 import { TriggersService } from '@shared/services/ops.services';
+import { AppSettingsService } from '@shared/services/app-settings.service';
 import { TuiButton, TuiDropdown, TuiInput, TuiSelectLike, TuiTextfield } from '@taiga-ui/core';
 import { TuiChevron, TuiDataListWrapper, TuiSwitch, TuiTextarea } from '@taiga-ui/kit';
 import { catchError, firstValueFrom, of } from 'rxjs';
@@ -34,6 +35,7 @@ const TRIGGER_ACTIONS = [
 export default class AutomationEditorPage {
 	private readonly commands = inject(CommandsService);
 	private readonly triggers = inject(TriggersService);
+	readonly accent = inject(AppSettingsService).accent;
 	private readonly router = inject(Router);
 	private readonly id = new URLSearchParams(location.search).get('id');
 
