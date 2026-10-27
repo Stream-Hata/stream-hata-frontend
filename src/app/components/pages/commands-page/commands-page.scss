@@ -202,3 +202,11 @@
 .automation-grid.single-column {
 	grid-template-columns: minmax(0, 1fr);
 }
+
+.blue-switch:checked {
+	background: #3b82f6 !important;
+}
+
+.blue-switch:checked:before {
+	color: #fff !important;
+}
