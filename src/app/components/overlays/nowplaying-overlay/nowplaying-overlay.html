@@ -37,7 +37,9 @@
         </button>
       </div>
     } @else {
-      <span class="jk-caption nowplaying-empty">Трек-лист пуст</span>
+      <span class="jk-caption nowplaying-empty">
+        {{ finished() ? 'Очередь закончилась' : 'Трек-лист пуст' }}
+      </span>
     }
   </article>
 </div>

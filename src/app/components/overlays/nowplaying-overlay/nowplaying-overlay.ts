@@ -43,6 +43,7 @@ export class NowPlayingOverlay {
 	);
 	readonly currentId = signal<string | null>(null);
 	readonly reloadKey = signal(0);
+	readonly finished = signal(false);
 	readonly current = computed<Track | null>(
 		() => this.playlist().find((track) => track.videoId === this.currentId()) ?? null,
 	);
@@ -75,16 +76,19 @@ export class NowPlayingOverlay {
 			if (!ids.length) {
 				this.queue = [];
 				this.currentId.set(null);
+				this.finished.set(false);
 
 				return;
 			}
+
+			let added: string[] = [];
 
 			if (!this.queue.length) {
 				this.queue = [...ids];
 			} else {
 				const current = this.currentId();
 				const existing = this.queue.filter((id) => ids.includes(id));
-				const added = ids.filter((id) => !this.queue.includes(id));
+				added = ids.filter((id) => !this.queue.includes(id));
 				const index = current ? existing.indexOf(current) : -1;
 
 				if (added.length) {
@@ -95,7 +99,10 @@ export class NowPlayingOverlay {
 			}
 
 			if (!this.currentId() || !this.queue.includes(this.currentId() ?? '')) {
-				this.currentId.set(this.queue[this.queue.length - 1]);
+				if (!this.finished() || added.length) {
+					this.finished.set(false);
+					this.currentId.set(this.queue[this.queue.length - 1]);
+				}
 			}
 		});
 
@@ -107,6 +114,10 @@ export class NowPlayingOverlay {
 			this.needsGesture.set(false);
 			this.clearEndTimer();
 			this.clearGestureTimer();
+
+			if (!this.currentId()) {
+				return;
+			}
 
 			const duration = untracked(() => this.current()?.durationSeconds ?? 0);
 			this.scheduleEnd(duration);
@@ -183,8 +194,20 @@ export class NowPlayingOverlay {
 
 		this.advancing = true;
 		const index = this.queue.indexOf(this.currentId() ?? '');
-		const next = this.queue[(index + 1) % this.queue.length];
+		const next = index >= 0 ? this.queue[index + 1] : undefined;
 
+		if (!next) {
+			this.finished.set(true);
+			this.currentId.set(null);
+			this.clearEndTimer();
+			setTimeout(() => {
+				this.advancing = false;
+			}, 1000);
+
+			return;
+		}
+
+		this.finished.set(false);
 		this.reloadKey.update((value) => value + 1);
 		this.currentId.set(next);
 		setTimeout(() => {

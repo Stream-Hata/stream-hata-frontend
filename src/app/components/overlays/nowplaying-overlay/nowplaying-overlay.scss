@@ -10,6 +10,8 @@
 	display: flex;
 	gap: 8px;
 	flex-direction: column;
+	align-items: center;
+	justify-content: center;
 	width: 100vw;
 	height: 100vh;
 	padding: 14px;
@@ -28,8 +30,10 @@
 .nowplaying-card {
 	position: relative;
 	overflow: hidden;
-	flex: 1 1 auto;
-	min-height: 0;
+	width: min(400px, 100%);
+	max-width: 400px;
+	max-height: 400px;
+	aspect-ratio: 16 / 9;
 	border: 1px solid rgb(255 255 255 / 12%);
 	border-radius: 18px;
 	background: rgb(18 18 24 / 92%);
@@ -83,7 +87,7 @@
 }
 
 .nowplaying-title {
-	font: 700 20px/26px var(--font-ui);
+	font: 700 16px/21px var(--font-ui);
 	text-shadow: 0 2px 12px rgb(0 0 0 / 80%);
 }
 
