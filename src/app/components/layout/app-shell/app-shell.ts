@@ -8,6 +8,7 @@ import { AlertsService } from '@shared/services/alerts.service';
 import { AppSettingsService } from '@shared/services/app-settings.service';
 import { I18nService } from '@shared/services/i18n.service';
 import { OnboardingService } from '@shared/services/onboarding.service';
+import { IdleCat } from '../../ui/idle-cat/idle-cat';
 import { TwitchService } from '@shared/services/twitch.service';
 import { GamesCatalogService } from '@shared/services/games-catalog.service';
 import { ProfileDataService } from '@shared/services/profile-data.service';
@@ -125,6 +126,7 @@ const WIDGET_ITEMS = [
 		Logo,
 		UpdateNotice,
 		DesktopUpdateNotice,
+		IdleCat,
 		AppSearch,
 	],
 	selector: 'app-app-shell',
@@ -244,6 +246,7 @@ export default class AppShell {
 	readonly catVisible = signal(false);
 	readonly catTalking = signal(false);
 	readonly catStage = signal(0);
+	private readonly catDelays = [30 * 60_000, 60 * 60_000, 120 * 60_000];
 	readonly catPhrase = computed(() => {
 		const phrases = [
 			'Мяу. Ты уже полчаса ничего не делаешь, а стрим не запущен. Может, начнём?',
@@ -261,15 +264,22 @@ export default class AppShell {
 	private loginEventShown = false;
 
 	setupIdleCat(): void {
-		const reset = (): void => {
+		const reset = (event?: Event): void => {
+			const target = event?.target;
+
+			if (target instanceof Element && target.closest('.idle-cat')) {
+				return;
+			}
+
 			this.catVisible.set(false);
 			this.catTalking.set(false);
+			this.setCatTray(false);
 			window.speechSynthesis?.cancel();
 			this.scheduleCat();
 		};
 
 		for (const event of ['mousemove', 'keydown', 'click', 'scroll', 'touchstart']) {
-			document.addEventListener(event, reset, { passive: true });
+			document.addEventListener(event, (domEvent: Event) => reset(domEvent), { passive: true });
 		}
 
 		this.scheduleCat();
@@ -284,6 +294,9 @@ export default class AppShell {
 			return;
 		}
 
+		const stage = Math.min(3, this.catStage() + 1);
+		const delay = this.catDelays[Math.min(2, stage - 1)] ?? this.catDelays[2];
+
 		this.catTimer = setTimeout(() => {
 			if (this.streamOnline()) {
 				this.scheduleCat();
@@ -291,13 +304,13 @@ export default class AppShell {
 				return;
 			}
 
-			this.catCount = Math.min(3, this.catCount + 1);
-			this.catStage.set(this.catCount);
+			this.catCount = stage;
+			this.catStage.set(stage);
 			this.catVisible.set(true);
 			this.setCatTray(true);
-			this.notifyCat(this.catCount);
+			this.notifyCat(stage);
 			this.speakCat(this.catPhrase());
-		}, 30 * 60_000);
+		}, delay);
 	}
 
 	private listenCatSummon(): void {

@@ -622,16 +622,12 @@
 }
 
 .idle-cat-emoji {
-	font-size: 54px;
-	line-height: 1;
-	filter: drop-shadow(0 10px 18px rgb(0 0 0 / 35%));
-	animation: cat-bob 1.6s ease-in-out infinite;
+	width: 94px;
+	height: 78px;
 }
 
 .idle-cat-talking .idle-cat-emoji {
-	animation:
-		cat-bob 0.7s ease-in-out infinite,
-		cat-talk 0.28s ease-in-out infinite alternate;
+	animation: cat-talk 0.35s ease-in-out infinite alternate;
 }
 
 .idle-cat-talking .idle-cat-speech {
@@ -640,10 +636,10 @@
 
 @keyframes cat-talk {
 	from {
-		transform: scale(1) rotate(-2deg);
+		transform: translateY(0) rotate(-1deg);
 	}
 	to {
-		transform: scale(1.08) rotate(2deg);
+		transform: translateY(-2px) rotate(1deg);
 	}
 }
 

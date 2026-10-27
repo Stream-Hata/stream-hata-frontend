@@ -236,7 +236,7 @@
           <button type="button" (click)="hideCat()">Позже</button>
         </div>
       </div>
-      <span class="idle-cat-emoji" aria-hidden="true">🐈</span>
+      <app-idle-cat class="idle-cat-emoji" [stage]="catStage()" [talking]="catTalking()" />
     </aside>
   }
 
