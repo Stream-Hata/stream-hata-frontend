@@ -94,7 +94,11 @@ export class NowPlayingOverlay {
 				const index = current ? existing.indexOf(current) : -1;
 
 				if (added.length) {
-					existing.splice(index + 1, 0, ...added);
+					if (index >= 0) {
+						existing.splice(index + 1, 0, ...added);
+					} else {
+						existing.push(...added);
+					}
 				}
 
 				this.queue = existing;
@@ -103,7 +107,7 @@ export class NowPlayingOverlay {
 			if (!this.currentId() || !this.queue.includes(this.currentId() ?? '')) {
 				if (!this.finished() || added.length) {
 					this.finished.set(false);
-					this.currentId.set(this.queue[this.queue.length - 1]);
+					this.currentId.set(added.length ? added[added.length - 1] : this.queue[this.queue.length - 1]);
 				}
 			}
 		});
