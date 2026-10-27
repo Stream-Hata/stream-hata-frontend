@@ -29,6 +29,7 @@
 	font: 500 14px/20px var(--font-ui);
 	overflow-wrap: anywhere;
 	animation: chat-line-in 180ms cubic-bezier(0.2, 0.8, 0.3, 1) both;
+	animation-duration: var(--chat-animation-duration, 180ms);
 }
 
 @keyframes chat-line-in {
@@ -79,4 +80,8 @@
 	height: 22px;
 	background-size: contain;
 	margin-block: -3px;
+}
+
+.chat-card.no-animation .chat-line {
+	animation: none;
 }

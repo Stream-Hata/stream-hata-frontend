@@ -145,6 +145,14 @@
                                 [formControl]="genericForm.controls.showTimestamps"
                                 tuiSwitch
                               ></div>
+                            <div class="cfg-row">
+                              <span class="cfg-label">Анимация сообщений</span>
+                              <input
+                                type="checkbox"
+                                aria-label="Анимация сообщений"
+                                [formControl]="genericForm.controls.chatAnimation"
+                                tuiSwitch
+                              ></div>
                             }
 
                             @if (kind() === 'streaks') {

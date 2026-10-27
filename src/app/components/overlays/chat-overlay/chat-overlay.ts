@@ -4,6 +4,7 @@ import { TuiIcon } from '@taiga-ui/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { buildChatSegments } from '@shared/helpers/chat-emotes';
 import { ChatLiveService } from '@shared/services/chat-live.service';
+import { WidgetConfigService, type WidgetConfig } from '@shared/services/widgets.service';
 import { catchError, map, of, switchMap, timer } from 'rxjs';
 
 const BADGE_IMAGES: Record<string, string> = {
@@ -34,6 +35,12 @@ const BADGE_LABELS: Record<string, string> = {
 })
 export class ChatOverlay {
 	private readonly service = inject(ChatLiveService);
+	private readonly configService = inject(WidgetConfigService);
+	readonly config = toSignal(
+		this.configService.watch('chat').pipe(catchError(() => of({ config: {} as WidgetConfig }))),
+		{ initialValue: { config: {} as WidgetConfig } },
+	);
+	readonly animated = computed(() => this.config().config.chatAnimation !== false);
 
 	private readonly messages = toSignal(
 		timer(0, 2000).pipe(

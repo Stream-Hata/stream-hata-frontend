@@ -224,7 +224,7 @@ export class NowPlayingOverlay {
 	}
 
 	nextTrack(force = false): void {
-		if (!this.queue.length || (this.advancing && !force)) {
+		if (!this.queue.length || !this.currentId() || (this.advancing && !force)) {
 			return;
 		}
 

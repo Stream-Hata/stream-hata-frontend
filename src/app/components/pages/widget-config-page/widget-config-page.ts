@@ -89,6 +89,7 @@ export default class WidgetConfigPage {
 		maxRows: new FormControl(5, { nonNullable: true }),
 		showEmotes: new FormControl(true, { nonNullable: true }),
 		showTimestamps: new FormControl(true, { nonNullable: true }),
+		chatAnimation: new FormControl(true, { nonNullable: true }),
 		streakMin: new FormControl(2, { nonNullable: true }),
 		streakEvery: new FormControl(5, { nonNullable: true }),
 		durationSeconds: new FormControl(10, { nonNullable: true }),

@@ -27,6 +27,7 @@ export interface WidgetConfig {
 	durationSeconds?: number;
 	showEmotes?: boolean;
 	showTimestamps?: boolean;
+	chatAnimation?: boolean;
 	streakMin?: number;
 	streakEvery?: number;
 	transparent?: boolean;

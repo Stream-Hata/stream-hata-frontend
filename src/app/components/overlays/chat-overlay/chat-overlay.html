@@ -1,5 +1,5 @@
 <div class="overlay-stage">
-  <article class="chat-card">
+  <article class="chat-card" [class.no-animation]="!animated()">
     @for (row of rows(); track row.id) {
       <div class="chat-line">
         <span class="chat-badges">
