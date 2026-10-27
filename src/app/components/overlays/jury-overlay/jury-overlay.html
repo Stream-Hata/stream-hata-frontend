@@ -14,12 +14,22 @@
 
         <div class="jury-votes">
           <div class="vote-row vote-yea">
-            <span>За</span>
-            <strong>{{ yea() }}</strong>
+            <div class="vote-line">
+              <span>За</span>
+              <strong>{{ yea() }}</strong>
+            </div>
+            <span class="vote-bar">
+              <span [style.width.%]="yeaPercent()"></span>
+            </span>
           </div>
           <div class="vote-row vote-nei">
-            <span>Против</span>
-            <strong>{{ nei() }}</strong>
+            <div class="vote-line">
+              <span>Против</span>
+              <strong>{{ nei() }}</strong>
+            </div>
+            <span class="vote-bar">
+              <span [style.width.%]="neiPercent()"></span>
+            </span>
           </div>
           <span class="jury-total">Всего голосов: {{ total() }}</span>
         </div>

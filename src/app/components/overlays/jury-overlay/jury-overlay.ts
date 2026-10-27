@@ -27,6 +27,8 @@ export class JuryOverlay {
 	readonly yea = computed(() => this.current()?.votes.yea ?? 0);
 	readonly nei = computed(() => this.current()?.votes.nei ?? 0);
 	readonly total = computed(() => this.current()?.total ?? 0);
+	readonly yeaPercent = computed(() => this.total() ? (this.yea() / this.total()) * 100 : 0);
+	readonly neiPercent = computed(() => this.total() ? (this.nei() / this.total()) * 100 : 0);
 	readonly question = computed(() => this.current()?.message.text ?? '');
 	readonly author = computed(() => this.current()?.message.author.display_name ?? '');
 	readonly verdict = computed(() => this.current()?.verdict ?? '');

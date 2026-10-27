@@ -66,10 +66,42 @@
 }
 
 .vote-row {
+	display: flex;
+	gap: 6px;
+	flex-direction: column;
 	padding: 8px 12px;
 	border-radius: 12px;
 	background: rgb(255, 255, 255, 0.06);
 	font: 600 14px/20px var(--font-ui);
+}
+
+.vote-line {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.vote-bar {
+	display: block;
+	overflow: hidden;
+	height: 5px;
+	border-radius: 999px;
+	background: rgb(255, 255, 255, 0.1);
+}
+
+.vote-bar span {
+	display: block;
+	height: 100%;
+	border-radius: inherit;
+	transition: width 300ms ease;
+}
+
+.vote-yea .vote-bar span {
+	background: var(--status-positive);
+}
+
+.vote-nei .vote-bar span {
+	background: var(--status-negative);
 }
 
 .vote-yea strong {
