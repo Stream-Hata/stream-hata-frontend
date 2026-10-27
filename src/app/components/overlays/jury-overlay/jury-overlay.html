@@ -22,8 +22,7 @@
         <div class="jury-votes">
           <div class="vote-row vote-yea">
             <div class="vote-line">
-              <span>За</span>
-              <strong>{{ yea() }}</strong>
+              <strong aria-label="Голоса за">{{ yea() }}</strong>
             </div>
             @if (showProgress()) {
               <span class="vote-bar">
@@ -33,8 +32,7 @@
           </div>
           <div class="vote-row vote-nei">
             <div class="vote-line">
-              <span>Против</span>
-              <strong>{{ nei() }}</strong>
+              <strong aria-label="Голоса против">{{ nei() }}</strong>
             </div>
             @if (showProgress()) {
               <span class="vote-bar">
