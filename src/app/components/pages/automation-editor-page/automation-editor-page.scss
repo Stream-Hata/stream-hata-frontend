@@ -45,3 +45,20 @@
 	cursor: pointer;
 	inset: 0;
 }
+
+html .switch-hit input[tuiSwitch],
+html[data-tauri] .switch-hit input[tuiSwitch] {
+	pointer-events: none !important;
+}
+
+.switch-hit {
+	position: relative;
+	display: inline-flex;
+}
+
+.switch-hit-area {
+	position: absolute;
+	z-index: 10;
+	cursor: pointer;
+	inset: 0;
+}

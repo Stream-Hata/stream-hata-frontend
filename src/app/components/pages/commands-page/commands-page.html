@@ -89,10 +89,10 @@
                     </td>
                     <td tuiTd>
                       <div class="switch-hit">
-                        <label class="toggle-switch" [class.on]="commandEnabled(command)">
-                          <input type="checkbox" [checked]="commandEnabled(command)" (change)="toggleCommand(command)" />
-                          <span></span>
-                        </label>
+                        <div class="switch-hit">
+                          <input type="checkbox" class="blue-switch" [checked]="commandEnabled(command)" tuiSwitch />
+                          <span class="switch-hit-area" (click)="toggleCommand(command); $event.preventDefault()"></span>
+                        </div>
                       </div>
                       </td>
                       <td tuiTd class="col-actions">
@@ -135,10 +135,10 @@
                       <td tuiTd>{{ trigger.enabled ? 'Да' : 'Нет' }}</td>
                       <td tuiTd>
                         <div class="switch-hit">
-                          <label class="toggle-switch" [class.on]="trigger.enabled">
-                            <input type="checkbox" [checked]="trigger.enabled" (change)="toggleTrigger(index)" />
-                            <span></span>
-                          </label>
+                          <div class="switch-hit">
+                            <input type="checkbox" class="blue-switch" [checked]="trigger.enabled" tuiSwitch />
+                            <span class="switch-hit-area" (click)="toggleTrigger(index); $event.preventDefault()"></span>
+                          </div>
                         </div>
                       </td>
                       <td tuiTd class="col-actions">
@@ -247,10 +247,10 @@
           }
           <div class="editor-switch">
             <span class="jk-label">Включена</span>
-            <label class="toggle-switch" [class.on]="rewardEnabled()">
-              <input type="checkbox" [checked]="rewardEnabled()" (change)="rewardEnabled.set(!rewardEnabled())" />
-              <span></span>
-            </label>
+            <div class="switch-hit">
+              <input type="checkbox" class="blue-switch" [checked]="rewardEnabled()" tuiSwitch />
+              <span class="switch-hit-area" (click)="rewardEnabled.set(!rewardEnabled()); $event.preventDefault()"></span>
+            </div>
           </div>
           @if (error(); as message) { <p class="error-text">{{ message }}</p> }
           <div class="editor-actions">
@@ -370,10 +370,10 @@
                       /></tui-textfield>
                   </td>
                   <td tuiTd>
-                    <label class="toggle-switch" [class.on]="trigger.enabled">
-                      <input type="checkbox" [checked]="trigger.enabled" (change)="toggleTrigger(index)" />
-                      <span></span>
-                    </label>
+                    <div class="switch-hit">
+                      <input type="checkbox" class="blue-switch" [checked]="trigger.enabled" tuiSwitch />
+                      <span class="switch-hit-area" (click)="toggleTrigger(index); $event.preventDefault()"></span>
+                    </div>
                     </td>
                     <td tuiTd class="col-actions">
                       <button

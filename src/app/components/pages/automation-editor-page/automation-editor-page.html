@@ -38,7 +38,7 @@
         <div><span class="jk-label">Доступ</span><tui-textfield tuiChevron><input [readonly]="true" [value]="levelLabels[levels.indexOf(commandLevel())]"
         [style.color]="accent()" tuiInput tuiSelectLike /><tui-data-list-wrapper *tuiDropdown [itemContent]="accentOption" [items]="levelLabels" (itemClick)="setCommandLevel($event)"></tui-data-list-wrapper></tui-textfield></div>
       </div>
-      <label class="switch"><span class="toggle-switch" [class.on]="commandEnabled()"><input type="checkbox" [checked]="commandEnabled()" (change)="commandEnabled.set(!commandEnabled())" /><span></span></span> Включена</label>
+      <div class="switch"><span class="switch-hit"><input type="checkbox" class="blue-switch" [checked]="commandEnabled()" tuiSwitch /><span class="switch-hit-area" (click)="commandEnabled.set(!commandEnabled()); $event.preventDefault()"></span></span> Включена</div>
     }
 
     @if (type() === 'trigger') {
@@ -52,7 +52,7 @@
       <tui-textfield><input tuiInput [value]="triggerCommand()" (input)="triggerCommand.set($any($event.target).value)" /></tui-textfield>
       <span class="jk-label">Алиасы</span>
       <tui-textfield><input tuiInput [value]="triggerAliases()" (input)="triggerAliases.set($any($event.target).value)" /></tui-textfield>
-      <label class="switch"><span class="toggle-switch" [class.on]="triggerEnabled()"><input type="checkbox" [checked]="triggerEnabled()" (change)="triggerEnabled.set(!triggerEnabled())" /><span></span></span> Включён</label>
+      <div class="switch"><span class="switch-hit"><input type="checkbox" class="blue-switch" [checked]="triggerEnabled()" tuiSwitch /><span class="switch-hit-area" (click)="triggerEnabled.set(!triggerEnabled()); $event.preventDefault()"></span></span> Включён</div>
     }
 
     @if (type() === 'variable') {
