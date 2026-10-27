@@ -56,7 +56,7 @@
   </header>
 
   @if (tab() === 'commands') {
-    <div class="automation-grid">
+    <div class="automation-grid single-column">
       <section class="automation-main">
         <h2 class="jk-h4">Команды</h2>
 
@@ -131,6 +131,23 @@
                       </td>
                     </tr>
                   }
+                  @for (trigger of triggerDraft(); track trigger.action; let index = $index) {
+                    <tr>
+                      <td tuiTd class="name-cell">{{ trigger.command }}</td>
+                      <td tuiTd>{{ trigger.description }}</td>
+                      <td tuiTd class="response-cell">{{ trigger.aliases.join(', ') }}</td>
+                      <td tuiTd>{{ trigger.enabled ? 'Да' : 'Нет' }}</td>
+                      <td tuiTd>
+                        <div class="switch-hit">
+                          <input type="checkbox" class="blue-switch" [checked]="trigger.enabled" tuiSwitch />
+                          <span class="switch-hit-area" (click)="toggleTrigger(index); $event.preventDefault()"></span>
+                        </div>
+                      </td>
+                      <td tuiTd class="col-actions">
+                        <button size="s" type="button" aria-label="Настроить" (click)="openTriggers()" appearance="flat" iconStart="@tui.pencil" tuiIconButton></button>
+                      </td>
+                    </tr>
+                  }
                 </tbody>
               </table>
             </div>
@@ -145,251 +162,8 @@
           </div>
         }
       </section>
-
-      <aside class="jk-card editor">
-        <h2 class="jk-h4">{{ editing() ? 'Редактирование' : 'Новая команда' }}</h2>
-        <span class="jk-label">Имя</span>
-        <tui-textfield
-        ><input
-          aria-label="Имя команды"
-          placeholder="соцсети"
-          tuiInput
-          type="text"
-          [value]="name()"
-          (input)="name.set(value($event))"
-          /></tui-textfield>
-        <span class="jk-label">Действие</span>
-        <tui-textfield tuiChevron>
-          <input
-            aria-label="Действие команды"
-            [readonly]="true"
-            [value]="actionLabels[actionValues.indexOf(actionControl.value)]"
-            tuiInput
-            tuiSelectLike
-          />
-          <tui-data-list-wrapper
-            *tuiDropdown
-            [items]="actionLabels"
-            (itemClick)="setActionLabel($event)"
-          ></tui-data-list-wrapper>
-        </tui-textfield>
-        <span class="jk-label">{{ action() === 'say' ? 'Ответ' : 'Значение' }}</span>
-        <tui-textfield>
-          <textarea
-            aria-label="Значение команды"
-            rows="3"
-            [value]="response()"
-            (input)="response.set(value($event))"
-            tuiTextarea
-          ></textarea>
-        </tui-textfield>
-        <span
-          class="jk-caption"
-        >Переменные: $(user), $(login), $(channel), $(count), $(date), $(time)</span
-      >
-      <span class="jk-label">Алиасы (через запятую)</span>
-      <tui-textfield
-      ><input
-        aria-label="Алиасы"
-        placeholder="social, links"
-        tuiInput
-        type="text"
-        [value]="aliases()"
-        (input)="aliases.set(value($event))"
-        /></tui-textfield>
-      <div class="editor-row">
-        <div class="editor-field">
-          <span class="jk-label">Кулдаун, сек</span>
-          <tui-textfield
-          ><input type="number" tuiInput
-            aria-label="Кулдаун" max="3600" min="0"
-           
-            [value]="cooldown()"
-            (input)="cooldown.set(+value($event))"
-            /></tui-textfield>
-        </div>
-        <div class="editor-field">
-          <span class="jk-label">Доступ</span>
-          <tui-textfield tuiChevron>
-            <input
-              aria-label="Уровень доступа"
-              [readonly]="true"
-              [value]="levelLabels[levelValues.indexOf(levelControl.value)]"
-              tuiInput
-              tuiSelectLike
-            />
-            <tui-data-list-wrapper
-              *tuiDropdown
-              [items]="levelLabels"
-              (itemClick)="levelControl.setValue(levelValues[levelLabels.indexOf($event)])"
-            ></tui-data-list-wrapper>
-          </tui-textfield>
-        </div>
-      </div>
-      @if (error(); as message) {
-        <p class="error-text">{{ message }}</p>
-      }
-      @if (testResult(); as result) {
-        <div class="test-result">Тест: «{{ result }}»</div>
-      }
-      <div class="editor-actions">
-        <button type="button" (click)="saveCommand()" appearance="primary" tuiButton>
-          {{ editing() ? 'Сохранить' : 'Создать' }}
-        </button>
-        @if (editing()) {
-          <button type="button" (click)="resetForm()" appearance="flat" tuiButton>Отмена</button>
-        }
-      </div>
-    </aside>
-  </div>
-} @else if (tab() === 'timers') {
-  <div class="automation-grid">
-    <section class="automation-main">
-      <h2 class="jk-h4">Таймеры сообщений</h2>
-      @if (timers().timers.length) {
-        <div class="table-wrap">
-          <table tuiTable>
-            <thead tuiThead>
-              <tr>
-                <th tuiTh>Название</th>
-                <th tuiTh>Сообщения</th>
-                <th tuiTh>Интервал</th>
-                <th tuiTh>Вкл</th>
-                <th tuiTh class="col-actions"><span class="sr-only">Действия</span></th>
-              </tr>
-            </thead>
-            <tbody tuiTbody>
-              @for (item of timers().timers; track item.id) {
-                <tr>
-                  <td tuiTd class="name-cell">{{ item.name }}</td>
-                  <td tuiTd class="response-cell">{{ item.messages.join(' · ') }}</td>
-                  <td tuiTd>{{ formatInterval(item.intervalSeconds) }}</td>
-                  <td tuiTd>
-                    <div class="switch-hit">
-                      <input
-                        aria-label="Включить таймер"
-                        type="checkbox"
-                        class="blue-switch"
-                        [checked]="timerEnabled(item)"
-                        tuiSwitch
-                      />
-                      <span class="switch-hit-area" (click)="toggleTimer(item); $event.preventDefault()"></span>
-                    </div>
-                    </td>
-                    <td tuiTd class="col-actions">
-                      <button
-                        size="s"
-                        type="button"
-                        aria-label="Редактировать"
-                        (click)="editTimer(item)"
-                        appearance="flat"
-                        iconStart="@tui.pencil"
-                        tuiIconButton
-                      ></button>
-                      <button
-                        class="danger-action"
-                        size="s"
-                        type="button"
-                        aria-label="Удалить"
-                        (click)="removeTimer(item.id)"
-                        appearance="flat"
-                        iconStart="@tui.trash-2"
-                        tuiIconButton
-                      ></button>
-                    </td>
-                  </tr>
-                }
-                @for (trigger of triggerDraft(); track trigger.action; let index = $index) {
-                  <tr>
-                    <td tuiTd class="name-cell">{{ trigger.command }}</td>
-                    <td tuiTd>{{ trigger.description }}</td>
-                    <td tuiTd class="response-cell">{{ trigger.aliases.join(', ') }}</td>
-                    <td tuiTd>{{ trigger.enabled ? 'Да' : 'Нет' }}</td>
-                    <td tuiTd class="col-actions">
-                      <button size="s" type="button" aria-label="Настроить" (click)="openTriggers()" appearance="flat" iconStart="@tui.pencil" tuiIconButton></button>
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
-        } @else {
-          <div class="jk-card jk-empty">
-            <span class="jk-empty-icon"><tui-icon icon="@tui.clock-alert" /></span>
-            <span class="jk-h4">Таймеров нет</span>
-            <span
-              class="jk-body-sm jk-muted"
-            >Бот будет напоминать чату о подписке и правилах.</span
-          >
-        </div>
-      }
-    </section>
-
-    <aside class="jk-card editor">
-      <h2 class="jk-h4">{{ timerEditingId() ? 'Редактирование' : 'Новый таймер' }}</h2>
-      <span class="jk-label">Название</span>
-      <tui-textfield
-      ><input
-        aria-label="Название таймера"
-        placeholder="Напоминание"
-        tuiInput
-        type="text"
-        [value]="timerName()"
-        (input)="timerName.set(value($event))"
-        /></tui-textfield>
-      <span class="jk-label">Сообщения (по одному на строку)</span>
-      <tui-textfield>
-        <textarea
-          aria-label="Сообщения таймера"
-          rows="4"
-          [value]="timerText()"
-          (input)="timerText.set(value($event))"
-          tuiTextarea
-        ></textarea>
-      </tui-textfield>
-      <span class="jk-caption">Переменная $(channel) подставит название канала.</span>
-      <span class="jk-label">Интервал, мин</span>
-      <tui-textfield
-      ><input type="number" tuiInput
-        aria-label="Интервал" max="360" min="1"
-       
-        [value]="timerInterval()"
-        (input)="timerInterval.set(+value($event))"
-        /></tui-textfield>
-      <div class="editor-switch">
-        <span class="jk-label">Только при активном чате</span>
-        <input
-          aria-label="Только при активном чате"
-          type="checkbox"
-          [formControl]="timerActiveOnlyControl"
-          tuiSwitch
-          />
-        </div>
-        <div class="editor-switch">
-          <span class="jk-label">Случайный порядок</span>
-          <input
-            aria-label="Случайный порядок"
-            type="checkbox"
-            [formControl]="timerRandomControl"
-            tuiSwitch
-            />
-          </div>
-          @if (error(); as message) {
-            <p class="error-text">{{ message }}</p>
-          }
-          <div class="editor-actions">
-            <button type="button" (click)="saveTimer()" appearance="primary" tuiButton>
-              {{ timerEditingId() ? 'Сохранить' : 'Создать' }}
-            </button>
-            @if (timerEditingId()) {
-              <button appearance="flat" tuiButton type="button" (click)="resetTimerForm()">
-                Отмена
-              </button>
-            }
-          </div>
-        </aside>
-      </div>
-    } @else if (tab() === 'rewards') {
+    </div>
+  } @else if (tab() === 'rewards') {
       <div class="automation-grid">
         <section class="automation-main">
           <h2 class="jk-h4">Награды Twitch</h2>

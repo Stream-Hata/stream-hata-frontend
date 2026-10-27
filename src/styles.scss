@@ -897,3 +897,15 @@ tui-data-list label:hover,
 [data-tui-option]:hover {
 	background: color-mix(in srgb, var(--accent-primary) 14%, transparent) !important;
 }
+
+tui-data-list,
+tui-hint,
+.tui-data-list {
+	--tui-text-primary: var(--accent-primary);
+	--tui-text-secondary: var(--accent-primary);
+}
+
+tui-datalist-wrapper + tui-hint,
+tui-data-list-wrapper + tui-hint {
+	color: currentcolor !important;
+}

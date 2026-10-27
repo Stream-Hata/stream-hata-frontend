@@ -15,8 +15,8 @@ const TYPES: { value: EditorType; label: string }[] = [
 	{ value: 'variable', label: 'Переменная' },
 ];
 
-const ACTIONS = ['say', 'lastmusic', 'music', 'clip', 'points', 'timeout', 'wheel'];
-const ACTION_LABELS = ['Сообщение в чат', 'Ссылка на музыку', 'Добавить музыку', 'Создать клип', 'Баллы', 'Таймаут', 'Колесо'];
+const ACTIONS = ['say', 'lastmusic', 'music', 'clip', 'points', 'timeout', 'wheel', 'twitch.followage', 'twitch.accountage', 'twitch.uptime', 'twitch.viewers', 'twitch.title', 'twitch.game'];
+const ACTION_LABELS = ['Сообщение в чат', 'Ссылка на музыку', 'Добавить музыку', 'Создать клип', 'Баллы', 'Таймаут', 'Колесо', 'Дата фоллова', 'Возраст аккаунта', 'Аптайм стрима', 'Зрители', 'Заголовок', 'Категория'];
 const LEVELS = ['everyone', 'subscriber', 'vip', 'moderator', 'broadcaster'];
 const LEVEL_LABELS = ['Все', 'Сабы', 'VIP', 'Модераторы', 'Стример'];
 const TRIGGER_ACTIONS = [
