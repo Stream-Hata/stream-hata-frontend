@@ -16,15 +16,71 @@ const TYPES: { value: EditorType; label: string }[] = [
 	{ value: 'variable', label: 'Переменная' },
 ];
 
-const ACTIONS = ['say', 'lastmusic', 'music', 'clip', 'points', 'timeout', 'wheel', 'twitch.followage', 'twitch.accountage', 'twitch.uptime', 'twitch.viewers', 'twitch.title', 'twitch.game'];
-const ACTION_LABELS = ['Сообщение в чат', 'Ссылка на музыку', 'Добавить музыку', 'Создать клип', 'Баллы', 'Таймаут', 'Колесо', 'Дата фоллова', 'Возраст аккаунта', 'Аптайм стрима', 'Зрители', 'Заголовок', 'Категория'];
+const ACTIONS = ['say', 'announce', 'shoutout', 'raid', 'raid.cancel', 'marker', 'clip', 'delete', 'ban', 'unban', 'timeout', 'shield.on', 'shield.off', 'title.set', 'game.set', 'commercial', 'poll', 'poll.end', 'points.add', 'points.remove', 'points.set', 'points.balance', 'points.top', 'points.shop', 'points.redeem', 'music.add', 'music.current', 'lastmusic', 'wheel', 'games.slots', 'games.wheel', 'games.trivia', 'games.duel', 'games.accept', 'quote.add', 'quotes.random', 'dice', 'coinflip', 'random', 'variable.set', 'variable.inc', 'variable.dec', 'command.run', 'timer.start', 'timer.pause', 'timer.reset', 'timer.add', 'twitch.followage', 'twitch.accountage', 'twitch.uptime', 'twitch.viewers', 'twitch.title', 'twitch.game', 'twitch.followers', 'twitch.subscribers', 'twitch.chatters'];
+const ACTION_LABELS = ['Сообщение в чат', 'Анонс', 'Шаут', 'Рейд', 'Отменить рейд', 'Маркер стрима', 'Создать клип', 'Удалить сообщение', 'Бан', 'Разбан', 'Таймаут', 'Shield Mode вкл', 'Shield Mode выкл', 'Сменить заголовок', 'Сменить категорию', 'Реклама', 'Создать опрос', 'Завершить опрос', 'Начислить баллы', 'Снять баллы', 'Установить баллы', 'Мой баланс', 'Топ баллов', 'Магазин баллов', 'Купить награду', 'Добавить музыку', 'Текущая музыка', 'Ссылка на музыку', 'Колесо', 'Слоты', 'Колесо игры', 'Викторина', 'Дуэль', 'Принять дуэль', 'Добавить цитату', 'Случайная цитата', 'Кубик', 'Монетка', 'Случайный выбор', 'Установить переменную', 'Увеличить переменную', 'Уменьшить переменную', 'Запустить команду', 'Старт таймера', 'Пауза таймера', 'Сброс таймера', 'Изменить таймер', 'Дата фоллова', 'Возраст аккаунта', 'Аптайм стрима', 'Зрители', 'Заголовок', 'Категория', 'Фолловеры', 'Подписчики', 'Зрители в чате'];
 const LEVELS = ['everyone', 'subscriber', 'vip', 'moderator', 'broadcaster'];
 const LEVEL_LABELS = ['Все', 'Сабы', 'VIP', 'Модераторы', 'Стример'];
-const TRIGGER_ACTIONS = [
-	'points.balance', 'points.top', 'points.shop', 'points.redeem', 'games.slots', 'games.wheel',
-	'games.trivia', 'games.duel', 'games.accept', 'quotes.quote', 'jury.yea', 'jury.nei',
-	'clips.clip', 'music.add',
-];
+const TRIGGER_ACTIONS = ['say', 'announce', 'shoutout', 'raid', 'raid.cancel', 'marker', 'clip', 'delete', 'ban', 'unban', 'timeout', 'shield.on', 'shield.off', 'title.set', 'game.set', 'commercial', 'poll', 'poll.end', 'points.add', 'points.remove', 'points.set', 'points.balance', 'points.top', 'points.shop', 'points.redeem', 'music.add', 'music.current', 'lastmusic', 'wheel', 'games.slots', 'games.wheel', 'games.trivia', 'games.duel', 'games.accept', 'quote.add', 'quotes.random', 'dice', 'coinflip', 'random', 'variable.set', 'variable.inc', 'variable.dec', 'command.run', 'timer.start', 'timer.pause', 'timer.reset', 'timer.add', 'twitch.followage', 'twitch.accountage', 'twitch.uptime', 'twitch.viewers', 'twitch.title', 'twitch.game', 'twitch.followers', 'twitch.subscribers', 'twitch.chatters'];
+const TRIGGER_LABELS: Record<string, string> = {
+	'say': 'Сообщение в чат',
+	'announce': 'Анонс',
+	'shoutout': 'Шаут',
+	'raid': 'Рейд',
+	'raid.cancel': 'Отменить рейд',
+	'marker': 'Маркер стрима',
+	'clip': 'Создать клип',
+	'delete': 'Удалить сообщение',
+	'ban': 'Бан',
+	'unban': 'Разбан',
+	'timeout': 'Таймаут',
+	'shield.on': 'Shield Mode вкл',
+	'shield.off': 'Shield Mode выкл',
+	'title.set': 'Сменить заголовок',
+	'game.set': 'Сменить категорию',
+	'commercial': 'Реклама',
+	'poll': 'Создать опрос',
+	'poll.end': 'Завершить опрос',
+	'points.add': 'Начислить баллы',
+	'points.remove': 'Снять баллы',
+	'points.set': 'Установить баллы',
+	'points.balance': 'Мой баланс',
+	'points.top': 'Топ баллов',
+	'points.shop': 'Магазин баллов',
+	'points.redeem': 'Купить награду',
+	'music.add': 'Добавить музыку',
+	'music.current': 'Текущая музыка',
+	'lastmusic': 'Ссылка на музыку',
+	'wheel': 'Колесо',
+	'games.slots': 'Слоты',
+	'games.wheel': 'Колесо игры',
+	'games.trivia': 'Викторина',
+	'games.duel': 'Дуэль',
+	'games.accept': 'Принять дуэль',
+	'quote.add': 'Добавить цитату',
+	'quotes.random': 'Случайная цитата',
+	'dice': 'Кубик',
+	'coinflip': 'Монетка',
+	'random': 'Случайный выбор',
+	'variable.set': 'Установить переменную',
+	'variable.inc': 'Увеличить переменную',
+	'variable.dec': 'Уменьшить переменную',
+	'command.run': 'Запустить команду',
+	'timer.start': 'Старт таймера',
+	'timer.pause': 'Пауза таймера',
+	'timer.reset': 'Сброс таймера',
+	'timer.add': 'Изменить таймер',
+	'twitch.followage': 'Дата фоллова',
+	'twitch.accountage': 'Возраст аккаунта',
+	'twitch.uptime': 'Аптайм стрима',
+	'twitch.viewers': 'Зрители',
+	'twitch.title': 'Заголовок',
+	'twitch.game': 'Категория',
+	'twitch.followers': 'Фолловеры',
+	'twitch.subscribers': 'Подписчики',
+	'twitch.chatters': 'Зрители в чате',
+};
+const VARIABLE_ACTIONS = ['', 'lastmusic', 'lasttrack', 'np', 'now'];
+const VARIABLE_ACTION_LABELS = ['Не использовать', 'Ссылка на текущую музыку', 'Ссылка на последний трек', 'Сейчас играет (URL)', 'Сейчас играет'];
 
 @Component({
 	imports: [RouterLink, TuiButton, TuiChevron, TuiDataListWrapper, TuiDropdown, TuiInput, TuiSelectLike, TuiSwitch, TuiTextarea, TuiTextfield],
@@ -47,7 +103,9 @@ export default class AutomationEditorPage {
 	readonly levels = LEVELS;
 	readonly levelLabels = LEVEL_LABELS;
 	readonly triggerActions = TRIGGER_ACTIONS;
-	readonly triggerActionLabels = TRIGGER_ACTIONS.map((item) => item);
+	readonly triggerActionLabels = TRIGGER_ACTIONS.map((item) => TRIGGER_LABELS[item] ?? item);
+	readonly variableActionValues = VARIABLE_ACTIONS;
+	readonly variableActionLabels = VARIABLE_ACTION_LABELS;
 	readonly commandAction = signal('say');
 	readonly commandName = signal('');
 	readonly commandAliases = signal('');
@@ -139,7 +197,7 @@ export default class AutomationEditorPage {
 				command: this.triggerCommand().trim(),
 				aliases: this.triggerAliases().split(',').map((item) => item.trim()).filter(Boolean),
 				enabled: this.triggerEnabled(),
-				description: this.triggerAction(),
+				description: TRIGGER_LABELS[this.triggerAction()] ?? this.triggerAction(),
 			});
 			await firstValueFrom(this.triggers.save(list));
 		}
@@ -175,7 +233,13 @@ export default class AutomationEditorPage {
 		if (index >= 0) this.commandLevel.set(LEVELS[index]);
 	}
 
-	setTriggerAction(value: string): void {
-		this.triggerAction.set(value);
+	setTriggerAction(label: string): void {
+		const index = this.triggerActionLabels.indexOf(label);
+		if (index >= 0) this.triggerAction.set(TRIGGER_ACTIONS[index]);
+	}
+
+	setVariableAction(label: string): void {
+		const index = this.variableActionLabels.indexOf(label);
+		if (index >= 0) this.variableAction.set(this.variableActionValues[index]);
 	}
 }

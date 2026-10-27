@@ -29,20 +29,62 @@ import {
 import { catchError, merge, of, switchMap, timer } from 'rxjs';
 
 const TRIGGER_ACTIONS: { action: string; description: string }[] = [
-	{ action: 'points.balance', description: 'Баланс баллов' },
-	{ action: 'points.top', description: 'Топ зрителей' },
-	{ action: 'points.shop', description: 'Магазин наград' },
+	{ action: 'say', description: 'Сообщение в чат' },
+	{ action: 'announce', description: 'Анонс' },
+	{ action: 'shoutout', description: 'Шаут' },
+	{ action: 'raid', description: 'Рейд' },
+	{ action: 'raid.cancel', description: 'Отменить рейд' },
+	{ action: 'marker', description: 'Маркер стрима' },
+	{ action: 'clip', description: 'Создать клип' },
+	{ action: 'delete', description: 'Удалить сообщение' },
+	{ action: 'ban', description: 'Бан' },
+	{ action: 'unban', description: 'Разбан' },
+	{ action: 'timeout', description: 'Таймаут' },
+	{ action: 'shield.on', description: 'Shield Mode вкл' },
+	{ action: 'shield.off', description: 'Shield Mode выкл' },
+	{ action: 'title.set', description: 'Сменить заголовок' },
+	{ action: 'game.set', description: 'Сменить категорию' },
+	{ action: 'commercial', description: 'Реклама' },
+	{ action: 'poll', description: 'Создать опрос' },
+	{ action: 'poll.end', description: 'Завершить опрос' },
+	{ action: 'points.add', description: 'Начислить баллы' },
+	{ action: 'points.remove', description: 'Снять баллы' },
+	{ action: 'points.set', description: 'Установить баллы' },
+	{ action: 'points.balance', description: 'Мой баланс' },
+	{ action: 'points.top', description: 'Топ баллов' },
+	{ action: 'points.shop', description: 'Магазин баллов' },
 	{ action: 'points.redeem', description: 'Купить награду' },
-	{ action: 'games.slots', description: 'Слоты' },
-	{ action: 'games.wheel', description: 'Колесо' },
-	{ action: 'games.trivia', description: 'Викторина' },
-	{ action: 'games.duel', description: 'Дуэль: вызов' },
-	{ action: 'games.accept', description: 'Дуэль: принять' },
-	{ action: 'quotes.quote', description: 'Цитаты' },
-	{ action: 'jury.yea', description: 'Голос жюри: за' },
-	{ action: 'jury.nei', description: 'Голос жюри: против' },
-	{ action: 'clips.clip', description: 'Создать клип' },
 	{ action: 'music.add', description: 'Добавить музыку' },
+	{ action: 'music.current', description: 'Текущая музыка' },
+	{ action: 'lastmusic', description: 'Ссылка на музыку' },
+	{ action: 'wheel', description: 'Колесо' },
+	{ action: 'games.slots', description: 'Слоты' },
+	{ action: 'games.wheel', description: 'Колесо игры' },
+	{ action: 'games.trivia', description: 'Викторина' },
+	{ action: 'games.duel', description: 'Дуэль' },
+	{ action: 'games.accept', description: 'Принять дуэль' },
+	{ action: 'quote.add', description: 'Добавить цитату' },
+	{ action: 'quotes.random', description: 'Случайная цитата' },
+	{ action: 'dice', description: 'Кубик' },
+	{ action: 'coinflip', description: 'Монетка' },
+	{ action: 'random', description: 'Случайный выбор' },
+	{ action: 'variable.set', description: 'Установить переменную' },
+	{ action: 'variable.inc', description: 'Увеличить переменную' },
+	{ action: 'variable.dec', description: 'Уменьшить переменную' },
+	{ action: 'command.run', description: 'Запустить команду' },
+	{ action: 'timer.start', description: 'Старт таймера' },
+	{ action: 'timer.pause', description: 'Пауза таймера' },
+	{ action: 'timer.reset', description: 'Сброс таймера' },
+	{ action: 'timer.add', description: 'Изменить таймер' },
+	{ action: 'twitch.followage', description: 'Дата фоллова' },
+	{ action: 'twitch.accountage', description: 'Возраст аккаунта' },
+	{ action: 'twitch.uptime', description: 'Аптайм стрима' },
+	{ action: 'twitch.viewers', description: 'Зрители' },
+	{ action: 'twitch.title', description: 'Заголовок' },
+	{ action: 'twitch.game', description: 'Категория' },
+	{ action: 'twitch.followers', description: 'Фолловеры' },
+	{ action: 'twitch.subscribers', description: 'Подписчики' },
+	{ action: 'twitch.chatters', description: 'Зрители в чате' },
 ];
 
 const ACTION_LABELS: Record<string, string> = {
@@ -152,8 +194,11 @@ export default class CommandsPage {
 	readonly variableName = signal('');
 	readonly variableValue = signal('');
 	readonly variableAction = signal('');
-	readonly actionValues = ['say', 'points', 'timeout', 'wheel', 'music', 'clip', 'lastmusic', 'twitch.followage', 'twitch.accountage', 'twitch.uptime', 'twitch.viewers', 'twitch.title', 'twitch.game'];
-	readonly actionLabels = ['Сообщение в чат', 'Начислить баллы', 'Таймаут', 'Колесо', 'Добавить музыку', 'Создать клип', 'Ссылка на текущую музыку', 'Дата фоллова', 'Возраст аккаунта', 'Аптайм стрима', 'Зрители', 'Заголовок стрима', 'Категория'];
+	readonly variableActionControl = signalControl(this.variableAction, this.injector);
+	readonly variableActionValues = ['', 'lastmusic', 'lasttrack', 'np', 'now'];
+	readonly variableActionLabels = ['Не использовать', 'Ссылка на текущую музыку', 'Ссылка на последний трек', 'Сейчас играет (URL)', 'Сейчас играет'];
+	readonly actionValues = ['say', 'announce', 'shoutout', 'raid', 'raid.cancel', 'marker', 'clip', 'delete', 'ban', 'unban', 'timeout', 'shield.on', 'shield.off', 'title.set', 'game.set', 'commercial', 'poll', 'poll.end', 'points.add', 'points.remove', 'points.set', 'points.balance', 'points.top', 'points.shop', 'points.redeem', 'music.add', 'music.current', 'lastmusic', 'wheel', 'games.slots', 'games.wheel', 'games.trivia', 'games.duel', 'games.accept', 'quote.add', 'quotes.random', 'dice', 'coinflip', 'random', 'variable.set', 'variable.inc', 'variable.dec', 'command.run', 'timer.start', 'timer.pause', 'timer.reset', 'timer.add', 'twitch.followage', 'twitch.accountage', 'twitch.uptime', 'twitch.viewers', 'twitch.title', 'twitch.game', 'twitch.followers', 'twitch.subscribers', 'twitch.chatters'];
+	readonly actionLabels = ['Сообщение в чат', 'Анонс', 'Шаут', 'Рейд', 'Отменить рейд', 'Маркер стрима', 'Создать клип', 'Удалить сообщение', 'Бан', 'Разбан', 'Таймаут', 'Shield Mode вкл', 'Shield Mode выкл', 'Сменить заголовок', 'Сменить категорию', 'Реклама', 'Создать опрос', 'Завершить опрос', 'Начислить баллы', 'Снять баллы', 'Установить баллы', 'Мой баланс', 'Топ баллов', 'Магазин баллов', 'Купить награду', 'Добавить музыку', 'Текущая музыка', 'Ссылка на музыку', 'Колесо', 'Слоты', 'Колесо игры', 'Викторина', 'Дуэль', 'Принять дуэль', 'Добавить цитату', 'Случайная цитата', 'Кубик', 'Монетка', 'Случайный выбор', 'Установить переменную', 'Увеличить переменную', 'Уменьшить переменную', 'Запустить команду', 'Старт таймера', 'Пауза таймера', 'Сброс таймера', 'Изменить таймер', 'Дата фоллова', 'Возраст аккаунта', 'Аптайм стрима', 'Зрители', 'Заголовок', 'Категория', 'Фолловеры', 'Подписчики', 'Зрители в чате'];
 	readonly level = signal('everyone');
 	readonly levelControl = signalControl(this.level, this.injector);
 	readonly levelValues = ['everyone', 'subscriber', 'vip', 'moderator', 'broadcaster'];
@@ -406,6 +451,14 @@ export default class CommandsPage {
 
 		if (command) {
 			this.rewardPayload.set(command.id);
+		}
+	}
+
+	setVariableActionLabel(label: string): void {
+		const index = this.variableActionLabels.indexOf(label);
+		if (index >= 0) {
+			this.variableActionControl.setValue(this.variableActionValues[index]);
+			this.variableAction.set(this.variableActionValues[index]);
 		}
 	}
 

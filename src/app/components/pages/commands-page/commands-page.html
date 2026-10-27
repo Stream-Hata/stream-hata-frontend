@@ -1,12 +1,12 @@
 <div class="jk-page">
   <header class="jk-page-header">
     <div class="jk-page-header-text">
-      <h1 class="jk-h1">Автоматизация чата</h1>
-      <p class="jk-caption">Команды, таймеры и триггеры — всё настраивается стримером.</p>
+      <h1 class="jk-h1">{{ i18n.t('commands.title') }}</h1>
+      <p class="jk-caption">{{ i18n.t('commands.subtitle') }}</p>
     </div>
 
     <div class="jk-page-actions">
-      <a routerLink="/app/commands/editor" appearance="primary" tuiButton>Редактор</a>
+      <a routerLink="/app/commands/editor" appearance="primary" tuiButton>{{ i18n.t('commands.editor') }}</a>
       <button
         type="button"
         [class.active-tab]="tab() === 'commands'"
@@ -152,10 +152,10 @@
           } @else {
             <div class="jk-card jk-empty">
               <span class="jk-empty-icon"><tui-icon icon="@tui.terminal" /></span>
-              <span class="jk-h4">Команд пока нет</span>
+              <span class="jk-h4">{{ i18n.t('commands.empty') }}</span>
               <span
                 class="jk-body-sm jk-muted"
-              >Создайте первую команду справа — например !соцсети.</span
+              >{{ i18n.t('commands.emptyHint') }}</span
             >
           </div>
         }
@@ -206,7 +206,7 @@
           <tui-textfield><input aria-label="Цена награды" type="number" min="1" tuiInput [value]="rewardCost()" (input)="rewardCost.set(+value($event))" /></tui-textfield>
           <span class="jk-label">Описание для зрителя</span>
           <tui-textfield><textarea aria-label="Описание награды" rows="2" tuiTextarea [value]="rewardPrompt()" (input)="rewardPrompt.set(value($event))"></textarea></tui-textfield>
-          <span class="jk-label">Действие</span>
+          <span class="jk-label">{{ i18n.t('commands.action') }}</span>
           <tui-textfield tuiChevron>
             <input
               aria-label="Действие награды"
@@ -286,12 +286,15 @@
         </section>
         <aside class="jk-card editor">
           <h2 class="jk-h4">{{ variableEditingId() ? 'Редактирование переменной' : 'Новая переменная' }}</h2>
-          <span class="jk-label">Имя</span>
+          <span class="jk-label">{{ i18n.t('commands.name') }}</span>
           <tui-textfield><input aria-label="Имя переменной" tuiInput type="text" [value]="variableName()" (input)="variableName.set(value($event))" /></tui-textfield>
           <span class="jk-label">Значение</span>
           <tui-textfield><textarea aria-label="Значение переменной" rows="3" tuiTextarea [value]="variableValue()" (input)="variableValue.set(value($event))"></textarea></tui-textfield>
-          <span class="jk-label">Действие</span>
-          <tui-textfield><input aria-label="Действие переменной" tuiInput type="text" placeholder="lastmusic" [value]="variableAction()" (input)="variableAction.set(value($event))" /></tui-textfield>
+          <span class="jk-label">{{ i18n.t('commands.action') }}</span>
+          <tui-textfield tuiChevron>
+            <input aria-label="Действие переменной" [readonly]="true" [value]="variableActionLabels[variableActionValues.indexOf(variableActionControl.value)]" [style.color]="accent()" tuiInput tuiSelectLike />
+            <tui-data-list-wrapper *tuiDropdown [itemContent]="accentOption" [items]="variableActionLabels" (itemClick)="setVariableActionLabel($event)"></tui-data-list-wrapper>
+          </tui-textfield>
           @if (error(); as message) { <p class="error-text">{{ message }}</p> }
           <div class="editor-actions">
             <button type="button" (click)="saveVariable()" appearance="primary" tuiButton>{{ variableEditingId() ? 'Сохранить' : 'Создать' }}</button>

@@ -44,9 +44,9 @@
     @if (type() === 'trigger') {
       <span class="jk-label">Действие</span>
       <tui-textfield tuiChevron>
-        <input [readonly]="true" [value]="triggerAction()"
+        <input [readonly]="true" [value]="triggerActionLabels[triggerActions.indexOf(triggerAction())]"
         [style.color]="accent()" tuiInput tuiSelectLike />
-        <tui-data-list-wrapper *tuiDropdown [itemContent]="accentOption" [items]="triggerActions" (itemClick)="setTriggerAction($event)"></tui-data-list-wrapper>
+        <tui-data-list-wrapper *tuiDropdown [itemContent]="accentOption" [items]="triggerActionLabels" (itemClick)="setTriggerAction($event)"></tui-data-list-wrapper>
       </tui-textfield>
       <span class="jk-label">Команда</span>
       <tui-textfield><input tuiInput [value]="triggerCommand()" (input)="triggerCommand.set($any($event.target).value)" /></tui-textfield>
@@ -60,8 +60,11 @@
       <tui-textfield><input tuiInput [value]="variableName()" (input)="variableName.set($any($event.target).value)" /></tui-textfield>
       <span class="jk-label">Значение</span>
       <tui-textfield><textarea tuiTextarea rows="2" [value]="variableValue()" (input)="variableValue.set($any($event.target).value)"></textarea></tui-textfield>
-      <span class="jk-label">Действие (lastmusic / now / пусто)</span>
-      <tui-textfield><input tuiInput [value]="variableAction()" (input)="variableAction.set($any($event.target).value)" /></tui-textfield>
+      <span class="jk-label">Действие</span>
+      <tui-textfield tuiChevron>
+        <input [readonly]="true" [value]="variableActionLabels[variableActionValues.indexOf(variableAction())]" [style.color]="accent()" tuiInput tuiSelectLike />
+        <tui-data-list-wrapper *tuiDropdown [itemContent]="accentOption" [items]="variableActionLabels" (itemClick)="setVariableAction($event)"></tui-data-list-wrapper>
+      </tui-textfield>
     }
 
     @if (error()) { <p class="error-text">{{ error() }}</p> }
