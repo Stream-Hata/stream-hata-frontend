@@ -281,3 +281,19 @@ html[data-tauri] .settings-nav {
 	background: #fff;
 	box-shadow: 0 1px 4px rgb(0 0 0 / 30%);
 }
+
+.update-progress {
+	height: 7px;
+	overflow: hidden;
+	margin-top: 4px;
+	border-radius: 99px;
+	background: var(--neutral-1);
+}
+
+.update-progress span {
+	display: block;
+	height: 100%;
+	border-radius: inherit;
+	background: var(--accent-primary);
+	transition: width 180ms ease;
+}

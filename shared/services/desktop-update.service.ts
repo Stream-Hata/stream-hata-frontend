@@ -21,6 +21,9 @@ export class DesktopUpdateService {
 	readonly confirming = signal(false);
 	readonly installing = signal(false);
 	readonly progress = signal(0);
+	readonly downloaded = signal(0);
+	readonly total = signal(0);
+	readonly step = signal('');
 	readonly error = signal('');
 	private readonly tauri = this.isTauri();
 
@@ -32,7 +35,28 @@ export class DesktopUpdateService {
 		void this.loadVersion();
 		void this.check();
 		this.listenForUpdates();
+		this.listenForProgress();
 		setInterval(() => void this.check(), 30 * 60_000);
+	}
+
+	private listenForProgress(): void {
+		const globalTauri = (window as unknown as Record<string, unknown>)['__TAURI__'] as
+			| {
+					event?: {
+						listen?: (event: string, handler: (event: { payload: unknown }) => void) => Promise<unknown>;
+					};
+			  }
+			| undefined;
+
+		void globalTauri?.event?.listen?.('update-progress', (event) => {
+			const [downloaded, total] = event.payload as [number, number | null];
+			this.downloaded.set(downloaded);
+			this.total.set(total ?? 0);
+			this.progress.set(total ? Math.min(100, Math.round((downloaded / total) * 100)) : 0);
+		});
+		void globalTauri?.event?.listen?.('update-step', (event) => {
+			this.step.set(String(event.payload));
+		});
 	}
 
 	private listenForUpdates(): void {
@@ -94,6 +118,10 @@ export class DesktopUpdateService {
 		this.installing.set(true);
 		this.confirming.set(false);
 		this.error.set('');
+		this.progress.set(0);
+		this.downloaded.set(0);
+		this.total.set(0);
+		this.step.set('downloading');
 
 		try {
 			await this.invoke('install_update');
@@ -105,6 +133,17 @@ export class DesktopUpdateService {
 
 	dismiss(): void {
 		this.available.set(false);
+	}
+
+	formatBytes(value: number): string {
+		if (!value) {
+			return '0 B';
+		}
+
+		const units = ['B', 'KB', 'MB', 'GB'];
+		const index = Math.min(units.length - 1, Math.floor(Math.log(value) / Math.log(1024)));
+
+		return `${(value / 1024 ** index).toFixed(index ? 1 : 0)} ${units[index]}`;
 	}
 
 	private isTauri(): boolean {

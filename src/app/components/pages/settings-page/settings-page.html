@@ -801,7 +801,12 @@
             </div>
 
             @if (desktopUpdate.installing()) {
-              <p class="jk-caption">{{ i18n.t('settings.updating') }}</p>
+              <p class="jk-caption">
+                {{ i18n.t('settings.updating') }} · {{ desktopUpdate.formatBytes(desktopUpdate.downloaded()) }} / {{ desktopUpdate.formatBytes(desktopUpdate.total()) }}
+              </p>
+              <div class="update-progress" role="progressbar" [attr.aria-valuenow]="desktopUpdate.progress()" aria-valuemin="0" aria-valuemax="100">
+                <span [style.width.%]="desktopUpdate.progress()"></span>
+              </div>
             }
             @if (desktopUpdate.checked() && !desktopUpdate.available() && !desktopUpdate.error()) {
               <p class="jk-caption">{{ i18n.t('settings.noUpdates') }}</p>

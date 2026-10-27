@@ -27,7 +27,10 @@ import { DesktopUpdateService } from '@shared/services/desktop-update.service';
 						<span>{{ update.notes() }}</span>
 					}
 					@if (update.installing()) {
-						<span>Скачиваем и устанавливаем обновление…</span>
+						<span>{{ stepLabel() }} · {{ update.formatBytes(update.downloaded()) }} / {{ update.formatBytes(update.total()) }}</span>
+						<div class="update-progress" role="progressbar" [attr.aria-valuenow]="update.progress()" aria-valuemin="0" aria-valuemax="100">
+							<span [style.width.%]="update.progress()"></span>
+						</div>
 					}
 					@if (update.error()) {
 						<span class="desktop-update-error">{{ update.error() }}</span>
@@ -45,6 +48,22 @@ import { DesktopUpdateService } from '@shared/services/desktop-update.service';
 		}
 	`,
 	styles: `
+		.update-progress {
+			height: 7px;
+			overflow: hidden;
+			margin-top: 4px;
+			border-radius: 99px;
+			background: var(--neutral-1);
+		}
+
+		.update-progress span {
+			display: block;
+			height: 100%;
+			border-radius: inherit;
+			background: var(--accent-primary);
+			transition: width 180ms ease;
+		}
+
 		.update-confirm-backdrop {
 			position: fixed;
 			inset: 0;
@@ -121,4 +140,9 @@ import { DesktopUpdateService } from '@shared/services/desktop-update.service';
 })
 export class DesktopUpdateNotice {
 	readonly update = inject(DesktopUpdateService);
+	readonly stepLabel = () => ({
+		downloading: 'Скачивание обновления…',
+		installing: 'Распаковка и установка…',
+		restarting: 'Перезапуск приложения…',
+	}[this.update.step()] ?? 'Обновление…');
 }
