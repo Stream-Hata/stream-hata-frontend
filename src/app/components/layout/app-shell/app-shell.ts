@@ -278,7 +278,7 @@ export default class AppShell {
 			this.scheduleCat();
 		};
 
-		for (const event of ['mousemove', 'keydown', 'click', 'scroll', 'touchstart']) {
+		for (const event of ['keydown', 'click', 'scroll', 'touchstart']) {
 			document.addEventListener(event, (domEvent: Event) => reset(domEvent), { passive: true });
 		}
 

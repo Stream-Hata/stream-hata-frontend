@@ -8,9 +8,9 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 		<svg viewBox="0 0 240 260" role="img" aria-label="Кот">
 			<defs>
 				<linearGradient id="cat-fur" x1="0" y1="0" x2="1" y2="1">
-					<stop offset="0" stop-color="#ffc078" />
-					<stop offset="0.55" stop-color="#f09a4b" />
-					<stop offset="1" stop-color="#c96c32" />
+					<stop offset="0" stop-color="#fffdf9" />
+					<stop offset="0.6" stop-color="#f7eee6" />
+					<stop offset="1" stop-color="#e6d6cb" />
 				</linearGradient>
 				<linearGradient id="cat-cream" x1="0" y1="0" x2="0" y2="1">
 					<stop offset="0" stop-color="#fff4dc" />
@@ -20,11 +20,14 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 					<stop offset="0" stop-color="#ffb4a8" />
 					<stop offset="1" stop-color="#d96c72" />
 				</linearGradient>
-				<radialGradient id="cat-eye" cx="45%" cy="35%" r="70%">
-					<stop offset="0" stop-color="#b8ff7a" />
-					<stop offset="0.5" stop-color="#58c86b" />
-					<stop offset="1" stop-color="#1d5c3a" />
-				</radialGradient>
+				<linearGradient id="cat-orange" x1="0" y1="0" x2="1" y2="1">
+					<stop offset="0" stop-color="#ffc25c" />
+					<stop offset="1" stop-color="#e88a2f" />
+				</linearGradient>
+				<linearGradient id="cat-gray" x1="0" y1="0" x2="1" y2="1">
+					<stop offset="0" stop-color="#a59aa9" />
+					<stop offset="1" stop-color="#756b7d" />
+				</linearGradient>
 				<filter id="cat-shadow" x="-30%" y="-30%" width="160%" height="160%">
 					<feGaussianBlur stdDeviation="8" />
 				</filter>
@@ -40,6 +43,9 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 				<g class="body">
 					<path class="fur" d="M120 112c-37 0-55 40-53 88 2 30 24 46 53 46s51-16 53-46c2-48-16-88-53-88z" />
 					<path class="chest" d="M120 128c-22 0-34 24-33 51 1 22 14 37 33 37s32-15 33-37c1-27-11-51-33-51z" />
+					<ellipse class="belly" cx="120" cy="185" rx="19" ry="27" />
+					<path class="patch-orange" d="M77 150c13-5 24 0 28 12 4 13-4 25-17 24-12-1-19-12-16-23 1-5 2-10 5-13z" />
+					<path class="patch-gray" d="M157 178c14-5 24 4 23 17-1 12-11 19-22 14-11-4-13-15-8-23 2-4 4-6 7-8z" />
 					<path class="stripe" d="M83 152c11 4 15 12 14 23M157 152c-11 4-15 12-14 23M86 181c9 3 12 9 11 17M154 181c-9 3-12 9-11 17" />
 					<path class="paw" d="M91 221c-9 0-15 6-15 14 0 7 6 11 15 11h12c7 0 11-4 11-10 0-9-9-15-23-15z" />
 					<path class="paw" d="M149 221c9 0 15 6 15 14 0 7-6 11-15 11h-12c-7 0-11-4-11-10 0-9 9-15 23-15z" />
@@ -51,6 +57,8 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 					<path class="ear" d="M166 57 168 17c0-4-4-6-7-3l-30 25z" />
 					<path class="ear-inner" d="M81 50 80 28l20 17zM159 50l1-22-20 17z" />
 					<ellipse class="face" cx="120" cy="78" rx="55" ry="51" />
+					<path class="patch-orange head-patch" d="M119 28c20-4 38 5 44 22 3 8 2 17-2 24-8-10-17-16-29-18-10-2-19 0-28 4-1-12 3-24 15-32z" />
+					<path class="patch-gray head-gray" d="M155 94c12 3 18 12 16 23-1 9-8 15-17 14 6-12 7-25 1-37z" />
 					<path class="forehead-stripe" d="M120 30v20M104 33l5 18M136 33l-5 18" />
 					<g class="eyes">
 						<ellipse class="eye" cx="97" cy="72" rx="12" ry="9" />
@@ -68,8 +76,8 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 					<ellipse class="muzzle" cx="120" cy="95" rx="28" ry="19" />
 					<path class="nose" d="m120 88 7 5-7 5-7-5z" />
 					<g class="mouth">
-						<path class="mouth-line" d="M120 98v6M120 104c-5 5-11 5-15 0M120 104c5 5 11 5 15 0" />
-						<path class="mouth-lower" d="M108 108c4 7 8 8 12 1 4 7 8 6 12-1" />
+						<path class="mouth-open" d="M103 103c5 10 11 14 17 14s13-4 17-14c-11 4-23 4-34 0z" />
+						<path class="tongue" d="M112 110c3 5 5 7 8 7s5-2 8-7c-5 2-11 2-16 0z" />
 					</g>
 					<path class="whisker" d="M91 92 55 86M92 99 56 101M149 92l36-6M148 99l36 2" />
 					<path class="cheek" d="M78 86c8 9 18 12 28 11M162 86c-8 9-18 12-28 11" />
@@ -150,6 +158,33 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 			stroke-width: 2.5;
 		}
 
+		.belly {
+			fill: #ffc1cb;
+			opacity: 0.9;
+		}
+
+		.patch-orange {
+			fill: url(#cat-orange);
+			stroke: #3a1f2e;
+			stroke-width: 2.5;
+			stroke-linejoin: round;
+		}
+
+		.patch-gray {
+			fill: url(#cat-gray);
+			stroke: #3a1f2e;
+			stroke-width: 2.5;
+			stroke-linejoin: round;
+		}
+
+		.head-patch {
+			opacity: 0.98;
+		}
+
+		.head-gray {
+			opacity: 0.9;
+		}
+
 		.blush {
 			fill: #f08a91;
 			opacity: 0.45;
@@ -223,7 +258,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 		}
 
 		.eye {
-			fill: url(#cat-eye);
+			fill: #24172b;
 			stroke: #3a1f2e;
 			stroke-width: 2;
 		}
@@ -249,18 +284,18 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 			stroke-width: 1.5;
 		}
 
-		.mouth-line,
-		.mouth-lower {
-			fill: none;
+		.mouth-open {
+			fill: #4a2334;
 			stroke: #3a1f2e;
-			stroke-width: 2.2;
-			stroke-linecap: round;
-		}
-
-		.mouth-lower {
+			stroke-width: 2;
 			transform-box: fill-box;
 			transform-origin: top center;
 			animation: mouth 1.8s ease-in-out infinite;
+		}
+
+		.tongue {
+			fill: #ff8fa3;
+			animation: tongue 1.8s ease-in-out infinite;
 		}
 
 		.whisker,
@@ -423,10 +458,20 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 		@keyframes mouth {
 			0%,
 			100% {
-				transform: scaleY(0.3);
+				transform: scaleY(0.45);
 			}
 			50% {
 				transform: scaleY(1);
+			}
+		}
+
+		@keyframes tongue {
+			0%,
+			100% {
+				opacity: 0.7;
+			}
+			50% {
+				opacity: 1;
 			}
 		}
 	`,
