@@ -6,6 +6,19 @@ import { DesktopUpdateService } from '@shared/services/desktop-update.service';
 	imports: [TuiButton],
 	selector: 'app-desktop-update-notice',
 	template: `
+		@if (update.confirming()) {
+			<div class="update-confirm-backdrop">
+				<section class="update-confirm" role="dialog" aria-modal="true">
+					<strong>Установить обновление {{ update.version() }}?</strong>
+					<span>Приложение будет перезапущено.</span>
+					<div class="update-confirm-actions">
+						<button appearance="primary" size="s" tuiButton type="button" (click)="update.confirm()">Установить</button>
+						<button appearance="flat" size="s" tuiButton type="button" (click)="update.cancelConfirm()">Отмена</button>
+					</div>
+				</section>
+			</div>
+		}
+
 		@if (update.available()) {
 			<aside class="desktop-update" role="alert">
 				<div class="desktop-update-text">
@@ -32,6 +45,41 @@ import { DesktopUpdateService } from '@shared/services/desktop-update.service';
 		}
 	`,
 	styles: `
+		.update-confirm-backdrop {
+			position: fixed;
+			inset: 0;
+			z-index: 160;
+			display: grid;
+			place-items: center;
+			padding: 20px;
+			background: rgb(5 3 9 / 72%);
+			backdrop-filter: blur(10px);
+		}
+
+		.update-confirm {
+			display: flex;
+			gap: 8px;
+			flex-direction: column;
+			width: min(420px, 100%);
+			padding: 20px;
+			border: 1px solid var(--border-normal);
+			border-radius: var(--radius-lg);
+			background: var(--surface-elevated-1);
+			color: var(--text-primary);
+			box-shadow: 0 28px 90px rgb(0 0 0 / 55%);
+		}
+
+		.update-confirm span {
+			color: var(--text-secondary);
+			font: var(--font-body-sm);
+		}
+
+		.update-confirm-actions {
+			display: flex;
+			gap: 8px;
+			margin-top: 8px;
+		}
+
 		.desktop-update {
 			position: fixed;
 			right: 16px;

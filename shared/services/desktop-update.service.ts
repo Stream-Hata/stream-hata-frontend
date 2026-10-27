@@ -18,6 +18,7 @@ export class DesktopUpdateService {
 	readonly notes = signal('');
 	readonly checking = signal(false);
 	readonly checked = signal(false);
+	readonly confirming = signal(false);
 	readonly installing = signal(false);
 	readonly progress = signal(0);
 	readonly error = signal('');
@@ -70,6 +71,19 @@ export class DesktopUpdateService {
 		this.version.set(result.version);
 		this.notes.set(result.notes ?? '');
 		this.available.set(true);
+
+		if (manual) {
+			this.confirming.set(true);
+		}
+	}
+
+	confirm(): void {
+		this.confirming.set(false);
+		void this.install();
+	}
+
+	cancelConfirm(): void {
+		this.confirming.set(false);
 	}
 
 	async install(): Promise<void> {
@@ -78,6 +92,7 @@ export class DesktopUpdateService {
 		}
 
 		this.installing.set(true);
+		this.confirming.set(false);
 		this.error.set('');
 
 		try {
