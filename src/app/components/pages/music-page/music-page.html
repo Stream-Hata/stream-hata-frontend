@@ -44,7 +44,7 @@
       }
     </section>
 
-    @if (data().tracks.length) {
+    @if (tracks().length) {
       <div class="table-wrap">
         <table tuiTable>
           <thead tuiThead>
@@ -62,7 +62,7 @@
           </thead>
 
           <tbody tuiTbody>
-            @for (track of data().tracks; track track.videoId; let index = $index) {
+            @for (track of tracks(); track track.videoId; let index = $index) {
               <tr>
                 <td tuiTd class="col-index jk-caption">{{ index + 1 }}</td>
                 <td tuiTd>

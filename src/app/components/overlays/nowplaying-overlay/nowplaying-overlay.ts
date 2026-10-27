@@ -36,11 +36,13 @@ export class NowPlayingOverlay {
 		),
 		{ initialValue: { config: {} as WidgetConfig } },
 	);
-	readonly playlist = computed(() =>
-		[...(this.state()?.tracks ?? [])].sort(
-			(left, right) => Date.parse(left.lastAddedAt) - Date.parse(right.lastAddedAt),
-		),
-	);
+	readonly playlist = computed(() => {
+		const today = new Date().toLocaleDateString('en-CA');
+
+		return [...(this.state()?.tracks ?? [])]
+			.filter((track) => new Date(track.lastAddedAt).toLocaleDateString('en-CA') === today)
+			.sort((left, right) => Date.parse(left.lastAddedAt) - Date.parse(right.lastAddedAt));
+	});
 	readonly currentId = signal<string | null>(null);
 	readonly reloadKey = signal(0);
 	readonly finished = signal(false);

@@ -1,9 +1,10 @@
 import type { OnDestroy } from '@angular/core';
 import { Component, computed, DOCUMENT, inject } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { WidgetConfigService, type WidgetConfig } from '@shared/services/widgets.service';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { catchError, map, of, switchMap, timer } from 'rxjs';
 import { AlertsOverlay } from '../alerts-overlay/alerts-overlay';
 import { AudioOverlay } from '../audio-overlay/audio-overlay';
 import { ChatOverlay } from '../chat-overlay/chat-overlay';
@@ -44,6 +45,7 @@ export default class OverlayHost implements OnDestroy {
 	private readonly document = inject(DOCUMENT);
 	private readonly route = inject(ActivatedRoute);
 	private readonly widgetConfig = inject(WidgetConfigService);
+	private readonly http = inject(HttpClient);
 
 	readonly kind = toSignal(
 		this.route.paramMap.pipe(map((params) => params.get('kind') ?? 'jury')),
@@ -62,6 +64,17 @@ export default class OverlayHost implements OnDestroy {
 		{ initialValue: {} as WidgetConfig },
 	);
 
+	readonly globalSettings = toSignal(
+		timer(0, 5000).pipe(
+			switchMap(() =>
+				this.http
+					.get<{ accent?: string }>('rgg-sync/app-settings')
+					.pipe(catchError(() => of<{ accent?: string }>({}))),
+			),
+		),
+		{ initialValue: {} as { accent?: string } },
+	);
+
 	readonly surfaceStyle = computed(() => {
 		const config = this.config();
 
@@ -70,7 +83,7 @@ export default class OverlayHost implements OnDestroy {
 				? config.backgroundColor ?? 'rgb(18, 18, 24, 0.92)'
 				: 'transparent',
 			'--widget-text': config.textColor ?? '#f5eaff',
-			'--widget-accent': config.accentColor ?? '#ff2ea6',
+			'--widget-accent': this.globalSettings().accent ?? config.accentColor ?? '#ff2ea6',
 			'--widget-scale': String(config.scale ?? 1),
 		};
 	});

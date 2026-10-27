@@ -1,6 +1,6 @@
 import type { HttpErrorResponse } from '@angular/common/http';
 import type { MusicListResponse } from '@shared/types/music';
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MusicService } from '@shared/services/music.service';
 import {
@@ -44,6 +44,14 @@ export default class MusicPage {
 	readonly adding = signal(false);
 	readonly error = signal<string | null>(null);
 	readonly telegramSent = signal(false);
+
+	readonly tracks = computed(() => {
+		const today = new Date().toLocaleDateString('en-CA');
+
+		return this.data().tracks.filter(
+			(track) => new Date(track.lastAddedAt).toLocaleDateString('en-CA') === today,
+		);
+	});
 
 	readonly data = toSignal(
 		merge(timer(0, 7000), toObservable(this.refresh)).pipe(
