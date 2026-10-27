@@ -28,7 +28,16 @@ export class DesktopUpdateService {
 
 		void this.loadVersion();
 		void this.check();
+		this.listenForUpdates();
 		setInterval(() => void this.check(), 30 * 60_000);
+	}
+
+	private listenForUpdates(): void {
+		const globalTauri = (window as unknown as Record<string, unknown>)['__TAURI__'] as
+			| { event?: { listen?: (event: string, handler: () => void) => Promise<unknown> } }
+			| undefined;
+
+		void globalTauri?.event?.listen?.('update-available', () => void this.check());
 	}
 
 	async loadVersion(): Promise<void> {

@@ -1,5 +1,22 @@
 [
   {
+    "version": "0.6.8-pre-alpha",
+    "date": "2026-10-27",
+    "sections": [
+      {
+        "title": "Исправлено",
+        "items": [
+          {
+            "text": "ACL для remote-страницы StreamHata: команды обновления и версии разрешены для `streamhata.rdpctd.dev`."
+          },
+          {
+            "text": "«О приложении» теперь может проверять обновления и показывать версию из desktop-клиента."
+          }
+        ]
+      }
+    ]
+  },
+  {
     "version": "0.6.7-pre-alpha",
     "date": "2026-10-27",
     "sections": [
