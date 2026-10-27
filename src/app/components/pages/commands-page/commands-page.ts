@@ -4,6 +4,7 @@ import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-i
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommandsService } from '@shared/services/commands.service';
 import { I18nService } from '@shared/services/i18n.service';
+import { RouterLink } from '@angular/router';
 import { signalControl } from '@shared/helpers/form-control';
 import { TriggersService } from '@shared/services/ops.services';
 import {
@@ -62,7 +63,7 @@ const LEVEL_LABELS: Record<string, string> = {
 
 @Component({
 	imports: [
-		
+		RouterLink,
 		TuiInputNumber,ReactiveFormsModule,
 		TuiChevron,
 		TuiDataListWrapper,

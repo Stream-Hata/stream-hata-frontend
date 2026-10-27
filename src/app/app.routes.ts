@@ -120,6 +120,11 @@ export const routes: Routes = [
 				title: 'Команды · Nameless StreamHata',
 			},
 			{
+				path: 'commands/editor',
+				loadComponent: () => import('./components/pages/automation-editor-page/automation-editor-page'),
+				title: 'Редактор автоматизации · Nameless StreamHata',
+			},
+			{
 				path: 'moderation',
 				loadComponent: () => import('./components/pages/moderation-page/moderation-page'),
 				title: 'Модерация · Nameless StreamHata',

@@ -1,0 +1,5 @@
+:host { display: block; }
+.editor { display: flex; gap: 8px; flex-direction: column; max-width: 720px; }
+.row { display: flex; gap: 12px; }
+.row > * { flex: 1; }
+.switch { display: flex; gap: 8px; align-items: center; }
