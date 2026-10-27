@@ -165,3 +165,18 @@
 	font: var(--font-code);
 	cursor: pointer;
 }
+
+.blue-switch {
+	--tui-background-accent-1: #3b82f6;
+	--tui-background-accent-1-hover: #60a5fa;
+	--tui-background-accent-1-pressed: #2563eb;
+}
+
+.test-result {
+	color: var(--accent-primary);
+}
+
+:host ::ng-deep tui-data-list button,
+:host ::ng-deep tui-data-list [tuiOption] {
+	--tui-background-accent-1: var(--accent-primary);
+}

@@ -78,14 +78,14 @@
                       <span appearance="neutral" tuiBadge>{{ levelLabel(command.userLevel) }}</span>
                     </td>
                     <td tuiTd>
-                      <button
+                      <input
                         aria-label="Включить команду"
-                        type="button"
-                        class="jk-switch"
-                        [class.on]="commandEnabled(command)"
-                        [attr.aria-pressed]="commandEnabled(command)"
-                        (click)="toggleCommand(command)"
-                      ><span></span></button>
+                        type="checkbox"
+                        class="blue-switch"
+                        [checked]="commandEnabled(command)"
+                        (change)="toggleCommand(command)"
+                        tuiSwitch
+                      />
                       </td>
                       <td tuiTd class="col-actions">
                         <button
@@ -253,14 +253,14 @@
                   <td tuiTd class="response-cell">{{ item.messages.join(' · ') }}</td>
                   <td tuiTd>{{ formatInterval(item.intervalSeconds) }}</td>
                   <td tuiTd>
-                    <button
+                    <input
                       aria-label="Включить таймер"
-                      type="button"
-                      class="jk-switch"
-                      [class.on]="timerEnabled(item)"
-                      [attr.aria-pressed]="timerEnabled(item)"
-                      (click)="toggleTimer(item)"
-                    ><span></span></button>
+                      type="checkbox"
+                      class="blue-switch"
+                      [checked]="timerEnabled(item)"
+                      (change)="toggleTimer(item)"
+                      tuiSwitch
+                    />
                     </td>
                     <td tuiTd class="col-actions">
                       <button
@@ -473,6 +473,20 @@
         <div class="triggers-head">
           <h2 class="jk-h4">Команды-триггеры</h2>
           <div class="triggers-actions">
+            <tui-textfield tuiChevron>
+              <input
+                aria-label="Действие триггера"
+                [readonly]="true"
+                [value]="triggerActionLabels[triggerActionValues.indexOf(triggerActionControl.value)]"
+                tuiInput
+                tuiSelectLike
+              />
+              <tui-data-list-wrapper
+                *tuiDropdown
+                [items]="triggerActionLabels"
+                (itemClick)="setTriggerActionLabel($event)"
+              ></tui-data-list-wrapper>
+            </tui-textfield>
             <button appearance="flat" tuiButton type="button" (click)="addTrigger()">Добавить</button>
             <button appearance="primary" tuiButton type="button" (click)="saveTriggers()">
               {{ triggersSaved() ? 'Сохранено' : 'Сохранить' }}
@@ -522,14 +536,14 @@
                       /></tui-textfield>
                   </td>
                   <td tuiTd>
-                    <button
+                    <input
                       aria-label="Включить триггер"
-                      type="button"
-                      class="jk-switch"
-                      [class.on]="trigger.enabled"
-                      [attr.aria-pressed]="trigger.enabled"
-                      (click)="toggleTrigger(index)"
-                    ><span></span></button>
+                      type="checkbox"
+                      class="blue-switch"
+                      [checked]="trigger.enabled"
+                      (change)="toggleTrigger(index)"
+                      tuiSwitch
+                    />
                     </td>
                     <td tuiTd class="col-actions">
                       <button

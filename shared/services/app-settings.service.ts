@@ -177,6 +177,7 @@ export class AppSettingsService {
 		);
 		root.classList.toggle('has-app-background', Boolean(settings.backgroundImage));
 		this.applyAccent(root, settings.accent);
+		this.applyAccent(document.body, settings.accent);
 		this.applyThemeVars(root, resolvedTheme === 'light');
 		this.applyDensityVars(root, settings.density === 'compact');
 

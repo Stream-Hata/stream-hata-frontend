@@ -15,6 +15,7 @@ import {
 } from '@taiga-ui/addon-table';
 import {
 	TuiButton,
+	TuiDropdown,
 	TuiIcon,
 	TuiInput,
 	tuiItemsHandlersProvider,
@@ -68,6 +69,7 @@ const LEVEL_LABELS: Record<string, string> = {
 		TuiSelectLike,
 		TuiBadge,
 		TuiButton,
+		TuiDropdown,
 		TuiIcon,
 		TuiInput,
 		TuiSwitch,
@@ -131,7 +133,7 @@ export default class CommandsPage {
 	readonly cooldown = signal(5);
 	readonly action = signal('say');
 	readonly actionControl = signalControl(this.action, this.injector);
-	readonly variables = ['$(user)', '$(login)', '$(channel)', '$(count)', '$(date)', '$(time)', '$(lastmusic)'];
+	readonly variables = ['$(user)', '$(login)', '$(channel)', '$(count)', '$(date)', '$(time)', '$(now)', '$(lastmusic)', '$(lasttrack)', '$(np)'];
 	readonly actionValues = ['say', 'points', 'timeout', 'wheel', 'music', 'clip', 'lastmusic'];
 	readonly actionLabels = ['Сообщение в чат', 'Начислить баллы', 'Таймаут', 'Колесо', 'Добавить музыку', 'Создать клип', 'Ссылка на текущую музыку'];
 	readonly level = signal('everyone');
@@ -242,6 +244,10 @@ export default class CommandsPage {
 
 	readonly triggerDraft = signal<Trigger[]>([]);
 	readonly triggerActions = TRIGGER_ACTIONS;
+	readonly triggerAction = signal(TRIGGER_ACTIONS[0].action);
+	readonly triggerActionControl = signalControl(this.triggerAction, this.injector);
+	readonly triggerActionValues = TRIGGER_ACTIONS.map((item) => item.action);
+	readonly triggerActionLabels = TRIGGER_ACTIONS.map((item) => item.description);
 	readonly triggersSaved = signal(false);
 	private triggersLoaded = false;
 
@@ -283,14 +289,7 @@ export default class CommandsPage {
 	}
 
 	addTrigger(): void {
-		const used = new Set(this.triggerDraft().map((item) => item.action));
-		const next = TRIGGER_ACTIONS.find((item) => !used.has(item.action));
-
-		if (!next) {
-			this.error.set('Все доступные триггеры уже добавлены');
-
-			return;
-		}
+		const next = TRIGGER_ACTIONS.find((item) => item.action === this.triggerAction()) ?? TRIGGER_ACTIONS[0];
 
 		this.triggerDraft.update((list) => [
 			...list,
@@ -332,6 +331,15 @@ export default class CommandsPage {
 
 	insertVariable(variable: string): void {
 		this.response.update((value) => `${value}${value ? ' ' : ''}${variable}`);
+	}
+
+	setTriggerActionLabel(label: string): void {
+		const index = this.triggerActionLabels.indexOf(label);
+
+		if (index >= 0) {
+			this.triggerActionControl.setValue(this.triggerActionValues[index]);
+			this.triggerAction.set(this.triggerActionValues[index]);
+		}
 	}
 
 	setRewardActionLabel(label: string): void {
