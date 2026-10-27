@@ -14,6 +14,10 @@ export class CommandsService {
 		return this.http.post<ChatCommand>('rgg-sync/commands', command);
 	}
 
+	setEnabled(id: string, enabled: boolean) {
+		return this.http.patch<ChatCommand>(`rgg-sync/commands/${id}`, { enabled });
+	}
+
 	remove(id: string) {
 		return this.http.delete<void>(`rgg-sync/commands/${id}`);
 	}

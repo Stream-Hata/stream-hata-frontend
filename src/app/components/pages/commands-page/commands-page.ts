@@ -287,7 +287,7 @@ export default class CommandsPage {
 		const enabled = this.check(event);
 
 		this.commandOverrides.update((value) => ({ ...value, [command.id]: enabled }));
-		this.service.save({ ...command, enabled }).subscribe({
+		this.service.setEnabled(command.id, enabled).subscribe({
 			next: () => this.refresh.update((v) => v + 1),
 			error: (response) => {
 				this.commandOverrides.update((value) => ({ ...value, [command.id]: !enabled }));

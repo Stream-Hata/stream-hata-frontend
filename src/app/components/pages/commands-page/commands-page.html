@@ -231,7 +231,7 @@
                     <input
                       aria-label="Включить таймер"
                       type="checkbox"
-                      [checked]="item.enabled"
+                      [checked]="timerEnabled(item)"
                       (change)="toggleTimer(item, $event)"
                       tuiSwitch
                       />
