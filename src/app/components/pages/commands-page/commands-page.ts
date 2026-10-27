@@ -1,4 +1,4 @@
-import type { ChatCommand, MessageTimer, Trigger } from '@shared/types/automation';
+import type { ChatCommand, MessageTimer, Trigger, TwitchReward, TwitchRewardsState } from '@shared/types/automation';
 import { Component, computed, DestroyRef, effect, inject, Injector, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -39,6 +39,13 @@ const TRIGGER_ACTIONS: { action: string; description: string }[] = [
 	{ action: 'jury.nei', description: 'Голос жюри: против' },
 	{ action: 'clips.clip', description: 'Создать клип' },
 ];
+
+const ACTION_LABELS: Record<string, string> = {
+	say: 'Сообщение в чат',
+	points: 'Начислить баллы',
+	timeout: 'Таймаут',
+	wheel: 'Колесо',
+};
 
 const LEVEL_LABELS: Record<string, string> = {
 	everyone: 'Все',
@@ -83,7 +90,7 @@ export default class CommandsPage {
 	private readonly destroyRef = inject(DestroyRef);
 	private readonly injector = inject(Injector);
 
-	readonly tab = signal<'commands' | 'timers' | 'triggers'>('commands');
+	readonly tab = signal<'commands' | 'timers' | 'triggers' | 'rewards'>('commands');
 	readonly refresh = signal(0);
 
 	readonly commands = toSignal(
@@ -91,6 +98,17 @@ export default class CommandsPage {
 			switchMap(() => this.service.list().pipe(catchError(() => of({ commands: [] })))),
 		),
 		{ initialValue: { commands: [] as ChatCommand[] } },
+	);
+
+	readonly twitchRewards = toSignal(
+		merge(timer(0, 15000), toObservable(this.refresh)).pipe(
+			switchMap(() =>
+				this.service.rewards().pipe(
+					catchError(() => of({ rewards: [], mappings: [] } as TwitchRewardsState)),
+				),
+			),
+		),
+		{ initialValue: { rewards: [], mappings: [] } as TwitchRewardsState },
 	);
 
 	readonly timers = toSignal(
@@ -106,6 +124,10 @@ export default class CommandsPage {
 	readonly response = signal('');
 	readonly aliases = signal('');
 	readonly cooldown = signal(5);
+	readonly action = signal('say');
+	readonly actionControl = signalControl(this.action, this.injector);
+	readonly actionValues = ['say', 'points', 'timeout', 'wheel'];
+	readonly actionLabels = ['Сообщение в чат', 'Начислить баллы', 'Таймаут', 'Колесо'];
 	readonly level = signal('everyone');
 	readonly levelControl = signalControl(this.level, this.injector);
 	readonly levelValues = ['everyone', 'subscriber', 'vip', 'moderator', 'broadcaster'];
@@ -114,6 +136,17 @@ export default class CommandsPage {
 	readonly error = signal<string | null>(null);
 	readonly commandOverrides = signal<Record<string, boolean>>({});
 	readonly timerOverrides = signal<Record<string, boolean>>({});
+
+	/* Форма награды */
+	readonly rewardEditingId = signal<string | null>(null);
+	readonly rewardTitle = signal('');
+	readonly rewardCost = signal(100);
+	readonly rewardPrompt = signal('');
+	readonly rewardEnabled = signal(true);
+	readonly rewardAction = signal('say');
+	readonly rewardPayload = signal('');
+	readonly rewardActionValues = ['say', 'points', 'timeout', 'wheel', 'command'];
+	readonly rewardActionLabels = ['Сообщение в чат', 'Начислить баллы', 'Таймаут', 'Колесо', 'Выполнить команду'];
 
 	/* Форма таймера */
 	readonly timerEditingId = signal<string | null>(null);
@@ -126,6 +159,68 @@ export default class CommandsPage {
 	readonly timerRandomControl = signalControl(this.timerRandom, this.injector);
 
 	readonly editing = computed(() => this.editingId() !== null);
+
+	editReward(reward: TwitchReward): void {
+		const mapping = this.twitchRewards().mappings.find(
+			(item) => item.id === reward.id || item.rewardTitle === reward.title,
+		);
+
+		this.rewardEditingId.set(reward.id);
+		this.rewardTitle.set(reward.title);
+		this.rewardCost.set(reward.cost);
+		this.rewardPrompt.set(reward.prompt);
+		this.rewardEnabled.set(reward.is_enabled);
+		this.rewardAction.set(mapping?.action ?? 'say');
+		this.rewardPayload.set(mapping?.payload ?? '');
+	}
+
+	resetRewardForm(): void {
+		this.rewardEditingId.set(null);
+		this.rewardTitle.set('');
+		this.rewardCost.set(100);
+		this.rewardPrompt.set('');
+		this.rewardEnabled.set(true);
+		this.rewardAction.set('say');
+		this.rewardPayload.set('');
+	}
+
+	saveReward(): void {
+		const title = this.rewardTitle().trim();
+
+		if (!title || this.rewardCost() < 1) {
+			this.error.set('Укажите название и цену награды');
+
+			return;
+		}
+
+		this.service
+			.saveReward({
+				id: this.rewardEditingId() ?? undefined,
+				title,
+				cost: this.rewardCost(),
+				prompt: this.rewardPrompt().trim(),
+				is_enabled: this.rewardEnabled(),
+				action: this.rewardAction(),
+				payload: this.rewardPayload(),
+			})
+			.subscribe({
+				next: () => {
+					this.resetRewardForm();
+					this.refresh.update((value) => value + 1);
+				},
+				error: (response) => this.error.set(response.error?.error ?? 'Не удалось сохранить награду'),
+			});
+	}
+
+	removeReward(id: string): void {
+		this.service.removeReward(id).subscribe(() => this.refresh.update((value) => value + 1));
+	}
+
+	rewardMapping(reward: TwitchReward) {
+		return this.twitchRewards().mappings.find(
+			(item) => item.id === reward.id || item.rewardTitle === reward.title,
+		);
+	}
 
 	/* Триггеры */
 	readonly triggers = toSignal(
@@ -219,6 +314,15 @@ export default class CommandsPage {
 		});
 	}
 
+	setActionLabel(label: string): void {
+		const index = this.actionLabels.indexOf(label);
+
+		if (index >= 0) {
+			this.actionControl.setValue(this.actionValues[index]);
+			this.action.set(this.actionValues[index]);
+		}
+	}
+
 	check(event: Event): boolean {
 		return (event.target as HTMLInputElement).checked;
 	}
@@ -231,9 +335,12 @@ export default class CommandsPage {
 		this.editingId.set(null);
 		this.name.set('');
 		this.response.set('');
+		this.action.set('say');
 		this.aliases.set('');
 		this.cooldown.set(5);
 		this.level.set('everyone');
+		this.action.set('say');
+		this.actionControl.setValue('say', { emitEvent: false });
 		this.testResult.set(null);
 		this.error.set(null);
 	}
@@ -245,6 +352,8 @@ export default class CommandsPage {
 		this.aliases.set(command.aliases.join(', '));
 		this.cooldown.set(command.cooldownSeconds);
 		this.level.set(command.userLevel);
+		this.action.set(command.action || 'say');
+		this.actionControl.setValue(this.action(), { emitEvent: false });
 		this.error.set(null);
 	}
 
@@ -254,6 +363,7 @@ export default class CommandsPage {
 		const payload: Partial<ChatCommand> = {
 			id: this.editingId() ?? undefined,
 			name: this.name().trim(),
+			action: this.action(),
 			response: this.response().trim(),
 			aliases: this.aliases()
 				.split(',')

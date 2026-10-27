@@ -2,6 +2,7 @@ export interface ChatCommand {
 	id: string;
 	name: string;
 	aliases: string[];
+	action: string;
 	response: string;
 	cooldownSeconds: number;
 	userLevel: string;
@@ -260,6 +261,19 @@ export interface Quote {
 	author: string;
 	addedBy: string;
 	createdAt: string;
+}
+
+export interface TwitchReward {
+	id: string;
+	title: string;
+	prompt: string;
+	cost: number;
+	is_enabled: boolean;
+}
+
+export interface TwitchRewardsState {
+	rewards: TwitchReward[];
+	mappings: RedemptionMapping[];
 }
 
 export interface RedemptionMapping {

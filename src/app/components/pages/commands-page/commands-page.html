@@ -33,6 +33,15 @@
       >
         Триггеры
       </button>
+      <button
+        type="button"
+        [class.active-tab]="tab() === 'rewards'"
+        (click)="tab.set('rewards')"
+        appearance="jkit-tint-cyan"
+        tuiButton
+      >
+        Награды
+      </button>
     </div>
   </header>
 
@@ -136,10 +145,25 @@
           [value]="name()"
           (input)="name.set(value($event))"
           /></tui-textfield>
-        <span class="jk-label">Ответ</span>
+        <span class="jk-label">Действие</span>
+        <tui-textfield tuiChevron>
+          <input
+            aria-label="Действие команды"
+            [readonly]="true"
+            [value]="actionLabels[actionValues.indexOf(actionControl.value)]"
+            tuiInput
+            tuiSelectLike
+          />
+          <tui-data-list-wrapper
+            *tuiDropdown
+            [items]="actionLabels"
+            (itemClick)="setActionLabel($event)"
+          ></tui-data-list-wrapper>
+        </tui-textfield>
+        <span class="jk-label">{{ action() === 'say' ? 'Ответ' : 'Значение' }}</span>
         <tui-textfield>
           <textarea
-            aria-label="Ответ команды"
+            aria-label="Значение команды"
             rows="3"
             [value]="response()"
             (input)="response.set(value($event))"
@@ -334,6 +358,82 @@
               <button appearance="flat" tuiButton type="button" (click)="resetTimerForm()">
                 Отмена
               </button>
+            }
+          </div>
+        </aside>
+      </div>
+    } @else if (tab() === 'rewards') {
+      <div class="automation-grid">
+        <section class="automation-main">
+          <h2 class="jk-h4">Награды Twitch</h2>
+          <div class="table-wrap">
+            <table tuiTable>
+              <thead tuiThead>
+                <tr>
+                  <th tuiTh>Название</th>
+                  <th tuiTh>Цена</th>
+                  <th tuiTh>Действие</th>
+                  <th tuiTh>Команда</th>
+                  <th tuiTh class="col-actions"><span class="sr-only">Действия</span></th>
+                </tr>
+              </thead>
+              <tbody tuiTbody>
+                @for (reward of twitchRewards().rewards; track reward.id) {
+                  <tr>
+                    <td tuiTd class="name-cell">{{ reward.title }}</td>
+                    <td tuiTd class="jk-numeric">{{ reward.cost }}</td>
+                    <td tuiTd>{{ rewardMapping(reward)?.action ?? '—' }}</td>
+                    <td tuiTd>
+                      {{ rewardMapping(reward)?.action === 'command'
+                        ? (commands().commands.find(c => c.id === rewardMapping(reward)?.payload)?.name ?? '—')
+                        : '—' }}
+                    </td>
+                    <td tuiTd class="col-actions">
+                      <button size="s" type="button" aria-label="Редактировать" (click)="editReward(reward)" appearance="flat" iconStart="@tui.pencil" tuiIconButton></button>
+                      <button class="danger-action" size="s" type="button" aria-label="Удалить" (click)="removeReward(reward.id)" appearance="flat" iconStart="@tui.trash-2" tuiIconButton></button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <aside class="jk-card editor">
+          <h2 class="jk-h4">{{ rewardEditingId() ? 'Редактирование награды' : 'Новая награда' }}</h2>
+          <span class="jk-label">Название</span>
+          <tui-textfield><input aria-label="Название награды" tuiInput type="text" [value]="rewardTitle()" (input)="rewardTitle.set(value($event))" /></tui-textfield>
+          <span class="jk-label">Цена в channel points</span>
+          <tui-textfield><input aria-label="Цена награды" type="number" min="1" tuiInput [value]="rewardCost()" (input)="rewardCost.set(+value($event))" /></tui-textfield>
+          <span class="jk-label">Описание для зрителя</span>
+          <tui-textfield><textarea aria-label="Описание награды" rows="2" tuiTextarea [value]="rewardPrompt()" (input)="rewardPrompt.set(value($event))"></textarea></tui-textfield>
+          <span class="jk-label">Действие</span>
+          <select [value]="rewardAction()" (change)="rewardAction.set(value($event))">
+            @for (label of rewardActionLabels; track label; let i = $index) {
+              <option [value]="rewardActionValues[i]">{{ label }}</option>
+            }
+          </select>
+          @if (rewardAction() === 'command') {
+            <span class="jk-label">Команда</span>
+            <select [value]="rewardPayload()" (change)="rewardPayload.set(value($event))">
+              <option value="">— выберите команду —</option>
+              @for (command of commands().commands; track command.id) {
+                <option [value]="command.id">!{{ command.name }}</option>
+              }
+            </select>
+          } @else {
+            <span class="jk-label">Значение (текст / баллы / секунды)</span>
+            <tui-textfield><input aria-label="Значение награды" tuiInput type="text" [value]="rewardPayload()" (input)="rewardPayload.set(value($event))" /></tui-textfield>
+          }
+          <div class="editor-switch">
+            <span class="jk-label">Включена</span>
+            <input aria-label="Включить награду" type="checkbox" [checked]="rewardEnabled()" (change)="rewardEnabled.set(check($event))" tuiSwitch />
+          </div>
+          @if (error(); as message) { <p class="error-text">{{ message }}</p> }
+          <div class="editor-actions">
+            <button type="button" (click)="saveReward()" appearance="primary" tuiButton>{{ rewardEditingId() ? 'Сохранить' : 'Создать' }}</button>
+            @if (rewardEditingId()) {
+              <button appearance="flat" tuiButton type="button" (click)="resetRewardForm()">Отмена</button>
             }
           </div>
         </aside>

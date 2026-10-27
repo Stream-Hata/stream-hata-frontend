@@ -1,4 +1,4 @@
-import type { ChatCommand, MessageTimer } from '@shared/types/automation';
+import type { ChatCommand, MessageTimer, TwitchReward, TwitchRewardsState } from '@shared/types/automation';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
@@ -24,6 +24,20 @@ export class CommandsService {
 
 	test(id: string) {
 		return this.http.get<{ response: string }>(`rgg-sync/commands/${id}/test`);
+	}
+
+	rewards() {
+		return this.http.get<TwitchRewardsState>('rgg-sync/twitch-rewards');
+	}
+
+	saveReward(reward: Partial<TwitchReward> & { action?: string; payload?: string }) {
+		return reward.id
+			? this.http.patch<{ reward: TwitchReward }>('rgg-sync/twitch-rewards', reward)
+			: this.http.post<{ reward: TwitchReward }>('rgg-sync/twitch-rewards', reward);
+	}
+
+	removeReward(id: string) {
+		return this.http.delete<void>(`rgg-sync/twitch-rewards/${id}`);
 	}
 
 	timers() {
