@@ -131,8 +131,8 @@ export default class CommandsPage {
 	readonly cooldown = signal(5);
 	readonly action = signal('say');
 	readonly actionControl = signalControl(this.action, this.injector);
-	readonly actionValues = ['say', 'points', 'timeout', 'wheel', 'music', 'clip'];
-	readonly actionLabels = ['Сообщение в чат', 'Начислить баллы', 'Таймаут', 'Колесо', 'Добавить музыку', 'Создать клип'];
+	readonly actionValues = ['say', 'points', 'timeout', 'wheel', 'music', 'clip', 'lastmusic'];
+	readonly actionLabels = ['Сообщение в чат', 'Начислить баллы', 'Таймаут', 'Колесо', 'Добавить музыку', 'Создать клип', 'Ссылка на текущую музыку'];
 	readonly level = signal('everyone');
 	readonly levelControl = signalControl(this.level, this.injector);
 	readonly levelValues = ['everyone', 'subscriber', 'vip', 'moderator', 'broadcaster'];
@@ -150,8 +150,14 @@ export default class CommandsPage {
 	readonly rewardEnabled = signal(true);
 	readonly rewardAction = signal('say');
 	readonly rewardPayload = signal('');
-	readonly rewardActionValues = ['say', 'points', 'timeout', 'wheel', 'command'];
-	readonly rewardActionLabels = ['Сообщение в чат', 'Начислить баллы', 'Таймаут', 'Колесо', 'Выполнить команду'];
+	readonly rewardActionValues = ['say', 'points', 'timeout', 'wheel', 'command', 'lastmusic'];
+	readonly rewardActionLabels = ['Сообщение в чат', 'Начислить баллы', 'Таймаут', 'Колесо', 'Выполнить команду', 'Ссылка на текущую музыку'];
+	readonly commandLabels = computed(() => this.commands().commands.map((command) => `!${command.name}`));
+	readonly rewardCommandLabel = computed(() => {
+		const command = this.commands().commands.find((item) => item.id === this.rewardPayload());
+
+		return command ? `!${command.name}` : '— выберите команду —';
+	});
 
 	/* Форма таймера */
 	readonly timerEditingId = signal<string | null>(null);
@@ -295,8 +301,8 @@ export default class CommandsPage {
 		this.triggerDraft.update((list) => list.filter((_, itemIndex) => itemIndex !== index));
 	}
 
-	toggleTrigger(index: number, event: Event): void {
-		const enabled = this.check(event);
+	toggleTrigger(index: number): void {
+		const enabled = !(this.triggerDraft()[index]?.enabled ?? false);
 
 		this.triggerDraft.update((list) =>
 			list.map((item, itemIndex) => (itemIndex === index ? { ...item, enabled } : item)),
@@ -321,6 +327,22 @@ export default class CommandsPage {
 			},
 			error: (response) => this.error.set(response.error?.error ?? 'Не удалось сохранить триггеры'),
 		});
+	}
+
+	setRewardActionLabel(label: string): void {
+		const index = this.rewardActionLabels.indexOf(label);
+
+		if (index >= 0) {
+			this.rewardAction.set(this.rewardActionValues[index]);
+		}
+	}
+
+	setRewardCommandLabel(label: string): void {
+		const command = this.commands().commands.find((item) => `!${item.name}` === label);
+
+		if (command) {
+			this.rewardPayload.set(command.id);
+		}
 	}
 
 	setActionLabel(label: string): void {
@@ -402,8 +424,8 @@ export default class CommandsPage {
 		return this.timerOverrides()[timer.id] ?? timer.enabled;
 	}
 
-	toggleCommand(command: ChatCommand, event: Event): void {
-		const enabled = this.check(event);
+	toggleCommand(command: ChatCommand): void {
+		const enabled = !this.commandEnabled(command);
 
 		this.commandOverrides.update((value) => ({ ...value, [command.id]: enabled }));
 		this.service.setEnabled(command.id, enabled).subscribe({
@@ -470,8 +492,8 @@ export default class CommandsPage {
 			});
 	}
 
-	toggleTimer(item: MessageTimer, event: Event): void {
-		const enabled = this.check(event);
+	toggleTimer(item: MessageTimer): void {
+		const enabled = !this.timerEnabled(item);
 
 		this.timerOverrides.update((value) => ({ ...value, [item.id]: enabled }));
 		this.service

@@ -78,13 +78,14 @@
                       <span appearance="neutral" tuiBadge>{{ levelLabel(command.userLevel) }}</span>
                     </td>
                     <td tuiTd>
-                      <input
+                      <button
                         aria-label="Включить команду"
-                        type="checkbox"
-                        [checked]="commandEnabled(command)"
-                        (click)="toggleCommand(command, $event)"
-                        tuiSwitch
-                        />
+                        type="button"
+                        class="jk-switch"
+                        [class.on]="commandEnabled(command)"
+                        [attr.aria-pressed]="commandEnabled(command)"
+                        (click)="toggleCommand(command)"
+                      ><span></span></button>
                       </td>
                       <td tuiTd class="col-actions">
                         <button
@@ -131,35 +132,6 @@
             >
           </div>
         }
-      </section>
-
-      <section class="automation-main">
-        <div class="triggers-head">
-          <h2 class="jk-h4">Системные команды</h2>
-          <button appearance="flat" tuiButton type="button" (click)="openTriggers()">Настроить</button>
-        </div>
-        <div class="table-wrap">
-          <table tuiTable>
-            <thead tuiThead>
-              <tr>
-                <th tuiTh>Команда</th>
-                <th tuiTh>Действие</th>
-                <th tuiTh>Алиасы</th>
-                <th tuiTh>Вкл</th>
-              </tr>
-            </thead>
-            <tbody tuiTbody>
-              @for (trigger of triggerDraft(); track trigger.action) {
-                <tr>
-                  <td tuiTd class="name-cell">{{ trigger.command }}</td>
-                  <td tuiTd>{{ trigger.description }}</td>
-                  <td tuiTd class="response-cell">{{ trigger.aliases.join(', ') }}</td>
-                  <td tuiTd>{{ trigger.enabled ? 'Да' : 'Нет' }}</td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
       </section>
 
       <aside class="jk-card editor">
@@ -281,13 +253,14 @@
                   <td tuiTd class="response-cell">{{ item.messages.join(' · ') }}</td>
                   <td tuiTd>{{ formatInterval(item.intervalSeconds) }}</td>
                   <td tuiTd>
-                    <input
+                    <button
                       aria-label="Включить таймер"
-                      type="checkbox"
-                      [checked]="timerEnabled(item)"
-                      (click)="toggleTimer(item, $event)"
-                      tuiSwitch
-                      />
+                      type="button"
+                      class="jk-switch"
+                      [class.on]="timerEnabled(item)"
+                      [attr.aria-pressed]="timerEnabled(item)"
+                      (click)="toggleTimer(item)"
+                    ><span></span></button>
                     </td>
                     <td tuiTd class="col-actions">
                       <button
@@ -309,6 +282,17 @@
                         iconStart="@tui.trash-2"
                         tuiIconButton
                       ></button>
+                    </td>
+                  </tr>
+                }
+                @for (trigger of triggerDraft(); track trigger.action; let index = $index) {
+                  <tr>
+                    <td tuiTd class="name-cell">{{ trigger.command }}</td>
+                    <td tuiTd>{{ trigger.description }}</td>
+                    <td tuiTd class="response-cell">{{ trigger.aliases.join(', ') }}</td>
+                    <td tuiTd>{{ trigger.enabled ? 'Да' : 'Нет' }}</td>
+                    <td tuiTd class="col-actions">
+                      <button size="s" type="button" aria-label="Настроить" (click)="openTriggers()" appearance="flat" iconStart="@tui.pencil" tuiIconButton></button>
                     </td>
                   </tr>
                 }
@@ -437,19 +421,36 @@
           <span class="jk-label">Описание для зрителя</span>
           <tui-textfield><textarea aria-label="Описание награды" rows="2" tuiTextarea [value]="rewardPrompt()" (input)="rewardPrompt.set(value($event))"></textarea></tui-textfield>
           <span class="jk-label">Действие</span>
-          <select [value]="rewardAction()" (change)="rewardAction.set(value($event))">
-            @for (label of rewardActionLabels; track label; let i = $index) {
-              <option [value]="rewardActionValues[i]">{{ label }}</option>
-            }
-          </select>
+          <tui-textfield tuiChevron>
+            <input
+              aria-label="Действие награды"
+              [readonly]="true"
+              [value]="rewardActionLabels[rewardActionValues.indexOf(rewardAction())]"
+              tuiInput
+              tuiSelectLike
+            />
+            <tui-data-list-wrapper
+              *tuiDropdown
+              [items]="rewardActionLabels"
+              (itemClick)="setRewardActionLabel($event)"
+            ></tui-data-list-wrapper>
+          </tui-textfield>
           @if (rewardAction() === 'command') {
             <span class="jk-label">Команда</span>
-            <select [value]="rewardPayload()" (change)="rewardPayload.set(value($event))">
-              <option value="">— выберите команду —</option>
-              @for (command of commands().commands; track command.id) {
-                <option [value]="command.id">!{{ command.name }}</option>
-              }
-            </select>
+            <tui-textfield tuiChevron>
+              <input
+                aria-label="Команда награды"
+                [readonly]="true"
+                [value]="rewardCommandLabel()"
+                tuiInput
+                tuiSelectLike
+              />
+              <tui-data-list-wrapper
+                *tuiDropdown
+                [items]="commandLabels()"
+                (itemClick)="setRewardCommandLabel($event)"
+              ></tui-data-list-wrapper>
+            </tui-textfield>
           } @else {
             <span class="jk-label">Значение (текст / баллы / секунды)</span>
             <tui-textfield><input aria-label="Значение награды" tuiInput type="text" [value]="rewardPayload()" (input)="rewardPayload.set(value($event))" /></tui-textfield>
@@ -521,13 +522,14 @@
                       /></tui-textfield>
                   </td>
                   <td tuiTd>
-                    <input
+                    <button
                       aria-label="Включить триггер"
-                      type="checkbox"
-                      [checked]="trigger.enabled"
-                      (click)="toggleTrigger(index, $event)"
-                      tuiSwitch
-                      />
+                      type="button"
+                      class="jk-switch"
+                      [class.on]="trigger.enabled"
+                      [attr.aria-pressed]="trigger.enabled"
+                      (click)="toggleTrigger(index)"
+                    ><span></span></button>
                     </td>
                     <td tuiTd class="col-actions">
                       <button
