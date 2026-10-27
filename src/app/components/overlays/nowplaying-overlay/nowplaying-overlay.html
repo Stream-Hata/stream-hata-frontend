@@ -5,6 +5,7 @@
       @if (videoUrl(); as video) {
         <iframe
           #player
+          id="nowplaying-player"
           class="nowplaying-video"
           [class.nowplaying-video-hidden]="!showVideo()"
           [src]="video"

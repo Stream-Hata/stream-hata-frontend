@@ -155,10 +155,9 @@ export class NowPlayingOverlay {
 	onVideoLoad(event: Event): void {
 		const frame = event.target as HTMLIFrameElement;
 
-		frame.contentWindow?.postMessage(
-			JSON.stringify({ event: 'listening', id: 1, channel: 'widget' }),
-			'*',
-		);
+		this.listenToPlayer(frame);
+		setTimeout(() => this.listenToPlayer(frame), 1000);
+		setTimeout(() => this.listenToPlayer(frame), 3000);
 
 		for (const func of ['playVideo', 'unMute']) {
 			frame.contentWindow?.postMessage(
@@ -257,7 +256,9 @@ export class NowPlayingOverlay {
 		}
 	}
 
-	private applyPlayerState(state?: number): void {
+	private applyPlayerState(value?: number | string): void {
+		const state = typeof value === 'string' ? Number(value) : value;
+
 		if (state === 0) {
 			this.nextTrack();
 		}
@@ -277,6 +278,13 @@ export class NowPlayingOverlay {
 		if (state === 2) {
 			this.paused.set(true);
 		}
+	}
+
+	private listenToPlayer(frame: HTMLIFrameElement): void {
+		frame.contentWindow?.postMessage(
+			JSON.stringify({ event: 'listening', id: 'nowplaying-player', channel: 'widget' }),
+			'*',
+		);
 	}
 
 	private sendCommand(func: string, args: unknown[] = []): void {
