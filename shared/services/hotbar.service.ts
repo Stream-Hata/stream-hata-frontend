@@ -23,10 +23,10 @@ export class HotbarService {
 	private readonly http = inject(HttpClient);
 
 	initialLoad() {
-		return this.http.get<AppBackendState>('/rgg-sync');
+		return this.http.get<AppBackendState>('/rgg-sync/');
 	}
 
 	updateState(appState: Partial<AppState>) {
-		return this.http.post<AppBackendState>('/rgg-sync', appState);
+		return this.http.post<AppBackendState>('/rgg-sync/', appState);
 	}
 }

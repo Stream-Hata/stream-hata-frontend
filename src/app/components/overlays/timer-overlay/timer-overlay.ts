@@ -30,7 +30,7 @@ export class TimerOverlay {
 		timer(0, 1000).pipe(
 			switchMap(() =>
 				this.http
-					.get<OverlayTimerState>('rgg-sync')
+					.get<OverlayTimerState>('rgg-sync/')
 					.pipe(catchError(() => of(null as OverlayTimerState | null))),
 			),
 		),
