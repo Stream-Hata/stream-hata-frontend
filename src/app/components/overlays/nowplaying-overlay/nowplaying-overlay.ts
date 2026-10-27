@@ -50,20 +50,20 @@ export class NowPlayingOverlay {
 	readonly playbackStarted = signal(false);
 	readonly needsGesture = signal(false);
 	readonly thumbnailUrl = computed(() => {
-		const videoId = this.current()?.videoId;
+		const videoId = this.currentId();
 
 		return videoId ? `rgg-sync/music/thumbnail?id=${encodeURIComponent(videoId)}` : '';
 	});
 	readonly showVideo = computed(() => this.config().config.showVideo !== false);
 	readonly videoUrl = computed<SafeResourceUrl | null>(() => {
-		const track = this.current();
+		const videoId = this.currentId();
 
-		if (!track?.videoId) {
+		if (!videoId) {
 			return null;
 		}
 
 		return this.sanitizer.bypassSecurityTrustResourceUrl(
-			`https://www.youtube.com/embed/${encodeURIComponent(track.videoId)}?autoplay=1&controls=0&modestbranding=1&rel=0&playsinline=1&enablejsapi=1&origin=${encodeURIComponent(location.origin)}&reload=${this.reloadKey()}`,
+			`https://www.youtube.com/embed/${encodeURIComponent(videoId)}?autoplay=1&controls=0&modestbranding=1&rel=0&playsinline=1&enablejsapi=1&origin=${encodeURIComponent(location.origin)}&reload=${this.reloadKey()}`,
 		);
 	});
 
@@ -95,12 +95,12 @@ export class NowPlayingOverlay {
 			}
 
 			if (!this.currentId() || !this.queue.includes(this.currentId() ?? '')) {
-				this.currentId.set(this.queue[0]);
+				this.currentId.set(this.queue[this.queue.length - 1]);
 			}
 		});
 
 		effect(() => {
-			this.current()?.videoId;
+			this.currentId();
 			this.thumbnailFailed.set(false);
 			this.playbackStarted.set(false);
 			this.needsGesture.set(false);
@@ -208,7 +208,7 @@ export class NowPlayingOverlay {
 
 		this.endTimer = setTimeout(
 			() => this.nextTrack(),
-			Math.max(15, seconds + 2) * 1000,
+			Math.max(15, seconds + 10) * 1000,
 		);
 	}
 
