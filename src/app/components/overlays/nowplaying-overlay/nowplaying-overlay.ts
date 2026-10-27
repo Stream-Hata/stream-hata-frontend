@@ -155,6 +155,11 @@ export class NowPlayingOverlay {
 	onVideoLoad(event: Event): void {
 		const frame = event.target as HTMLIFrameElement;
 
+		frame.contentWindow?.postMessage(
+			JSON.stringify({ event: 'listening', id: 1, channel: 'widget' }),
+			'*',
+		);
+
 		for (const func of ['playVideo', 'unMute']) {
 			frame.contentWindow?.postMessage(
 				JSON.stringify({ event: 'command', func, args: [] }),
