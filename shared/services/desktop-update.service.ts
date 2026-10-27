@@ -36,7 +36,59 @@ export class DesktopUpdateService {
 		void this.check();
 		this.listenForUpdates();
 		this.listenForProgress();
+		void this.syncState();
 		setInterval(() => void this.check(), 30 * 60_000);
+	}
+
+	private applyState(state: {
+		phase?: string;
+		version?: string | null;
+		downloaded?: number;
+		total?: number;
+		error?: string | null;
+	}): void {
+		switch (state.phase) {
+			case 'checking':
+				this.checking.set(true);
+				break;
+			case 'available':
+				this.checking.set(false);
+				this.checked.set(true);
+				this.available.set(true);
+				if (state.version) this.version.set(state.version);
+				break;
+			case 'idle':
+				this.checking.set(false);
+				this.checked.set(true);
+				this.available.set(false);
+				break;
+			case 'downloading':
+				this.checking.set(false);
+				this.installing.set(true);
+				this.step.set('downloading');
+				break;
+			case 'installing':
+				this.installing.set(true);
+				this.step.set('installing');
+				break;
+			case 'restarting':
+				this.installing.set(true);
+				this.step.set('restarting');
+				break;
+			case 'error':
+				this.checking.set(false);
+				this.installing.set(false);
+				this.error.set(state.error ?? 'Ошибка обновления');
+				break;
+		}
+	}
+
+	async syncState(): Promise<void> {
+		const state = await this.invoke<Parameters<DesktopUpdateService['applyState']>[0]>('update_ui_state');
+
+		if (state) {
+			this.applyState(state);
+		}
 	}
 
 	private listenForProgress(): void {
@@ -54,8 +106,8 @@ export class DesktopUpdateService {
 			this.total.set(total ?? 0);
 			this.progress.set(total ? Math.min(100, Math.round((downloaded / total) * 100)) : 0);
 		});
-		void globalTauri?.event?.listen?.('update-step', (event) => {
-			this.step.set(String(event.payload));
+		void globalTauri?.event?.listen?.('update-state', (event) => {
+			this.applyState(event.payload as Parameters<DesktopUpdateService['applyState']>[0]);
 		});
 	}
 
