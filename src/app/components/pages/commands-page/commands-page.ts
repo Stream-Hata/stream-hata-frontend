@@ -131,6 +131,7 @@ export default class CommandsPage {
 	readonly cooldown = signal(5);
 	readonly action = signal('say');
 	readonly actionControl = signalControl(this.action, this.injector);
+	readonly variables = ['$(user)', '$(login)', '$(channel)', '$(count)', '$(date)', '$(time)', '$(lastmusic)'];
 	readonly actionValues = ['say', 'points', 'timeout', 'wheel', 'music', 'clip', 'lastmusic'];
 	readonly actionLabels = ['Сообщение в чат', 'Начислить баллы', 'Таймаут', 'Колесо', 'Добавить музыку', 'Создать клип', 'Ссылка на текущую музыку'];
 	readonly level = signal('everyone');
@@ -327,6 +328,10 @@ export default class CommandsPage {
 			},
 			error: (response) => this.error.set(response.error?.error ?? 'Не удалось сохранить триггеры'),
 		});
+	}
+
+	insertVariable(variable: string): void {
+		this.response.update((value) => `${value}${value ? ' ' : ''}${variable}`);
 	}
 
 	setRewardActionLabel(label: string): void {

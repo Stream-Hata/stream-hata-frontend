@@ -68,7 +68,7 @@ export default class OverlayHost implements OnDestroy {
 		timer(0, 5000).pipe(
 			switchMap(() =>
 				this.http
-					.get<{ accent?: string }>('rgg-sync/app-settings')
+					.get<{ accent?: string }>('rgg-sync/app-settings', { params: { t: Date.now() } })
 					.pipe(catchError(() => of<{ accent?: string }>({}))),
 			),
 		),
@@ -84,6 +84,7 @@ export default class OverlayHost implements OnDestroy {
 				: 'transparent',
 			'--widget-text': config.textColor ?? '#f5eaff',
 			'--widget-accent': this.globalSettings().accent ?? config.accentColor ?? '#ff2ea6',
+			'--accent-primary': this.globalSettings().accent ?? config.accentColor ?? '#ff2ea6',
 			'--widget-scale': String(config.scale ?? 1),
 		};
 	});

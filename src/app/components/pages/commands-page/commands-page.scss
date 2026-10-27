@@ -149,3 +149,19 @@
 	background: var(--accent-primary);
 	transform: translateX(18px);
 }
+
+.variables {
+	display: flex;
+	gap: 4px;
+	flex-wrap: wrap;
+}
+
+.variable {
+	padding: 2px 6px;
+	border: 1px solid var(--border-normal);
+	border-radius: 6px;
+	background: var(--neutral-1);
+	color: var(--text-secondary);
+	font: var(--font-code);
+	cursor: pointer;
+}
