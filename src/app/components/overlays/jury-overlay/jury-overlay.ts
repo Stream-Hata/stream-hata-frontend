@@ -26,7 +26,7 @@ export class JuryOverlay {
 	);
 
 	readonly config = toSignal(
-		this.configService.get('jury').pipe(catchError(() => of({ config: {} as WidgetConfig }))),
+		this.configService.watch('jury').pipe(catchError(() => of({ config: {} as WidgetConfig }))),
 		{ initialValue: { config: {} as WidgetConfig } },
 	);
 	private readonly tick = toSignal(timer(0, 1000), { initialValue: Date.now() });

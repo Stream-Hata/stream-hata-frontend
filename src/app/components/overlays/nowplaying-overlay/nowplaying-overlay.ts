@@ -31,7 +31,7 @@ export class NowPlayingOverlay {
 		{ initialValue: null as MusicListResponse | null },
 	);
 	readonly config = toSignal(
-		this.configService.get('nowplaying').pipe(
+		this.configService.watch('nowplaying').pipe(
 			catchError(() => of({ config: {} as WidgetConfig })),
 		),
 		{ initialValue: { config: {} as WidgetConfig } },

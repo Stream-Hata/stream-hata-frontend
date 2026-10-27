@@ -2,7 +2,7 @@ import type { Observable } from 'rxjs';
 import type { DonationWidgetConfig } from '@shared/types/donation';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { tap } from 'rxjs';
+import { switchMap, tap, timer } from 'rxjs';
 
 export interface WidgetsState {
 	widgets: Record<string, boolean>;
@@ -86,6 +86,18 @@ export class WidgetConfigService {
 		return this.http
 			.get<{ config: WidgetConfig }>(`rgg-sync/widgets/${kind}/config`)
 			.pipe(tap((response) => this.cache(kind, response.config)));
+	}
+
+	watch(kind: string): Observable<{ config: WidgetConfig }> {
+		return timer(0, 3000).pipe(
+			switchMap(() =>
+				this.http
+					.get<{ config: WidgetConfig }>(`rgg-sync/widgets/${kind}/config`, {
+						params: { t: Date.now() },
+					})
+					.pipe(tap((response) => this.cache(kind, response.config))),
+			),
+		);
 	}
 
 	save(kind: string, config: WidgetConfig): Observable<{ config: WidgetConfig }> {
