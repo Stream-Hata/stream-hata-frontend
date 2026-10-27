@@ -32,6 +32,15 @@
 	border-radius: 12px;
 }
 
+.nowplaying-video-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	border: 0;
+	opacity: 0;
+	pointer-events: none;
+}
+
 .nowplaying-cover {
 	width: 96px;
 	height: 96px;
