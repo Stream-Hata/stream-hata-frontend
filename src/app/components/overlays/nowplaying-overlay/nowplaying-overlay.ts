@@ -43,7 +43,7 @@ export class NowPlayingOverlay {
 			.filter((track) => new Date(track.lastAddedAt).toLocaleDateString('en-CA') === today)
 			.sort((left, right) => Date.parse(left.lastAddedAt) - Date.parse(right.lastAddedAt));
 	});
-	readonly currentId = signal<string | null>(null);
+	readonly currentId = signal<string | null>(this.storedCurrentId());
 	readonly reloadKey = signal(0);
 	readonly finished = signal(false);
 	readonly current = computed<Track | null>(
@@ -118,6 +118,15 @@ export class NowPlayingOverlay {
 		effect(() => {
 			const videoId = this.currentId();
 			this.reloadKey();
+			try {
+				if (videoId) {
+					localStorage.setItem('nsh.nowplaying.current', videoId);
+				} else {
+					localStorage.removeItem('nsh.nowplaying.current');
+				}
+			} catch {
+				// storage may be unavailable
+			}
 			this.music.setCurrent(videoId).subscribe({ error: () => undefined });
 			this.thumbnailFailed.set(false);
 			this.playbackStarted.set(false);
@@ -316,6 +325,14 @@ export class NowPlayingOverlay {
 			JSON.stringify({ event: 'command', func, args }),
 			'*',
 		);
+	}
+
+	private storedCurrentId(): string | null {
+		try {
+			return localStorage.getItem('nsh.nowplaying.current');
+		} catch {
+			return null;
+		}
 	}
 
 	private parseMessage(data: unknown): { event?: string; info?: number | { playerState?: number } } | null {
