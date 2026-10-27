@@ -73,6 +73,15 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 					</g>
 					<path class="whisker" d="M91 92 55 86M92 99 56 101M149 92l36-6M148 99l36 2" />
 					<path class="cheek" d="M78 86c8 9 18 12 28 11M162 86c-8 9-18 12-28 11" />
+					<ellipse class="blush" cx="75" cy="89" rx="8" ry="4" />
+					<ellipse class="blush" cx="165" cy="89" rx="8" ry="4" />
+				</g>
+
+				<g class="wave-arm">
+					<path class="arm-fur" d="M163 148c20 3 28 15 26 30" />
+					<circle class="wave-paw" cx="189" cy="182" r="13" />
+					<path class="paw-line" d="M183 178v10M189 177v11M195 179v9" />
+					<path class="wave-line" d="M205 166c8-5 12-12 13-20M209 177c9-2 15-7 19-14" />
 				</g>
 
 				<g class="laptop" [style.display]="stage() >= 2 ? 'inline' : 'none'">
@@ -139,6 +148,39 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 			fill: url(#cat-cream);
 			stroke: #3a1f2e;
 			stroke-width: 2.5;
+		}
+
+		.blush {
+			fill: #f08a91;
+			opacity: 0.45;
+		}
+
+		.arm-fur {
+			fill: none;
+			stroke: url(#cat-fur);
+			stroke-width: 20;
+			stroke-linecap: round;
+		}
+
+		.wave-paw {
+			fill: url(#cat-cream);
+			stroke: #3a1f2e;
+			stroke-width: 3;
+		}
+
+		.wave-line {
+			fill: none;
+			stroke: var(--accent-primary);
+			stroke-width: 4;
+			stroke-linecap: round;
+			opacity: 0.7;
+			animation: wave-lines 1.2s ease-in-out infinite;
+		}
+
+		.wave-arm {
+			transform-box: fill-box;
+			transform-origin: 163px 148px;
+			animation: wave 1.2s ease-in-out infinite;
 		}
 
 		.stripe,
@@ -311,6 +353,28 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 		.talking .ear {
 			animation: ear-twitch 0.7s ease-in-out infinite;
+		}
+
+		@keyframes wave {
+			0%,
+			100% {
+				transform: rotate(-5deg);
+			}
+			50% {
+				transform: rotate(12deg);
+			}
+		}
+
+		@keyframes wave-lines {
+			0%,
+			100% {
+				opacity: 0.25;
+				transform: translateX(0);
+			}
+			50% {
+				opacity: 0.8;
+				transform: translateX(4px);
+			}
 		}
 
 		@keyframes cat-breathe {
