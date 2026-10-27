@@ -211,3 +211,45 @@
 	color: #fff !important;
 }
 
+
+.toggle-switch {
+	position: relative;
+	display: inline-block;
+	width: 42px;
+	height: 24px;
+	padding: 0;
+	border: 1px solid var(--border-strong);
+	border-radius: 999px;
+	background: var(--neutral-2);
+	cursor: pointer;
+}
+
+.toggle-switch span {
+	position: absolute;
+	top: 3px;
+	left: 3px;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background: var(--text-secondary);
+	transition: transform 160ms ease, background 160ms ease;
+}
+
+.toggle-switch.on {
+	border-color: #3b82f6;
+	background: #3b82f6;
+}
+
+.toggle-switch.on span {
+	background: #fff;
+	transform: translateX(18px);
+}
+
+.toggle-switch input {
+	position: absolute;
+	z-index: 2;
+	margin: 0;
+	opacity: 0;
+	cursor: pointer;
+	inset: 0;
+}

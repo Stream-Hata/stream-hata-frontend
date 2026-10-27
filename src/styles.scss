@@ -928,3 +928,19 @@ tui-textfield input[tuiSelectLike],
 tui-textfield input[tuiInput] {
 	color: var(--accent-primary) !important;
 }
+
+tui-popups,
+tui-popups *,
+.tui-popup,
+.tui-popup *,
+tui-dropdown,
+tui-dropdown *,
+.tui-dropdown,
+.tui-dropdown * {
+	color: var(--accent-primary) !important;
+}
+
+input[tuiSelectLike],
+input[tuiSelectLike] + * {
+	color: var(--accent-primary) !important;
+}
