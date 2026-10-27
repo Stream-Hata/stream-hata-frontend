@@ -568,8 +568,107 @@
 	object-fit: cover;
 }
 
-.foot-version {
-	color: var(--text-tertiary);
+.idle-cat {
+	position: fixed;
+	left: 24px;
+	bottom: 24px;
+	z-index: 126;
+	display: flex;
+	gap: 10px;
+	align-items: flex-end;
+	max-width: min(520px, calc(100vw - 48px));
+	animation: cat-in 320ms cubic-bezier(0.2, 0.9, 0.3, 1.15) both;
+}
+
+.idle-cat-speech {
+	position: relative;
+	padding: 12px 14px;
+	border: 1px solid var(--border-normal);
+	border-radius: 14px;
+	background: color-mix(in hsl, var(--surface-elevated-1) 94%, transparent);
+	color: var(--text-primary);
+	font: var(--font-body-sm);
+	box-shadow: 0 16px 40px rgb(0 0 0 / 40%);
+	backdrop-filter: blur(14px);
+}
+
+.idle-cat-speech:after {
+	position: absolute;
+	right: -6px;
+	bottom: 14px;
+	width: 12px;
+	height: 12px;
+	border-right: 1px solid var(--border-normal);
+	border-bottom: 1px solid var(--border-normal);
+	background: var(--surface-elevated-1);
+	content: '';
+	transform: rotate(-45deg);
+}
+
+.idle-cat-actions {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	margin-top: 8px;
 	font: var(--font-caption);
-	font-variant-numeric: tabular-nums;
+}
+
+.idle-cat-actions button {
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: var(--text-tertiary);
+	cursor: pointer;
+}
+
+.idle-cat-emoji {
+	font-size: 54px;
+	line-height: 1;
+	filter: drop-shadow(0 10px 18px rgb(0 0 0 / 35%));
+	animation: cat-bob 1.6s ease-in-out infinite;
+}
+
+.idle-cat-talking .idle-cat-emoji {
+	animation:
+		cat-bob 0.7s ease-in-out infinite,
+		cat-talk 0.28s ease-in-out infinite alternate;
+}
+
+.idle-cat-talking .idle-cat-speech {
+	animation: cat-speech 0.35s ease-in-out infinite alternate;
+}
+
+@keyframes cat-talk {
+	from {
+		transform: scale(1) rotate(-2deg);
+	}
+	to {
+		transform: scale(1.08) rotate(2deg);
+	}
+}
+
+@keyframes cat-speech {
+	from {
+		box-shadow: 0 16px 40px rgb(0 0 0 / 40%);
+	}
+	to {
+		box-shadow: 0 16px 46px color-mix(in srgb, var(--accent-primary) 28%, transparent);
+	}
+}
+
+@keyframes cat-in {
+	from {
+		opacity: 0;
+		transform: translateY(16px) scale(0.95);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
+@keyframes cat-bob {
+	50% {
+		transform: translateY(-4px) rotate(-2deg);
+	}
 }

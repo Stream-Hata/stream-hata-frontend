@@ -88,9 +88,6 @@
         <span class="foot-title">{{ streamOnline() ? 'В эфире' : labels().offline }}</span>
         <span class="foot-link">{{ labels().checkTwitch }}</span>
       </span>
-      @if (desktop && desktopUpdate.currentVersion()) {
-        <span class="foot-version">v{{ desktopUpdate.currentVersion() }}</span>
-      }
     </a>
   </aside>
 
@@ -228,6 +225,19 @@
         <tui-icon [icon]="dockOpen() ? '@tui.x' : '@tui.user-round'" />
       </button>
     </div>
+  }
+
+  @if (desktop && catVisible()) {
+    <aside class="idle-cat" [class.idle-cat-talking]="catTalking()" role="status">
+      <div class="idle-cat-speech">
+        <span>{{ catPhrase() }}</span>
+        <div class="idle-cat-actions">
+          <a routerLink="/app/stream" tuiLink (click)="hideCat()">Запустить стрим</a>
+          <button type="button" (click)="hideCat()">Позже</button>
+        </div>
+      </div>
+      <span class="idle-cat-emoji" aria-hidden="true">🐈</span>
+    </aside>
   }
 
   <app-update-notice />

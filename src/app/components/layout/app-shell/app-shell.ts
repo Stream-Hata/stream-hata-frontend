@@ -8,7 +8,6 @@ import { AlertsService } from '@shared/services/alerts.service';
 import { AppSettingsService } from '@shared/services/app-settings.service';
 import { I18nService } from '@shared/services/i18n.service';
 import { OnboardingService } from '@shared/services/onboarding.service';
-import { DesktopUpdateService } from '@shared/services/desktop-update.service';
 import { TwitchService } from '@shared/services/twitch.service';
 import { GamesCatalogService } from '@shared/services/games-catalog.service';
 import { ProfileDataService } from '@shared/services/profile-data.service';
@@ -135,7 +134,6 @@ const WIDGET_ITEMS = [
 export default class AppShell {
 	readonly i18n = inject(I18nService);
 	readonly onboarding = inject(OnboardingService);
-	readonly desktopUpdate = inject(DesktopUpdateService);
 	readonly twitchUrl = TWITCH_CHANNEL_URL;
 	private readonly router = inject(Router);
 	private readonly twitchService = inject(TwitchService);
@@ -243,10 +241,93 @@ export default class AppShell {
 		{ initialValue: [] as SteamLibraryGame[] },
 	);
 	readonly streamOnline = computed(() => Boolean(this.twitch()?.steam?.online));
+	readonly catVisible = signal(false);
+	readonly catTalking = signal(false);
+	readonly catStage = signal(0);
+	readonly catPhrase = computed(() => {
+		const phrases = [
+			'Мяу. Ты уже полчаса ничего не делаешь, а стрим не запущен. Может, начнём?',
+			'Я уже сам пришёл и готов запустить стрим. Ну же, нажми кнопку!',
+			'Я уже состарился, пока ждал. Ты хочешь, чтобы аудитория умерла от старости?',
+		];
+
+		return phrases[Math.max(0, this.catStage() - 1)] ?? phrases[2];
+	});
+	private catTimer: ReturnType<typeof setTimeout> | undefined;
+	private catCount = 0;
 	readonly loggedIn = computed(() => Boolean(this.twitch()?.valid));
 	readonly unreadCount = this.alerts.unreadCount;
 	private wasLoggedIn = false;
 	private loginEventShown = false;
+
+	setupIdleCat(): void {
+		const reset = (): void => {
+			this.catVisible.set(false);
+			this.catTalking.set(false);
+			window.speechSynthesis?.cancel();
+			this.scheduleCat();
+		};
+
+		for (const event of ['mousemove', 'keydown', 'click', 'scroll', 'touchstart']) {
+			document.addEventListener(event, reset, { passive: true });
+		}
+
+		this.scheduleCat();
+	}
+
+	private scheduleCat(): void {
+		if (this.catTimer) {
+			clearTimeout(this.catTimer);
+		}
+
+		if (this.streamOnline()) {
+			return;
+		}
+
+		this.catTimer = setTimeout(() => {
+			if (this.streamOnline()) {
+				this.scheduleCat();
+
+				return;
+			}
+
+			this.catCount = Math.min(3, this.catCount + 1);
+			this.catStage.set(this.catCount);
+			this.catVisible.set(true);
+			this.speakCat(this.catPhrase());
+		}, 30 * 60_000);
+	}
+
+	hideCat(): void {
+		this.catVisible.set(false);
+		this.catTalking.set(false);
+		window.speechSynthesis?.cancel();
+		this.scheduleCat();
+	}
+
+	private speakCat(text: string): void {
+		if (!('speechSynthesis' in window)) {
+			return;
+		}
+
+		window.speechSynthesis.cancel();
+		const utterance = new SpeechSynthesisUtterance(text);
+		const voices = window.speechSynthesis.getVoices();
+		const voice = voices.find((item) => item.lang.toLowerCase().startsWith('ru'));
+
+		if (voice) {
+			utterance.voice = voice;
+		}
+
+		utterance.lang = 'ru-RU';
+		utterance.rate = 0.95;
+		utterance.pitch = 1.15;
+		utterance.volume = 0.9;
+		utterance.onstart = () => this.catTalking.set(true);
+		utterance.onend = () => this.catTalking.set(false);
+		utterance.onerror = () => this.catTalking.set(false);
+		window.speechSynthesis.speak(utterance);
+	}
 
 	preloadProfile(): void {
 		this.profileData.load().subscribe();
@@ -335,6 +416,10 @@ export default class AppShell {
 	}));
 
 	constructor() {
+		if (this.desktop) {
+			this.setupIdleCat();
+		}
+
 		effect(() => {
 			const profile = this.twitch();
 			const valid = Boolean(profile?.valid);

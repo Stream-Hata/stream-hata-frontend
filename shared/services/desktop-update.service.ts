@@ -16,6 +16,8 @@ export class DesktopUpdateService {
 	readonly available = signal(false);
 	readonly version = signal('');
 	readonly notes = signal('');
+	readonly checking = signal(false);
+	readonly checked = signal(false);
 	readonly installing = signal(false);
 	readonly progress = signal(0);
 	readonly error = signal('');
@@ -49,7 +51,17 @@ export class DesktopUpdateService {
 	}
 
 	async check(): Promise<void> {
+		if (this.checking()) {
+			return;
+		}
+
+		this.checking.set(true);
+		this.checked.set(false);
+		this.error.set('');
 		const result = await this.invoke<UpdateInfo | null>('check_update');
+
+		this.checking.set(false);
+		this.checked.set(true);
 
 		if (!result) {
 			return;
