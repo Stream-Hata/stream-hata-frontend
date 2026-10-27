@@ -1,5 +1,19 @@
 [
   {
+    "version": "0.7.15-pre-alpha",
+    "date": "2026-10-27",
+    "sections": [
+      {
+        "title": "Исправлено",
+        "items": [
+          {
+            "text": "Класс свитчей переименован в accent-switch, цвет берётся из акцента."
+          }
+        ]
+      }
+    ]
+  },
+  {
     "version": "0.7.14-pre-alpha",
     "date": "2026-10-27",
     "sections": [

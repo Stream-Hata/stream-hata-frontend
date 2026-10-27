@@ -166,10 +166,10 @@
 	cursor: pointer;
 }
 
-.blue-switch {
-	--tui-background-accent-1: #3b82f6;
-	--tui-background-accent-1-hover: #60a5fa;
-	--tui-background-accent-1-pressed: #2563eb;
+.accent-switch {
+	--tui-background-accent-1: var(--accent-primary);
+	--tui-background-accent-1-hover: var(--accent-primary-hover);
+	--tui-background-accent-1-pressed: var(--accent-primary-pressed);
 }
 
 .test-result {
@@ -203,11 +203,11 @@
 	grid-template-columns: minmax(0, 1fr);
 }
 
-.blue-switch:checked {
-	background: #3b82f6 !important;
+.accent-switch:checked {
+	background: var(--accent-primary) !important;
 }
 
-.blue-switch:checked:before {
+.accent-switch:checked:before {
 	color: #fff !important;
 }
 
@@ -236,8 +236,8 @@
 }
 
 .toggle-switch.on {
-	border-color: #3b82f6;
-	background: #3b82f6;
+	border-color: var(--accent-primary);
+	background: var(--accent-primary);
 }
 
 .toggle-switch.on span {

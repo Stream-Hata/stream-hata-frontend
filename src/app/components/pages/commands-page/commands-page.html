@@ -90,7 +90,7 @@
                     <td tuiTd>
                       <div class="switch-hit">
                         <div class="switch-hit">
-                          <input type="checkbox" class="blue-switch" [checked]="commandEnabled(command)" tuiSwitch />
+                          <input type="checkbox" class="accent-switch" [checked]="commandEnabled(command)" tuiSwitch />
                           <span class="switch-hit-area" (click)="toggleCommand(command); $event.preventDefault()"></span>
                         </div>
                       </div>
@@ -136,7 +136,7 @@
                       <td tuiTd>
                         <div class="switch-hit">
                           <div class="switch-hit">
-                            <input type="checkbox" class="blue-switch" [checked]="trigger.enabled" tuiSwitch />
+                            <input type="checkbox" class="accent-switch" [checked]="trigger.enabled" tuiSwitch />
                             <span class="switch-hit-area" (click)="toggleTrigger(index); $event.preventDefault()"></span>
                           </div>
                         </div>
@@ -248,7 +248,7 @@
           <div class="editor-switch">
             <span class="jk-label">Включена</span>
             <div class="switch-hit">
-              <input type="checkbox" class="blue-switch" [checked]="rewardEnabled()" tuiSwitch />
+              <input type="checkbox" class="accent-switch" [checked]="rewardEnabled()" tuiSwitch />
               <span class="switch-hit-area" (click)="rewardEnabled.set(!rewardEnabled()); $event.preventDefault()"></span>
             </div>
           </div>
@@ -371,7 +371,7 @@
                   </td>
                   <td tuiTd>
                     <div class="switch-hit">
-                      <input type="checkbox" class="blue-switch" [checked]="trigger.enabled" tuiSwitch />
+                      <input type="checkbox" class="accent-switch" [checked]="trigger.enabled" tuiSwitch />
                       <span class="switch-hit-area" (click)="toggleTrigger(index); $event.preventDefault()"></span>
                     </div>
                     </td>
