@@ -294,8 +294,41 @@ export default class AppShell {
 			this.catCount = Math.min(3, this.catCount + 1);
 			this.catStage.set(this.catCount);
 			this.catVisible.set(true);
+			this.setCatTray(true);
+			this.notifyCat(this.catCount);
 			this.speakCat(this.catPhrase());
 		}, 30 * 60_000);
+	}
+
+	private listenCatSummon(): void {
+		const globalTauri = (window as unknown as Record<string, unknown>)['__TAURI__'] as
+			| { event?: { listen?: (event: string, handler: () => void) => Promise<unknown> } }
+			| undefined;
+
+		void globalTauri?.event?.listen?.('cat-summon', () => {
+			this.catCount = 1;
+			this.catStage.set(1);
+			this.catVisible.set(true);
+			this.setCatTray(true);
+			this.notifyCat(1);
+			this.speakCat(this.catPhrase());
+		});
+	}
+
+	private setCatTray(active: boolean): void {
+		const internals = (window as unknown as Record<string, unknown>)['__TAURI_INTERNALS__'] as
+			| { invoke?: (command: string, args?: Record<string, unknown>) => Promise<unknown> }
+			| undefined;
+
+		void internals?.invoke?.('set_cat_tray', { active });
+	}
+
+	private notifyCat(stage: number): void {
+		const internals = (window as unknown as Record<string, unknown>)['__TAURI_INTERNALS__'] as
+			| { invoke?: (command: string, args?: Record<string, unknown>) => Promise<unknown> }
+			| undefined;
+
+		void internals?.invoke?.('notify_cat', { stage });
 	}
 
 	private stopIdleCat(): void {
@@ -306,12 +339,14 @@ export default class AppShell {
 
 		this.catVisible.set(false);
 		this.catTalking.set(false);
+		this.setCatTray(false);
 		window.speechSynthesis?.cancel();
 	}
 
 	hideCat(): void {
 		this.catVisible.set(false);
 		this.catTalking.set(false);
+		this.setCatTray(false);
 		window.speechSynthesis?.cancel();
 		this.scheduleCat();
 	}
@@ -429,6 +464,7 @@ export default class AppShell {
 	constructor() {
 		if (this.desktop) {
 			this.setupIdleCat();
+			this.listenCatSummon();
 			effect(() => {
 				if (!this.appSettings.idleCat()) {
 					this.stopIdleCat();
