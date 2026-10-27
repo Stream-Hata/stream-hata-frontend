@@ -18,6 +18,10 @@ export class MusicService {
 		return this.http.delete<void>(`rgg-sync/music/${videoId}`);
 	}
 
+	setCurrent(videoId: string | null) {
+		return this.http.post<{ ok: boolean }>('rgg-sync/music/current', { videoId: videoId ?? '' });
+	}
+
 	exportToTelegram() {
 		return this.http.post<{ ok: boolean; chunks: number; tracks: number }>(
 			'rgg-sync/music/telegram',

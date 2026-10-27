@@ -113,8 +113,9 @@ export class NowPlayingOverlay {
 		});
 
 		effect(() => {
-			this.currentId();
+			const videoId = this.currentId();
 			this.reloadKey();
+			this.music.setCurrent(videoId).subscribe({ error: () => undefined });
 			this.thumbnailFailed.set(false);
 			this.playbackStarted.set(false);
 			this.needsGesture.set(false);
