@@ -4,10 +4,9 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ChatJuryService } from '@shared/services/chat-jury.service';
 import { WidgetConfigService, type WidgetConfig } from '@shared/services/widgets.service';
 import { catchError, of, switchMap, timer } from 'rxjs';
-import { ApprovalRing } from '../../ui/approval-ring/approval-ring';
 
 @Component({
-	imports: [ApprovalRing],
+	imports: [],
 	selector: 'app-jury-overlay',
 	styleUrl: './jury-overlay.scss',
 	templateUrl: './jury-overlay.html',

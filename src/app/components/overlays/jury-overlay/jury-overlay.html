@@ -19,8 +19,6 @@
       <p class="jury-author">Совет от {{ author() }}</p>
 
       <div class="jury-body">
-        <app-approval-ring [size]="128" [stroke]="8" [value]="approval()" />
-
         <div class="jury-votes">
           <div class="vote-row vote-yea">
             <div class="vote-line">
@@ -44,7 +42,7 @@
               </span>
             }
           </div>
-          <span class="jury-total">Всего голосов: {{ total() }}</span>
+          <span class="jury-total">Всего голосов: {{ total() }} · доверие {{ approval() }}%</span>
         </div>
       </div>
 
