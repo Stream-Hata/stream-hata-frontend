@@ -204,6 +204,10 @@ export default class SettingsPage {
 		});
 	}
 
+	toggleIdleCat(): void {
+		this.appSettings.idleCat.update((value) => !value);
+	}
+
 	toggleSidebarHeader(): void {
 		this.appSettings.showSidebarHeader.update((value) => !value);
 	}

@@ -206,6 +206,21 @@
         }
 
         @if (desktop) {
+          <div class="cfg-row" data-no-tauri-switch>
+            <div class="cfg-text">
+              <span class="cfg-label">Кот-напоминание</span>
+              <span class="jk-caption">Появляется после 30 минут простоя без стрима</span>
+            </div>
+            <div class="sidebar-switch-hit">
+              <input type="checkbox" [checked]="appSettings.idleCat()" tuiSwitch />
+              <span
+                class="sidebar-switch-hit-area"
+                aria-hidden="true"
+                (click)="toggleIdleCat(); $event.preventDefault()"
+              ></span>
+            </div>
+          </div>
+
           <div class="cfg-row">
             <div class="cfg-text">
               <span class="cfg-label">Фон приложения</span>

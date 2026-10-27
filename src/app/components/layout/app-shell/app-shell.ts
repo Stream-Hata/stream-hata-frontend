@@ -280,7 +280,7 @@ export default class AppShell {
 			clearTimeout(this.catTimer);
 		}
 
-		if (this.streamOnline()) {
+		if (!this.appSettings.idleCat() || this.streamOnline()) {
 			return;
 		}
 
@@ -296,6 +296,17 @@ export default class AppShell {
 			this.catVisible.set(true);
 			this.speakCat(this.catPhrase());
 		}, 30 * 60_000);
+	}
+
+	private stopIdleCat(): void {
+		if (this.catTimer) {
+			clearTimeout(this.catTimer);
+			this.catTimer = undefined;
+		}
+
+		this.catVisible.set(false);
+		this.catTalking.set(false);
+		window.speechSynthesis?.cancel();
 	}
 
 	hideCat(): void {
@@ -418,6 +429,13 @@ export default class AppShell {
 	constructor() {
 		if (this.desktop) {
 			this.setupIdleCat();
+			effect(() => {
+				if (!this.appSettings.idleCat()) {
+					this.stopIdleCat();
+				} else {
+					this.scheduleCat();
+				}
+			});
 		}
 
 		effect(() => {

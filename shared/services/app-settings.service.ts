@@ -26,6 +26,7 @@ interface PersistedSettings {
 	showSidebarHeader: boolean;
 	sidebarCollapsed: boolean;
 	backgroundImage: string;
+	idleCat: boolean;
 }
 
 const STORAGE_KEY = 'nsh.app-settings';
@@ -42,6 +43,7 @@ const DEFAULTS: PersistedSettings = {
 	showSidebarHeader: !(typeof navigator !== 'undefined' && navigator.userAgent.includes('NamelessStreamHataDesktop')),
 	sidebarCollapsed: false,
 	backgroundImage: '',
+	idleCat: true,
 };
 
 const ACCENT_BACKGROUND = '#0F0817';
@@ -99,6 +101,7 @@ export class AppSettingsService {
 	readonly showSidebarHeader = signal(DEFAULTS.showSidebarHeader);
 	readonly sidebarCollapsed = signal(DEFAULTS.sidebarCollapsed);
 	readonly backgroundImage = signal(DEFAULTS.backgroundImage);
+	readonly idleCat = signal(DEFAULTS.idleCat);
 	readonly accentContrast = computed(() =>
 		contrastRatio(this.accent(), ACCENT_BACKGROUND).toFixed(1),
 	);
@@ -135,6 +138,7 @@ export class AppSettingsService {
 			showSidebarHeader: this.showSidebarHeader(),
 			sidebarCollapsed: this.sidebarCollapsed(),
 			backgroundImage: this.backgroundImage(),
+			idleCat: this.idleCat(),
 		};
 	}
 
@@ -294,6 +298,7 @@ export class AppSettingsService {
 			this.showSidebarHeader.set(parsed.showSidebarHeader ?? DEFAULTS.showSidebarHeader);
 			this.sidebarCollapsed.set(parsed.sidebarCollapsed ?? DEFAULTS.sidebarCollapsed);
 			this.backgroundImage.set(parsed.backgroundImage ?? DEFAULTS.backgroundImage);
+			this.idleCat.set(parsed.idleCat ?? DEFAULTS.idleCat);
 		} catch {
 			// ignore broken storage
 		}
