@@ -24,6 +24,22 @@ import {
 	TuiInputNumber, TuiBadge, TuiChevron, TuiDataListWrapper, TuiSwitch, TuiTextarea } from '@taiga-ui/kit';
 import { catchError, merge, of, switchMap, timer } from 'rxjs';
 
+const TRIGGER_ACTIONS: { action: string; description: string }[] = [
+	{ action: 'points.balance', description: 'Баланс баллов' },
+	{ action: 'points.top', description: 'Топ зрителей' },
+	{ action: 'points.shop', description: 'Магазин наград' },
+	{ action: 'points.redeem', description: 'Купить награду' },
+	{ action: 'games.slots', description: 'Слоты' },
+	{ action: 'games.wheel', description: 'Колесо' },
+	{ action: 'games.trivia', description: 'Викторина' },
+	{ action: 'games.duel', description: 'Дуэль: вызов' },
+	{ action: 'games.accept', description: 'Дуэль: принять' },
+	{ action: 'quotes.quote', description: 'Цитаты' },
+	{ action: 'jury.yea', description: 'Голос жюри: за' },
+	{ action: 'jury.nei', description: 'Голос жюри: против' },
+	{ action: 'clips.clip', description: 'Создать клип' },
+];
+
 const LEVEL_LABELS: Record<string, string> = {
 	everyone: 'Все',
 	subscriber: 'Сабы',
@@ -96,6 +112,8 @@ export default class CommandsPage {
 	readonly levelLabels = ['Все', 'Сабы', 'VIP', 'Модеры', 'Стример'];
 	readonly testResult = signal<string | null>(null);
 	readonly error = signal<string | null>(null);
+	readonly commandOverrides = signal<Record<string, boolean>>({});
+	readonly timerOverrides = signal<Record<string, boolean>>({});
 
 	/* Форма таймера */
 	readonly timerEditingId = signal<string | null>(null);
@@ -116,6 +134,7 @@ export default class CommandsPage {
 	);
 
 	readonly triggerDraft = signal<Trigger[]>([]);
+	readonly triggerActions = TRIGGER_ACTIONS;
 	readonly triggersSaved = signal(false);
 	private triggersLoaded = false;
 
@@ -154,6 +173,26 @@ export default class CommandsPage {
 				return { ...item, command: value };
 			}),
 		);
+	}
+
+	addTrigger(): void {
+		const used = new Set(this.triggerDraft().map((item) => item.action));
+		const next = TRIGGER_ACTIONS.find((item) => !used.has(item.action));
+
+		if (!next) {
+			this.error.set('Все доступные триггеры уже добавлены');
+
+			return;
+		}
+
+		this.triggerDraft.update((list) => [
+			...list,
+			{ action: next.action, command: '', aliases: [], enabled: true, description: next.description },
+		]);
+	}
+
+	removeTrigger(index: number): void {
+		this.triggerDraft.update((list) => list.filter((_, itemIndex) => itemIndex !== index));
 	}
 
 	toggleTrigger(index: number, event: Event): void {
@@ -236,10 +275,25 @@ export default class CommandsPage {
 		});
 	}
 
+	commandEnabled(command: ChatCommand): boolean {
+		return this.commandOverrides()[command.id] ?? command.enabled;
+	}
+
+	timerEnabled(timer: MessageTimer): boolean {
+		return this.timerOverrides()[timer.id] ?? timer.enabled;
+	}
+
 	toggleCommand(command: ChatCommand, event: Event): void {
-		this.service
-			.save({ ...command, enabled: this.check(event) })
-			.subscribe(() => this.refresh.update((v) => v + 1));
+		const enabled = this.check(event);
+
+		this.commandOverrides.update((value) => ({ ...value, [command.id]: enabled }));
+		this.service.save({ ...command, enabled }).subscribe({
+			next: () => this.refresh.update((v) => v + 1),
+			error: (response) => {
+				this.commandOverrides.update((value) => ({ ...value, [command.id]: !enabled }));
+				this.error.set(response.error?.error ?? 'Не удалось переключить команду');
+			},
+		});
 	}
 
 	removeCommand(id: string): void {
@@ -298,8 +352,11 @@ export default class CommandsPage {
 	}
 
 	toggleTimer(item: MessageTimer, event: Event): void {
+		const enabled = this.check(event);
+
+		this.timerOverrides.update((value) => ({ ...value, [item.id]: enabled }));
 		this.service
-			.saveTimer({ ...item, enabled: this.check(event) })
+			.saveTimer({ ...item, enabled })
 			.subscribe(() => this.refresh.update((v) => v + 1));
 	}
 

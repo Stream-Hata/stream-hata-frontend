@@ -72,7 +72,7 @@
                       <input
                         aria-label="Включить команду"
                         type="checkbox"
-                        [checked]="command.enabled"
+                        [checked]="commandEnabled(command)"
                         (change)="toggleCommand(command, $event)"
                         tuiSwitch
                         />
@@ -342,9 +342,12 @@
       <section class="automation-main">
         <div class="triggers-head">
           <h2 class="jk-h4">Команды-триггеры</h2>
-          <button appearance="primary" tuiButton type="button" (click)="saveTriggers()">
-            {{ triggersSaved() ? 'Сохранено' : 'Сохранить' }}
-          </button>
+          <div class="triggers-actions">
+            <button appearance="flat" tuiButton type="button" (click)="addTrigger()">Добавить</button>
+            <button appearance="primary" tuiButton type="button" (click)="saveTriggers()">
+              {{ triggersSaved() ? 'Сохранено' : 'Сохранить' }}
+            </button>
+          </div>
         </div>
 
         <div class="table-wrap">
@@ -355,6 +358,7 @@
                 <th tuiTh>Команда</th>
                 <th tuiTh>Алиасы</th>
                 <th tuiTh>Вкл</th>
+                <th tuiTh class="col-actions"><span class="sr-only">Действия</span></th>
               </tr>
             </thead>
             <tbody tuiTbody>
@@ -395,6 +399,18 @@
                       (change)="toggleTrigger(index, $event)"
                       tuiSwitch
                       />
+                    </td>
+                    <td tuiTd class="col-actions">
+                      <button
+                        class="danger-action"
+                        size="s"
+                        type="button"
+                        aria-label="Удалить триггер"
+                        (click)="removeTrigger(index)"
+                        appearance="flat"
+                        iconStart="@tui.trash-2"
+                        tuiIconButton
+                      ></button>
                     </td>
                   </tr>
                 }
