@@ -109,15 +109,15 @@
                           iconStart="@tui.play"
                           tuiIconButton
                         ></button>
-                        <button
+                        <a
                           size="s"
-                          type="button"
                           aria-label="Редактировать"
-                          (click)="edit(command)"
+                          [routerLink]="['/app/commands/editor']"
+                          [queryParams]="{ type: 'command', id: command.id }"
                           appearance="flat"
                           iconStart="@tui.pencil"
                           tuiIconButton
-                        ></button>
+                        ></a>
                         <button
                           class="danger-action"
                           size="s"
@@ -144,7 +144,7 @@
                         </div>
                       </td>
                       <td tuiTd class="col-actions">
-                        <button size="s" type="button" aria-label="Настроить" (click)="openTriggers()" appearance="flat" iconStart="@tui.pencil" tuiIconButton></button>
+                        <a size="s" aria-label="Настроить" [routerLink]="['/app/commands/editor']" [queryParams]="{ type: 'trigger', id: trigger.action }" appearance="flat" iconStart="@tui.pencil" tuiIconButton></a>
                       </td>
                     </tr>
                   }
@@ -270,7 +270,7 @@
                     <td tuiTd class="response-cell">{{ variable.value }}</td>
                     <td tuiTd>{{ variable.action || '—' }}</td>
                     <td tuiTd class="col-actions">
-                      <button size="s" type="button" aria-label="Редактировать" (click)="editVariable(variable)" appearance="flat" iconStart="@tui.pencil" tuiIconButton></button>
+                      <a size="s" aria-label="Редактировать" [routerLink]="['/app/commands/editor']" [queryParams]="{ type: 'variable', id: variable.id }" appearance="flat" iconStart="@tui.pencil" tuiIconButton></a>
                       <button class="danger-action" size="s" type="button" aria-label="Удалить" (click)="removeVariable(variable.id)" appearance="flat" iconStart="@tui.trash-2" tuiIconButton></button>
                     </td>
                   </tr>
