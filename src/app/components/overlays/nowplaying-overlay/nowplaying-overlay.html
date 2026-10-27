@@ -7,7 +7,7 @@
           #player
           id="nowplaying-player"
           class="nowplaying-video"
-          [class.nowplaying-video-hidden]="!showVideo()"
+          [class.nowplaying-video-hidden]="!showVideo() || videoError()"
           [src]="video"
           title="Now playing"
           allow="autoplay; encrypted-media"
@@ -15,15 +15,18 @@
           (load)="onVideoLoad($event)"
         ></iframe>
       }
-      @if (!showVideo() && thumbnailUrl() && !thumbnailFailed()) {
+      @if ((!showVideo() || videoError()) && thumbnailUrl() && !thumbnailFailed()) {
         <img
           class="nowplaying-cover"
           [alt]="track.title"
           [src]="thumbnailUrl()"
           (error)="thumbnailFailed.set(true)"
         />
-      } @else if (!showVideo()) {
+      } @else if (!showVideo() || videoError()) {
         <span class="nowplaying-cover nowplaying-cover-empty" aria-hidden="true">♪</span>
+      }
+      @if (videoError()) {
+        <span class="nowplaying-error">Видео недоступно встраиванию</span>
       }
       @if (needsGesture()) {
         <button class="nowplaying-play" type="button" (click)="resumePlayback()">

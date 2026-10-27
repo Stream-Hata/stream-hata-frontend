@@ -53,6 +53,7 @@ export class NowPlayingOverlay {
 	readonly playbackStarted = signal(false);
 	readonly needsGesture = signal(false);
 	readonly paused = signal(true);
+	readonly videoError = signal(false);
 	readonly thumbnailUrl = computed(() => {
 		const videoId = this.currentId();
 
@@ -155,7 +156,7 @@ export class NowPlayingOverlay {
 		}
 
 		if (payload?.event === 'onError') {
-			this.nextTrack();
+			this.handleVideoError();
 		}
 	}
 
@@ -173,9 +174,10 @@ export class NowPlayingOverlay {
 			);
 		}
 
+		this.videoError.set(false);
 		this.clearGestureTimer();
 		this.gestureTimer = setTimeout(() => {
-			if (!this.playbackStarted()) {
+			if (!this.playbackStarted() && !this.videoError()) {
 				this.needsGesture.set(true);
 			}
 		}, 2500);
@@ -199,6 +201,21 @@ export class NowPlayingOverlay {
 
 		this.sendCommand('pauseVideo');
 		this.paused.set(true);
+	}
+
+	handleVideoError(): void {
+		this.clearEndTimer();
+		this.clearGestureTimer();
+		this.videoError.set(true);
+		this.playbackStarted.set(false);
+		this.needsGesture.set(false);
+		this.paused.set(true);
+
+		setTimeout(() => {
+			if (this.videoError()) {
+				this.nextTrack();
+			}
+		}, 1500);
 	}
 
 	skipTrack(): void {
