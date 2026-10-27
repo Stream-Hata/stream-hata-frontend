@@ -6,7 +6,7 @@
         <iframe
           #player
           class="nowplaying-video"
-          [class.nowplaying-video-hidden]="!showVideo() || !playbackStarted()"
+          [class.nowplaying-video-hidden]="!showVideo()"
           [src]="video"
           title="Now playing"
           allow="autoplay; encrypted-media"
@@ -14,14 +14,14 @@
           (load)="onVideoLoad($event)"
         ></iframe>
       }
-      @if ((!showVideo() || !playbackStarted()) && thumbnailUrl() && !thumbnailFailed()) {
+      @if (!showVideo() && thumbnailUrl() && !thumbnailFailed()) {
         <img
           class="nowplaying-cover"
           [alt]="track.title"
           [src]="thumbnailUrl()"
           (error)="thumbnailFailed.set(true)"
         />
-      } @else if (!showVideo() || !playbackStarted()) {
+      } @else if (!showVideo()) {
         <span class="nowplaying-cover nowplaying-cover-empty" aria-hidden="true">♪</span>
       }
       @if (needsGesture()) {

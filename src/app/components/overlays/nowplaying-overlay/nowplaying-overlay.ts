@@ -1,5 +1,5 @@
 import type { MusicListResponse, Track } from '@shared/types/music';
-import { Component, computed, DestroyRef, effect, ElementRef, HostListener, inject, signal, ViewChild } from '@angular/core';
+import { Component, computed, DestroyRef, effect, ElementRef, HostListener, inject, signal, untracked, ViewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { DomSanitizer, type SafeResourceUrl } from '@angular/platform-browser';
 import { MusicService } from '@shared/services/music.service';
@@ -101,11 +101,15 @@ export class NowPlayingOverlay {
 
 		effect(() => {
 			this.currentId();
+			this.reloadKey();
 			this.thumbnailFailed.set(false);
 			this.playbackStarted.set(false);
 			this.needsGesture.set(false);
 			this.clearEndTimer();
 			this.clearGestureTimer();
+
+			const duration = untracked(() => this.current()?.durationSeconds ?? 0);
+			this.scheduleEnd(duration);
 		});
 
 		this.destroyRef.onDestroy(() => {
@@ -123,19 +127,11 @@ export class NowPlayingOverlay {
 		const payload = this.parseMessage(event.data);
 
 		if (payload?.event === 'onStateChange') {
-			if (payload.info === 0) {
-				this.nextTrack();
-			}
+			this.applyPlayerState(typeof payload.info === 'number' ? payload.info : undefined);
+		}
 
-			if (payload.info === 1 || payload.info === 3) {
-				this.playbackStarted.set(true);
-				this.needsGesture.set(false);
-				this.clearGestureTimer();
-
-				if (payload.info === 1) {
-					this.scheduleEnd();
-				}
-			}
+		if (payload?.event === 'infoDelivery') {
+			this.applyPlayerState(typeof payload.info === 'object' ? payload.info.playerState : undefined);
 		}
 
 		if (payload?.event === 'onError') {
@@ -202,10 +198,8 @@ export class NowPlayingOverlay {
 		return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
 	});
 
-	private scheduleEnd(): void {
+	private scheduleEnd(seconds = this.current()?.durationSeconds ?? 0): void {
 		this.clearEndTimer();
-
-		const seconds = this.current()?.durationSeconds ?? 0;
 
 		this.endTimer = setTimeout(
 			() => this.nextTrack(),
@@ -227,9 +221,25 @@ export class NowPlayingOverlay {
 		}
 	}
 
-	private parseMessage(data: unknown): { event?: string; info?: number } | null {
+	private applyPlayerState(state?: number): void {
+		if (state === 0) {
+			this.nextTrack();
+		}
+
+		if (state === 1 || state === 3) {
+			this.playbackStarted.set(true);
+			this.needsGesture.set(false);
+			this.clearGestureTimer();
+
+			if (state === 1) {
+				this.scheduleEnd();
+			}
+		}
+	}
+
+	private parseMessage(data: unknown): { event?: string; info?: number | { playerState?: number } } | null {
 		if (typeof data === 'object' && data !== null) {
-			return data as { event?: string; info?: number };
+			return data as { event?: string; info?: number | { playerState?: number } };
 		}
 
 		if (typeof data !== 'string') {
@@ -237,7 +247,7 @@ export class NowPlayingOverlay {
 		}
 
 		try {
-			return JSON.parse(data) as { event?: string; info?: number };
+			return JSON.parse(data) as { event?: string; info?: number | { playerState?: number } };
 		} catch {
 			return null;
 		}
