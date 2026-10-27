@@ -201,6 +201,10 @@ export default class SettingsPage {
 		});
 	}
 
+	summonCat(): void {
+		window.dispatchEvent(new Event('streamhata-cat-summon'));
+	}
+
 	toggleIdleCat(): void {
 		this.appSettings.idleCat.update((value) => !value);
 	}

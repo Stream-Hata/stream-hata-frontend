@@ -267,7 +267,7 @@ export default class AppShell {
 		const reset = (event?: Event): void => {
 			const target = event?.target;
 
-			if (target instanceof Element && target.closest('.idle-cat')) {
+			if (this.catVisible() || (target instanceof Element && target.closest('.idle-cat'))) {
 				return;
 			}
 
@@ -314,18 +314,21 @@ export default class AppShell {
 	}
 
 	private listenCatSummon(): void {
-		const globalTauri = (window as unknown as Record<string, unknown>)['__TAURI__'] as
-			| { event?: { listen?: (event: string, handler: () => void) => Promise<unknown> } }
-			| undefined;
-
-		void globalTauri?.event?.listen?.('cat-summon', () => {
+		const summon = (): void => {
 			this.catCount = 1;
 			this.catStage.set(1);
 			this.catVisible.set(true);
 			this.setCatTray(true);
 			this.notifyCat(1);
 			this.speakCat(this.catPhrase());
-		});
+		};
+
+		window.addEventListener('streamhata-cat-summon', summon);
+		const globalTauri = (window as unknown as Record<string, unknown>)['__TAURI__'] as
+			| { event?: { listen?: (event: string, handler: () => void) => Promise<unknown> } }
+			| undefined;
+
+		void globalTauri?.event?.listen?.('cat-summon', summon);
 	}
 
 	private setCatTray(active: boolean): void {
@@ -479,7 +482,7 @@ export default class AppShell {
 			this.setupIdleCat();
 			this.listenCatSummon();
 			effect(() => {
-				if (!this.appSettings.idleCat()) {
+				if (!this.appSettings.idleCat() || this.streamOnline()) {
 					this.stopIdleCat();
 				} else {
 					this.scheduleCat();

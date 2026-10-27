@@ -228,7 +228,7 @@
   }
 
   @if (desktop && catVisible()) {
-    <aside class="idle-cat" [class.idle-cat-talking]="catTalking()" role="status">
+    <aside class="idle-cat" [class.idle-cat-talking]="catTalking()" role="status" (click)="$event.stopPropagation()">
       <div class="idle-cat-speech">
         <span>{{ catPhrase() }}</span>
         <div class="idle-cat-actions">
