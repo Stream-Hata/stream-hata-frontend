@@ -9,7 +9,7 @@ import { PointsService } from '@shared/services/engagement.services';
 import { ModerationService } from '@shared/services/moderation.service';
 import { TwitchService } from '@shared/services/twitch.service';
 import { TuiDialogService, TuiIcon } from '@taiga-ui/core';
-import { catchError, firstValueFrom, map, of, switchMap, timer } from 'rxjs';
+import { catchError, firstValueFrom, map, of, scan, switchMap, timer } from 'rxjs';
 import { UserProfileDialog } from '../../chat/user-profile-dialog/user-profile-dialog';
 
 const BADGE_IMAGES: Record<string, string> = {
@@ -50,8 +50,12 @@ export default class ChatPage {
 			switchMap(() =>
 				this.service.recent(100).pipe(
 					map((response) => response.messages),
-					catchError(() => of([] as LiveChatMessage[])),
+					catchError(() => of(null)),
 				),
+			),
+			scan(
+				(previous, messages) => messages ?? previous,
+				[] as LiveChatMessage[],
 			),
 		),
 		{ initialValue: [] as LiveChatMessage[] },

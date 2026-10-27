@@ -5,7 +5,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { buildChatSegments } from '@shared/helpers/chat-emotes';
 import { ChatLiveService } from '@shared/services/chat-live.service';
 import { WidgetConfigService, type WidgetConfig } from '@shared/services/widgets.service';
-import { catchError, map, of, switchMap, timer } from 'rxjs';
+import { catchError, map, of, scan, switchMap, timer } from 'rxjs';
 
 const BADGE_IMAGES: Record<string, string> = {
 	broadcaster: '5527c58c-fb7d-422d-b71b-f309dcb85cc1',
@@ -45,10 +45,14 @@ export class ChatOverlay {
 	private readonly messages = toSignal(
 		timer(0, 2000).pipe(
 			switchMap(() =>
-				this.service.recent(12).pipe(
+				this.service.recent(50).pipe(
 					map((response) => response.messages),
-					catchError(() => of([] as LiveChatMessage[])),
+					catchError(() => of(null)),
 				),
+			),
+			scan(
+				(previous, messages) => messages ?? previous,
+				[] as LiveChatMessage[],
 			),
 		),
 		{ initialValue: [] as LiveChatMessage[] },
