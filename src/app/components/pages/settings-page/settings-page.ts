@@ -201,6 +201,30 @@ export default class SettingsPage {
 		});
 	}
 
+	readonly characterIndex = computed(() => ['warrant', 'cat', 'custom'].indexOf(this.appSettings.idleCharacter()));
+
+	setCharacter(index: number): void {
+		const character = (['warrant', 'cat', 'custom'] as const)[index] ?? 'warrant';
+		this.appSettings.idleCharacter.set(character);
+	}
+
+	onCharacterFile(event: Event): void {
+		const input = event.target as HTMLInputElement;
+		const file = input.files?.[0];
+
+		if (!file || !file.type.startsWith('image/')) {
+			return;
+		}
+
+		const reader = new FileReader();
+		reader.onload = () => {
+			this.appSettings.customCharacter.set(String(reader.result));
+			this.appSettings.idleCharacter.set('custom');
+		};
+		reader.readAsDataURL(file);
+		input.value = '';
+	}
+
 	summonCat(): void {
 		window.dispatchEvent(new Event('streamhata-cat-summon'));
 	}

@@ -206,9 +206,37 @@
         }
 
         @if (desktop) {
+          <div class="cfg-row">
+            <div class="cfg-text">
+              <span class="cfg-label">Персонаж-напоминание</span>
+              <span class="jk-caption">Кто появляется после простоя без стрима</span>
+            </div>
+            <tui-segmented
+              [activeItemIndex]="characterIndex()"
+              (activeItemIndexChange)="setCharacter($event)"
+            >
+              <button type="button">Прапорщик</button>
+              <button type="button">Кот</button>
+              <button type="button">Свой</button>
+            </tui-segmented>
+          </div>
+
+          @if (appSettings.idleCharacter() === 'custom') {
+            <div class="cfg-row">
+              <div class="cfg-text">
+                <span class="cfg-label">Своё изображение</span>
+                <span class="jk-caption">PNG, SVG, GIF или WebP</span>
+              </div>
+              <label class="background-upload">
+                Загрузить
+                <input type="file" accept="image/*" (change)="onCharacterFile($event)" />
+              </label>
+            </div>
+          }
+
           <div class="cfg-row" data-no-tauri-switch>
             <div class="cfg-text">
-              <span class="cfg-label">Кот-напоминание</span>
+              <span class="cfg-label">Напоминание о стриме</span>
               <span class="jk-caption">Появляется после 30 минут простоя без стрима</span>
             </div>
             <div class="background-actions">

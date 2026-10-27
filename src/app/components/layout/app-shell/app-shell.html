@@ -236,7 +236,13 @@
           <button type="button" (click)="hideCat()">Позже</button>
         </div>
       </div>
-      <app-idle-cat class="idle-cat-emoji" [stage]="catStage()" [talking]="catTalking()" />
+      @if (idleCharacter() === 'cat') {
+        <app-idle-cat class="idle-cat-emoji" [stage]="catStage()" [talking]="catTalking()" />
+      } @else if (idleCharacter() === 'custom' && customCharacter()) {
+        <img class="idle-cat-emoji idle-custom-character" [src]="customCharacter()" alt="" />
+      } @else {
+        <app-idle-warrant class="idle-cat-emoji" [stage]="catStage()" [talking]="catTalking()" />
+      }
     </aside>
   }
 

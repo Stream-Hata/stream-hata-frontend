@@ -27,6 +27,8 @@ interface PersistedSettings {
 	sidebarCollapsed: boolean;
 	backgroundImage: string;
 	idleCat: boolean;
+	idleCharacter: 'warrant' | 'cat' | 'custom';
+	customCharacter: string;
 }
 
 const STORAGE_KEY = 'nsh.app-settings';
@@ -44,6 +46,8 @@ const DEFAULTS: PersistedSettings = {
 	sidebarCollapsed: false,
 	backgroundImage: '',
 	idleCat: true,
+	idleCharacter: 'warrant',
+	customCharacter: '',
 };
 
 const ACCENT_BACKGROUND = '#0F0817';
@@ -102,6 +106,8 @@ export class AppSettingsService {
 	readonly sidebarCollapsed = signal(DEFAULTS.sidebarCollapsed);
 	readonly backgroundImage = signal(DEFAULTS.backgroundImage);
 	readonly idleCat = signal(DEFAULTS.idleCat);
+	readonly idleCharacter = signal(DEFAULTS.idleCharacter);
+	readonly customCharacter = signal(DEFAULTS.customCharacter);
 	readonly accentContrast = computed(() =>
 		contrastRatio(this.accent(), ACCENT_BACKGROUND).toFixed(1),
 	);
@@ -139,6 +145,8 @@ export class AppSettingsService {
 			sidebarCollapsed: this.sidebarCollapsed(),
 			backgroundImage: this.backgroundImage(),
 			idleCat: this.idleCat(),
+			idleCharacter: this.idleCharacter(),
+			customCharacter: this.customCharacter(),
 		};
 	}
 
@@ -299,6 +307,8 @@ export class AppSettingsService {
 			this.sidebarCollapsed.set(parsed.sidebarCollapsed ?? DEFAULTS.sidebarCollapsed);
 			this.backgroundImage.set(parsed.backgroundImage ?? DEFAULTS.backgroundImage);
 			this.idleCat.set(parsed.idleCat ?? DEFAULTS.idleCat);
+			this.idleCharacter.set(parsed.idleCharacter ?? DEFAULTS.idleCharacter);
+			this.customCharacter.set(parsed.customCharacter ?? DEFAULTS.customCharacter);
 		} catch {
 			// ignore broken storage
 		}

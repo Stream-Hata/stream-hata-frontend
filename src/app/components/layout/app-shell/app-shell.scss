@@ -633,6 +633,12 @@
 	animation: cat-arrive 420ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
 }
 
+.idle-custom-character {
+	max-height: 46vh;
+	object-fit: contain;
+	filter: drop-shadow(0 18px 28px rgb(0 0 0 / 38%));
+}
+
 .idle-cat-talking .idle-cat-emoji {
 	animation: cat-talk 0.35s ease-in-out infinite alternate;
 }

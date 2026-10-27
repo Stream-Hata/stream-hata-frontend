@@ -9,6 +9,7 @@ import { AppSettingsService } from '@shared/services/app-settings.service';
 import { I18nService } from '@shared/services/i18n.service';
 import { OnboardingService } from '@shared/services/onboarding.service';
 import { IdleCat } from '../../ui/idle-cat/idle-cat';
+import { IdleWarrant } from '../../ui/idle-warrant/idle-warrant';
 import { TwitchService } from '@shared/services/twitch.service';
 import { GamesCatalogService } from '@shared/services/games-catalog.service';
 import { ProfileDataService } from '@shared/services/profile-data.service';
@@ -127,6 +128,7 @@ const WIDGET_ITEMS = [
 		UpdateNotice,
 		DesktopUpdateNotice,
 		IdleCat,
+		IdleWarrant,
 		AppSearch,
 	],
 	selector: 'app-app-shell',
@@ -246,13 +248,21 @@ export default class AppShell {
 	readonly catVisible = signal(false);
 	readonly catTalking = signal(false);
 	readonly catStage = signal(0);
+	readonly idleCharacter = this.appSettings.idleCharacter;
+	readonly customCharacter = this.appSettings.customCharacter;
 	private readonly catDelays = [30 * 60_000, 60 * 60_000, 120 * 60_000];
 	readonly catPhrase = computed(() => {
-		const phrases = [
+		const catPhrases = [
 			'Мяу. Ты уже полчаса ничего не делаешь, а стрим не запущен. Может, начнём?',
 			'Я уже сам пришёл и готов запустить стрим. Ну же, нажми кнопку!',
 			'Я уже состарился, пока ждал. Ты хочешь, чтобы аудитория умерла от старости?',
 		];
+		const warrantPhrases = [
+			'Товарищ стример! Полчаса без эфира. Пора начинать!',
+			'Я уже принёс ноутбук. Стрим будет или как?',
+			'Я уже состарился на службе, а аудитория — тем более. Начинай стрим!',
+		];
+		const phrases = this.idleCharacter() === 'warrant' ? warrantPhrases : catPhrases;
 
 		return phrases[Math.max(0, this.catStage() - 1)] ?? phrases[2];
 	});
@@ -383,7 +393,7 @@ export default class AppShell {
 
 		utterance.lang = 'ru-RU';
 		utterance.rate = 0.95;
-		utterance.pitch = 1.15;
+		utterance.pitch = this.idleCharacter() === 'warrant' ? 0.8 : 1.15;
 		utterance.volume = 0.9;
 		utterance.onstart = () => this.catTalking.set(true);
 		utterance.onend = () => this.catTalking.set(false);
