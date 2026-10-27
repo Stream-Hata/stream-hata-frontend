@@ -4,6 +4,7 @@
     @if (current(); as track) {
       @if (videoUrl(); as video) {
         <iframe
+          #player
           class="nowplaying-video"
           [class.nowplaying-video-hidden]="!showVideo()"
           [src]="video"
@@ -23,8 +24,16 @@
       } @else if (!showVideo()) {
         <span class="nowplaying-cover nowplaying-cover-empty" aria-hidden="true">♪</span>
       }
+      @if (needsGesture()) {
+        <button class="nowplaying-play" type="button" (click)="resumePlayback()">
+          ▶ Включить звук
+        </button>
+      }
       <strong class="nowplaying-title">{{ track.title }}</strong>
       <span class="nowplaying-author">{{ track.author }} · {{ duration() }}</span>
+      <button class="nowplaying-skip" type="button" (click)="skipTrack()">
+        Пропустить трек →
+      </button>
     } @else {
       <span class="jk-caption">Трек-лист пуст</span>
     }

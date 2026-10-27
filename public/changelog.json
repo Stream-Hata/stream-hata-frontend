@@ -1,5 +1,19 @@
 [
   {
+    "version": "0.6.33-pre-alpha",
+    "date": "2026-10-27",
+    "sections": [
+      {
+        "title": "Добавлено",
+        "items": [
+          {
+            "text": "Кнопка «Пропустить трек» в виджете Now Playing."
+          }
+        ]
+      }
+    ]
+  },
+  {
     "version": "0.6.32-pre-alpha",
     "date": "2026-10-27",
     "sections": [

@@ -1,5 +1,5 @@
 import type { MusicListResponse, Track } from '@shared/types/music';
-import { Component, computed, DestroyRef, effect, HostListener, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, effect, ElementRef, HostListener, inject, signal, ViewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { DomSanitizer, type SafeResourceUrl } from '@angular/platform-browser';
 import { MusicService } from '@shared/services/music.service';
@@ -17,8 +17,12 @@ export class NowPlayingOverlay {
 	private readonly sanitizer = inject(DomSanitizer);
 	private readonly destroyRef = inject(DestroyRef);
 	private endTimer: ReturnType<typeof setTimeout> | null = null;
+	private gestureTimer: ReturnType<typeof setTimeout> | null = null;
 	private advancing = false;
 	private queue: string[] = [];
+
+	@ViewChild('player')
+	private player?: ElementRef<HTMLIFrameElement>;
 
 	readonly state = toSignal(
 		timer(0, 3000).pipe(
@@ -38,10 +42,13 @@ export class NowPlayingOverlay {
 		),
 	);
 	readonly currentId = signal<string | null>(null);
+	readonly reloadKey = signal(0);
 	readonly current = computed<Track | null>(
 		() => this.playlist().find((track) => track.videoId === this.currentId()) ?? null,
 	);
 	readonly thumbnailFailed = signal(false);
+	readonly playbackStarted = signal(false);
+	readonly needsGesture = signal(false);
 	readonly thumbnailUrl = computed(() => {
 		const videoId = this.current()?.videoId;
 
@@ -56,7 +63,7 @@ export class NowPlayingOverlay {
 		}
 
 		return this.sanitizer.bypassSecurityTrustResourceUrl(
-			`https://www.youtube.com/embed/${encodeURIComponent(track.videoId)}?autoplay=1&controls=0&modestbranding=1&rel=0&playsinline=1&enablejsapi=1`,
+			`https://www.youtube.com/embed/${encodeURIComponent(track.videoId)}?autoplay=1&controls=0&modestbranding=1&rel=0&playsinline=1&enablejsapi=1&origin=${encodeURIComponent(location.origin)}&reload=${this.reloadKey()}`,
 		);
 	});
 
@@ -95,9 +102,16 @@ export class NowPlayingOverlay {
 		effect(() => {
 			this.current()?.videoId;
 			this.thumbnailFailed.set(false);
+			this.playbackStarted.set(false);
+			this.needsGesture.set(false);
+			this.clearEndTimer();
+			this.clearGestureTimer();
 		});
 
-		this.destroyRef.onDestroy(() => this.clearEndTimer());
+		this.destroyRef.onDestroy(() => {
+			this.clearEndTimer();
+			this.clearGestureTimer();
+		});
 	}
 
 	@HostListener('window:message', ['$event'])
@@ -108,8 +122,20 @@ export class NowPlayingOverlay {
 
 		const payload = this.parseMessage(event.data);
 
-		if (payload?.event === 'onStateChange' && payload.info === 0) {
-			this.nextTrack();
+		if (payload?.event === 'onStateChange') {
+			if (payload.info === 0) {
+				this.nextTrack();
+			}
+
+			if (payload.info === 1 || payload.info === 3) {
+				this.playbackStarted.set(true);
+				this.needsGesture.set(false);
+				this.clearGestureTimer();
+
+				if (payload.info === 1) {
+					this.scheduleEnd();
+				}
+			}
 		}
 
 		if (payload?.event === 'onError') {
@@ -127,11 +153,34 @@ export class NowPlayingOverlay {
 			);
 		}
 
-		this.scheduleEnd();
+		this.clearGestureTimer();
+		this.gestureTimer = setTimeout(() => {
+			if (!this.playbackStarted()) {
+				this.needsGesture.set(true);
+			}
+		}, 2500);
 	}
 
-	nextTrack(): void {
-		if (!this.queue.length || this.advancing) {
+	resumePlayback(): void {
+		const frame = this.player?.nativeElement;
+
+		for (const func of ['playVideo', 'unMute', 'setVolume']) {
+			frame?.contentWindow?.postMessage(
+				JSON.stringify({ event: 'command', func, args: func === 'setVolume' ? [100] : [] }),
+				'*',
+			);
+		}
+
+		this.needsGesture.set(false);
+	}
+
+	skipTrack(): void {
+		this.clearEndTimer();
+		this.nextTrack(true);
+	}
+
+	nextTrack(force = false): void {
+		if (!this.queue.length || (this.advancing && !force)) {
 			return;
 		}
 
@@ -139,6 +188,7 @@ export class NowPlayingOverlay {
 		const index = this.queue.indexOf(this.currentId() ?? '');
 		const next = this.queue[(index + 1) % this.queue.length];
 
+		this.reloadKey.update((value) => value + 1);
 		this.currentId.set(next);
 		setTimeout(() => {
 			this.advancing = false;
@@ -166,6 +216,13 @@ export class NowPlayingOverlay {
 		if (this.endTimer) {
 			clearTimeout(this.endTimer);
 			this.endTimer = null;
+		}
+	}
+
+	private clearGestureTimer(): void {
+		if (this.gestureTimer) {
+			clearTimeout(this.gestureTimer);
+			this.gestureTimer = null;
 		}
 	}
 
