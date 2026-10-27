@@ -38,6 +38,7 @@ const TRIGGER_ACTIONS: { action: string; description: string }[] = [
 	{ action: 'jury.yea', description: 'Голос жюри: за' },
 	{ action: 'jury.nei', description: 'Голос жюри: против' },
 	{ action: 'clips.clip', description: 'Создать клип' },
+	{ action: 'music.add', description: 'Добавить музыку' },
 ];
 
 const ACTION_LABELS: Record<string, string> = {
@@ -45,6 +46,8 @@ const ACTION_LABELS: Record<string, string> = {
 	points: 'Начислить баллы',
 	timeout: 'Таймаут',
 	wheel: 'Колесо',
+	music: 'Добавить музыку',
+	clip: 'Создать клип',
 };
 
 const LEVEL_LABELS: Record<string, string> = {
@@ -126,8 +129,8 @@ export default class CommandsPage {
 	readonly cooldown = signal(5);
 	readonly action = signal('say');
 	readonly actionControl = signalControl(this.action, this.injector);
-	readonly actionValues = ['say', 'points', 'timeout', 'wheel'];
-	readonly actionLabels = ['Сообщение в чат', 'Начислить баллы', 'Таймаут', 'Колесо'];
+	readonly actionValues = ['say', 'points', 'timeout', 'wheel', 'music', 'clip'];
+	readonly actionLabels = ['Сообщение в чат', 'Начислить баллы', 'Таймаут', 'Колесо', 'Добавить музыку', 'Создать клип'];
 	readonly level = signal('everyone');
 	readonly levelControl = signalControl(this.level, this.injector);
 	readonly levelValues = ['everyone', 'subscriber', 'vip', 'moderator', 'broadcaster'];

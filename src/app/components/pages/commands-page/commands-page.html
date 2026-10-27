@@ -82,7 +82,7 @@
                         aria-label="Включить команду"
                         type="checkbox"
                         [checked]="commandEnabled(command)"
-                        (change)="toggleCommand(command, $event)"
+                        (click)="toggleCommand(command, $event)"
                         tuiSwitch
                         />
                       </td>
@@ -256,7 +256,7 @@
                       aria-label="Включить таймер"
                       type="checkbox"
                       [checked]="timerEnabled(item)"
-                      (change)="toggleTimer(item, $event)"
+                      (click)="toggleTimer(item, $event)"
                       tuiSwitch
                       />
                     </td>
@@ -496,7 +496,7 @@
                       aria-label="Включить триггер"
                       type="checkbox"
                       [checked]="trigger.enabled"
-                      (change)="toggleTrigger(index, $event)"
+                      (click)="toggleTrigger(index, $event)"
                       tuiSwitch
                       />
                     </td>

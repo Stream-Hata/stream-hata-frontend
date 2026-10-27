@@ -2,7 +2,32 @@
   <span class="nowplaying-kicker">NOW PLAYING</span>
   <article class="nowplaying-card">
     @if (current(); as track) {
-      @if (videoUrl(); as video) {
+      @if (track.kind === 'audio') {
+        <audio
+          #media
+          class="nowplaying-media nowplaying-media-audio"
+          [src]="track.url"
+          autoplay
+          (playing)="onMediaPlaying()"
+          (pause)="paused.set(true)"
+          (ended)="nextTrack()"
+          (error)="handleVideoError()"
+          (loadedmetadata)="onMediaMetadata($event)"
+        ></audio>
+      } @else if (track.kind === 'video') {
+        <video
+          #media
+          class="nowplaying-media"
+          [src]="track.url"
+          autoplay
+          playsinline
+          (playing)="onMediaPlaying()"
+          (pause)="paused.set(true)"
+          (ended)="nextTrack()"
+          (error)="handleVideoError()"
+          (loadedmetadata)="onMediaMetadata($event)"
+        ></video>
+      } @else if (videoUrl(); as video) {
         <iframe
           #player
           id="nowplaying-player"

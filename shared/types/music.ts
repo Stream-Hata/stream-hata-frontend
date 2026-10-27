@@ -1,5 +1,6 @@
 export interface Track {
 	videoId: string;
+	kind?: 'youtube' | 'audio' | 'video';
 	url: string;
 	title: string;
 	author: string;

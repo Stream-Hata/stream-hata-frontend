@@ -24,6 +24,9 @@ export class NowPlayingOverlay {
 	@ViewChild('player')
 	private player?: ElementRef<HTMLIFrameElement>;
 
+	@ViewChild('media')
+	private media?: ElementRef<HTMLMediaElement>;
+
 	readonly state = toSignal(
 		timer(0, 3000).pipe(
 			switchMap(() => this.music.list().pipe(catchError(() => of(null as MusicListResponse | null)))),
@@ -53,6 +56,7 @@ export class NowPlayingOverlay {
 	readonly playbackStarted = signal(false);
 	readonly needsGesture = signal(false);
 	readonly paused = signal(true);
+	readonly mediaDuration = signal(0);
 	readonly videoError = signal(false);
 	readonly thumbnailUrl = computed(() => {
 		const videoId = this.currentId();
@@ -63,8 +67,9 @@ export class NowPlayingOverlay {
 	readonly showControls = computed(() => this.config().config.showControls !== false);
 	readonly videoUrl = computed<SafeResourceUrl | null>(() => {
 		const videoId = this.currentId();
+		const kind = this.current()?.kind;
 
-		if (!videoId) {
+		if (!videoId || kind === 'audio' || kind === 'video') {
 			return null;
 		}
 
@@ -195,6 +200,14 @@ export class NowPlayingOverlay {
 	}
 
 	resumePlayback(): void {
+		if (this.media?.nativeElement) {
+			void this.media.nativeElement.play();
+			this.paused.set(false);
+			this.needsGesture.set(false);
+
+			return;
+		}
+
 		this.sendCommand('playVideo');
 		this.sendCommand('unMute');
 		this.sendCommand('setVolume', [100]);
@@ -203,6 +216,18 @@ export class NowPlayingOverlay {
 	}
 
 	togglePlayback(): void {
+		if (this.media?.nativeElement) {
+			if (this.media.nativeElement.paused) {
+				void this.media.nativeElement.play();
+				this.paused.set(false);
+			} else {
+				this.media.nativeElement.pause();
+				this.paused.set(true);
+			}
+
+			return;
+		}
+
 		if (this.paused()) {
 			this.resumePlayback();
 
@@ -211,6 +236,20 @@ export class NowPlayingOverlay {
 
 		this.sendCommand('pauseVideo');
 		this.paused.set(true);
+	}
+
+	onMediaPlaying(): void {
+		this.playbackStarted.set(true);
+		this.paused.set(false);
+		this.needsGesture.set(false);
+		this.clearGestureTimer();
+		this.scheduleEnd();
+	}
+
+	onMediaMetadata(event: Event): void {
+		const media = event.target as HTMLMediaElement;
+		this.mediaDuration.set(Number.isFinite(media.duration) ? media.duration : 0);
+		this.scheduleEnd();
 	}
 
 	handleVideoError(): void {
@@ -270,9 +309,10 @@ export class NowPlayingOverlay {
 	private scheduleEnd(seconds = this.current()?.durationSeconds ?? 0): void {
 		this.clearEndTimer();
 
+		const duration = seconds || this.mediaDuration();
 		this.endTimer = setTimeout(
 			() => this.nextTrack(),
-			Math.max(15, seconds + 10) * 1000,
+			Math.max(15, duration + 10) * 1000,
 		);
 	}
 
