@@ -234,6 +234,7 @@
 /* Accent text inside Taiga popups (dropdown options and hints) */
 tui-data-list,
 tui-data-list *,
+tui-datalist-wrapper,
 tui-opt-group,
 tui-opt-group *,
 [tuiOption],
@@ -245,4 +246,24 @@ tui-hint * {
 
 tui-textfield input[tuiSelectLike] {
 	color: var(--accent-primary) !important;
+}
+
+/* Active segmented item: accent background + readable text */
+tui-segmented {
+	color: var(--accent-primary);
+}
+
+tui-segmented > .tui-segmented_active {
+	color: var(--text-on-accent) !important;
+}
+
+/* Popups get their own [tuiTheme] and otherwise fall back to magenta */
+tui-popups,
+tui-popups *,
+.tui-popups,
+.tui-popups *,
+[tuiTheme] {
+	--accent-primary: var(--app-accent, #ff2ea6);
+	--accent-primary-hover: var(--app-accent, #ff2ea6);
+	--accent-primary-pressed: var(--app-accent, #ff2ea6);
 }

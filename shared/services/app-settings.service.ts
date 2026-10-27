@@ -256,6 +256,7 @@ export class AppSettingsService {
 
 	private applyAccent(root: HTMLElement, accent: string): void {
 		root.style.setProperty('--accent-primary', accent, 'important');
+		root.style.setProperty('--app-accent', accent, 'important');
 		root.style.setProperty('--tui-background-accent-1', accent, 'important');
 		root.style.setProperty('--tui-background-accent-1-hover', mix(accent, '#FFFFFF', 0.12), 'important');
 		root.style.setProperty('--tui-background-accent-1-pressed', mix(accent, '#000000', 0.12), 'important');
