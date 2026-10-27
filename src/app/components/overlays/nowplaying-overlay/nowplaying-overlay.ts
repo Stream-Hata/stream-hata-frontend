@@ -87,6 +87,7 @@ export class NowPlayingOverlay {
 			}
 
 			let added: string[] = [];
+			const wasEmpty = this.queue.length === 0;
 
 			if (!this.queue.length) {
 				this.queue = [...ids];
@@ -108,7 +109,7 @@ export class NowPlayingOverlay {
 			}
 
 			if (!this.currentId() || !this.queue.includes(this.currentId() ?? '')) {
-				if (!this.finished() || added.length) {
+				if (wasEmpty || !this.finished() || added.length) {
 					this.finished.set(false);
 					this.currentId.set(added.length ? added[added.length - 1] : this.queue[this.queue.length - 1]);
 				}
