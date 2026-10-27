@@ -267,3 +267,18 @@ tui-popups *,
 	--accent-primary-hover: var(--app-accent, #ff2ea6);
 	--accent-primary-pressed: var(--app-accent, #ff2ea6);
 }
+
+/* Primary buttons inside popups keep readable text on accent */
+tui-popups [tuiAppearance][data-appearance='primary'],
+tui-popups button[appearance='primary'],
+tui-popups a[appearance='primary'],
+tui-popups [data-appearance='primary'] {
+	color: var(--text-on-accent) !important;
+}
+
+tui-popups [tuiAppearance][data-appearance='primary'] *,
+tui-popups button[appearance='primary'] *,
+tui-popups a[appearance='primary'] *,
+tui-popups [data-appearance='primary'] * {
+	color: var(--text-on-accent) !important;
+}
