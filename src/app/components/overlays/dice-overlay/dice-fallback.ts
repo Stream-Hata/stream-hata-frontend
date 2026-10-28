@@ -59,6 +59,9 @@ export class DiceFallback {
 		this.canvas.className = 'dice-canvas';
 		this.canvas.width = 300;
 		this.canvas.height = 300;
+		this.canvas.style.display = 'block';
+		this.canvas.style.width = '100%';
+		this.canvas.style.height = '100%';
 		this.context = this.canvas.getContext('2d')!;
 		host.replaceChildren(this.canvas);
 		this.loop = this.loop.bind(this);
