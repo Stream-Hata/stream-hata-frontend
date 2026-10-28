@@ -218,3 +218,17 @@
 .poly-body {
 	fill-opacity: 0.92;
 }
+
+.dice-host {
+	position: absolute;
+	display: grid;
+	place-items: center;
+	width: 132px;
+	height: 132px;
+}
+
+.dice-host .dice-wrapper {
+	margin: 0;
+	--dice-size: 132px;
+	--dice-text-scale: 1;
+}

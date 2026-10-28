@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { AfterViewInit, Component, computed, effect, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, of, switchMap, timer } from 'rxjs';
+import { DiceRoller, type Die, type DieType } from '@gnuton/css-dice-roller';
 
 interface DiceState {
 	formula: string;
@@ -18,8 +19,14 @@ const EMPTY: DiceState = { formula: '1d6', result: 6, rolls: [6], viewer: '', ro
 	styleUrl: './dice-overlay.scss',
 	templateUrl: './dice-overlay.html',
 })
-export class DiceOverlay {
+export class DiceOverlay implements AfterViewInit {
+	@ViewChild('diceHost') private diceHost?: ElementRef<HTMLElement>;
 	private readonly http = inject(HttpClient);
+	private roller?: DiceRoller;
+	private die?: Die;
+	private renderedSides = 0;
+	private lastAnimated = '';
+	private readonly hostReady = signal(false);
 	private lastRolledAt = '';
 	readonly rolling = signal(false);
 
@@ -44,6 +51,7 @@ export class DiceOverlay {
 		return match ? Math.max(1, Number(match[2])) : 6;
 	});
 	readonly faceCount = computed(() => Math.min(this.sides(), 20));
+	readonly librarySides = computed(() => [4, 6, 8, 10, 12, 20].includes(this.sides()) ? this.sides() : 0);
 	readonly isClassic = computed(() => this.sides() === 6 && this.result() >= 1 && this.result() <= 6);
 	readonly polygonPoints = computed(() => {
 		const count = this.shapeVertices();
@@ -117,6 +125,64 @@ export class DiceOverlay {
 			this.lastRolledAt = rolledAt;
 			this.rolling.set(true);
 			setTimeout(() => this.rolling.set(false), 900);
+			this.syncLibrary(rolledAt);
 		});
+
+		effect(() => {
+			this.hostReady();
+			this.librarySides();
+			this.syncLibrary();
+		});
+	}
+
+	ngAfterViewInit(): void {
+		this.hostReady.set(true);
+	}
+
+	private syncLibrary(rolledAt = ''): void {
+		if (!this.hostReady() || !this.diceHost) {
+			return;
+		}
+
+		const sides = this.librarySides();
+		if (!sides) {
+			this.roller?.clear();
+			this.roller = undefined;
+			this.die = undefined;
+			this.renderedSides = 0;
+
+			return;
+		}
+
+		if (!this.roller || this.renderedSides !== sides) {
+			this.diceHost.nativeElement.replaceChildren();
+			this.roller = new DiceRoller(this.diceHost.nativeElement);
+			this.roller.updateSettings({
+				theme: 'theme-neon',
+				baseColor: '#ff2ea6',
+				secondaryColor: '#22e0ff',
+				textColor: '#f5eaff',
+				scale: 132,
+				animation: 'chaotic',
+				speed: 0.9,
+				dragEnabled: false,
+			});
+			this.die = this.roller.addDie(`d${sides}` as DieType)[0];
+			this.renderedSides = sides;
+		}
+
+		if (!this.die) {
+			return;
+		}
+
+		const result = Math.min(Math.max(1, this.result()), sides);
+		if (rolledAt && rolledAt !== this.lastAnimated) {
+			this.lastAnimated = rolledAt;
+			void this.die.roll().then(() => this.die?.setResult(result));
+
+			return;
+		}
+
+		this.die.setResult(result);
 	}
 }

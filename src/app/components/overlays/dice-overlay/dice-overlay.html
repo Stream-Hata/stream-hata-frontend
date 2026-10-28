@@ -3,15 +3,8 @@
     <span class="dice-kicker">DICE</span>
 
     <div class="dice-scene" [style.perspective.px]="900">
-      @if (sides() === 6) {
-        <div class="dice-cube" [style.transform]="rolling() ? null : cubeTransform()">
-          <div class="dice-face face-front"><span>{{ faceValue(1) }}</span></div>
-          <div class="dice-face face-back"><span>{{ faceValue(2) }}</span></div>
-          <div class="dice-face face-right"><span>{{ faceValue(3) }}</span></div>
-          <div class="dice-face face-left"><span>{{ faceValue(4) }}</span></div>
-          <div class="dice-face face-top"><span>{{ faceValue(5) }}</span></div>
-          <div class="dice-face face-bottom"><span>{{ faceValue(6) }}</span></div>
-        </div>
+      @if (librarySides()) {
+        <div #diceHost class="dice-host"></div>
       } @else {
         <div class="dice-poly" [class.rolling]="rolling()" [style.transform]="rolling() ? null : polyTransform()">
           <svg viewBox="0 0 200 200" role="img" [attr.aria-label]="formula()">
