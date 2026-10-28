@@ -310,7 +310,7 @@ export class DiceScene {
 		this.renderer.setClearColor(0x000000, 0);
 		this.renderer.domElement.className = 'dice-canvas';
 		this.host.replaceChildren(this.renderer.domElement);
-		this.camera.position.set(3.2, 2.1, 5.2);
+		this.camera.position.set(4.2, 2.8, 7.2);
 		this.camera.lookAt(0, 0, 0);
 		this.scene.add(new AmbientLight(0xffffff, 0.55));
 		const light = new DirectionalLight(0xffd6f4, 3.4);
@@ -366,7 +366,7 @@ export class DiceScene {
 		const groups = this.current.geometry.groups.length;
 		const index = Math.max(0, Math.min(groups - 1, (result - 1) % groups));
 		const normal = faceNormal(this.current.geometry, index);
-		this.target = new Quaternion().setFromUnitVectors(normal, new Vector3(0.95, 0.55, 1).normalize());
+		this.target = new Quaternion().setFromUnitVectors(normal, new Vector3(0.62, 0.42, 1).normalize());
 		this.spinAxis = new Vector3(Math.random() - 0.5, Math.random() + 0.7, Math.random() - 0.5).normalize();
 		this.rollStarted = performance.now();
 		this.rolling = true;

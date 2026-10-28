@@ -374,3 +374,13 @@
 	min-height: 2.75rem;
 	padding: 0.55rem 0.75rem;
 }
+
+
+.config-page tui-textfield:has(input[tuiInputColor]) {
+	width: 240px;
+}
+
+.config-page tui-textfield:has(input[tuiInputColor]) input {
+	padding-left: 2.9rem !important;
+	padding-right: 2.4rem !important;
+}

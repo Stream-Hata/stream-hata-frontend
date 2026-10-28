@@ -66,6 +66,8 @@ export class DiceOverlay implements AfterViewInit, OnDestroy {
 				return;
 			}
 
+			this.scene?.setSides(sides);
+
 			if (!rolledAt || rolledAt.startsWith('0001-') || rolledAt === this.lastRolledAt) {
 				return;
 			}
@@ -73,7 +75,6 @@ export class DiceOverlay implements AfterViewInit, OnDestroy {
 			this.lastRolledAt = rolledAt;
 			this.visible.set(true);
 			this.rolling.set(true);
-			this.scene?.setSides(sides);
 			this.scene?.roll(result);
 			setTimeout(() => this.rolling.set(false), 950);
 
