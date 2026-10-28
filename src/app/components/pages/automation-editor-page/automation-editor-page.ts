@@ -1,11 +1,12 @@
 import type { ChatCommand, CommandVariable, Trigger } from '@shared/types/automation';
 import { Component, computed, inject, signal } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CommandsService } from '@shared/services/commands.service';
 import { TriggersService } from '@shared/services/ops.services';
 import { AppSettingsService } from '@shared/services/app-settings.service';
 import { TuiButton, TuiDropdown, TuiInput, TuiSelectLike, TuiTextfield } from '@taiga-ui/core';
-import { TuiChevron, TuiDataListWrapper, TuiSwitch, TuiTextarea } from '@taiga-ui/kit';
+import { TuiChevron, TuiDataListWrapper, TuiInputFiles, TuiInputFilesDirective, TuiSwitch, TuiTextarea } from '@taiga-ui/kit';
 import { catchError, firstValueFrom, of } from 'rxjs';
 
 type EditorType = 'command' | 'trigger' | 'variable';
@@ -100,7 +101,7 @@ const VARIABLE_ACTIONS = ['', 'lastmusic', 'lasttrack', 'np', 'now', 'date', 'ti
 const VARIABLE_ACTION_LABELS = ['Не использовать', 'Ссылка на текущую музыку', 'Ссылка на последний трек', 'Сейчас играет (URL)', 'Сейчас играет', 'Дата', 'Время', 'Дата и время', 'Unix timestamp', 'Случайное значение', 'Случайное число', 'Последний лот', 'Кубик', 'Имя кубика', 'Результат кубика', 'Монетка', 'Мой баланс баллов', 'Топ баллов', 'Магазин баллов', 'Дата фоллова', 'Возраст аккаунта', 'Аптайм стрима', 'Зрители', 'Заголовок канала', 'Категория', 'Фолловеры', 'Подписчики', 'Зрители в чате', 'Статус виджета'];
 
 @Component({
-	imports: [RouterLink, TuiButton, TuiChevron, TuiDataListWrapper, TuiDropdown, TuiInput, TuiSelectLike, TuiSwitch, TuiTextarea, TuiTextfield],
+	imports: [ReactiveFormsModule, RouterLink, TuiButton, TuiChevron, TuiDataListWrapper, TuiDropdown, TuiInput, TuiInputFiles, TuiInputFilesDirective, TuiSelectLike, TuiSwitch, TuiTextarea, TuiTextfield],
 	selector: 'app-automation-editor-page',
 	templateUrl: './automation-editor-page.html',
 	styleUrl: './automation-editor-page.scss',
@@ -128,6 +129,9 @@ export default class AutomationEditorPage {
 	readonly commandAliases = signal('');
 	readonly commandValue = signal('');
 	readonly commandReply = signal('');
+	readonly commandReplyFile = new FormControl<File | null>(null);
+	readonly commandValueFile = new FormControl<File | null>(null);
+	readonly variableFile = new FormControl<File | null>(null);
 	readonly commandLimitReply = signal('');
 	readonly commandCooldown = signal(5);
 	readonly commandLevel = signal('everyone');
@@ -141,7 +145,7 @@ export default class AutomationEditorPage {
 	readonly variableAction = signal('');
 	readonly customVariables = signal<CommandVariable[]>([]);
 	readonly variableItems = computed(() => [
-		...['user', 'login', 'channel', 'count', 'date', 'time', 'now', 'lastmusic', 'lasttrack', 'np'].map((name) => `\${${name}}`),
+		...['user', 'login', 'channel', 'count', 'date', 'time', 'now', 'lastmusic', 'lasttrack', 'np', 'commands'].map((name) => `\${${name}}`),
 		...this.customVariables().map((variable) => `\${${variable.name}}`),
 	]);
 	readonly actionHint = computed(() => this.hintFor(this.commandAction()));
@@ -157,6 +161,10 @@ export default class AutomationEditorPage {
 		void this.commands.variables().pipe(catchError(() => of({ variables: [] as CommandVariable[] }))).subscribe((response) => {
 			this.customVariables.set(response.variables);
 		});
+
+		this.commandReplyFile.valueChanges.subscribe((file) => this.loadTextFile(file, this.commandReply));
+		this.commandValueFile.valueChanges.subscribe((file) => this.loadTextFile(file, this.commandValue));
+		this.variableFile.valueChanges.subscribe((file) => this.loadTextFile(file, this.variableValue));
 
 		if (this.id) {
 			void this.load();
@@ -282,6 +290,14 @@ export default class AutomationEditorPage {
 			default:
 				return '';
 		}
+	}
+
+	private loadTextFile(file: File | null, target: { set(value: string): void }): void {
+		if (!file) return;
+
+		const reader = new FileReader();
+		reader.onload = () => target.set(String(reader.result ?? ''));
+		reader.readAsText(file);
 	}
 
 	insertVariable(value: string): void {

@@ -300,3 +300,20 @@ textarea[tuiTextarea] {
 	line-height: 1.35 !important;
 	vertical-align: top;
 }
+
+/* Primary actions use white text for the neon accent palette */
+[tuiButton][appearance='primary'],
+button[appearance='primary'],
+a[appearance='primary'],
+[tuiAppearance][data-appearance='primary'],
+[data-appearance='primary'] {
+	color: #fff !important;
+}
+
+[tuiButton][appearance='primary'] *,
+button[appearance='primary'] *,
+a[appearance='primary'] *,
+[tuiAppearance][data-appearance='primary'] *,
+[data-appearance='primary'] * {
+	color: #fff !important;
+}

@@ -1,5 +1,19 @@
 [
   {
+    "version": "0.7.76-pre-alpha",
+    "date": "2026-10-28",
+    "sections": [
+      {
+        "title": "Изменено",
+        "items": [
+          {
+            "text": "Текст primary-кнопок сделан белым на акцентном фоне."
+          }
+        ]
+      }
+    ]
+  },
+  {
     "version": "0.7.75-pre-alpha",
     "date": "2026-10-28",
     "sections": [

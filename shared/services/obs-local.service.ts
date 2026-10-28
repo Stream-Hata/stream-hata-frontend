@@ -15,7 +15,12 @@ interface ObsResponse {
 
 @Injectable({ providedIn: 'root' })
 export class ObsLocalService {
-	private readonly tauriInvoke: ((command: string, args?: Record<string, unknown>) => Promise<unknown>) | undefined = undefined;
+	private readonly tauriInvoke = (() => {
+		const internals = (window as unknown as { __TAURI_INTERNALS__?: { invoke?: (command: string, args?: Record<string, unknown>) => Promise<unknown> } }).__TAURI_INTERNALS__;
+		const global = (window as unknown as { __TAURI__?: { invoke?: (command: string, args?: Record<string, unknown>) => Promise<unknown>; core?: { invoke?: (command: string, args?: Record<string, unknown>) => Promise<unknown> } } }).__TAURI__;
+
+		return internals?.invoke ?? global?.core?.invoke ?? global?.invoke;
+	})();
 	private socket: WebSocket | null = null;
 	private identified = false;
 	private url = 'ws://127.0.0.1:4455';

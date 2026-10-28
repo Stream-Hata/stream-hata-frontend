@@ -77,3 +77,20 @@ html[data-tauri] .switch-hit input[tuiSwitch] {
 	accent-color: var(--accent-primary);
 	width: 100%;
 }
+
+
+.file-upload {
+	display: inline-flex;
+	align-items: center;
+	padding: 6px 10px;
+	border: 1px solid var(--border-normal);
+	border-radius: 8px;
+	color: var(--accent-primary);
+	cursor: pointer;
+	font: 600 12px/18px var(--font-ui);
+	width: fit-content;
+}
+
+.file-upload input {
+	display: none;
+}

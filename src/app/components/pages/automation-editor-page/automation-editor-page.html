@@ -29,6 +29,10 @@
       </tui-textfield>
       <span class="jk-label">Значение действия</span>
       <tui-textfield><textarea tuiTextarea rows="6" [value]="commandValue()" (input)="commandValue.set($any($event.target).value)"></textarea></tui-textfield>
+      <label class="file-upload" tuiInputFiles>
+        <input accept=".txt,text/plain" type="file" tuiInputFiles [formControl]="commandValueFile" />
+        <span>Загрузить текст в значение</span>
+      </label>
       @if (actionHint()) { <span class="jk-caption">{{ actionHint() }}</span> }
       @if (commandAction() === 'random' || commandAction() === 'random.number') {
         <div class="range-editor">
@@ -40,6 +44,10 @@
       }
       <span class="jk-label">Ответ бота</span>
       <tui-textfield><textarea tuiTextarea rows="6" [value]="commandReply()" (input)="commandReply.set($any($event.target).value)"></textarea></tui-textfield>
+      <label class="file-upload" tuiInputFiles>
+        <input accept=".txt,text/plain" type="file" tuiInputFiles [formControl]="commandReplyFile" />
+        <span>Загрузить текст в ответ</span>
+      </label>
       <span class="jk-label">Вставить переменную</span>
       <tui-textfield tuiChevron>
         <input [readonly]="true" value="Выберите переменную…" [style.color]="accent()" tuiInput tuiSelectLike />
@@ -80,6 +88,10 @@
       <tui-textfield><input tuiInput [value]="variableName()" (input)="variableName.set($any($event.target).value)" /></tui-textfield>
       <span class="jk-label">Значение</span>
       <tui-textfield><textarea tuiTextarea rows="6" [value]="variableValue()" (input)="variableValue.set($any($event.target).value)"></textarea></tui-textfield>
+      <label class="file-upload" tuiInputFiles>
+        <input accept=".txt,text/plain" type="file" tuiInputFiles [formControl]="variableFile" />
+        <span>Загрузить текст в значение</span>
+      </label>
       <span class="jk-label">Действие</span>
       <tui-textfield tuiChevron>
         <input [readonly]="true" [value]="variableActionLabels[variableActionValues.indexOf(variableAction())]" [style.color]="accent()" tuiInput tuiSelectLike />
