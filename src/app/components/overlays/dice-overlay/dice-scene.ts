@@ -57,10 +57,11 @@ function faceMaterial(value: string | number): MeshStandardMaterial {
 	return new MeshStandardMaterial({
 		color: 0x241333,
 		map: texture,
-		roughness: 0.46,
-		metalness: 0.16,
+		roughness: 0.62,
+		metalness: 0.05,
 		emissive: 0x14001c,
-		emissiveIntensity: 0.35,
+		emissiveIntensity: 0.08,
+		flatShading: true,
 		side: DoubleSide,
 	});
 }
@@ -260,7 +261,7 @@ function buildGeometry(sides: number): { geometry: BufferGeometry; values: numbe
 		case 19:
 			return { geometry: polygonPrism(sides), values: Array.from({ length: sides }, (_, index) => index + 1) };
 		default:
-			return { geometry: new SphereGeometry(1.35, 32, 24), values: [] };
+			return { geometry: new SphereGeometry(1.35, 12, 8), values: [] };
 	}
 }
 
@@ -305,13 +306,16 @@ export class DiceScene {
 		this.renderer.domElement.className = 'dice-canvas';
 		this.host.replaceChildren(this.renderer.domElement);
 		this.camera.position.set(0, 0, 5.4);
-		this.scene.add(new AmbientLight(0xffffff, 1.8));
-		const light = new DirectionalLight(0xffd6f4, 3.2);
+		this.scene.add(new AmbientLight(0xffffff, 0.55));
+		const light = new DirectionalLight(0xffd6f4, 3.4);
 		light.position.set(-3, 5, 4);
 		this.scene.add(light);
-		const rim = new DirectionalLight(0x22e0ff, 1.5);
+		const rim = new DirectionalLight(0x22e0ff, 2.2);
 		rim.position.set(4, -2, -3);
 		this.scene.add(rim);
+		const point = new DirectionalLight(0xff8ad4, 1.3);
+		point.position.set(2, 3, 5);
+		this.scene.add(point);
 		this.scene.add(this.group);
 		this.resize();
 		this.loop = this.loop.bind(this);
@@ -356,7 +360,7 @@ export class DiceScene {
 		const groups = this.current.geometry.groups.length;
 		const index = Math.max(0, Math.min(groups - 1, (result - 1) % groups));
 		const normal = faceNormal(this.current.geometry, index);
-		this.target = new Quaternion().setFromUnitVectors(normal, new Vector3(0, 0, 1));
+		this.target = new Quaternion().setFromUnitVectors(normal, new Vector3(0.34, 0.2, 1).normalize());
 		this.spinAxis = new Vector3(Math.random() - 0.5, Math.random() + 0.7, Math.random() - 0.5).normalize();
 		this.rollStarted = performance.now();
 		this.rolling = true;
