@@ -1,7 +1,10 @@
 <div class="dice-stage">
   <div class="dice-card" [class.visible]="visible()" [class.rolling]="rolling()">
     <span class="dice-kicker">DICE</span>
-    <div #diceHost class="dice-host"></div>
+    <div #diceHost class="dice-host" [class.spin-fallback]="rolling() && !ready()"></div>
+    @if (!ready()) {
+      <strong class="dice-result">{{ result() }}</strong>
+    }
     @if (sides() > 20) {
       <strong class="dice-result">{{ result() }}</strong>
     }

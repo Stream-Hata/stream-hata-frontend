@@ -67,3 +67,14 @@
 	color: var(--text-secondary);
 	font: 600 12px/18px var(--font-ui);
 }
+
+
+.dice-card.rolling .dice-host {
+	animation: dice-host-spin 0.95s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes dice-host-spin {
+	0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+	50% { transform: rotateX(220deg) rotateY(360deg) rotateZ(90deg); }
+	100% { transform: rotateX(360deg) rotateY(720deg) rotateZ(180deg); }
+}

@@ -55,7 +55,7 @@ function faceMaterial(value: string | number): MeshStandardMaterial {
 	texture.colorSpace = SRGBColorSpace;
 
 	return new MeshStandardMaterial({
-		color: 0x241333,
+		color: 0x3a1d52,
 		map: texture,
 		roughness: 0.62,
 		metalness: 0.05,
@@ -305,7 +305,8 @@ export class DiceScene {
 		this.renderer.setClearColor(0x000000, 0);
 		this.renderer.domElement.className = 'dice-canvas';
 		this.host.replaceChildren(this.renderer.domElement);
-		this.camera.position.set(0, 0, 5.4);
+		this.camera.position.set(3.2, 2.1, 5.2);
+		this.camera.lookAt(0, 0, 0);
 		this.scene.add(new AmbientLight(0xffffff, 0.55));
 		const light = new DirectionalLight(0xffd6f4, 3.4);
 		light.position.set(-3, 5, 4);
@@ -360,7 +361,7 @@ export class DiceScene {
 		const groups = this.current.geometry.groups.length;
 		const index = Math.max(0, Math.min(groups - 1, (result - 1) % groups));
 		const normal = faceNormal(this.current.geometry, index);
-		this.target = new Quaternion().setFromUnitVectors(normal, new Vector3(0.34, 0.2, 1).normalize());
+		this.target = new Quaternion().setFromUnitVectors(normal, new Vector3(0.95, 0.55, 1).normalize());
 		this.spinAxis = new Vector3(Math.random() - 0.5, Math.random() + 0.7, Math.random() - 0.5).normalize();
 		this.rollStarted = performance.now();
 		this.rolling = true;

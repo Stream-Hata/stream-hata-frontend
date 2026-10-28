@@ -61,11 +61,9 @@ export class DiceOverlay implements AfterViewInit, OnDestroy {
 			const rolledAt = this.state().rolledAt;
 			const result = this.result();
 
-			if (!this.ready() || !this.scene) {
+			if (!this.ready()) {
 				return;
 			}
-
-			this.scene.setSides(sides);
 
 			if (!rolledAt || rolledAt.startsWith('0001-') || rolledAt === this.lastRolledAt) {
 				return;
@@ -74,7 +72,8 @@ export class DiceOverlay implements AfterViewInit, OnDestroy {
 			this.lastRolledAt = rolledAt;
 			this.visible.set(true);
 			this.rolling.set(true);
-			this.scene.roll(result);
+			this.scene?.setSides(sides);
+			this.scene?.roll(result);
 			setTimeout(() => this.rolling.set(false), 950);
 
 			if (this.hideTimer) {
@@ -89,10 +88,14 @@ export class DiceOverlay implements AfterViewInit, OnDestroy {
 			return;
 		}
 
-		this.scene = new DiceScene(this.diceHost.nativeElement);
+		try {
+			this.scene = new DiceScene(this.diceHost.nativeElement);
+		} catch (error) {
+			console.error('[Dice] WebGL unavailable', error);
+		}
 		if (this.previewSides > 0) {
-			this.scene.setSides(this.previewSides);
-			this.scene.roll(Math.min(3, this.previewSides));
+			this.scene?.setSides(this.previewSides);
+			this.scene?.roll(Math.min(3, this.previewSides));
 			this.visible.set(true);
 		}
 		this.ready.set(true);
