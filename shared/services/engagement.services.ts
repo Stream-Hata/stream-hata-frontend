@@ -120,6 +120,10 @@ export class QuotesService {
 	remove(id: string) {
 		return this.http.delete<void>(`rgg-sync/quotes/${id}`);
 	}
+
+	vote(id: string, userId: string) {
+		return this.http.post<Quote>(`rgg-sync/quotes/${id}/vote`, { userId });
+	}
 }
 
 @Injectable({ providedIn: 'root' })

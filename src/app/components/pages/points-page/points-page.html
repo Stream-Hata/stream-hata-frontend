@@ -502,6 +502,16 @@
                                   >{{ quote.author }} · добавил {{ quote.addedBy }}</span>
                                 </div>
                                 <button
+                                  size="s"
+                                  type="button"
+                                  [attr.aria-label]="'Голосовать за цитату #' + quote.number"
+                                  (click)="voteQuote(quote.id)"
+                                  appearance="flat"
+                                  iconStart="@tui.heart"
+                                  tuiIconButton
+                                ></button>
+                                <span class="jk-caption">{{ quote.votes || 0 }}</span>
+                                <button
                                   class="danger-action"
                                   size="s"
                                   type="button"

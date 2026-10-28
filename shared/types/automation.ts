@@ -269,6 +269,7 @@ export interface Quote {
 	text: string;
 	author: string;
 	addedBy: string;
+	votes: number;
 	createdAt: string;
 }
 

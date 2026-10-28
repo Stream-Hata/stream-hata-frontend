@@ -377,6 +377,20 @@ export default class PointsPage {
 		this.quotesService.remove(id).subscribe(() => this.refresh.update((v) => v + 1));
 	}
 
+	voteQuote(id: string): void {
+		let userId = localStorage.getItem('nsh.quote.voter');
+
+		if (!userId) {
+			userId = `viewer-${crypto.randomUUID()}`;
+			localStorage.setItem('nsh.quote.voter', userId);
+		}
+
+		this.quotesService.vote(id, userId).subscribe({
+			next: () => this.refresh.update((v) => v + 1),
+			error: () => undefined,
+		});
+	}
+
 	saveMapping(): void {
 		this.redemptionsService
 			.saveMapping({
