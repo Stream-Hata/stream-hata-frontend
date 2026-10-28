@@ -1,11 +1,11 @@
 <div class="dice-stage">
-  <div class="dice-card" [class.visible]="visible()" [class.rolling]="rolling()">
-    <span class="dice-kicker">DICE</span>
+  <div class="dice-card" [class.visible]="visible()" [class.rolling]="rolling()" [class.text-bottom]="textPosition() === 'bottom'" [class.align-left]="textAlign() === 'left'" [class.align-right]="textAlign() === 'right'">
+    <span class="dice-kicker">{{ title() }}</span>
     <div #diceHost class="dice-host"></div>
 
     <strong class="dice-formula">{{ formula() }}</strong>
-    @if (viewer()) {
-      <span class="dice-outcome">@{{ viewer() }} · выпало {{ result() }}</span>
+    @if (outcome()) {
+      <span class="dice-outcome">{{ outcome() }}</span>
     }
     @if (rolls().length > 1) {
       <span class="dice-rolls">{{ rolls().join(' + ') }}</span>

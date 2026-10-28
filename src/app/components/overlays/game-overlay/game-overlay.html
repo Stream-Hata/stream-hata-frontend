@@ -1,14 +1,17 @@
 <div class="game-stage">
   <div class="game-card" [class.visible]="visible()" [class.rolling]="rolling()">
     @if (mode() === 'coin') {
-      <span class="game-kicker">МОНЕТКА</span>
+      <span class="game-kicker">{{ title() }}</span>
       <div #coinHost class="coin-host"></div>
       <strong class="game-result">{{ result() }}</strong>
+      @if (outcome()) {
+        <span class="game-outcome">{{ outcome() }}</span>
+      }
       @if (viewer()) {
         <span class="game-viewer">{{ viewer() }}</span>
       }
     } @else {
-      <span class="game-kicker">РУЛЕТКА</span>
+      <span class="game-kicker">{{ title() }}</span>
       <div #randomHost class="random-host"></div>
       @if (viewer()) {
         <span class="game-viewer">{{ viewer() }}</span>

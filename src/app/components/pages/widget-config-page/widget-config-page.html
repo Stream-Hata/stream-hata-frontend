@@ -95,6 +95,36 @@
                         </div>
                       }
 
+                      @if (kind() === 'dice' || kind() === 'coinflip' || kind() === 'random') {
+                        <div class="cfg-row">
+                          <span class="cfg-label">Заголовок</span>
+                          <tui-textfield class="cfg-control">
+                            <input aria-label="Заголовок игрового виджета" [formControl]="genericForm.controls.gameTitle" tuiInput>
+                          </tui-textfield>
+                        </div>
+                        <div class="cfg-row">
+                          <span class="cfg-label">Текст результата</span>
+                          <tui-textfield class="cfg-control">
+                            <input aria-label="Текст результата" [formControl]="genericForm.controls.gameOutcome" tuiInput placeholder="@{user} · выпало {result}">
+                          </tui-textfield>
+                        </div>
+                        <div class="cfg-row">
+                          <span class="cfg-label">Положение текста</span>
+                          <tui-segmented [formControl]="genericForm.controls.gameTextPosition">
+                            <label>Сверху</label>
+                            <label>Снизу</label>
+                          </tui-segmented>
+                        </div>
+                        <div class="cfg-row">
+                          <span class="cfg-label">Выравнивание</span>
+                          <tui-segmented [formControl]="genericForm.controls.gameTextAlign">
+                            <label>Слева</label>
+                            <label>Центр</label>
+                            <label>Справа</label>
+                          </tui-segmented>
+                        </div>
+                      }
+
                       @if (kind() === 'coinflip') {
                         <div class="cfg-row">
                           <span class="cfg-label">Сторона «орёл»</span>

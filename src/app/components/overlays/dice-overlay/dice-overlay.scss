@@ -100,3 +100,36 @@
 	font: 600 12px/18px var(--font-ui);
 	white-space: nowrap;
 }
+
+
+.dice-card.text-bottom .dice-kicker {
+	top: auto;
+	bottom: -24px;
+}
+
+.dice-card.text-bottom .dice-outcome {
+	top: auto;
+	bottom: -48px;
+}
+
+.dice-card.text-bottom .dice-formula {
+	top: auto;
+	bottom: -70px;
+}
+
+.dice-card.align-left .dice-kicker,
+.dice-card.align-left .dice-outcome,
+.dice-card.align-left .dice-formula {
+	left: 0;
+	transform: none;
+	text-align: left;
+}
+
+.dice-card.align-right .dice-kicker,
+.dice-card.align-right .dice-outcome,
+.dice-card.align-right .dice-formula {
+	left: auto;
+	right: 0;
+	transform: none;
+	text-align: right;
+}

@@ -106,6 +106,10 @@ export default class WidgetConfigPage {
 		juryShowTimer: new FormControl(true, { nonNullable: true }),
 		coinHeads: new FormControl('Орёл', { nonNullable: true }),
 		coinTails: new FormControl('Решка', { nonNullable: true }),
+		gameTitle: new FormControl('', { nonNullable: true }),
+		gameOutcome: new FormControl('', { nonNullable: true }),
+		gameTextPosition: new FormControl('top', { nonNullable: true }),
+		gameTextAlign: new FormControl('center', { nonNullable: true }),
 	});
 
 	constructor() {
@@ -131,7 +135,7 @@ export default class WidgetConfigPage {
 		});
 
 		this.genericForm.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
-			this.genericConfig.update((config) => ({ ...config, ...value }));
+			this.genericConfig.update((config) => ({ ...config, ...value } as WidgetConfig));
 		});
 
 		this.widgetConfig
@@ -142,7 +146,7 @@ export default class WidgetConfigPage {
 					this.genericConfig.set(response.config);
 					this.hotbarConfig.set(response.config);
 					this.genericForm.patchValue(
-						{ ...response.config, chatOnlyOriginal: response.config.chatChannelMode === 'original' },
+						{ ...response.config, chatOnlyOriginal: response.config.chatChannelMode === 'original' } as any,
 						{ emitEvent: false },
 					);
 					this.applyJurySettings(response.config);
@@ -670,7 +674,7 @@ export default class WidgetConfigPage {
 		}
 
 		this.widgetConfig
-			.save(this.kind(), config)
+			.save(this.kind(), config as WidgetConfig)
 			.pipe(takeUntilDestroyed(this.destroyRef))
 			.subscribe();
 

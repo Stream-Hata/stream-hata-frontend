@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, computed, effect, ElementRef, inject, OnDestroy, signal, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { WidgetConfigService, type WidgetConfig } from '@shared/services/widgets.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, of, switchMap, timer } from 'rxjs';
 import { DiceScene } from './dice-scene';
@@ -22,6 +23,7 @@ const EMPTY: DiceState = { formula: '1d6', result: 6, rolls: [6], viewer: '', ro
 export class DiceOverlay implements AfterViewInit, OnDestroy {
 	@ViewChild('diceHost') private diceHost?: ElementRef<HTMLElement>;
 	private readonly http = inject(HttpClient);
+	private readonly configService = inject(WidgetConfigService);
 	private readonly previewSides = Number(new URLSearchParams(location.search).get('preview') ?? 0);
 	private scene?: DiceScene;
 	private lastRolledAt = '';
@@ -44,6 +46,21 @@ export class DiceOverlay implements AfterViewInit, OnDestroy {
 	readonly result = computed(() => this.state().result || 6);
 	readonly formula = computed(() => this.state().formula || '1d6');
 	readonly viewer = computed(() => this.state().viewer || '');
+	readonly config = toSignal(
+		this.configService.watch('dice').pipe(catchError(() => of({ config: {} as WidgetConfig }))),
+		{ initialValue: { config: {} as WidgetConfig } },
+	);
+	readonly title = computed(() => this.config().config.gameTitle?.trim() || 'DICE');
+	readonly textPosition = computed(() => this.config().config.gameTextPosition ?? 'top');
+	readonly textAlign = computed(() => this.config().config.gameTextAlign ?? 'center');
+	readonly outcome = computed(() => {
+		const template = this.config().config.gameOutcome?.trim() || '@{user} · выпало {result}';
+
+		return template
+			.replaceAll('{user}', this.viewer() || '—')
+			.replaceAll('{result}', String(this.result()))
+			.replaceAll('{formula}', this.formula());
+	});
 	readonly rolls = computed(() => this.state().rolls ?? []);
 	readonly sides = computed(() => {
 		const match = this.formula().match(/(\d*)d(\d+)/i);

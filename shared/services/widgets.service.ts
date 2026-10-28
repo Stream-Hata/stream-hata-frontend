@@ -74,6 +74,10 @@ export interface WidgetConfig {
 	jurySpeed?: number;
 	coinHeads?: string;
 	coinTails?: string;
+	gameTitle?: string;
+	gameOutcome?: string;
+	gameTextPosition?: 'top' | 'bottom';
+	gameTextAlign?: 'left' | 'center' | 'right';
 }
 
 @Injectable({ providedIn: 'root' })

@@ -51,6 +51,7 @@ export class RouletteStage {
 	readonly rollTargetStyle = computed(() => `-${this.rollTarget()}px`);
 	readonly rollFromStyle = computed(() => `-${this.rollFrom()}px`);
 	private lastTapeRound = '';
+	private resultTimer: ReturnType<typeof setTimeout> | null = null;
 
 	readonly resultOpen = signal(false);
 	readonly title = computed(() => {
@@ -169,6 +170,14 @@ export class RouletteStage {
 				return;
 			}
 
+			if (this.resultTimer) {
+				clearTimeout(this.resultTimer);
+			}
+			this.resultTimer = setTimeout(
+				() => this.resultOpen.set(false),
+				Math.max(3, this.reveal()?.durationSeconds ?? 8) * 1000,
+			);
+
 			setTimeout(() => {
 				this.resultCard()?.nativeElement.animate(
 					[
@@ -201,12 +210,19 @@ export class RouletteStage {
 		});
 
 		this.destroyRef.onDestroy(() => {
+			if (this.resultTimer) {
+				clearTimeout(this.resultTimer);
+			}
 			this.stopMusic();
 			this.revealAudio?.pause();
 		});
 	}
 
 	closeResult(): void {
+		if (this.resultTimer) {
+			clearTimeout(this.resultTimer);
+			this.resultTimer = null;
+		}
 		this.resultOpen.set(false);
 	}
 

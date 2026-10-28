@@ -55,6 +55,19 @@ export class GameOverlay implements AfterViewInit, OnDestroy {
 		this.configService.watch('coinflip').pipe(catchError(() => of({ config: {} as WidgetConfig }))),
 		{ initialValue: { config: {} as WidgetConfig } },
 	);
+	readonly randomConfig = toSignal(
+		this.configService.watch('random').pipe(catchError(() => of({ config: {} as WidgetConfig }))),
+		{ initialValue: { config: {} as WidgetConfig } },
+	);
+	readonly gameConfig = computed(() => this.mode() === 'coin' ? this.config().config : this.randomConfig().config);
+	readonly title = computed(() => this.gameConfig().gameTitle?.trim() || (this.mode() === 'coin' ? 'МОНЕТКА' : 'РУЛЕТКА'));
+	readonly outcome = computed(() => {
+		const template = this.gameConfig().gameOutcome?.trim() || '@{user} · {result}';
+
+		return template
+			.replaceAll('{user}', this.viewer() || '—')
+			.replaceAll('{result}', this.result() || '—');
+	});
 	readonly heads = computed(() => this.config().config.coinHeads?.trim() || 'Орёл');
 	readonly tails = computed(() => this.config().config.coinTails?.trim() || 'Решка');
 	readonly result = computed(() => this.active() ? this.state().result : '');
@@ -103,7 +116,7 @@ export class GameOverlay implements AfterViewInit, OnDestroy {
 				if (this.hideTimer) {
 					clearTimeout(this.hideTimer);
 				}
-				this.hideTimer = setTimeout(() => this.visible.set(false), 8000);
+				this.hideTimer = setTimeout(() => this.visible.set(false), this.mode() === 'random' ? 2200 : 8000);
 			}
 		});
 	}
