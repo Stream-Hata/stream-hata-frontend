@@ -472,6 +472,74 @@
         </section>
       }
 
+      @case ('telegram') {
+      <section class="cfg-section">
+        <header class="cfg-head">
+          <h2 class="cfg-title">Telegram-бот</h2>
+          <p class="jk-caption">Уведомления в канал и команды бота.</p>
+        </header>
+
+        <div class="cfg-row">
+          <div class="cfg-text">
+            <span class="cfg-label">Включить бота</span>
+            <span class="jk-caption">Отправка уведомлений и ответы на команды</span>
+          </div>
+          <input aria-label="Включить Telegram-бота" type="checkbox" [formControl]="notifyEnabledControl" tuiSwitch />
+        </div>
+
+        <div class="cfg-row cfg-row-column">
+          <span class="cfg-label">Bot token</span>
+          <tui-textfield>
+            <input aria-label="Telegram bot token" placeholder="123456:ABC..." [value]="telegramToken()" (input)="telegramToken.set($any($event.target).value)" (change)="saveNotify()" tuiInput />
+          </tui-textfield>
+        </div>
+
+        <div class="cfg-row cfg-row-column">
+          <span class="cfg-label">Chat / channel ID</span>
+          <tui-textfield>
+            <input aria-label="Telegram chat ID" placeholder="-100123456789" [value]="telegramChatId()" (input)="telegramChatId.set($any($event.target).value)" (change)="saveNotify()" tuiInput />
+          </tui-textfield>
+        </div>
+
+        <div class="cfg-row">
+          <span class="cfg-label">Найти chat ID</span>
+          <button size="s" type="button" (click)="loadTelegramChats()" appearance="secondary" tuiButton>Получить из Telegram</button>
+        </div>
+
+        <div class="cfg-row">
+          <span class="cfg-label">Проверка</span>
+          <div class="cfg-actions">
+            <button size="s" type="button" (click)="testNotify()" appearance="secondary" tuiButton>Тест</button>
+            <button size="s" type="button" (click)="saveNotify()" appearance="primary" tuiButton>{{ notifySaved() ? 'Сохранено' : 'Сохранить' }}</button>
+          </div>
+        </div>
+        @if (notifyError(); as error) { <span class="jk-caption da-error">{{ error }}</span> }
+
+        <div class="cfg-row">
+          <span class="cfg-label">Стрим начался</span>
+          <input aria-label="Уведомление о начале стрима" type="checkbox" [formControl]="notifyEventsControl" tuiSwitch />
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">Стрим завершён</span>
+          <input aria-label="Уведомление о завершении стрима" type="checkbox" [formControl]="notifyVotesControl" tuiSwitch />
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">Алерты и донаты</span>
+          <input aria-label="Уведомления об алертах" type="checkbox" [formControl]="notifyWidgetErrorsControl" tuiSwitch />
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">Дайджест</span>
+          <input aria-label="Дайджест в Telegram" type="checkbox" [formControl]="digestControl" tuiSwitch />
+        </div>
+
+        <div class="cfg-row cfg-row-column">
+          <span class="cfg-label">Команды бота</span>
+          <span class="jk-caption">/start · /help · /status · /music · /ping</span>
+          <span class="jk-caption">Бот отвечает только в указанном chat ID. Для канала добавьте бота администратором.</span>
+        </div>
+      </section>
+      }
+
       @case ('notifications') {
       <section class="cfg-section">
         <header class="cfg-head">

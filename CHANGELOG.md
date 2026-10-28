@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.70-pre-alpha] - 2026-10-28
+
+### Исправлено
+- Корректный Twitch scope `channel:manage:moderators`; добавлен `channel:edit:commercial`.
+- OBS WebSocket больше не закрывается сразу после подключения.
+- Telegram сообщения обрезаются до лимита, ошибки Telegram читаемы.
+
 ## [0.7.69-pre-alpha] - 2026-10-28
 
 ### Исправлено

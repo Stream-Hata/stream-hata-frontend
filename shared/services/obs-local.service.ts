@@ -56,7 +56,9 @@ export class ObsLocalService {
 
 			return () => {
 				clearInterval(timer);
-				this.close();
+				if (!this.identified) {
+					this.close();
+				}
 			};
 		});
 	}

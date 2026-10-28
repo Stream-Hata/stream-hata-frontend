@@ -1,5 +1,25 @@
 [
   {
+    "version": "0.7.70-pre-alpha",
+    "date": "2026-10-28",
+    "sections": [
+      {
+        "title": "Исправлено",
+        "items": [
+          {
+            "text": "Корректный Twitch scope `channel:manage:moderators`; добавлен `channel:edit:commercial`."
+          },
+          {
+            "text": "OBS WebSocket больше не закрывается сразу после подключения."
+          },
+          {
+            "text": "Telegram сообщения обрезаются до лимита, ошибки Telegram читаемы."
+          }
+        ]
+      }
+    ]
+  },
+  {
     "version": "0.7.69-pre-alpha",
     "date": "2026-10-28",
     "sections": [

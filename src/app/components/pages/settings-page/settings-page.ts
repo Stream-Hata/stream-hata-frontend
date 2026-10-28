@@ -47,6 +47,7 @@ type Section =
 	| 'twitch'
 	| 'jury'
 	| 'widgets'
+	| 'telegram'
 	| 'notifications'
 	| 'accessibility'
 	| 'integrations'
@@ -72,6 +73,7 @@ const SECTION_DEFS: { id: Section; labelKey: TranslationKey; icon: string }[] = 
 	{ id: 'twitch', labelKey: 'settings.twitch', icon: 'twitch' },
 	{ id: 'jury', labelKey: 'settings.jury', icon: '@tui.messages-square' },
 	{ id: 'widgets', labelKey: 'settings.widgets', icon: '@tui.blocks' },
+	{ id: 'telegram', labelKey: 'settings.telegram', icon: '@tui.send' },
 	{ id: 'notifications', labelKey: 'settings.notifications', icon: '@tui.bell' },
 	{ id: 'integrations', labelKey: 'settings.integrations', icon: '@tui.plug' },
 	{ id: 'accessibility', labelKey: 'settings.accessibility', icon: '@tui.accessibility' },

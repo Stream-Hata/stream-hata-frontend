@@ -1,8 +1,9 @@
 {
-  "version": "0.7.69-pre-alpha",
-  "build": "2026-10-28T14:19:04.318Z",
+  "version": "0.7.70-pre-alpha",
+  "build": "2026-10-28T14:44:56.081Z",
   "notes": [
-    "Свитчи интеграций и приветствия больше не disabled: добавлен NgControl.",
-    "Telegram настройки сохраняются, тест показывает реальную ошибку."
+    "Корректный Twitch scope `channel:manage:moderators`; добавлен `channel:edit:commercial`.",
+    "OBS WebSocket больше не закрывается сразу после подключения.",
+    "Telegram сообщения обрезаются до лимита, ошибки Telegram читаемы."
   ]
 }
