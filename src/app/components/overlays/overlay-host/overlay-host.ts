@@ -18,6 +18,7 @@ import { MusicOverlay } from '../music-overlay/music-overlay';
 import { NowPlayingOverlay } from '../nowplaying-overlay/nowplaying-overlay';
 import { RouletteOverlay } from '../roulette-overlay/roulette-overlay';
 import { PointsOverlay } from '../points-overlay/points-overlay';
+import { QuotesOverlay } from '../quotes-overlay/quotes-overlay';
 import { StreaksOverlay } from '../streaks-overlay/streaks-overlay';
 import { TimerOverlay } from '../timer-overlay/timer-overlay';
 import { WheelOverlay } from '../wheel-overlay/wheel-overlay';
@@ -37,6 +38,7 @@ import { WheelOverlay } from '../wheel-overlay/wheel-overlay';
 		NowPlayingOverlay,
 		RouletteOverlay,
 		PointsOverlay,
+		QuotesOverlay,
 		StreaksOverlay,
 		TimerOverlay,
 		WheelOverlay,

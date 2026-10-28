@@ -57,6 +57,7 @@ const KIND_TITLES: Record<string, string> = {
 	random: 'Random picker',
 	chat: 'Chat',
 	points: 'Top Points',
+	quotes: 'Quotes',
 	music: 'Audio list',
 	nowplaying: 'Now Playing',
 	streaks: 'Watch Streak',

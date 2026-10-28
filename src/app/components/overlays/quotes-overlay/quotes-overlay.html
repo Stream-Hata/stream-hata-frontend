@@ -1,0 +1,15 @@
+<div class="quotes-overlay">
+  <span class="quotes-kicker">ЦИТАТЫ</span>
+  @for (quote of top(); track quote.id; let index = $index) {
+    <article class="quote-row">
+      <span class="quote-rank">#{{ index + 1 }}</span>
+      <div class="quote-body">
+        <span class="quote-text">«{{ quote.text }}»</span>
+        <span class="quote-meta">{{ quote.author }} · #{{ quote.number }}</span>
+      </div>
+      <button class="quote-vote" type="button" (click)="vote(quote.id)">♥ {{ quote.votes || 0 }}</button>
+    </article>
+  } @empty {
+    <span class="jk-caption">Цитат пока нет</span>
+  }
+</div>

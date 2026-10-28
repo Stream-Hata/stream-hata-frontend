@@ -1,0 +1,20 @@
+:host { display: block; padding: 16px; font-family: var(--font-ui); }
+.quotes-overlay {
+	display: flex;
+	gap: 6px;
+	flex-direction: column;
+	width: min(560px, 100%);
+	padding: 14px 18px;
+	border: 1px solid rgb(255 255 255 / 10%);
+	border-radius: 16px;
+	background: rgb(18 18 24 / 86%);
+	backdrop-filter: blur(14px);
+}
+.quotes-kicker { color: var(--accent-primary); font: 700 11px/16px var(--font-ui); letter-spacing: .18em; }
+.quote-row { display: flex; gap: 10px; align-items: center; padding: 7px 0; border-bottom: 1px solid rgb(255 255 255 / 8%); }
+.quote-row:last-child { border-bottom: 0; }
+.quote-rank { color: var(--accent-primary); font-weight: 800; }
+.quote-body { display: flex; gap: 2px; flex: 1; flex-direction: column; min-width: 0; }
+.quote-text { color: var(--text-primary); font: 500 14px/19px var(--font-ui); }
+.quote-meta { color: var(--text-secondary); font: 500 11px/16px var(--font-ui); }
+.quote-vote { padding: 3px 8px; border: 1px solid color-mix(in srgb, var(--accent-primary) 45%, transparent); border-radius: 999px; background: transparent; color: var(--accent-primary); font: 700 12px/18px var(--font-ui); cursor: pointer; }
