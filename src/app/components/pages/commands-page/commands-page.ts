@@ -1,12 +1,19 @@
-import type { ChatCommand, CommandVariable, MessageTimer, Trigger, TwitchReward, TwitchRewardsState } from '@shared/types/automation';
+/* eslint-disable max-len */
+import type {
+	ChatCommand,
+	CommandVariable,
+	MessageTimer,
+	Trigger,
+	TwitchReward,
+	TwitchRewardsState,
+} from '@shared/types/automation';
 import { Component, computed, DestroyRef, effect, inject, Injector, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { ReactiveFormsModule } from '@angular/forms';
-import { CommandsService } from '@shared/services/commands.service';
-import { I18nService } from '@shared/services/i18n.service';
-import { AppSettingsService } from '@shared/services/app-settings.service';
 import { RouterLink } from '@angular/router';
 import { signalControl } from '@shared/helpers/form-control';
+import { AppSettingsService } from '@shared/services/app-settings.service';
+import { CommandsService } from '@shared/services/commands.service';
+import { I18nService } from '@shared/services/i18n.service';
 import { TriggersService } from '@shared/services/ops.services';
 import {
 	TuiTable,
@@ -24,9 +31,8 @@ import {
 	TuiSelectLike,
 	TuiTextfield,
 } from '@taiga-ui/core';
-import {
-	TuiInputNumber, TuiBadge, TuiChevron, TuiDataListWrapper, TuiSwitch, TuiTextarea } from '@taiga-ui/kit';
-import { catchError, merge, of, switchMap, timer } from 'rxjs';
+import { TuiBadge, TuiChevron, TuiDataListWrapper, TuiSwitch, TuiTextarea } from '@taiga-ui/kit';
+import { catchError, firstValueFrom, merge, of, switchMap, timer } from 'rxjs';
 
 const TRIGGER_ACTIONS: { action: string; description: string }[] = [
 	{ action: 'say', description: 'Сообщение в чат' },
@@ -124,15 +130,14 @@ const LEVEL_LABELS: Record<string, string> = {
 @Component({
 	imports: [
 		RouterLink,
-		TuiInputNumber,ReactiveFormsModule,
-		TuiChevron,
-		TuiDataListWrapper,
-		TuiSelectLike,
 		TuiBadge,
 		TuiButton,
+		TuiChevron,
+		TuiDataListWrapper,
 		TuiDropdown,
 		TuiIcon,
 		TuiInput,
+		TuiSelectLike,
 		TuiSwitch,
 		TuiTable,
 		TuiTableTbody,
@@ -172,9 +177,9 @@ export default class CommandsPage {
 	readonly twitchRewards = toSignal(
 		merge(timer(0, 15000), toObservable(this.refresh)).pipe(
 			switchMap(() =>
-				this.service.rewards().pipe(
-					catchError(() => of({ rewards: [], mappings: [] } as TwitchRewardsState)),
-				),
+				this.service
+					.rewards()
+					.pipe(catchError(() => of({ rewards: [], mappings: [] } as TwitchRewardsState))),
 			),
 		),
 		{ initialValue: { rewards: [], mappings: [] } as TwitchRewardsState },
@@ -196,26 +201,249 @@ export default class CommandsPage {
 	readonly cooldown = signal(5);
 	readonly action = signal('say');
 	readonly actionControl = signalControl(this.action, this.injector);
-	readonly builtInVariables = ['$(user)', '$(login)', '$(channel)', '$(count)', '$(date)', '$(time)', '$(now)', '$(lastmusic)', '$(lasttrack)', '$(np)'];
+	readonly builtInVariables = [
+		'$(user)',
+		'$(login)',
+		'$(channel)',
+		'$(count)',
+		'$(date)',
+		'$(time)',
+		'$(now)',
+		'$(lastmusic)',
+		'$(lasttrack)',
+		'$(np)',
+	];
 	readonly customVariables = toSignal(
 		merge(timer(0, 15000), toObservable(this.refresh)).pipe(
-			switchMap(() => this.service.variables().pipe(catchError(() => of({ variables: [] as CommandVariable[] })))),
+			switchMap(() =>
+				this.service.variables().pipe(catchError(() => of({ variables: [] as CommandVariable[] }))),
+			),
 		),
 		{ initialValue: { variables: [] as CommandVariable[] } },
 	);
+
 	readonly variables = computed(() => [
 		...this.builtInVariables,
 		...this.customVariables().variables.map((variable) => `$(${variable.name})`),
 	]);
+
 	readonly variableEditingId = signal<string | null>(null);
 	readonly variableName = signal('');
 	readonly variableValue = signal('');
 	readonly variableAction = signal('');
 	readonly variableActionControl = signalControl(this.variableAction, this.injector);
-	readonly variableActionValues = ['', 'lastmusic', 'lasttrack', 'np', 'now', 'date', 'time', 'datetime', 'timestamp', 'random', 'random.number', 'roulette.last', 'dice', 'dice.name', 'dice.result', 'coinflip', 'points.balance', 'points.top', 'points.shop', 'twitch.followage', 'twitch.accountage', 'twitch.uptime', 'twitch.viewers', 'twitch.title', 'twitch.game', 'twitch.followers', 'twitch.subscribers', 'twitch.chatters', 'widget.enabled'];
-	readonly variableActionLabels = ['Не использовать', 'Ссылка на текущую музыку', 'Ссылка на последний трек', 'Сейчас играет (URL)', 'Сейчас играет', 'Дата', 'Время', 'Дата и время', 'Unix timestamp', 'Случайное значение', 'Случайное число', 'Последний лот', 'Кубик', 'Имя кубика', 'Результат кубика', 'Монетка', 'Мой баланс баллов', 'Топ баллов', 'Магазин баллов', 'Дата фоллова', 'Возраст аккаунта', 'Аптайм стрима', 'Зрители', 'Заголовок канала', 'Категория', 'Фолловеры', 'Подписчики', 'Зрители в чате', 'Статус виджета'];
-	readonly actionValues = ['say', 'announce', 'shoutout', 'raid', 'raid.cancel', 'marker', 'clip', 'delete', 'ban', 'unban', 'timeout', 'shield.on', 'shield.off', 'title.set', 'game.set', 'commercial', 'poll', 'poll.end', 'points.add', 'points.remove', 'points.set', 'points.balance', 'points.top', 'points.shop', 'points.redeem', 'music.add', 'music.current', 'lastmusic', 'wheel', 'games.slots', 'games.wheel', 'games.trivia', 'games.duel', 'games.accept', 'quote.add', 'quotes.random', 'dice', 'coinflip', 'random', 'random.number', 'variable.set', 'variable.inc', 'variable.dec', 'command.run', 'timer.start', 'timer.pause', 'timer.reset', 'timer.add', 'twitch.followage', 'twitch.accountage', 'twitch.uptime', 'twitch.viewers', 'twitch.title', 'twitch.game', 'twitch.followers', 'twitch.subscribers', 'twitch.chatters', 'widget.enable', 'widget.disable', 'widget.toggle', 'widget.config', 'alert.test', 'roulette.spin', 'roulette.last', 'reward.create', 'reward.update', 'reward.delete', 'reward.fulfill', 'mod.add', 'mod.remove', 'vip.add', 'vip.remove', 'chat.settings' ];
-	readonly actionLabels = ['Сообщение в чат', 'Анонс', 'Шаут', 'Рейд', 'Отменить рейд', 'Маркер стрима', 'Создать клип', 'Удалить сообщение', 'Бан', 'Разбан', 'Таймаут', 'Shield Mode вкл', 'Shield Mode выкл', 'Сменить заголовок', 'Сменить категорию', 'Реклама', 'Создать опрос', 'Завершить опрос', 'Начислить баллы', 'Снять баллы', 'Установить баллы', 'Мой баланс', 'Топ баллов', 'Магазин баллов', 'Купить награду', 'Добавить музыку', 'Текущая музыка', 'Ссылка на музыку', 'Колесо', 'Слоты', 'Колесо игры', 'Викторина', 'Дуэль', 'Принять дуэль', 'Добавить цитату', 'Случайная цитата', 'Кубик', 'Монетка', 'Случайный выбор', 'Случайное число', 'Установить переменную', 'Увеличить переменную', 'Уменьшить переменную', 'Запустить команду', 'Старт таймера', 'Пауза таймера', 'Сброс таймера', 'Изменить таймер', 'Дата фоллова', 'Возраст аккаунта', 'Аптайм стрима', 'Зрители', 'Заголовок', 'Категория', 'Фолловеры', 'Подписчики', 'Зрители в чате', 'Включить виджет', 'Выключить виджет', 'Переключить виджет', 'Настроить виджет (kind|json)', 'Тест алерта', 'Крутить рулетку', 'Название последнего лота', 'Создать награду', 'Обновить награду', 'Удалить награду', 'Выполнить награду', 'Добавить модератора', 'Снять модератора', 'Добавить VIP', 'Снять VIP', 'Настройки чата' ];
+	readonly variableActionValues = [
+		'',
+		'lastmusic',
+		'lasttrack',
+		'np',
+		'now',
+		'date',
+		'time',
+		'datetime',
+		'timestamp',
+		'random',
+		'random.number',
+		'roulette.last',
+		'dice',
+		'dice.name',
+		'dice.result',
+		'coinflip',
+		'points.balance',
+		'points.top',
+		'points.shop',
+		'twitch.followage',
+		'twitch.accountage',
+		'twitch.uptime',
+		'twitch.viewers',
+		'twitch.title',
+		'twitch.game',
+		'twitch.followers',
+		'twitch.subscribers',
+		'twitch.chatters',
+		'widget.enabled',
+	];
+	readonly variableActionLabels = [
+		'Не использовать',
+		'Ссылка на текущую музыку',
+		'Ссылка на последний трек',
+		'Сейчас играет (URL)',
+		'Сейчас играет',
+		'Дата',
+		'Время',
+		'Дата и время',
+		'Unix timestamp',
+		'Случайное значение',
+		'Случайное число',
+		'Последний лот',
+		'Кубик',
+		'Имя кубика',
+		'Результат кубика',
+		'Монетка',
+		'Мой баланс баллов',
+		'Топ баллов',
+		'Магазин баллов',
+		'Дата фоллова',
+		'Возраст аккаунта',
+		'Аптайм стрима',
+		'Зрители',
+		'Заголовок канала',
+		'Категория',
+		'Фолловеры',
+		'Подписчики',
+		'Зрители в чате',
+		'Статус виджета',
+	];
+	readonly actionValues = [
+		'say',
+		'announce',
+		'shoutout',
+		'raid',
+		'raid.cancel',
+		'marker',
+		'clip',
+		'delete',
+		'ban',
+		'unban',
+		'timeout',
+		'shield.on',
+		'shield.off',
+		'title.set',
+		'game.set',
+		'commercial',
+		'poll',
+		'poll.end',
+		'points.add',
+		'points.remove',
+		'points.set',
+		'points.balance',
+		'points.top',
+		'points.shop',
+		'points.redeem',
+		'music.add',
+		'music.current',
+		'lastmusic',
+		'wheel',
+		'games.slots',
+		'games.wheel',
+		'games.trivia',
+		'games.duel',
+		'games.accept',
+		'quote.add',
+		'quotes.random',
+		'dice',
+		'coinflip',
+		'random',
+		'random.number',
+		'variable.set',
+		'variable.inc',
+		'variable.dec',
+		'command.run',
+		'timer.start',
+		'timer.pause',
+		'timer.reset',
+		'timer.add',
+		'twitch.followage',
+		'twitch.accountage',
+		'twitch.uptime',
+		'twitch.viewers',
+		'twitch.title',
+		'twitch.game',
+		'twitch.followers',
+		'twitch.subscribers',
+		'twitch.chatters',
+		'widget.enable',
+		'widget.disable',
+		'widget.toggle',
+		'widget.config',
+		'alert.test',
+		'roulette.spin',
+		'roulette.last',
+		'reward.create',
+		'reward.update',
+		'reward.delete',
+		'reward.fulfill',
+		'mod.add',
+		'mod.remove',
+		'vip.add',
+		'vip.remove',
+		'chat.settings',
+	];
+	readonly actionLabels = [
+		'Сообщение в чат',
+		'Анонс',
+		'Шаут',
+		'Рейд',
+		'Отменить рейд',
+		'Маркер стрима',
+		'Создать клип',
+		'Удалить сообщение',
+		'Бан',
+		'Разбан',
+		'Таймаут',
+		'Shield Mode вкл',
+		'Shield Mode выкл',
+		'Сменить заголовок',
+		'Сменить категорию',
+		'Реклама',
+		'Создать опрос',
+		'Завершить опрос',
+		'Начислить баллы',
+		'Снять баллы',
+		'Установить баллы',
+		'Мой баланс',
+		'Топ баллов',
+		'Магазин баллов',
+		'Купить награду',
+		'Добавить музыку',
+		'Текущая музыка',
+		'Ссылка на музыку',
+		'Колесо',
+		'Слоты',
+		'Колесо игры',
+		'Викторина',
+		'Дуэль',
+		'Принять дуэль',
+		'Добавить цитату',
+		'Случайная цитата',
+		'Кубик',
+		'Монетка',
+		'Случайный выбор',
+		'Случайное число',
+		'Установить переменную',
+		'Увеличить переменную',
+		'Уменьшить переменную',
+		'Запустить команду',
+		'Старт таймера',
+		'Пауза таймера',
+		'Сброс таймера',
+		'Изменить таймер',
+		'Дата фоллова',
+		'Возраст аккаунта',
+		'Аптайм стрима',
+		'Зрители',
+		'Заголовок',
+		'Категория',
+		'Фолловеры',
+		'Подписчики',
+		'Зрители в чате',
+		'Включить виджет',
+		'Выключить виджет',
+		'Переключить виджет',
+		'Настроить виджет (kind|json)',
+		'Тест алерта',
+		'Крутить рулетку',
+		'Название последнего лота',
+		'Создать награду',
+		'Обновить награду',
+		'Удалить награду',
+		'Выполнить награду',
+		'Добавить модератора',
+		'Снять модератора',
+		'Добавить VIP',
+		'Снять VIP',
+		'Настройки чата',
+	];
 	readonly level = signal('everyone');
 	readonly levelControl = signalControl(this.level, this.injector);
 	readonly levelValues = ['everyone', 'subscriber', 'vip', 'moderator', 'broadcaster'];
@@ -223,6 +451,22 @@ export default class CommandsPage {
 	readonly testResult = signal<string | null>(null);
 	readonly error = signal<string | null>(null);
 	readonly commandOverrides = signal<Record<string, boolean>>({});
+
+	async exportCommands(): Promise<void> {
+		const text = await firstValueFrom(this.service.exportText().pipe(catchError(() => of(''))));
+
+		if (!text) {
+			return;
+		}
+
+		const url = URL.createObjectURL(new Blob([text], { type: 'text/plain;charset=utf-8' }));
+		const link = document.createElement('a');
+		link.href = url;
+		link.download = 'streamhata-commands.txt';
+		link.click();
+		URL.revokeObjectURL(url);
+	}
+
 	readonly timerOverrides = signal<Record<string, boolean>>({});
 
 	/* Форма награды */
@@ -234,8 +478,17 @@ export default class CommandsPage {
 	readonly rewardAction = signal('say');
 	readonly rewardPayload = signal('');
 	readonly rewardActionValues = ['say', 'points', 'timeout', 'wheel', 'command', 'lastmusic'];
-	readonly rewardActionLabels = ['Сообщение в чат', 'Начислить баллы', 'Таймаут', 'Колесо', 'Выполнить команду', 'Ссылка на текущую музыку'];
-	readonly commandLabels = computed(() => this.commands().commands.map((command) => `!${command.name}`));
+	readonly rewardActionLabels = [
+		'Сообщение в чат',
+		'Начислить баллы',
+		'Таймаут',
+		'Колесо',
+		'Выполнить команду',
+		'Ссылка на текущую музыку',
+	];
+	readonly commandLabels = computed(() =>
+		this.commands().commands.map((command) => `!${command.name}`),
+	);
 	readonly rewardCommandLabel = computed(() => {
 		const command = this.commands().commands.find((item) => item.id === this.rewardPayload());
 
@@ -302,7 +555,8 @@ export default class CommandsPage {
 					this.resetRewardForm();
 					this.refresh.update((value) => value + 1);
 				},
-				error: (response) => this.error.set(response.error?.error ?? 'Не удалось сохранить награду'),
+				error: (response) =>
+					this.error.set(response.error?.error ?? 'Не удалось сохранить награду'),
 			});
 	}
 
@@ -369,11 +623,18 @@ export default class CommandsPage {
 	}
 
 	addTrigger(): void {
-		const next = TRIGGER_ACTIONS.find((item) => item.action === this.triggerAction()) ?? TRIGGER_ACTIONS[0];
+		const next =
+			TRIGGER_ACTIONS.find((item) => item.action === this.triggerAction()) ?? TRIGGER_ACTIONS[0];
 
 		this.triggerDraft.update((list) => [
 			...list,
-			{ action: next.action, command: '', aliases: [], enabled: true, description: next.description },
+			{
+				action: next.action,
+				command: '',
+				aliases: [],
+				enabled: true,
+				description: next.description,
+			},
 		]);
 	}
 
@@ -424,18 +685,21 @@ export default class CommandsPage {
 	}
 
 	saveVariable(): void {
-		this.service.saveVariable({
-			id: this.variableEditingId() ?? undefined,
-			name: this.variableName(),
-			value: this.variableValue(),
-			action: this.variableAction(),
-		}).subscribe({
-			next: () => {
-				this.resetVariableForm();
-				this.refresh.update((value) => value + 1);
-			},
-			error: (response) => this.error.set(response.error?.error ?? 'Не удалось сохранить переменную'),
-		});
+		this.service
+			.saveVariable({
+				id: this.variableEditingId() ?? undefined,
+				name: this.variableName(),
+				value: this.variableValue(),
+				action: this.variableAction(),
+			})
+			.subscribe({
+				next: () => {
+					this.resetVariableForm();
+					this.refresh.update((value) => value + 1);
+				},
+				error: (response) =>
+					this.error.set(response.error?.error ?? 'Не удалось сохранить переменную'),
+			});
 	}
 
 	removeVariable(id: string): void {
@@ -633,9 +897,7 @@ export default class CommandsPage {
 		const enabled = !this.timerEnabled(item);
 
 		this.timerOverrides.update((value) => ({ ...value, [item.id]: enabled }));
-		this.service
-			.saveTimer({ ...item, enabled })
-			.subscribe(() => this.refresh.update((v) => v + 1));
+		this.service.saveTimer({ ...item, enabled }).subscribe(() => this.refresh.update((v) => v + 1));
 	}
 
 	removeTimer(id: string): void {

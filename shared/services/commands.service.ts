@@ -1,4 +1,11 @@
-import type { ChatCommand, CommandVariable, MessageTimer, TwitchReward, TwitchRewardsState } from '@shared/types/automation';
+/* eslint-disable max-len */
+import type {
+	ChatCommand,
+	CommandVariable,
+	MessageTimer,
+	TwitchReward,
+	TwitchRewardsState,
+} from '@shared/types/automation';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
@@ -8,6 +15,10 @@ export class CommandsService {
 
 	list() {
 		return this.http.get<{ commands: ChatCommand[] }>('rgg-sync/commands');
+	}
+
+	exportText() {
+		return this.http.get('rgg-sync/commands/export', { responseType: 'text' });
 	}
 
 	save(command: Partial<ChatCommand>) {
