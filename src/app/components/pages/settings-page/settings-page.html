@@ -553,6 +553,7 @@
                         placeholder="https://discord.com/api/webhooks/..."
                         [value]="discordWebhook()"
                         (input)="discordWebhook.set($any($event.target).value)"
+                        (change)="saveNotify()"
                         tuiInput
                         />
                       </tui-textfield>
@@ -566,6 +567,7 @@
                           placeholder="123456:ABC..."
                           [value]="telegramToken()"
                           (input)="telegramToken.set($any($event.target).value)"
+                          (change)="saveNotify()"
                           tuiInput
                           />
                         </tui-textfield>
@@ -579,6 +581,7 @@
                             placeholder="-100123456789"
                             [value]="telegramChatId()"
                             (input)="telegramChatId.set($any($event.target).value)"
+                            (change)="saveNotify()"
                             tuiInput
                             />
                           </tui-textfield>

@@ -81,7 +81,7 @@ export default class WidgetConfigPage {
 	private readonly widgetConfig = inject(WidgetConfigService);
 	private readonly store = inject(HotbarStore);
 	readonly i18n = inject(I18nService);
-	readonly genericKinds = ['audio', 'wheel', 'dice', 'coinflip', 'random', 'chat', 'points', 'music', 'nowplaying', 'streaks'];
+	readonly genericKinds = ['audio', 'wheel', 'dice', 'coinflip', 'random', 'quotes', 'chat', 'points', 'music', 'nowplaying', 'streaks'];
 	readonly isGeneric = computed(() => this.genericKinds.includes(this.kind()));
 	readonly genericConfig = signal<WidgetConfig>({});
 	readonly hotbarConfig = signal<WidgetConfig>({});

@@ -17,6 +17,7 @@ export class RouletteOverlay implements OnDestroy {
 	private readonly roulette = inject(RouletteService);
 	private readonly destroyRef = inject(DestroyRef);
 	private lastRound = '';
+	private initialized = false;
 	private hideTimer: ReturnType<typeof setTimeout> | null = null;
 	readonly visible = signal(false);
 
@@ -50,6 +51,13 @@ export class RouletteOverlay implements OnDestroy {
 				next: (state) => {
 					this.state.set(state);
 					const latest = state.history[0];
+
+					if (!this.initialized) {
+						this.initialized = true;
+						this.lastRound = latest?.id ?? '';
+
+						return;
+					}
 
 					if (latest && latest.id !== this.lastRound) {
 						this.lastRound = latest.id;
