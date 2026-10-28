@@ -249,3 +249,29 @@
 .dice-host .die-face {
 	filter: drop-shadow(0 3px 8px rgb(0 0 0 / 65%));
 }
+
+.dice-host .die-face:nth-child(2n) .face-shape {
+	filter: brightness(0.72) saturate(1.1);
+}
+
+.dice-host .die-face:nth-child(3n) .face-shape {
+	filter: brightness(1.22) saturate(1.15);
+}
+
+.dice-host .die-face:nth-child(5n) .face-shape {
+	filter: brightness(0.88);
+}
+
+.dice-host::after {
+	position: absolute;
+	z-index: -1;
+	bottom: -18px;
+	left: 50%;
+	width: 86px;
+	height: 18px;
+	border-radius: 50%;
+	background: radial-gradient(ellipse, rgb(0 0 0 / 55%), transparent 70%);
+	content: '';
+	filter: blur(4px);
+	transform: translateX(-50%);
+}
