@@ -1,5 +1,22 @@
 [
   {
+    "version": "0.7.73-pre-alpha",
+    "date": "2026-10-28",
+    "sections": [
+      {
+        "title": "Добавлено",
+        "items": [
+          {
+            "text": "Автопоиск OBS WebSocket на `127.0.0.1:4455` и `localhost:4455`."
+          },
+          {
+            "text": "WebSocket больше не закрывается при завершении первичного запроса статуса."
+          }
+        ]
+      }
+    ]
+  },
+  {
     "version": "0.7.72-pre-alpha",
     "date": "2026-10-28",
     "sections": [

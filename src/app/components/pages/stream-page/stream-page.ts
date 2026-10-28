@@ -68,6 +68,8 @@ export default class StreamPage {
 
 	private infoLoaded = false;
 	private notifyLoaded = false;
+	private autoObsTried = false;
+	readonly desktop = navigator.userAgent.includes('NamelessStreamHataDesktop') || '__TAURI_INTERNALS__' in window;
 
 	constructor() {
 		this.stream
@@ -96,6 +98,24 @@ export default class StreamPage {
 				},
 				error: () => undefined,
 			});
+
+		if (this.desktop) {
+			setTimeout(() => this.autoConnectObs(), 1500);
+		}
+	}
+
+	private autoConnectObs(): void {
+		if (this.autoObsTried || this.obsStatus()?.connected) {
+			return;
+		}
+
+		this.autoObsTried = true;
+		this.obs.connect('ws://127.0.0.1:4455', '').pipe(
+			catchError(() => this.obs.connect('ws://localhost:4455', '')),
+		).subscribe({
+			next: () => this.refresh.update((value) => value + 1),
+			error: () => undefined,
+		});
 	}
 
 	get deckUrl(): string {
