@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import type {
 	ChatCommand,
 	CommandVariable,
@@ -11,6 +10,7 @@ import { Component, computed, DestroyRef, effect, inject, Injector, signal } fro
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { signalControl } from '@shared/helpers/form-control';
+import { saveTextFile } from '@shared/helpers/save-file';
 import { AppSettingsService } from '@shared/services/app-settings.service';
 import { CommandsService } from '@shared/services/commands.service';
 import { I18nService } from '@shared/services/i18n.service';
@@ -213,6 +213,7 @@ export default class CommandsPage {
 		'$(lasttrack)',
 		'$(np)',
 	];
+
 	readonly customVariables = toSignal(
 		merge(timer(0, 15000), toObservable(this.refresh)).pipe(
 			switchMap(() =>
@@ -263,6 +264,7 @@ export default class CommandsPage {
 		'twitch.chatters',
 		'widget.enabled',
 	];
+
 	readonly variableActionLabels = [
 		'Не использовать',
 		'Ссылка на текущую музыку',
@@ -294,6 +296,7 @@ export default class CommandsPage {
 		'Зрители в чате',
 		'Статус виджета',
 	];
+
 	readonly actionValues = [
 		'say',
 		'announce',
@@ -369,6 +372,7 @@ export default class CommandsPage {
 		'vip.remove',
 		'chat.settings',
 	];
+
 	readonly actionLabels = [
 		'Сообщение в чат',
 		'Анонс',
@@ -444,6 +448,7 @@ export default class CommandsPage {
 		'Снять VIP',
 		'Настройки чата',
 	];
+
 	readonly level = signal('everyone');
 	readonly levelControl = signalControl(this.level, this.injector);
 	readonly levelValues = ['everyone', 'subscriber', 'vip', 'moderator', 'broadcaster'];
@@ -459,12 +464,7 @@ export default class CommandsPage {
 			return;
 		}
 
-		const url = URL.createObjectURL(new Blob([text], { type: 'text/plain;charset=utf-8' }));
-		const link = document.createElement('a');
-		link.href = url;
-		link.download = 'streamhata-commands.txt';
-		link.click();
-		URL.revokeObjectURL(url);
+		await saveTextFile('streamhata-commands.txt', text);
 	}
 
 	readonly timerOverrides = signal<Record<string, boolean>>({});
@@ -486,9 +486,11 @@ export default class CommandsPage {
 		'Выполнить команду',
 		'Ссылка на текущую музыку',
 	];
+
 	readonly commandLabels = computed(() =>
 		this.commands().commands.map((command) => `!${command.name}`),
 	);
+
 	readonly rewardCommandLabel = computed(() => {
 		const command = this.commands().commands.find((item) => item.id === this.rewardPayload());
 

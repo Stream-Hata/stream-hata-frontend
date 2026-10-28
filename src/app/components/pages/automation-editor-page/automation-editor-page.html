@@ -139,6 +139,19 @@
 				/>
 				<span>{{ fileName(commandReplyFile) || 'Загрузить текст в ответ' }}</span>
 			</label>
+			<div class="switch">
+				<span class="switch-hit">
+					<input type="checkbox" class="accent-switch" [checked]="commandLineBreaks()" tuiSwitch />
+					<span
+						class="switch-hit-area"
+						(click)="commandLineBreaks.set(!commandLineBreaks()); $event.preventDefault()"
+					></span>
+				</span>
+				Построчно
+			</div>
+			<span class="jk-caption"
+				>Twitch не поддерживает переносы в одном сообщении — каждая строка уйдёт отдельно.</span
+			>
 			<span class="jk-label">Вставить переменную</span>
 			<tui-textfield tuiChevron>
 				<input

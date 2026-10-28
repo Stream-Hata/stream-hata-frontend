@@ -1,112 +1,112 @@
 <div class="jk-page">
-  <header class="jk-page-header">
-    <div class="jk-page-header-text">
-      <h1 class="jk-h1">Музыка</h1>
-      <p class="jk-caption">{{ statsLine }}</p>
-    </div>
+	<header class="jk-page-header">
+		<div class="jk-page-header-text">
+			<h1 class="jk-h1">Музыка</h1>
+			<p class="jk-caption">{{ statsLine }}</p>
+		</div>
 
-    <div class="jk-page-actions">
-      <button appearance="jkit-tint-cyan" tuiButton type="button" (click)="sendToTelegram()">
-        {{ telegramSent() ? 'Отправлено' : 'В Telegram' }}
-      </button>
-      <a appearance="jkit-tint" download href="{{ exportUrl }}" tuiButton>
-        <tui-icon icon="@tui.copy" />
-        Экспорт CSV
-      </a>
-    </div>
-  </header>
+		<div class="jk-page-actions">
+			<button appearance="jkit-tint-cyan" tuiButton type="button" (click)="sendToTelegram()">
+				{{ telegramSent() ? 'Отправлено' : 'В Telegram' }}
+			</button>
+			<button appearance="jkit-tint" type="button" (click)="exportCsv()" tuiButton>
+				<tui-icon icon="@tui.copy" />
+				Экспорт CSV
+			</button>
+		</div>
+	</header>
 
-  <section class="add-row">
-    <tui-textfield class="add-input">
-      <tui-icon icon="@tui.music" />
-      <input
-        aria-label="Ссылка на YouTube"
-        placeholder="https://youtu.be/… — трек попадёт в таблицу"
-        type="text"
-        [value]="link()"
-        (input)="link.set($any($event.target).value)"
-        (keydown.enter)="addTrack()"
-        tuiInput
-        /></tui-textfield>
+	<section class="add-row">
+		<tui-textfield class="add-input">
+			<tui-icon icon="@tui.music" />
+			<input
+				aria-label="Ссылка на YouTube"
+				placeholder="https://youtu.be/… — трек попадёт в таблицу"
+				type="text"
+				[value]="link()"
+				(input)="link.set($any($event.target).value)"
+				(keydown.enter)="addTrack()"
+				tuiInput
+		/></tui-textfield>
 
-        <button
-        type="button"
-        [disabled]="adding() || !link()"
-        (click)="addTrack()"
-        appearance="primary"
-        tuiButton
-      >
-        {{ adding() ? 'Добавляем…' : 'Добавить трек' }}
-      </button>
+		<button
+			type="button"
+			[disabled]="adding() || !link()"
+			(click)="addTrack()"
+			appearance="primary"
+			tuiButton
+		>
+			{{ adding() ? 'Добавляем…' : 'Добавить трек' }}
+		</button>
 
-      @if (error(); as message) {
-        <span class="add-error">{{ message }}</span>
-      }
-    </section>
+		@if (error(); as message) {
+			<span class="add-error">{{ message }}</span>
+		}
+	</section>
 
-    @if (tracks().length) {
-      <div class="table-wrap">
-        <table tuiTable>
-          <thead tuiThead>
-            <tr>
-              <th tuiTh class="col-index">#</th>
-              <th tuiTh>ID</th>
-              <th tuiTh>Title</th>
-              <th tuiTh>Author</th>
-              <th tuiTh>Album</th>
-              <th tuiTh>Duration</th>
-              <th tuiTh>Year</th>
-              <th tuiTh>Links</th>
-              <th tuiTh class="col-actions"><span class="sr-only">Действия</span></th>
-            </tr>
-          </thead>
+	@if (tracks().length) {
+		<div class="table-wrap">
+			<table tuiTable>
+				<thead tuiThead>
+					<tr>
+						<th tuiTh class="col-index">#</th>
+						<th tuiTh>ID</th>
+						<th tuiTh>Title</th>
+						<th tuiTh>Author</th>
+						<th tuiTh>Album</th>
+						<th tuiTh>Duration</th>
+						<th tuiTh>Year</th>
+						<th tuiTh>Links</th>
+						<th tuiTh class="col-actions"><span class="sr-only">Действия</span></th>
+					</tr>
+				</thead>
 
-          <tbody tuiTbody>
-            @for (track of tracks(); track track.videoId; let index = $index) {
-              <tr>
-                <td tuiTd class="col-index jk-caption">{{ index + 1 }}</td>
-                <td tuiTd>
-                  <span class="track-id jk-mono">{{ track.videoId }}</span>
-                </td>
-                <td tuiTd class="track-title-cell">{{ track.title }}</td>
-                <td tuiTd>{{ track.author || '—' }}</td>
-                <td tuiTd>{{ track.album || '—' }}</td>
-                <td tuiTd class="jk-numeric">{{ formatDuration(track.durationSeconds) }}</td>
-                <td tuiTd class="jk-numeric">{{ track.year || '—' }}</td>
-                <td tuiTd>
-                  <div class="track-links">
-                    @for (link of track.links; track link; let first = $first) {
-                      <a class="jk-link" href="{{ link }}" rel="noopener" target="_blank">
-                        {{ first ? 'YT' : 'YT Music' }}
-                      </a>
-                    }
-                  </div>
-                </td>
-                <td tuiTd class="col-actions">
-                  <button
-                    class="danger-action"
-                    size="s"
-                    type="button"
-                    aria-label="Удалить трек"
-                    (click)="remove(track.videoId)"
-                    appearance="flat"
-                    iconStart="@tui.trash-2"
-                    tuiIconButton
-                  ></button>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-    } @else {
-      <div class="jk-card jk-empty">
-        <span class="jk-empty-icon"><tui-icon icon="@tui.music" /></span>
-        <span class="jk-h4">Трек-лист пуст</span>
-        <span class="jk-body-sm jk-muted">
-          Кидайте YouTube-ссылки в чат — бот сам распарсит название, автора, альбом, год и
-          длительность. Или добавьте трек вручную сверху.
-        </span>
-      </div>
-    }
-  </div>
+				<tbody tuiTbody>
+					@for (track of tracks(); track track.videoId; let index = $index) {
+						<tr>
+							<td tuiTd class="col-index jk-caption">{{ index + 1 }}</td>
+							<td tuiTd>
+								<span class="track-id jk-mono">{{ track.videoId }}</span>
+							</td>
+							<td tuiTd class="track-title-cell">{{ track.title }}</td>
+							<td tuiTd>{{ track.author || '—' }}</td>
+							<td tuiTd>{{ track.album || '—' }}</td>
+							<td tuiTd class="jk-numeric">{{ formatDuration(track.durationSeconds) }}</td>
+							<td tuiTd class="jk-numeric">{{ track.year || '—' }}</td>
+							<td tuiTd>
+								<div class="track-links">
+									@for (link of track.links; track link; let first = $first) {
+										<a class="jk-link" href="{{ link }}" rel="noopener" target="_blank">
+											{{ first ? 'YT' : 'YT Music' }}
+										</a>
+									}
+								</div>
+							</td>
+							<td tuiTd class="col-actions">
+								<button
+									class="danger-action"
+									size="s"
+									type="button"
+									aria-label="Удалить трек"
+									(click)="remove(track.videoId)"
+									appearance="flat"
+									iconStart="@tui.trash-2"
+									tuiIconButton
+								></button>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	} @else {
+		<div class="jk-card jk-empty">
+			<span class="jk-empty-icon"><tui-icon icon="@tui.music" /></span>
+			<span class="jk-h4">Трек-лист пуст</span>
+			<span class="jk-body-sm jk-muted">
+				Кидайте YouTube-ссылки в чат — бот сам распарсит название, автора, альбом, год и
+				длительность. Или добавьте трек вручную сверху.
+			</span>
+		</div>
+	}
+</div>

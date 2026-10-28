@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import type { ChatCommand, CommandVariable, Trigger } from '@shared/types/automation';
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -421,6 +420,7 @@ export default class AutomationEditorPage {
 	readonly type = signal<EditorType>(
 		(new URLSearchParams(location.search).get('type') as EditorType) || 'command',
 	);
+
 	readonly typeIndex = computed(() => TYPES.findIndex((item) => item.value === this.type()));
 	readonly actions = ACTIONS;
 	readonly actionLabels = ACTION_LABELS;
@@ -435,15 +435,19 @@ export default class AutomationEditorPage {
 	readonly commandAliases = signal('');
 	readonly commandValue = signal('');
 	readonly commandReply = signal('');
+	readonly commandLineBreaks = signal(false);
 	readonly commandReplyMultiline = computed(
 		() => !this.commandReply() || this.commandReply().includes('\n'),
 	);
+
 	readonly commandValueMultiline = computed(
 		() => !this.commandValue() || this.commandValue().includes('\n'),
 	);
+
 	readonly variableValueMultiline = computed(
 		() => !this.variableValue() || this.variableValue().includes('\n'),
 	);
+
 	readonly commandReplyFile = new FormControl<File | null>(null);
 	readonly commandValueFile = new FormControl<File | null>(null);
 	readonly variableFile = new FormControl<File | null>(null);
@@ -494,7 +498,9 @@ export default class AutomationEditorPage {
 			});
 
 		this.commandReplyFile.valueChanges.subscribe((file) =>
-			this.loadTextFile(file, this.commandReply),
+			this.loadTextFile(file, this.commandReply, (text) =>
+				this.commandLineBreaks.set(text.includes('\n')),
+			),
 		);
 		this.commandValueFile.valueChanges.subscribe((file) =>
 			this.loadTextFile(file, this.commandValue),
@@ -518,6 +524,7 @@ export default class AutomationEditorPage {
 				this.commandAction.set(command.action || 'say');
 				this.commandValue.set(command.response);
 				this.commandReply.set(command.reply ?? '');
+				this.commandLineBreaks.set(Boolean(command.lineBreaks));
 				this.commandLimitReply.set(command.limitReply ?? '');
 				this.commandCooldown.set(command.cooldownSeconds);
 				this.commandLevel.set(command.userLevel);
@@ -647,11 +654,19 @@ export default class AutomationEditorPage {
 		}
 	}
 
-	private loadTextFile(file: File | null, target: { set: (value: string) => void }): void {
+	private loadTextFile(
+		file: File | null,
+		target: { set: (value: string) => void },
+		onLoad?: (text: string) => void,
+	): void {
 		if (!file) return;
 
 		const reader = new FileReader();
-		reader.onload = () => target.set(String(reader.result ?? ''));
+		reader.onload = () => {
+			const text = String(reader.result ?? '');
+			target.set(text);
+			onLoad?.(text);
+		};
 		reader.readAsText(file);
 	}
 

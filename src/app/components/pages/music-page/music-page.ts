@@ -2,6 +2,7 @@ import type { HttpErrorResponse } from '@angular/common/http';
 import type { MusicListResponse } from '@shared/types/music';
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { saveTextFile } from '@shared/helpers/save-file';
 import { MusicService } from '@shared/services/music.service';
 import {
 	TuiTable,
@@ -11,7 +12,7 @@ import {
 	TuiTableThead,
 } from '@taiga-ui/addon-table';
 import { TuiButton, TuiIcon, TuiInput, TuiTextfield } from '@taiga-ui/core';
-import { catchError, merge, of, switchMap, timer } from 'rxjs';
+import { catchError, firstValueFrom, merge, of, switchMap, timer } from 'rxjs';
 
 const EMPTY: MusicListResponse = {
 	tracks: [],
@@ -60,8 +61,12 @@ export default class MusicPage {
 		{ initialValue: EMPTY },
 	);
 
-	get exportUrl(): string {
-		return this.service.exportUrl();
+	async exportCsv(): Promise<void> {
+		const text = await firstValueFrom(this.service.exportCsv().pipe(catchError(() => of(''))));
+
+		if (text) {
+			await saveTextFile('streamhata-music.csv', text, 'text/csv');
+		}
 	}
 
 	get statsLine(): string {

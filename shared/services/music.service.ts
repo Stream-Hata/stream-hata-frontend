@@ -32,4 +32,8 @@ export class MusicService {
 	exportUrl(): string {
 		return 'rgg-sync/music/export';
 	}
+
+	exportCsv() {
+		return this.http.get('rgg-sync/music/export', { responseType: 'text' });
+	}
 }
