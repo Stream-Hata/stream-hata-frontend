@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import type { TranslationKey } from '@shared/services/i18n.service';
 import type { NotifySettings } from '@shared/types/stream';
 import { Component, computed, DestroyRef, inject, Injector, signal } from '@angular/core';
@@ -7,22 +8,22 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { contrastRatio } from '@shared/helpers/color';
 import { signalControl } from '@shared/helpers/form-control';
 import { AppSettingsService } from '@shared/services/app-settings.service';
+import { DesktopUpdateService } from '@shared/services/desktop-update.service';
 import { DonationsService } from '@shared/services/donations.service';
 import { I18nService } from '@shared/services/i18n.service';
-import { OnboardingService } from '@shared/services/onboarding.service';
-import { DesktopUpdateService } from '@shared/services/desktop-update.service';
 import { IntegrationsService } from '@shared/services/integrations.service';
+import { OnboardingService } from '@shared/services/onboarding.service';
 import { MetricsService, NetworkService } from '@shared/services/ops.services';
 import { NotifyService } from '@shared/services/stream.services';
-import { WelcomeService } from '@shared/services/welcome.service';
 import { TwitchService } from '@shared/services/twitch.service';
+import { WelcomeService } from '@shared/services/welcome.service';
 import {
 	TuiButton,
 	TuiDropdown,
 	TuiIcon,
 	TuiInput,
-	TuiSelectLike,
 	tuiItemsHandlersProvider,
+	TuiSelectLike,
 	TuiSlider,
 	TuiTextfield,
 } from '@taiga-ui/core';
@@ -97,7 +98,7 @@ const SECTION_DEFS: { id: Section; labelKey: TranslationKey; icon: string }[] = 
 		TuiInputFiles,
 		TuiInputFilesDirective,
 		TuiSegmented,
-			TuiSelectLike,
+		TuiSelectLike,
 		TuiSlider,
 		TuiSwitch,
 		TuiTabs,
@@ -119,7 +120,8 @@ export default class SettingsPage {
 	readonly desktopUpdate = inject(DesktopUpdateService);
 	private readonly injector = inject(Injector);
 	private readonly welcomeService = inject(WelcomeService);
-	readonly desktop = navigator.userAgent.includes('NamelessStreamHataDesktop') || '__TAURI_INTERNALS__' in window;
+	readonly desktop =
+		navigator.userAgent.includes('NamelessStreamHataDesktop') || '__TAURI_INTERNALS__' in window;
 	readonly section = signal<Section>('general');
 	readonly language = this.i18n.language;
 	readonly languageControl = signalControl(this.language, this.injector);
@@ -215,7 +217,9 @@ export default class SettingsPage {
 		});
 	}
 
-	readonly characterIndex = computed(() => ['warrant', 'cat', 'custom'].indexOf(this.appSettings.idleCharacter()));
+	readonly characterIndex = computed(() =>
+		['warrant', 'cat', 'custom'].indexOf(this.appSettings.idleCharacter()),
+	);
 
 	setCharacter(index: number): void {
 		const character = (['warrant', 'cat', 'custom'] as const)[index] ?? 'warrant';
@@ -397,18 +401,30 @@ export default class SettingsPage {
 			.pipe(takeUntilDestroyed(this.destroyRef))
 			.subscribe((file) => this.onCharacterFile(file));
 
-		this.welcomeService.get().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-			next: (config) => {
-				this.welcomeEnabled.set(config.enabled);
-				this.welcomeMessages.set(config.messages);
-				this.welcomeText.set(config.messages.join('\n'));
-			},
-			error: () => undefined,
-		});
+		this.welcomeService
+			.get()
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe({
+				next: (config) => {
+					this.welcomeEnabled.set(config.enabled);
+					this.welcomeMessages.set(config.messages);
+					this.welcomeText.set(config.messages.join('\n'));
+				},
+				error: () => undefined,
+			});
 
 		this.welcomeFileControl.valueChanges
 			.pipe(takeUntilDestroyed(this.destroyRef))
 			.subscribe((file) => this.onWelcomeFile(file));
+	}
+
+	onWelcomeDrop(event: DragEvent): void {
+		event.preventDefault();
+		const file = event.dataTransfer?.files?.[0];
+
+		if (file) {
+			this.welcomeFileControl.setValue(file);
+		}
 	}
 
 	onWelcomeFile(file: File | null): void {
@@ -488,7 +504,8 @@ export default class SettingsPage {
 		this.notifyError.set(null);
 		this.notify.test().subscribe({
 			next: () => this.flash(this.notifySaved),
-			error: (response) => this.notifyError.set(response.error?.error ?? 'Не удалось отправить сообщение'),
+			error: (response) =>
+				this.notifyError.set(response.error?.error ?? 'Не удалось отправить сообщение'),
 		});
 	}
 
@@ -504,7 +521,8 @@ export default class SettingsPage {
 					this.notifyError.set('Бот не видел ни одного чата. Напиши боту /start в Telegram.');
 				}
 			},
-			error: (response) => this.notifyError.set(response.error?.error ?? 'Не удалось получить чаты Telegram'),
+			error: (response) =>
+				this.notifyError.set(response.error?.error ?? 'Не удалось получить чаты Telegram'),
 		});
 	}
 
@@ -545,7 +563,10 @@ export default class SettingsPage {
 		timer(0, 5000).pipe(
 			switchMap(() =>
 				this.donationsService.getSnapshot().pipe(
-					map((snapshot) => snapshot.providers.find((provider) => provider.name === 'donationalerts') ?? null),
+					map(
+						(snapshot) =>
+							snapshot.providers.find((provider) => provider.name === 'donationalerts') ?? null,
+					),
 					catchError(() => of(null)),
 				),
 			),
@@ -566,6 +587,7 @@ export default class SettingsPage {
 		),
 		{ initialValue: [] },
 	);
+
 	private readonly integrationOverrides = signal<Record<string, boolean>>({});
 	readonly integrationRows = computed(() =>
 		this.integrations().map((integration) => ({
@@ -603,7 +625,8 @@ export default class SettingsPage {
 		this.donationError.set('');
 		this.donationsService.getDonationAlertsAuthUrl().subscribe({
 			next: ({ url }) => location.assign(url),
-			error: (response) => this.donationError.set(response.error?.error ?? 'DonationAlerts не настроен'),
+			error: (response) =>
+				this.donationError.set(response.error?.error ?? 'DonationAlerts не настроен'),
 		});
 	}
 

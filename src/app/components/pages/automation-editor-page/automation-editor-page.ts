@@ -1,12 +1,20 @@
+/* eslint-disable max-len */
 import type { ChatCommand, CommandVariable, Trigger } from '@shared/types/automation';
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { AppSettingsService } from '@shared/services/app-settings.service';
 import { CommandsService } from '@shared/services/commands.service';
 import { TriggersService } from '@shared/services/ops.services';
-import { AppSettingsService } from '@shared/services/app-settings.service';
 import { TuiButton, TuiDropdown, TuiInput, TuiSelectLike, TuiTextfield } from '@taiga-ui/core';
-import { TuiChevron, TuiDataListWrapper, TuiInputFiles, TuiInputFilesDirective, TuiSwitch, TuiTextarea } from '@taiga-ui/kit';
+import {
+	TuiChevron,
+	TuiDataListWrapper,
+	TuiInputFiles,
+	TuiInputFilesDirective,
+	TuiSwitch,
+	TuiTextarea,
+} from '@taiga-ui/kit';
 import { catchError, firstValueFrom, of } from 'rxjs';
 
 type EditorType = 'command' | 'trigger' | 'variable';
@@ -17,29 +25,251 @@ const TYPES: { value: EditorType; label: string }[] = [
 	{ value: 'variable', label: 'Переменная' },
 ];
 
-const ACTIONS = ['say', 'announce', 'shoutout', 'raid', 'raid.cancel', 'marker', 'clip', 'delete', 'ban', 'unban', 'timeout', 'shield.on', 'shield.off', 'title.set', 'game.set', 'commercial', 'poll', 'poll.end', 'points.add', 'points.remove', 'points.set', 'points.balance', 'points.top', 'points.shop', 'points.redeem', 'music.add', 'music.current', 'lastmusic', 'wheel', 'games.slots', 'games.wheel', 'games.trivia', 'games.duel', 'games.accept', 'quote.add', 'quotes.random', 'dice', 'coinflip', 'random', 'variable.set', 'variable.inc', 'variable.dec', 'command.run', 'timer.start', 'timer.pause', 'timer.reset', 'timer.add', 'twitch.followage', 'twitch.accountage', 'twitch.uptime', 'twitch.viewers', 'twitch.title', 'twitch.game', 'twitch.followers', 'twitch.subscribers', 'twitch.chatters', 'widget.enable', 'widget.disable', 'widget.toggle', 'widget.config', 'alert.test', 'roulette.spin', 'reward.create', 'reward.update', 'reward.delete', 'reward.fulfill', 'mod.add', 'mod.remove', 'vip.add', 'vip.remove', 'chat.settings', 'random.number', 'roulette.last' ];
-const ACTION_LABELS = ['Сообщение в чат', 'Анонс', 'Шаут', 'Рейд', 'Отменить рейд', 'Маркер стрима', 'Создать клип', 'Удалить сообщение', 'Бан', 'Разбан', 'Таймаут', 'Shield Mode вкл', 'Shield Mode выкл', 'Сменить заголовок', 'Сменить категорию', 'Реклама', 'Создать опрос', 'Завершить опрос', 'Начислить баллы', 'Снять баллы', 'Установить баллы', 'Мой баланс', 'Топ баллов', 'Магазин баллов', 'Купить награду', 'Добавить музыку', 'Текущая музыка', 'Ссылка на музыку', 'Колесо', 'Слоты', 'Колесо игры', 'Викторина', 'Дуэль', 'Принять дуэль', 'Добавить цитату', 'Случайная цитата', 'Кубик', 'Монетка', 'Случайный выбор', 'Установить переменную', 'Увеличить переменную', 'Уменьшить переменную', 'Запустить команду', 'Старт таймера', 'Пауза таймера', 'Сброс таймера', 'Изменить таймер', 'Дата фоллова', 'Возраст аккаунта', 'Аптайм стрима', 'Зрители', 'Заголовок', 'Категория', 'Фолловеры', 'Подписчики', 'Зрители в чате', 'Включить виджет', 'Выключить виджет', 'Переключить виджет', 'Настроить виджет (kind|json)', 'Тест алерта', 'Запустить рулетку', 'Создать награду', 'Обновить награду', 'Удалить награду', 'Выполнить награду', 'Добавить модератора', 'Снять модератора', 'Добавить VIP', 'Снять VIP', 'Настройки чата', 'Случайное число', 'Название последнего лота' ];
+const ACTIONS = [
+	'say',
+	'announce',
+	'shoutout',
+	'raid',
+	'raid.cancel',
+	'marker',
+	'clip',
+	'delete',
+	'ban',
+	'unban',
+	'timeout',
+	'shield.on',
+	'shield.off',
+	'title.set',
+	'game.set',
+	'commercial',
+	'poll',
+	'poll.end',
+	'points.add',
+	'points.remove',
+	'points.set',
+	'points.balance',
+	'points.top',
+	'points.shop',
+	'points.redeem',
+	'music.add',
+	'music.current',
+	'lastmusic',
+	'wheel',
+	'games.slots',
+	'games.wheel',
+	'games.trivia',
+	'games.duel',
+	'games.accept',
+	'quote.add',
+	'quotes.random',
+	'dice',
+	'coinflip',
+	'random',
+	'variable.set',
+	'variable.inc',
+	'variable.dec',
+	'command.run',
+	'timer.start',
+	'timer.pause',
+	'timer.reset',
+	'timer.add',
+	'twitch.followage',
+	'twitch.accountage',
+	'twitch.uptime',
+	'twitch.viewers',
+	'twitch.title',
+	'twitch.game',
+	'twitch.followers',
+	'twitch.subscribers',
+	'twitch.chatters',
+	'widget.enable',
+	'widget.disable',
+	'widget.toggle',
+	'widget.config',
+	'alert.test',
+	'roulette.spin',
+	'reward.create',
+	'reward.update',
+	'reward.delete',
+	'reward.fulfill',
+	'mod.add',
+	'mod.remove',
+	'vip.add',
+	'vip.remove',
+	'chat.settings',
+	'random.number',
+	'roulette.last',
+];
+const ACTION_LABELS = [
+	'Сообщение в чат',
+	'Анонс',
+	'Шаут',
+	'Рейд',
+	'Отменить рейд',
+	'Маркер стрима',
+	'Создать клип',
+	'Удалить сообщение',
+	'Бан',
+	'Разбан',
+	'Таймаут',
+	'Shield Mode вкл',
+	'Shield Mode выкл',
+	'Сменить заголовок',
+	'Сменить категорию',
+	'Реклама',
+	'Создать опрос',
+	'Завершить опрос',
+	'Начислить баллы',
+	'Снять баллы',
+	'Установить баллы',
+	'Мой баланс',
+	'Топ баллов',
+	'Магазин баллов',
+	'Купить награду',
+	'Добавить музыку',
+	'Текущая музыка',
+	'Ссылка на музыку',
+	'Колесо',
+	'Слоты',
+	'Колесо игры',
+	'Викторина',
+	'Дуэль',
+	'Принять дуэль',
+	'Добавить цитату',
+	'Случайная цитата',
+	'Кубик',
+	'Монетка',
+	'Случайный выбор',
+	'Установить переменную',
+	'Увеличить переменную',
+	'Уменьшить переменную',
+	'Запустить команду',
+	'Старт таймера',
+	'Пауза таймера',
+	'Сброс таймера',
+	'Изменить таймер',
+	'Дата фоллова',
+	'Возраст аккаунта',
+	'Аптайм стрима',
+	'Зрители',
+	'Заголовок',
+	'Категория',
+	'Фолловеры',
+	'Подписчики',
+	'Зрители в чате',
+	'Включить виджет',
+	'Выключить виджет',
+	'Переключить виджет',
+	'Настроить виджет (kind|json)',
+	'Тест алерта',
+	'Запустить рулетку',
+	'Создать награду',
+	'Обновить награду',
+	'Удалить награду',
+	'Выполнить награду',
+	'Добавить модератора',
+	'Снять модератора',
+	'Добавить VIP',
+	'Снять VIP',
+	'Настройки чата',
+	'Случайное число',
+	'Название последнего лота',
+];
 const LEVELS = ['everyone', 'subscriber', 'vip', 'moderator', 'broadcaster'];
 const LEVEL_LABELS = ['Все', 'Сабы', 'VIP', 'Модераторы', 'Стример'];
-const TRIGGER_ACTIONS = ['say', 'announce', 'shoutout', 'raid', 'raid.cancel', 'marker', 'clip', 'delete', 'ban', 'unban', 'timeout', 'shield.on', 'shield.off', 'title.set', 'game.set', 'commercial', 'poll', 'poll.end', 'points.add', 'points.remove', 'points.set', 'points.balance', 'points.top', 'points.shop', 'points.redeem', 'music.add', 'music.current', 'lastmusic', 'wheel', 'games.slots', 'games.wheel', 'games.trivia', 'games.duel', 'games.accept', 'quote.add', 'quotes.random', 'dice', 'coinflip', 'random', 'variable.set', 'variable.inc', 'variable.dec', 'command.run', 'timer.start', 'timer.pause', 'timer.reset', 'timer.add', 'twitch.followage', 'twitch.accountage', 'twitch.uptime', 'twitch.viewers', 'twitch.title', 'twitch.game', 'twitch.followers', 'twitch.subscribers', 'twitch.chatters', 'widget.enable', 'widget.disable', 'widget.toggle', 'widget.config', 'alert.test', 'roulette.spin', 'reward.create', 'reward.update', 'reward.delete', 'reward.fulfill', 'mod.add', 'mod.remove', 'vip.add', 'vip.remove', 'chat.settings', 'random.number', 'roulette.last' ];
+const TRIGGER_ACTIONS = [
+	'say',
+	'announce',
+	'shoutout',
+	'raid',
+	'raid.cancel',
+	'marker',
+	'clip',
+	'delete',
+	'ban',
+	'unban',
+	'timeout',
+	'shield.on',
+	'shield.off',
+	'title.set',
+	'game.set',
+	'commercial',
+	'poll',
+	'poll.end',
+	'points.add',
+	'points.remove',
+	'points.set',
+	'points.balance',
+	'points.top',
+	'points.shop',
+	'points.redeem',
+	'music.add',
+	'music.current',
+	'lastmusic',
+	'wheel',
+	'games.slots',
+	'games.wheel',
+	'games.trivia',
+	'games.duel',
+	'games.accept',
+	'quote.add',
+	'quotes.random',
+	'dice',
+	'coinflip',
+	'random',
+	'variable.set',
+	'variable.inc',
+	'variable.dec',
+	'command.run',
+	'timer.start',
+	'timer.pause',
+	'timer.reset',
+	'timer.add',
+	'twitch.followage',
+	'twitch.accountage',
+	'twitch.uptime',
+	'twitch.viewers',
+	'twitch.title',
+	'twitch.game',
+	'twitch.followers',
+	'twitch.subscribers',
+	'twitch.chatters',
+	'widget.enable',
+	'widget.disable',
+	'widget.toggle',
+	'widget.config',
+	'alert.test',
+	'roulette.spin',
+	'reward.create',
+	'reward.update',
+	'reward.delete',
+	'reward.fulfill',
+	'mod.add',
+	'mod.remove',
+	'vip.add',
+	'vip.remove',
+	'chat.settings',
+	'random.number',
+	'roulette.last',
+];
 const TRIGGER_LABELS: Record<string, string> = {
-	'say': 'Сообщение в чат',
-	'announce': 'Анонс',
-	'shoutout': 'Шаут',
-	'raid': 'Рейд',
+	say: 'Сообщение в чат',
+	announce: 'Анонс',
+	shoutout: 'Шаут',
+	raid: 'Рейд',
 	'raid.cancel': 'Отменить рейд',
-	'marker': 'Маркер стрима',
-	'clip': 'Создать клип',
-	'delete': 'Удалить сообщение',
-	'ban': 'Бан',
-	'unban': 'Разбан',
-	'timeout': 'Таймаут',
+	marker: 'Маркер стрима',
+	clip: 'Создать клип',
+	delete: 'Удалить сообщение',
+	ban: 'Бан',
+	unban: 'Разбан',
+	timeout: 'Таймаут',
 	'shield.on': 'Shield Mode вкл',
 	'shield.off': 'Shield Mode выкл',
 	'title.set': 'Сменить заголовок',
 	'game.set': 'Сменить категорию',
-	'commercial': 'Реклама',
-	'poll': 'Создать опрос',
+	commercial: 'Реклама',
+	poll: 'Создать опрос',
 	'poll.end': 'Завершить опрос',
 	'points.add': 'Начислить баллы',
 	'points.remove': 'Снять баллы',
@@ -50,8 +280,8 @@ const TRIGGER_LABELS: Record<string, string> = {
 	'points.redeem': 'Купить награду',
 	'music.add': 'Добавить музыку',
 	'music.current': 'Текущая музыка',
-	'lastmusic': 'Ссылка на музыку',
-	'wheel': 'Колесо',
+	lastmusic: 'Ссылка на музыку',
+	wheel: 'Колесо',
 	'games.slots': 'Слоты',
 	'games.wheel': 'Колесо игры',
 	'games.trivia': 'Викторина',
@@ -59,9 +289,9 @@ const TRIGGER_LABELS: Record<string, string> = {
 	'games.accept': 'Принять дуэль',
 	'quote.add': 'Добавить цитату',
 	'quotes.random': 'Случайная цитата',
-	'dice': 'Кубик',
-	'coinflip': 'Монетка',
-	'random': 'Случайный выбор',
+	dice: 'Кубик',
+	coinflip: 'Монетка',
+	random: 'Случайный выбор',
 	'random.number': 'Случайное число',
 	'variable.set': 'Установить переменную',
 	'variable.inc': 'Увеличить переменную',
@@ -97,11 +327,85 @@ const TRIGGER_LABELS: Record<string, string> = {
 	'vip.remove': 'Снять VIP',
 	'chat.settings': 'Настройки чата',
 };
-const VARIABLE_ACTIONS = ['', 'lastmusic', 'lasttrack', 'np', 'now', 'date', 'time', 'datetime', 'timestamp', 'random', 'random.number', 'roulette.last', 'dice', 'dice.name', 'dice.result', 'coinflip', 'points.balance', 'points.top', 'points.shop', 'twitch.followage', 'twitch.accountage', 'twitch.uptime', 'twitch.viewers', 'twitch.title', 'twitch.game', 'twitch.followers', 'twitch.subscribers', 'twitch.chatters', 'widget.enabled'];
-const VARIABLE_ACTION_LABELS = ['Не использовать', 'Ссылка на текущую музыку', 'Ссылка на последний трек', 'Сейчас играет (URL)', 'Сейчас играет', 'Дата', 'Время', 'Дата и время', 'Unix timestamp', 'Случайное значение', 'Случайное число', 'Последний лот', 'Кубик', 'Имя кубика', 'Результат кубика', 'Монетка', 'Мой баланс баллов', 'Топ баллов', 'Магазин баллов', 'Дата фоллова', 'Возраст аккаунта', 'Аптайм стрима', 'Зрители', 'Заголовок канала', 'Категория', 'Фолловеры', 'Подписчики', 'Зрители в чате', 'Статус виджета'];
+const VARIABLE_ACTIONS = [
+	'',
+	'lastmusic',
+	'lasttrack',
+	'np',
+	'now',
+	'date',
+	'time',
+	'datetime',
+	'timestamp',
+	'random',
+	'random.number',
+	'roulette.last',
+	'dice',
+	'dice.name',
+	'dice.result',
+	'coinflip',
+	'points.balance',
+	'points.top',
+	'points.shop',
+	'twitch.followage',
+	'twitch.accountage',
+	'twitch.uptime',
+	'twitch.viewers',
+	'twitch.title',
+	'twitch.game',
+	'twitch.followers',
+	'twitch.subscribers',
+	'twitch.chatters',
+	'widget.enabled',
+];
+const VARIABLE_ACTION_LABELS = [
+	'Не использовать',
+	'Ссылка на текущую музыку',
+	'Ссылка на последний трек',
+	'Сейчас играет (URL)',
+	'Сейчас играет',
+	'Дата',
+	'Время',
+	'Дата и время',
+	'Unix timestamp',
+	'Случайное значение',
+	'Случайное число',
+	'Последний лот',
+	'Кубик',
+	'Имя кубика',
+	'Результат кубика',
+	'Монетка',
+	'Мой баланс баллов',
+	'Топ баллов',
+	'Магазин баллов',
+	'Дата фоллова',
+	'Возраст аккаунта',
+	'Аптайм стрима',
+	'Зрители',
+	'Заголовок канала',
+	'Категория',
+	'Фолловеры',
+	'Подписчики',
+	'Зрители в чате',
+	'Статус виджета',
+];
 
 @Component({
-	imports: [ReactiveFormsModule, RouterLink, TuiButton, TuiChevron, TuiDataListWrapper, TuiDropdown, TuiInput, TuiInputFiles, TuiInputFilesDirective, TuiSelectLike, TuiSwitch, TuiTextarea, TuiTextfield],
+	imports: [
+		ReactiveFormsModule,
+		RouterLink,
+		TuiButton,
+		TuiChevron,
+		TuiDataListWrapper,
+		TuiDropdown,
+		TuiInput,
+		TuiInputFiles,
+		TuiInputFilesDirective,
+		TuiSelectLike,
+		TuiSwitch,
+		TuiTextarea,
+		TuiTextfield,
+	],
 	selector: 'app-automation-editor-page',
 	templateUrl: './automation-editor-page.html',
 	styleUrl: './automation-editor-page.scss',
@@ -114,7 +418,9 @@ export default class AutomationEditorPage {
 	private readonly id = new URLSearchParams(location.search).get('id');
 
 	readonly types = TYPES;
-	readonly type = signal<EditorType>((new URLSearchParams(location.search).get('type') as EditorType) || 'command');
+	readonly type = signal<EditorType>(
+		(new URLSearchParams(location.search).get('type') as EditorType) || 'command',
+	);
 	readonly typeIndex = computed(() => TYPES.findIndex((item) => item.value === this.type()));
 	readonly actions = ACTIONS;
 	readonly actionLabels = ACTION_LABELS;
@@ -129,6 +435,15 @@ export default class AutomationEditorPage {
 	readonly commandAliases = signal('');
 	readonly commandValue = signal('');
 	readonly commandReply = signal('');
+	readonly commandReplyMultiline = computed(
+		() => !this.commandReply() || this.commandReply().includes('\n'),
+	);
+	readonly commandValueMultiline = computed(
+		() => !this.commandValue() || this.commandValue().includes('\n'),
+	);
+	readonly variableValueMultiline = computed(
+		() => !this.variableValue() || this.variableValue().includes('\n'),
+	);
 	readonly commandReplyFile = new FormControl<File | null>(null);
 	readonly commandValueFile = new FormControl<File | null>(null);
 	readonly variableFile = new FormControl<File | null>(null);
@@ -145,9 +460,22 @@ export default class AutomationEditorPage {
 	readonly variableAction = signal('');
 	readonly customVariables = signal<CommandVariable[]>([]);
 	readonly variableItems = computed(() => [
-		...['user', 'login', 'channel', 'count', 'date', 'time', 'now', 'lastmusic', 'lasttrack', 'np', 'commands'].map((name) => `\${${name}}`),
+		...[
+			'user',
+			'login',
+			'channel',
+			'count',
+			'date',
+			'time',
+			'now',
+			'lastmusic',
+			'lasttrack',
+			'np',
+			'commands',
+		].map((name) => `\${${name}}`),
 		...this.customVariables().map((variable) => `\${${variable.name}}`),
 	]);
+
 	readonly actionHint = computed(() => this.hintFor(this.commandAction()));
 	readonly variableHint = computed(() => this.hintFor(this.variableAction()));
 	readonly commandRangeFrom = signal(1);
@@ -158,12 +486,19 @@ export default class AutomationEditorPage {
 	readonly saved = signal(false);
 
 	constructor() {
-		void this.commands.variables().pipe(catchError(() => of({ variables: [] as CommandVariable[] }))).subscribe((response) => {
-			this.customVariables.set(response.variables);
-		});
+		void this.commands
+			.variables()
+			.pipe(catchError(() => of({ variables: [] as CommandVariable[] })))
+			.subscribe((response) => {
+				this.customVariables.set(response.variables);
+			});
 
-		this.commandReplyFile.valueChanges.subscribe((file) => this.loadTextFile(file, this.commandReply));
-		this.commandValueFile.valueChanges.subscribe((file) => this.loadTextFile(file, this.commandValue));
+		this.commandReplyFile.valueChanges.subscribe((file) =>
+			this.loadTextFile(file, this.commandReply),
+		);
+		this.commandValueFile.valueChanges.subscribe((file) =>
+			this.loadTextFile(file, this.commandValue),
+		);
 		this.variableFile.valueChanges.subscribe((file) => this.loadTextFile(file, this.variableValue));
 
 		if (this.id) {
@@ -173,7 +508,9 @@ export default class AutomationEditorPage {
 
 	async load(): Promise<void> {
 		if (this.type() === 'command') {
-			const response = await firstValueFrom(this.commands.list().pipe(catchError(() => of({ commands: [] as ChatCommand[] }))));
+			const response = await firstValueFrom(
+				this.commands.list().pipe(catchError(() => of({ commands: [] as ChatCommand[] }))),
+			);
 			const command = response.commands.find((item) => item.id === this.id);
 			if (command) {
 				this.commandName.set(command.name);
@@ -190,7 +527,9 @@ export default class AutomationEditorPage {
 		}
 
 		if (this.type() === 'trigger') {
-			const response = await firstValueFrom(this.triggers.list().pipe(catchError(() => of({ triggers: [] as Trigger[] }))));
+			const response = await firstValueFrom(
+				this.triggers.list().pipe(catchError(() => of({ triggers: [] as Trigger[] }))),
+			);
 			const trigger = response.triggers.find((item) => item.action === this.id);
 			if (trigger) {
 				this.triggerAction.set(trigger.action);
@@ -201,7 +540,11 @@ export default class AutomationEditorPage {
 		}
 
 		if (this.type() === 'variable') {
-			const response = await firstValueFrom(this.commands.variables().pipe(catchError(() => of({ variables: [] as CommandVariable[] }))));
+			const response = await firstValueFrom(
+				this.commands
+					.variables()
+					.pipe(catchError(() => of({ variables: [] as CommandVariable[] }))),
+			);
 			const variable = response.variables.find((item) => item.id === this.id);
 			if (variable) {
 				this.variableName.set(variable.name);
@@ -220,27 +563,37 @@ export default class AutomationEditorPage {
 				this.error.set('Укажите имя команды');
 				return;
 			}
-			await firstValueFrom(this.commands.save({
-				id: this.id ?? undefined,
-				name: this.commandName().trim(),
-				aliases: this.commandAliases().split(',').map((item) => item.trim()).filter(Boolean),
-				action: this.commandAction(),
-				response: this.commandValue().trim(),
-				reply: this.commandReply().trim(),
-				limitReply: this.commandLimitReply().trim(),
-				cooldownSeconds: this.commandCooldown(),
-				userLevel: this.commandLevel(),
-				enabled: this.commandEnabled(),
-			}));
+			await firstValueFrom(
+				this.commands.save({
+					id: this.id ?? undefined,
+					name: this.commandName().trim(),
+					aliases: this.commandAliases()
+						.split(',')
+						.map((item) => item.trim())
+						.filter(Boolean),
+					action: this.commandAction(),
+					response: this.commandValue().trim(),
+					reply: this.commandReply().trim(),
+					limitReply: this.commandLimitReply().trim(),
+					cooldownSeconds: this.commandCooldown(),
+					userLevel: this.commandLevel(),
+					enabled: this.commandEnabled(),
+				}),
+			);
 		}
 
 		if (this.type() === 'trigger') {
-			const response = await firstValueFrom(this.triggers.list().pipe(catchError(() => of({ triggers: [] as Trigger[] }))));
+			const response = await firstValueFrom(
+				this.triggers.list().pipe(catchError(() => of({ triggers: [] as Trigger[] }))),
+			);
 			const list = response.triggers.filter((item) => item.action !== this.triggerAction());
 			list.push({
 				action: this.triggerAction(),
 				command: this.triggerCommand().trim(),
-				aliases: this.triggerAliases().split(',').map((item) => item.trim()).filter(Boolean),
+				aliases: this.triggerAliases()
+					.split(',')
+					.map((item) => item.trim())
+					.filter(Boolean),
 				enabled: this.triggerEnabled(),
 				description: TRIGGER_LABELS[this.triggerAction()] ?? this.triggerAction(),
 			});
@@ -252,12 +605,14 @@ export default class AutomationEditorPage {
 				this.error.set('Укажите имя переменной');
 				return;
 			}
-			await firstValueFrom(this.commands.saveVariable({
-				id: this.id ?? undefined,
-				name: this.variableName().trim(),
-				value: this.variableValue(),
-				action: this.variableAction().trim(),
-			}));
+			await firstValueFrom(
+				this.commands.saveVariable({
+					id: this.id ?? undefined,
+					name: this.variableName().trim(),
+					value: this.variableValue(),
+					action: this.variableAction().trim(),
+				}),
+			);
 		}
 
 		this.saved.set(true);
@@ -292,12 +647,31 @@ export default class AutomationEditorPage {
 		}
 	}
 
-	private loadTextFile(file: File | null, target: { set(value: string): void }): void {
+	private loadTextFile(file: File | null, target: { set: (value: string) => void }): void {
 		if (!file) return;
 
 		const reader = new FileReader();
 		reader.onload = () => target.set(String(reader.result ?? ''));
 		reader.readAsText(file);
+	}
+
+	onFileDrop(event: DragEvent, control: FormControl<File | null>): void {
+		event.preventDefault();
+		const file = event.dataTransfer?.files?.[0];
+
+		if (file) {
+			control.setValue(file);
+		}
+	}
+
+	fileName(control: FormControl<File | null>): string {
+		const value = control.value as File | File[] | null;
+
+		if (Array.isArray(value)) {
+			return value[0]?.name ?? '';
+		}
+
+		return value?.name ?? '';
 	}
 
 	insertVariable(value: string): void {
