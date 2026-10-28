@@ -147,10 +147,9 @@
 .dice-scene::before {
 	position: absolute;
 	content: '';
-	border-radius: 30px;
-	background: radial-gradient(circle at 50% 45%, rgb(255 46 166 / 16%), transparent 68%);
-	filter: blur(8px);
-	inset: -10px;
+	border-radius: 26px;
+	background: linear-gradient(145deg, rgb(255 46 166 / 12%), transparent 60%);
+	inset: 2px;
 	transform: translateZ(-90px);
 }
 
@@ -163,6 +162,7 @@
 
 .dice-poly {
 	position: absolute;
+	z-index: 1;
 	width: 132px;
 	height: 132px;
 	transform-style: preserve-3d;

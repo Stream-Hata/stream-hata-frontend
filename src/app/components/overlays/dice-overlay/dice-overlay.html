@@ -32,7 +32,7 @@
           </svg>
         </div>
       }
-      @if (!isClassic()) {
+      @if (showOverflow()) {
         <strong class="dice-overflow">{{ result() }}</strong>
       }
     </div>

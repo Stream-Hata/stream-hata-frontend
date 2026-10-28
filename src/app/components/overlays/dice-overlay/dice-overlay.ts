@@ -67,7 +67,8 @@ export class DiceOverlay {
 			};
 		});
 	});
-	readonly polyTransform = computed(() => `rotateX(-12deg) rotateY(${this.result() * 37}deg)`);
+	readonly polyTransform = computed(() => 'rotateX(-10deg) rotateY(-8deg)');
+	readonly showOverflow = computed(() => this.result() > this.sides() || this.sides() > 20);
 	readonly cubeTransform = computed(() => {
 		const rotations: Record<number, string> = {
 			1: 'rotateX(0deg) rotateY(0deg)',
