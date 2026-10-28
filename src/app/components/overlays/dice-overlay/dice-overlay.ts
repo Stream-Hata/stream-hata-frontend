@@ -55,15 +55,27 @@ export class DiceOverlay implements AfterViewInit {
 	readonly faceCount = computed(() => Math.min(this.sides(), 20));
 	readonly librarySides = computed(() => [4, 6, 8, 10, 12, 20].includes(this.sides()) ? this.sides() : 0);
 	readonly isClassic = computed(() => this.sides() === 6 && this.result() >= 1 && this.result() <= 6);
-	readonly polygonPoints = computed(() => {
+	readonly polygonCoords = computed(() => {
 		const count = this.shapeVertices();
-		const points = Array.from({ length: count }, (_, index) => {
+
+		return Array.from({ length: count }, (_, index) => {
 			const angle = (Math.PI * 2 * index) / count - Math.PI / 2;
 
-			return `${100 + Math.cos(angle) * 82},${100 + Math.sin(angle) * 82}`;
+			return {
+				x: 100 + Math.cos(angle) * 82,
+				y: 100 + Math.sin(angle) * 82,
+			};
 		});
+	});
+	readonly polygonPoints = computed(() => this.polygonCoords().map((point) => `${point.x},${point.y}`).join(' '));
+	readonly sideFaces = computed(() => {
+		const points = this.polygonCoords();
 
-		return points.join(' ');
+		return points.map((point, index) => {
+			const next = points[(index + 1) % points.length];
+
+			return `${point.x},${point.y} ${next.x},${next.y} ${next.x - 12},${next.y + 12} ${point.x - 12},${point.y + 12}`;
+		});
 	});
 	readonly facetLines = computed(() => {
 		const count = this.shapeVertices();
@@ -167,8 +179,8 @@ export class DiceOverlay implements AfterViewInit {
 			this.diceHost.nativeElement.replaceChildren();
 			this.roller = new DiceRoller(this.diceHost.nativeElement);
 			this.roller.updateSettings({
-				theme: 'theme-neon',
-				baseColor: '#ff2ea6',
+				theme: 'theme-obsidian',
+				baseColor: '#1a1025',
 				secondaryColor: '#22e0ff',
 				textColor: '#f5eaff',
 				scale: 132,

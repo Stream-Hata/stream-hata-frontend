@@ -5,7 +5,10 @@
 
     <div class="dice-scene" [style.perspective.px]="900">
       @if (librarySides()) {
-        <div #diceHost class="dice-host"></div>
+        <div #diceHost class="dice-host" [class.hide-labels]="sides() >= 10"></div>
+        @if (sides() >= 10) {
+          <strong class="dice-overlay-result">{{ result() }}</strong>
+        }
       } @else {
         <div class="dice-poly" [class.rolling]="rolling()" [style.transform]="rolling() ? null : polyTransform()">
           <svg viewBox="0 0 200 200" role="img" [attr.aria-label]="formula()">
@@ -16,7 +19,12 @@
                 <stop offset="100%" stop-color="rgb(15 8 23)" />
               </linearGradient>
             </defs>
-            <polygon class="poly-back" [attr.points]="polygonPoints()" transform="translate(-10 10)" />
+            <g class="poly-sides">
+              @for (side of sideFaces(); track $index) {
+                <polygon [attr.points]="side" />
+              }
+            </g>
+            <polygon class="poly-back" [attr.points]="polygonPoints()" transform="translate(-12 12)" />
             @for (facet of facetShades(); track $index) {
               <polygon class="poly-shade" [attr.points]="facet" [attr.data-even]="$index % 2 === 0" />
             }
