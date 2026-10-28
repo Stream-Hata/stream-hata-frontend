@@ -72,6 +72,8 @@ export interface WidgetConfig {
 	juryDensity?: 's' | 'm' | 'l';
 	juryAnimation?: boolean;
 	jurySpeed?: number;
+	coinHeads?: string;
+	coinTails?: string;
 }
 
 @Injectable({ providedIn: 'root' })

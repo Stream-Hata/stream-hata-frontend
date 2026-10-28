@@ -317,3 +317,9 @@
 		transform: translateY(230px) rotate(540deg);
 	}
 }
+
+.wheel-wrap {
+	perspective: 900px;
+	transform: rotateX(7deg);
+	transform-style: preserve-3d;
+}

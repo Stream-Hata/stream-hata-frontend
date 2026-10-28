@@ -136,12 +136,21 @@ export default class AutomationEditorPage {
 	readonly variableName = signal('');
 	readonly variableValue = signal('');
 	readonly variableAction = signal('');
+	readonly customVariables = signal<CommandVariable[]>([]);
+	readonly variableItems = computed(() => [
+		...['user', 'login', 'channel', 'count', 'date', 'time', 'now', 'lastmusic', 'lasttrack', 'np'].map((name) => `\${${name}}`),
+		...this.customVariables().map((variable) => `\${${variable.name}}`),
+	]);
 	readonly actionHint = computed(() => this.hintFor(this.commandAction()));
 	readonly variableHint = computed(() => this.hintFor(this.variableAction()));
 	readonly error = signal('');
 	readonly saved = signal(false);
 
 	constructor() {
+		void this.commands.variables().pipe(catchError(() => of({ variables: [] as CommandVariable[] }))).subscribe((response) => {
+			this.customVariables.set(response.variables);
+		});
+
 		if (this.id) {
 			void this.load();
 		}
@@ -258,6 +267,14 @@ export default class AutomationEditorPage {
 			default:
 				return '';
 		}
+	}
+
+	insertVariable(value: string): void {
+		this.commandReply.update((text) => {
+			const separator = text && !text.endsWith(' ') ? ' ' : '';
+
+			return text + separator + value;
+		});
 	}
 
 	setType(index: number): void {

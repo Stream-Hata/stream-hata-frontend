@@ -95,6 +95,17 @@
                         </div>
                       }
 
+                      @if (kind() === 'coinflip') {
+                        <div class="cfg-row">
+                          <span class="cfg-label">Сторона «орёл»</span>
+                          <tui-textfield><input aria-label="Сторона орёл" [formControl]="genericForm.controls.coinHeads" tuiInput></tui-textfield>
+                        </div>
+                        <div class="cfg-row">
+                          <span class="cfg-label">Сторона «решка»</span>
+                          <tui-textfield><input aria-label="Сторона решка" [formControl]="genericForm.controls.coinTails" tuiInput></tui-textfield>
+                        </div>
+                      }
+
                       @if (kind() === 'nowplaying') {
                         <div class="cfg-row">
                           <span class="cfg-label">Показывать видео</span>

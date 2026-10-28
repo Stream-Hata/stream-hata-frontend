@@ -104,6 +104,8 @@ export default class WidgetConfigPage {
 		juryYeaColor: new FormControl('#22c55e', { nonNullable: true }),
 		juryNeiColor: new FormControl('#ef4444', { nonNullable: true }),
 		juryShowTimer: new FormControl(true, { nonNullable: true }),
+		coinHeads: new FormControl('Орёл', { nonNullable: true }),
+		coinTails: new FormControl('Решка', { nonNullable: true }),
 	});
 
 	constructor() {

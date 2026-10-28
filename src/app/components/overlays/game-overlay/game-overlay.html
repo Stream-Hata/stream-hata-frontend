@@ -4,8 +4,8 @@
       <span class="game-kicker">МОНЕТКА</span>
       <div class="coin" [class.tails]="coinSide() === 'tails'">
         <span class="coin-edge"></span>
-        <span class="coin-face coin-front">О</span>
-        <span class="coin-face coin-back">Р</span>
+        <span class="coin-face coin-front">{{ heads() }}</span>
+        <span class="coin-face coin-back">{{ tails() }}</span>
       </div>
       <strong class="game-result">{{ result() || '?' }}</strong>
       @if (viewer()) {
