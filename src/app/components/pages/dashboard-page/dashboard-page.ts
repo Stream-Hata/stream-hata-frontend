@@ -61,6 +61,8 @@ export default class DashboardPage {
 
 	readonly recentEvents = computed(() => this.alerts()?.events?.slice(0, 3) ?? []);
 
+	readonly messageCount = computed(() => this.session().current?.messages ?? this.session().messages);
+
 	readonly session = toSignal(
 		timer(0, 15000).pipe(
 			switchMap(() =>

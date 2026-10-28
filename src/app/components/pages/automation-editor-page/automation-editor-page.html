@@ -29,6 +29,7 @@
       </tui-textfield>
       <span class="jk-label">Значение действия</span>
       <tui-textfield><textarea tuiTextarea rows="2" [value]="commandValue()" (input)="commandValue.set($any($event.target).value)"></textarea></tui-textfield>
+      @if (actionHint()) { <span class="jk-caption">{{ actionHint() }}</span> }
       <span class="jk-label">Ответ бота</span>
       <tui-textfield><textarea tuiTextarea rows="2" [value]="commandReply()" (input)="commandReply.set($any($event.target).value)"></textarea></tui-textfield>
       <span class="jk-label">Алиасы</span>
@@ -65,6 +66,7 @@
         <input [readonly]="true" [value]="variableActionLabels[variableActionValues.indexOf(variableAction())]" [style.color]="accent()" tuiInput tuiSelectLike />
         <tui-data-list-wrapper *tuiDropdown [itemContent]="accentOption" [items]="variableActionLabels" (itemClick)="setVariableAction($event)"></tui-data-list-wrapper>
       </tui-textfield>
+      @if (variableHint()) { <span class="jk-caption">{{ variableHint() }}</span> }
     }
 
     @if (error()) { <p class="error-text">{{ error() }}</p> }

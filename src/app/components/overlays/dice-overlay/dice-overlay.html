@@ -1,14 +1,21 @@
 <div class="dice-stage">
   <div class="dice-card" [class.rolling]="rolling()">
     <span class="dice-kicker">DICE</span>
-    <div class="dice-face" [attr.data-face]="result()">
-      <span class="dice-pips" aria-hidden="true">
-        @for (pip of [1, 2, 3, 4, 5, 6, 7, 8, 9]; track $index) {
-          <i [class.on]="pip <= result()"></i>
-        }
-      </span>
-      <strong class="dice-result">{{ result() }}</strong>
+
+    <div class="dice-scene">
+      <div class="dice-cube" [style.transform]="rolling() ? null : cubeTransform()">
+        <div class="dice-face face-front"><span>{{ faceValue(1) }}</span></div>
+        <div class="dice-face face-back"><span>{{ faceValue(2) }}</span></div>
+        <div class="dice-face face-right"><span>{{ faceValue(3) }}</span></div>
+        <div class="dice-face face-left"><span>{{ faceValue(4) }}</span></div>
+        <div class="dice-face face-top"><span>{{ faceValue(5) }}</span></div>
+        <div class="dice-face face-bottom"><span>{{ faceValue(6) }}</span></div>
+      </div>
+      @if (!isClassic()) {
+        <strong class="dice-overflow">{{ result() }}</strong>
+      }
     </div>
+
     <strong class="dice-formula">{{ formula() }}</strong>
     @if (rolls().length > 1) {
       <span class="dice-rolls">{{ rolls().join(' + ') }}</span>

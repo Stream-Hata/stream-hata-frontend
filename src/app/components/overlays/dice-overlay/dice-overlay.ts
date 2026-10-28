@@ -38,6 +38,23 @@ export class DiceOverlay {
 	readonly formula = computed(() => this.state().formula || '1d6');
 	readonly viewer = computed(() => this.state().viewer || '');
 	readonly rolls = computed(() => this.state().rolls ?? []);
+	readonly isClassic = computed(() => this.result() >= 1 && this.result() <= 6);
+	readonly cubeTransform = computed(() => {
+		const rotations: Record<number, string> = {
+			1: 'rotateX(0deg) rotateY(0deg)',
+			2: 'rotateX(0deg) rotateY(180deg)',
+			3: 'rotateX(0deg) rotateY(-90deg)',
+			4: 'rotateX(0deg) rotateY(90deg)',
+			5: 'rotateX(-90deg) rotateY(0deg)',
+			6: 'rotateX(90deg) rotateY(0deg)',
+		};
+
+		return rotations[this.result()] ?? 'rotateX(0deg) rotateY(0deg)';
+	});
+
+	faceValue(face: number): number {
+		return face;
+	}
 
 	constructor() {
 		effect(() => {

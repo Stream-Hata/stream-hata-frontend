@@ -254,7 +254,10 @@ tui-segmented {
 }
 
 tui-segmented > .tui-segmented_active {
-	color: var(--text-on-accent) !important;
+	color: #fff !important;
+	text-shadow:
+		0 0 2px #000,
+		0 1px 2px #000;
 }
 
 /* Popups get their own [tuiTheme] and otherwise fall back to magenta */

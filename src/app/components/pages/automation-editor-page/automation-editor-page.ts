@@ -121,6 +121,8 @@ export default class AutomationEditorPage {
 	readonly variableName = signal('');
 	readonly variableValue = signal('');
 	readonly variableAction = signal('');
+	readonly actionHint = computed(() => this.hintFor(this.commandAction()));
+	readonly variableHint = computed(() => this.hintFor(this.variableAction()));
 	readonly error = signal('');
 	readonly saved = signal(false);
 
@@ -217,6 +219,30 @@ export default class AutomationEditorPage {
 
 		this.saved.set(true);
 		await this.router.navigateByUrl('/app/commands');
+	}
+
+	private hintFor(action: string): string {
+		switch (action) {
+			case 'dice':
+				return 'Формат: d100, 2d6, 1d20. Аргумент из чата имеет приоритет.';
+			case 'dice.name':
+				return 'Имя кубика берётся из сообщения (!dice d100), значение — запасной вариант.';
+			case 'dice.result':
+				return 'Значение задаёт конкретный кубик, например d100; иначе берётся из сообщения.';
+			case 'random':
+				return 'Варианты через |, например да|нет|может.';
+			case 'poll':
+				return 'Формат: вопрос | вариант 1 | вариант 2 | секунды.';
+			case 'points.add':
+			case 'points.remove':
+			case 'points.set':
+			case 'commercial':
+				return 'Число: количество баллов или секунд.';
+			case 'ban':
+				return 'Формат: логин причина.';
+			default:
+				return '';
+		}
 	}
 
 	setType(index: number): void {

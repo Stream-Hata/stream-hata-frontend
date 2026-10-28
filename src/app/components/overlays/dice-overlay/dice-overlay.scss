@@ -30,48 +30,66 @@
 	letter-spacing: 0.18em;
 }
 
-.dice-face {
+.dice-scene {
 	position: relative;
-	display: grid;
-	place-items: center;
-	width: 128px;
-	height: 128px;
-	border: 3px solid var(--accent-primary);
-	border-radius: 24px;
-	background: rgb(255 255 255 / 7%);
-	transform: rotate(-4deg);
+	width: 132px;
+	height: 132px;
+	margin: 8px 0;
+	perspective: 800px;
 }
 
-.dice-card.rolling .dice-face {
-	animation: dice-roll 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+.dice-cube {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	transform-style: preserve-3d;
+	transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.dice-pips {
+.dice-card.rolling .dice-cube {
+	animation: dice-tumble 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.dice-face {
 	position: absolute;
 	display: grid;
-	grid-template: repeat(3, 1fr) / repeat(3, 1fr);
-	gap: 8px;
-	width: 70px;
-	height: 70px;
-	opacity: 0.9;
-}
-
-.dice-pips i {
-	border-radius: 50%;
-	background: var(--accent-primary);
-	opacity: 0.12;
-}
-
-.dice-pips i.on {
-	opacity: 0.85;
-}
-
-.dice-result {
-	position: relative;
-	z-index: 1;
+	place-items: center;
+	width: 132px;
+	height: 132px;
+	border: 3px solid var(--accent-primary);
+	border-radius: 22px;
+	background:
+		radial-gradient(circle at 30% 25%, rgb(255 255 255 / 18%), transparent 55%),
+		rgb(25 18 34 / 96%);
 	color: var(--widget-text, #f5eaff);
-	font: 800 48px/1 var(--font-ui);
-	text-shadow: 0 2px 12px rgb(0 0 0 / 65%);
+	font: 800 56px/1 var(--font-ui);
+	backface-visibility: hidden;
+	box-shadow:
+		inset 0 0 22px rgb(255 46 166 / 18%),
+		0 0 26px rgb(255 46 166 / 18%);
+}
+
+.face-front { transform: translateZ(66px); }
+.face-back { transform: rotateY(180deg) translateZ(66px); }
+.face-right { transform: rotateY(90deg) translateZ(66px); }
+.face-left { transform: rotateY(-90deg) translateZ(66px); }
+.face-top { transform: rotateX(90deg) translateZ(66px); }
+.face-bottom { transform: rotateX(-90deg) translateZ(66px); }
+
+.dice-overflow {
+	position: absolute;
+	display: grid;
+	place-items: center;
+	width: 86px;
+	height: 86px;
+	border: 3px solid var(--accent-primary);
+	border-radius: 50%;
+	background: rgb(18 18 24 / 92%);
+	color: var(--widget-text, #f5eaff);
+	font: 800 34px/1 var(--font-ui);
+	transform: translate(-50%, -50%);
+	inset: 50% auto auto 50%;
+	box-shadow: 0 0 30px rgb(255 46 166 / 35%);
 }
 
 .dice-formula {
@@ -86,10 +104,10 @@
 	font: 600 12px/18px var(--font-ui);
 }
 
-@keyframes dice-roll {
-	0% { transform: rotate(-4deg) scale(1); }
-	25% { transform: rotate(16deg) scale(1.12); }
-	50% { transform: rotate(-22deg) scale(0.94); }
-	75% { transform: rotate(12deg) scale(1.06); }
-	100% { transform: rotate(-4deg) scale(1); }
+@keyframes dice-tumble {
+	0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1); }
+	25% { transform: rotateX(220deg) rotateY(160deg) rotateZ(70deg) scale(1.12); }
+	55% { transform: rotateX(480deg) rotateY(390deg) rotateZ(190deg) scale(0.94); }
+	80% { transform: rotateX(650deg) rotateY(620deg) rotateZ(300deg) scale(1.05); }
+	100% { transform: rotateX(720deg) rotateY(720deg) rotateZ(360deg) scale(1); }
 }
