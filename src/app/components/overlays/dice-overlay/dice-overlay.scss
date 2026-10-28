@@ -78,3 +78,50 @@
 	50% { transform: rotateX(220deg) rotateY(360deg) rotateZ(90deg); }
 	100% { transform: rotateX(360deg) rotateY(720deg) rotateZ(180deg); }
 }
+
+.dice-fallback {
+	position: relative;
+	width: 150px;
+	height: 150px;
+	perspective: 700px;
+}
+
+.fallback-cube {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	transform-style: preserve-3d;
+	animation: fallback-turn 8s linear infinite;
+}
+
+.dice-fallback.rolling .fallback-cube {
+	animation: fallback-roll 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.fallback-face {
+	position: absolute;
+	display: grid;
+	place-items: center;
+	width: 100%;
+	height: 100%;
+	border: 3px solid var(--accent-primary);
+	background: color-mix(in srgb, var(--accent-primary) 35%, #1a1025);
+	color: #fff;
+	font: 800 48px/1 var(--font-ui);
+}
+
+.f-front { transform: translateZ(75px); }
+.f-back { transform: rotateY(180deg) translateZ(75px); }
+.f-right { transform: rotateY(90deg) translateZ(75px); }
+.f-left { transform: rotateY(-90deg) translateZ(75px); }
+.f-top { transform: rotateX(90deg) translateZ(75px); }
+.f-bottom { transform: rotateX(-90deg) translateZ(75px); }
+
+@keyframes fallback-turn {
+	to { transform: rotateX(360deg) rotateY(720deg); }
+}
+
+@keyframes fallback-roll {
+	0% { transform: rotateX(0) rotateY(0); }
+	100% { transform: rotateX(720deg) rotateY(1440deg); }
+}

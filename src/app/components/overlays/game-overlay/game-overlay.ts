@@ -33,6 +33,7 @@ export class GameOverlay implements AfterViewInit, OnDestroy {
 	private lastRolledAt = '';
 	private hideTimer: ReturnType<typeof setTimeout> | null = null;
 	readonly ready = signal(false);
+	readonly sceneReady = signal(false);
 	readonly rolling = signal(false);
 	readonly visible = signal(false);
 
@@ -103,7 +104,13 @@ export class GameOverlay implements AfterViewInit, OnDestroy {
 
 	ngAfterViewInit(): void {
 		if (this.coinHost) {
-			this.scene = new DiceScene(this.coinHost.nativeElement);
+			try {
+				const accent = getComputedStyle(this.coinHost.nativeElement).getPropertyValue('--accent-primary').trim() || '#ff2ea6';
+				this.scene = new DiceScene(this.coinHost.nativeElement, accent);
+				this.sceneReady.set(true);
+			} catch (error) {
+				console.error('[Coin] WebGL unavailable', error);
+			}
 		}
 		this.ready.set(true);
 		if (this.preview === 'coin' && this.scene) {

@@ -365,3 +365,12 @@
 	color: var(--status-negative);
 	font: var(--font-caption);
 }
+
+.config-page tui-textfield {
+	min-width: 200px;
+}
+
+.config-page tui-textfield input {
+	min-height: 2.75rem;
+	padding: 0.55rem 0.75rem;
+}

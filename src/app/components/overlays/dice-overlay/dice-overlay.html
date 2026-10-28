@@ -1,9 +1,18 @@
 <div class="dice-stage">
   <div class="dice-card" [class.visible]="visible()" [class.rolling]="rolling()">
     <span class="dice-kicker">DICE</span>
-    <div #diceHost class="dice-host" [class.spin-fallback]="rolling() && !ready()"></div>
-    @if (!ready()) {
-      <strong class="dice-result">{{ result() }}</strong>
+    <div #diceHost class="dice-host"></div>
+    @if (!sceneReady()) {
+      <div class="dice-fallback" [class.rolling]="rolling()">
+        <div class="fallback-cube">
+          <span class="fallback-face f-front">{{ result() }}</span>
+          <span class="fallback-face f-back">{{ result() }}</span>
+          <span class="fallback-face f-right">{{ result() }}</span>
+          <span class="fallback-face f-left">{{ result() }}</span>
+          <span class="fallback-face f-top">{{ result() }}</span>
+          <span class="fallback-face f-bottom">{{ result() }}</span>
+        </div>
+      </div>
     }
     @if (sides() > 20) {
       <strong class="dice-result">{{ result() }}</strong>

@@ -27,6 +27,7 @@ export class DiceOverlay implements AfterViewInit, OnDestroy {
 	private lastRolledAt = '';
 	private hideTimer: ReturnType<typeof setTimeout> | null = null;
 	readonly ready = signal(false);
+	readonly sceneReady = signal(false);
 	readonly visible = signal(false);
 	readonly rolling = signal(false);
 
@@ -89,7 +90,9 @@ export class DiceOverlay implements AfterViewInit, OnDestroy {
 		}
 
 		try {
-			this.scene = new DiceScene(this.diceHost.nativeElement);
+			const accent = getComputedStyle(this.diceHost.nativeElement).getPropertyValue('--accent-primary').trim() || '#ff2ea6';
+			this.scene = new DiceScene(this.diceHost.nativeElement, accent);
+			this.sceneReady.set(true);
 		} catch (error) {
 			console.error('[Dice] WebGL unavailable', error);
 		}

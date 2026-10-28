@@ -36,7 +36,7 @@ interface DiceBuild {
 
 const ACCENT = new Color('#ff2ea6');
 
-function faceMaterial(value: string | number): MeshStandardMaterial {
+function faceMaterial(value: string | number, accent: Color): MeshStandardMaterial {
 	const canvas = document.createElement('canvas');
 	canvas.width = 256;
 	canvas.height = 256;
@@ -44,10 +44,13 @@ function faceMaterial(value: string | number): MeshStandardMaterial {
 
 	if (context) {
 		context.clearRect(0, 0, 256, 256);
-		context.fillStyle = '#f5eaff';
+		context.fillStyle = '#ffffff';
 		context.font = '800 142px Inter, sans-serif';
+		context.strokeStyle = 'rgba(0, 0, 0, 0.55)';
+		context.lineWidth = 10;
 		context.textAlign = 'center';
 		context.textBaseline = 'middle';
+		context.strokeText(String(value), 128, 138);
 		context.fillText(String(value), 128, 138);
 	}
 
@@ -55,12 +58,12 @@ function faceMaterial(value: string | number): MeshStandardMaterial {
 	texture.colorSpace = SRGBColorSpace;
 
 	return new MeshStandardMaterial({
-		color: 0x3a1d52,
+		color: accent.clone().multiplyScalar(0.58),
 		map: texture,
-		roughness: 0.62,
-		metalness: 0.05,
-		emissive: 0x14001c,
-		emissiveIntensity: 0.08,
+		roughness: 0.55,
+		metalness: 0.08,
+		emissive: accent.clone().multiplyScalar(0.12),
+		emissiveIntensity: 0.45,
 		flatShading: true,
 		side: DoubleSide,
 	});
@@ -107,7 +110,7 @@ function groupPolyhedron(source: BufferGeometry): BufferGeometry {
 	return geometry;
 }
 
-function addFaceGroups(geometry: BufferGeometry, values: (string | number)[]): MeshStandardMaterial[] {
+function addFaceGroups(geometry: BufferGeometry, values: (string | number)[], accent: Color): MeshStandardMaterial[] {
 	const groups = geometry.groups.length
 		? geometry.groups.map((group) => ({ ...group }))
 		: [{ start: 0, count: geometry.index?.count ?? geometry.attributes['position'].count, materialIndex: 0 }];
@@ -145,7 +148,7 @@ function addFaceGroups(geometry: BufferGeometry, values: (string | number)[]): M
 	groups.forEach((group, index) => {
 		const value = values[index % values.length];
 		geometry.addGroup(group.start, group.count, index);
-		materials.push(faceMaterial(value));
+		materials.push(faceMaterial(value, accent));
 	});
 
 	return materials;
@@ -284,6 +287,7 @@ function faceNormal(geometry: BufferGeometry, groupIndex: number): Vector3 {
 
 export class DiceScene {
 	private readonly host: HTMLElement;
+	private readonly accent: Color;
 	private readonly renderer: WebGLRenderer;
 	private readonly scene = new Scene();
 	private readonly camera = new PerspectiveCamera(38, 1, 0.1, 100);
@@ -298,8 +302,9 @@ export class DiceScene {
 	private frame = 0;
 	private disposed = false;
 
-	constructor(host: HTMLElement) {
+	constructor(host: HTMLElement, accent = '#ff2ea6') {
 		this.host = host;
+		this.accent = new Color(accent);
 		this.renderer = new WebGLRenderer({ alpha: true, antialias: true });
 		this.renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
 		this.renderer.setClearColor(0x000000, 0);
@@ -339,11 +344,11 @@ export class DiceScene {
 
 		const { geometry, values } = buildGeometry(sides);
 		const faceValues = labels?.length ? labels : values.length ? values : [1];
-		const materials = addFaceGroups(geometry, faceValues);
+		const materials = addFaceGroups(geometry, faceValues, this.accent);
 		const mesh = new Mesh(geometry, materials);
 		const edges = new LineSegments(
 			new EdgesGeometry(geometry),
-			new LineBasicMaterial({ color: ACCENT, transparent: true, opacity: 0.62 }),
+			new LineBasicMaterial({ color: this.accent, transparent: true, opacity: 0.9 }),
 		);
 
 		mesh.castShadow = false;
