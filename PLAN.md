@@ -47,6 +47,24 @@
 - [x] Фильтр verified/качество каталога.
 - [x] Финальная проверка: go test, pnpm build/test.
 
+## 0.8.1 — текущая очередь
+
+- [x] Авторизация Tauri: первый вход через `/desktop-auth` и localhost-callback, далее авто-обмен токена из keychain; при ошибке — экран логина.
+- [x] В браузере `/app/*` закрыт, доступны только лендинг, FAQ и предложка.
+- [x] Now Playing: кнопка «Пропустить», защита от перезагрузки YouTube iframe.
+- [x] TXT-поля: имя загруженного файла, drag&drop, input/textarea по числу строк.
+- [x] Выгрузка всех команд в `streamhata-commands.txt` с file picker.
+- [x] Telegram `/music`: MarkdownV2, таблица и inline-пагинация.
+- [x] Обновлены Angular и транзитивные зависимости; `pnpm audit` — 0.
+- [x] Twitch: hack для многострочного текста из TXT — построчная отправка; переключатель «Построчно» в редакторе.
+- [x] Выгрузка данных: `showSaveFilePicker` с fallback на скачивание (команды и CSV музыки).
+- [x] Telegram: MarkdownV2, таблица в code block, `/music <page>`, кнопки «в начало/конец».
+- [ ] OBS WebSocket: постоянный reconnect-прокси в Rust, без переподключения на каждый запрос.
+- [ ] Музыка: очередь, удаление, перестановка и защита от дублей.
+- [ ] Виджеты: кнопка «Проверить»/preview для dice/coin/random/roulette.
+- [ ] Health-check backend + алерт в Telegram при падении БД/OpenBao.
+- [ ] Regression-тесты: auth, команды, музыка, Telegram, OBS, кубик.
+
 ## P0 — ближайшая очередь
 
 1. **Twitch/сессия до конца**
