@@ -254,7 +254,9 @@ export default class AutomationEditorPage {
 			case 'dice.result':
 				return 'Значение задаёт конкретный кубик, например d100; иначе берётся из сообщения.';
 			case 'random':
-				return 'Варианты через |, например да|нет|может.';
+				return 'Варианты через | (да|нет|может) или диапазон 1-100.';
+			case 'coinflip':
+				return 'Пусто — случайно; heads/tails (орёл/решка) — принудительно нужная сторона.';
 			case 'poll':
 				return 'Формат: вопрос | вариант 1 | вариант 2 | секунды.';
 			case 'points.add':

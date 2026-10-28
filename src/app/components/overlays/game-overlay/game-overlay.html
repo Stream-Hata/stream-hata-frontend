@@ -2,7 +2,7 @@
   @if (mode() === 'coin') {
     <div class="game-card" [class.rolling]="rolling()">
       <span class="game-kicker">МОНЕТКА</span>
-      <div class="coin" [class.tails]="coinSide() === 'tails'">
+      <div class="coin" [class.tails]="coinSide() === 'tails'" [style.transform]="rolling() ? null : coinTransform()">
         <span class="coin-edge"></span>
         <span class="coin-face coin-front">{{ heads() }}</span>
         <span class="coin-face coin-back">{{ tails() }}</span>

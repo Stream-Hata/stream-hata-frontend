@@ -13,12 +13,23 @@
           <div class="dice-face face-bottom"><span>{{ faceValue(6) }}</span></div>
         </div>
       } @else {
-        <div class="dice-prism" [class.rolling]="rolling()" [style.transform]="rolling() ? null : prismTransform()">
-          @for (face of [].constructor(faceCount()); track $index) {
-            <div class="dice-panel" [style.transform]="panelTransform($index)">
-              <span>{{ panelLabel($index) }}</span>
-            </div>
-          }
+        <div class="dice-poly" [class.rolling]="rolling()" [style.transform]="rolling() ? null : polyTransform()">
+          <svg viewBox="0 0 200 200" role="img" [attr.aria-label]="formula()">
+            <defs>
+              <linearGradient id="dicePolyFill" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="rgb(70 36 86)" />
+                <stop offset="55%" stop-color="rgb(30 18 42)" />
+                <stop offset="100%" stop-color="rgb(15 8 23)" />
+              </linearGradient>
+            </defs>
+            <polygon class="poly-body" [attr.points]="polygonPoints()" />
+            <g class="poly-facets">
+              @for (point of facetLines(); track $index) {
+                <line x1="100" y1="100" [attr.x2]="point.x" [attr.y2]="point.y" />
+              }
+            </g>
+            <text class="poly-result" x="100" y="112">{{ result() }}</text>
+          </svg>
         </div>
       }
       @if (!isClassic()) {

@@ -45,12 +45,29 @@ export class DiceOverlay {
 	});
 	readonly faceCount = computed(() => Math.min(this.sides(), 20));
 	readonly isClassic = computed(() => this.sides() === 6 && this.result() >= 1 && this.result() <= 6);
-	readonly prismTransform = computed(() => {
-		const index = Math.min(this.faceCount() - 1, Math.max(0, this.result() - 1));
-		const angle = -(index * 360) / Math.max(1, this.faceCount());
+	readonly polygonPoints = computed(() => {
+		const count = this.shapeVertices();
+		const points = Array.from({ length: count }, (_, index) => {
+			const angle = (Math.PI * 2 * index) / count - Math.PI / 2;
 
-		return `rotateX(-10deg) rotateY(${angle}deg)`;
+			return `${100 + Math.cos(angle) * 82},${100 + Math.sin(angle) * 82}`;
+		});
+
+		return points.join(' ');
 	});
+	readonly facetLines = computed(() => {
+		const count = this.shapeVertices();
+
+		return Array.from({ length: count }, (_, index) => {
+			const angle = (Math.PI * 2 * index) / count - Math.PI / 2;
+
+			return {
+				x: 100 + Math.cos(angle) * 82,
+				y: 100 + Math.sin(angle) * 82,
+			};
+		});
+	});
+	readonly polyTransform = computed(() => `rotateX(-12deg) rotateY(${this.result() * 37}deg)`);
 	readonly cubeTransform = computed(() => {
 		const rotations: Record<number, string> = {
 			1: 'rotateX(0deg) rotateY(0deg)',
@@ -68,12 +85,15 @@ export class DiceOverlay {
 		return face;
 	}
 
-	panelTransform(index: number): string {
-		return `rotateY(${(index * 360) / Math.max(1, this.faceCount())}deg) translateZ(72px)`;
-	}
-
-	panelLabel(index: number): number {
-		return index + 1;
+	shapeVertices(): number {
+		switch (this.sides()) {
+			case 4: return 3;
+			case 8: return 4;
+			case 10: return 5;
+			case 12: return 6;
+			case 20: return 8;
+			default: return Math.min(8, Math.max(3, this.sides()));
+		}
 	}
 
 	constructor() {

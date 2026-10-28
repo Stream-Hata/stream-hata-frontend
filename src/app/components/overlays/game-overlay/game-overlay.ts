@@ -50,6 +50,9 @@ export class GameOverlay {
 	readonly result = computed(() => this.active() ? this.state().result : '');
 	readonly label = computed(() => this.active() ? this.state().label : '');
 	readonly viewer = computed(() => this.active() ? this.state().viewer : '');
+	readonly coinTransform = computed(() => this.coinSide() === 'tails'
+		? 'rotateX(8deg) rotateY(180deg)'
+		: 'rotateX(8deg) rotateY(0deg)');
 	readonly coinSide = computed(() => {
 		const state = this.state();
 
