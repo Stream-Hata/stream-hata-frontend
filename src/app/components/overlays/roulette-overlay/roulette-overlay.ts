@@ -1,6 +1,6 @@
 import type { Game } from '@shared/types/game';
 import type { RouletteRound, RouletteState } from '@shared/types/roulette';
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnDestroy, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouletteService } from '@shared/services/roulette.service';
 import { DEFAULT_ROULETTE_CONFIG } from '@shared/types/roulette';
@@ -13,10 +13,12 @@ import { RouletteStage } from '../../widgets/roulette-stage/roulette-stage';
 	styleUrl: './roulette-overlay.scss',
 	templateUrl: './roulette-overlay.html',
 })
-export class RouletteOverlay {
+export class RouletteOverlay implements OnDestroy {
 	private readonly roulette = inject(RouletteService);
 	private readonly destroyRef = inject(DestroyRef);
 	private lastRound = '';
+	private hideTimer: ReturnType<typeof setTimeout> | null = null;
+	readonly visible = signal(false);
 
 	readonly state = signal<RouletteState>({
 		config: DEFAULT_ROULETTE_CONFIG,
@@ -53,6 +55,12 @@ export class RouletteOverlay {
 						this.lastRound = latest.id;
 						this.round.set(latest);
 						this.spinning.set(true);
+						this.visible.set(true);
+
+						if (this.hideTimer) {
+							clearTimeout(this.hideTimer);
+						}
+						this.hideTimer = setTimeout(() => this.visible.set(false), 8000);
 						timer(4000)
 							.pipe(takeUntilDestroyed(this.destroyRef))
 							.subscribe(() => {
@@ -66,5 +74,11 @@ export class RouletteOverlay {
 				},
 				error: () => undefined,
 			});
+	}
+
+	ngOnDestroy(): void {
+		if (this.hideTimer) {
+			clearTimeout(this.hideTimer);
+		}
 	}
 }

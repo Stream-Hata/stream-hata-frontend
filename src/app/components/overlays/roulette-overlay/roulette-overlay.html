@@ -1,3 +1,4 @@
+@if (visible()) {
 <app-roulette-stage
   [appearance]="state().config.appearance"
   [audio]="state().config.audio"
@@ -9,3 +10,4 @@
   [round]="round()"
   [spinning]="spinning()"
   />
+}
