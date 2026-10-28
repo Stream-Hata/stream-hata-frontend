@@ -212,3 +212,26 @@
 	font: 800 32px/1 var(--font-ui);
 	transform: rotate(-6deg);
 }
+
+
+.coin-preview {
+	display: grid;
+	place-items: center;
+	width: 72px;
+	height: 72px;
+	border: 3px solid var(--accent-primary);
+	border-radius: 50%;
+	color: var(--accent-primary);
+	font: 800 32px/1 var(--font-ui);
+	box-shadow: 0 0 24px rgb(255 46 166 / 25%);
+}
+
+.slot-preview {
+	display: flex;
+	gap: 6px;
+	padding: 12px 16px;
+	border: 2px solid var(--accent-primary);
+	border-radius: 12px;
+	color: var(--accent-primary);
+	font: 800 22px/1 var(--font-ui);
+}

@@ -1,0 +1,27 @@
+<div class="game-stage">
+  @if (mode() === 'coin') {
+    <div class="game-card" [class.rolling]="rolling()">
+      <span class="game-kicker">МОНЕТКА</span>
+      <div class="coin" [class.tails]="coinSide() === 'tails'">
+        <span class="coin-edge"></span>
+        <span class="coin-face coin-front">О</span>
+        <span class="coin-face coin-back">Р</span>
+      </div>
+      <strong class="game-result">{{ result() || '?' }}</strong>
+      @if (viewer()) {
+        <span class="game-viewer">{{ viewer() }}</span>
+      }
+    </div>
+  } @else {
+    <div class="game-card" [class.rolling]="rolling()">
+      <span class="game-kicker">СЛУЧАЙНЫЙ ВЫБОР</span>
+      <div class="slot-window">
+        <span class="slot-reel">{{ label() || '...' }}</span>
+        <strong class="slot-result">{{ result() || '?' }}</strong>
+      </div>
+      @if (viewer()) {
+        <span class="game-viewer">{{ viewer() }}</span>
+      }
+    </div>
+  }
+</div>

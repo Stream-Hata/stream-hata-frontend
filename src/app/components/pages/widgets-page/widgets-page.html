@@ -424,6 +424,74 @@
 
                 <article class="widget-card">
                   <div class="stage jk-checkerboard">
+                    <div class="coin-preview">О</div>
+                  </div>
+
+                  <div class="meta">
+                    <div class="meta-row">
+                      <div class="meta-text">
+                        <h2 class="widget-name">{{ i18n.t('widgets.coinflip') }}</h2>
+                        @if (isEnabled('coinflip')) {
+                          <span appearance="positive" tuiBadge>{{ i18n.t('common.enabled') }}</span>
+                        } @else {
+                          <span appearance="neutral" tuiBadge>{{ i18n.t('common.disabled') }}</span>
+                        }
+                      </div>
+                      <input
+                        [attr.aria-label]="i18n.t('widgets.enable') + ' ' + i18n.t('widgets.coinflip')"
+                        type="checkbox"
+                        [checked]="isEnabled('coinflip')"
+                        (change)="toggle('coinflip', $any($event.target).checked)"
+                        tuiSwitch
+                      />
+                    </div>
+
+                    <div class="widget-actions">
+                      <a routerLink="/app/widgets/coinflip/config" tuiLink>{{ i18n.t('common.configure') }}</a>
+                      <button size="s" type="button" [tuiButtonCopy]="overlayUrl('coinflip')" appearance="flat" tuiButton>
+                        Копировать URL
+                      </button>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="widget-card">
+                  <div class="stage jk-checkerboard">
+                    <div class="slot-preview">
+                      <span>1</span><span>2</span><span>3</span>
+                    </div>
+                  </div>
+
+                  <div class="meta">
+                    <div class="meta-row">
+                      <div class="meta-text">
+                        <h2 class="widget-name">{{ i18n.t('widgets.random') }}</h2>
+                        @if (isEnabled('random')) {
+                          <span appearance="positive" tuiBadge>{{ i18n.t('common.enabled') }}</span>
+                        } @else {
+                          <span appearance="neutral" tuiBadge>{{ i18n.t('common.disabled') }}</span>
+                        }
+                      </div>
+                      <input
+                        [attr.aria-label]="i18n.t('widgets.enable') + ' ' + i18n.t('widgets.random')"
+                        type="checkbox"
+                        [checked]="isEnabled('random')"
+                        (change)="toggle('random', $any($event.target).checked)"
+                        tuiSwitch
+                      />
+                    </div>
+
+                    <div class="widget-actions">
+                      <a routerLink="/app/widgets/random/config" tuiLink>{{ i18n.t('common.configure') }}</a>
+                      <button size="s" type="button" [tuiButtonCopy]="overlayUrl('random')" appearance="flat" tuiButton>
+                        Копировать URL
+                      </button>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="widget-card">
+                  <div class="stage jk-checkerboard">
                     <div class="audio-preview">
                       <tui-icon icon="@tui.message-circle" />
                       <span class="jk-caption">Live chat · OBS</span>

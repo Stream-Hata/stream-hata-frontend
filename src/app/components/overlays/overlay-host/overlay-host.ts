@@ -9,6 +9,7 @@ import { AlertsOverlay } from '../alerts-overlay/alerts-overlay';
 import { AudioOverlay } from '../audio-overlay/audio-overlay';
 import { ChatOverlay } from '../chat-overlay/chat-overlay';
 import { DiceOverlay } from '../dice-overlay/dice-overlay';
+import { GameOverlay } from '../game-overlay/game-overlay';
 import { DonationsOverlay } from '../donations-overlay/donations-overlay';
 import { EventsOverlay } from '../events-overlay/events-overlay';
 import { HotbarOverlay } from '../hotbar-overlay/hotbar-overlay';
@@ -27,6 +28,7 @@ import { WheelOverlay } from '../wheel-overlay/wheel-overlay';
 		AudioOverlay,
 		ChatOverlay,
 		DiceOverlay,
+		GameOverlay,
 		DonationsOverlay,
 		EventsOverlay,
 		HotbarOverlay,
