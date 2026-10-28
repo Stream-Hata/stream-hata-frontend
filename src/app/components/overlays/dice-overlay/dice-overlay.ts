@@ -99,7 +99,8 @@ export class DiceOverlay implements AfterViewInit {
 
 		return points.map((point, index) => `100,100 ${point} ${points[(index + 1) % count]}`);
 	});
-	readonly polyTransform = computed(() => 'rotateX(-10deg) rotateY(-8deg)');
+	readonly polyTransform = computed(() => 'rotateX(-18deg) rotateY(-18deg)');
+	readonly coinTransform = computed(() => this.result() === 2 ? 'rotateX(8deg) rotateY(180deg)' : 'rotateX(8deg) rotateY(0deg)');
 	readonly showOverflow = computed(() => this.result() > this.sides() || this.sides() > 20);
 	readonly cubeTransform = computed(() => {
 		const rotations: Record<number, string> = {

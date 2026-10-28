@@ -4,7 +4,17 @@
     <span class="dice-kicker">DICE</span>
 
     <div class="dice-scene" [style.perspective.px]="900">
-      @if (librarySides()) {
+      @if (sides() === 2) {
+        <div class="dice-coin" [class.rolling]="rolling()" [style.transform]="rolling() ? null : coinTransform()">
+          <span class="dice-coin-face dice-coin-front">1</span>
+          <span class="dice-coin-face dice-coin-back">2</span>
+          <span class="dice-coin-edge"></span>
+        </div>
+      } @else if (sides() > 20) {
+        <div class="dice-sphere" [class.rolling]="rolling()">
+          <strong>{{ result() }}</strong>
+        </div>
+      } @else if (librarySides()) {
         <div #diceHost class="dice-host" [class.hide-labels]="sides() >= 10"></div>
         @if (sides() >= 10) {
           <strong class="dice-overlay-result">{{ result() }}</strong>
