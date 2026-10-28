@@ -366,7 +366,7 @@ export class DiceScene {
 		const groups = this.current.geometry.groups.length;
 		const index = Math.max(0, Math.min(groups - 1, (result - 1) % groups));
 		const normal = faceNormal(this.current.geometry, index);
-		this.target = new Quaternion().setFromUnitVectors(normal, new Vector3(0.62, 0.42, 1).normalize());
+		this.target = new Quaternion().setFromUnitVectors(normal, new Vector3(1.35, 0.9, 1).normalize());
 		this.spinAxis = new Vector3(Math.random() - 0.5, Math.random() + 0.7, Math.random() - 0.5).normalize();
 		this.rollStarted = performance.now();
 		this.rolling = true;
