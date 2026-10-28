@@ -5,6 +5,7 @@ export interface ChatCommand {
 	action: string;
 	response: string;
 	reply?: string;
+	limitReply?: string;
 	cooldownSeconds: number;
 	userLevel: string;
 	enabled: boolean;

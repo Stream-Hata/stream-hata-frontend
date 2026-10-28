@@ -128,6 +128,7 @@ export default class AutomationEditorPage {
 	readonly commandAliases = signal('');
 	readonly commandValue = signal('');
 	readonly commandReply = signal('');
+	readonly commandLimitReply = signal('');
 	readonly commandCooldown = signal(5);
 	readonly commandLevel = signal('everyone');
 	readonly commandEnabled = signal(true);
@@ -172,6 +173,7 @@ export default class AutomationEditorPage {
 				this.commandAction.set(command.action || 'say');
 				this.commandValue.set(command.response);
 				this.commandReply.set(command.reply ?? '');
+				this.commandLimitReply.set(command.limitReply ?? '');
 				this.commandCooldown.set(command.cooldownSeconds);
 				this.commandLevel.set(command.userLevel);
 				this.commandEnabled.set(command.enabled);
@@ -217,6 +219,7 @@ export default class AutomationEditorPage {
 				action: this.commandAction(),
 				response: this.commandValue().trim(),
 				reply: this.commandReply().trim(),
+				limitReply: this.commandLimitReply().trim(),
 				cooldownSeconds: this.commandCooldown(),
 				userLevel: this.commandLevel(),
 				enabled: this.commandEnabled(),

@@ -45,6 +45,9 @@
         <input [readonly]="true" value="Выберите переменную…" [style.color]="accent()" tuiInput tuiSelectLike />
         <tui-data-list-wrapper *tuiDropdown [itemContent]="accentOption" [items]="variableItems()" (itemClick)="insertVariable($event)"></tui-data-list-wrapper>
       </tui-textfield>
+      <span class="jk-label">Сообщение при ограничении</span>
+      <tui-textfield><textarea tuiTextarea rows="2" [value]="commandLimitReply()" (input)="commandLimitReply.set($any($event.target).value)" placeholder="Например: @user, команда на кулдауне"></textarea></tui-textfield>
+      <span class="jk-caption">Отправляется, если команда на кулдауне.</span>
       <span class="jk-label">Алиасы</span>
       <tui-textfield><input tuiInput [value]="commandAliases()" (input)="commandAliases.set($any($event.target).value)" /></tui-textfield>
       <div class="row">
@@ -64,6 +67,9 @@
       </tui-textfield>
       <span class="jk-label">Команда</span>
       <tui-textfield><input tuiInput [value]="triggerCommand()" (input)="triggerCommand.set($any($event.target).value)" /></tui-textfield>
+      <span class="jk-label">Сообщение при ограничении</span>
+      <tui-textfield><textarea tuiTextarea rows="2" [value]="commandLimitReply()" (input)="commandLimitReply.set($any($event.target).value)" placeholder="Например: @user, команда на кулдауне"></textarea></tui-textfield>
+      <span class="jk-caption">Отправляется, если команда на кулдауне.</span>
       <span class="jk-label">Алиасы</span>
       <tui-textfield><input tuiInput [value]="triggerAliases()" (input)="triggerAliases.set($any($event.target).value)" /></tui-textfield>
       <div class="switch"><span class="switch-hit"><input type="checkbox" class="accent-switch" [checked]="triggerEnabled()" tuiSwitch /><span class="switch-hit-area" (click)="triggerEnabled.set(!triggerEnabled()); $event.preventDefault()"></span></span> Включён</div>
