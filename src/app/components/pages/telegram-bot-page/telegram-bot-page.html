@@ -24,6 +24,17 @@
 				/>
 			</tui-textfield>
 			<span class="jk-label">Chat ID</span>
+			<div class="telegram-chat-editor">
+				<tui-textfield>
+					<input
+						tuiInput
+						[value]="newChatId()"
+						(input)="newChatId.set($any($event.target).value)"
+						placeholder="-100... или @channel"
+					/>
+				</tui-textfield>
+				<button type="button" appearance="flat" tuiButton (click)="addChatID()">Добавить ID</button>
+			</div>
 			<div class="telegram-chat-list">
 				@for (id of current.telegramChatIds ?? [current.telegramChatId]; track id) {
 					@if (id) {
@@ -43,16 +54,8 @@
 				}
 			</div>
 			<div class="telegram-actions">
-				<tui-textfield>
-					<input
-						tuiInput
-						[value]="newChatId()"
-						(input)="newChatId.set($any($event.target).value)"
-						placeholder="-100... или @channel"
-					/>
-				</tui-textfield>
-				<button type="button" appearance="flat" tuiButton (click)="addChatID()">
-					Добавить чат
+				<button type="button" appearance="flat" tuiButton (click)="addActiveChats()">
+					Добавить активные
 				</button>
 				<button type="button" appearance="flat" tuiButton (click)="loadChats()">
 					Найти chat ID
@@ -84,7 +87,7 @@
 		</section>
 	}
 
-	<div class="automation-grid">
+	<div class="automation-grid single-column">
 		<section class="automation-main">
 			<h2 class="jk-h4">Команды</h2>
 			<div class="table-wrap">
@@ -104,9 +107,15 @@
 								<td tuiTd class="response-cell">{{ item.response }}</td>
 								<td tuiTd>{{ item.buttons?.length ?? 0 }}</td>
 								<td tuiTd>
-									<button type="button" appearance="flat" size="s" tuiButton (click)="edit(item)">
+									<a
+										[routerLink]="['/app/telegram/editor']"
+										[queryParams]="{ id: item.id }"
+										appearance="flat"
+										size="s"
+										tuiButton
+									>
 										Изменить
-									</button>
+									</a>
 									<button
 										type="button"
 										appearance="flat"
@@ -123,74 +132,5 @@
 				</table>
 			</div>
 		</section>
-
-		<aside class="automation-side">
-			<h2 class="jk-h4">{{ editingId() ? 'Изменить команду' : 'Новая команда' }}</h2>
-			<span class="jk-label">Команда</span>
-			<tui-textfield>
-				<input
-					tuiInput
-					[value]="command()"
-					(input)="command.set($any($event.target).value)"
-					placeholder="/start"
-				/>
-			</tui-textfield>
-			<span class="jk-label">Ответ</span>
-			<tui-textfield>
-				<textarea
-					rows="5"
-					tuiTextarea
-					[value]="response()"
-					(input)="response.set($any($event.target).value)"
-					placeholder="Текст. {user}, {args}, {date}, {time}"
-				></textarea>
-			</tui-textfield>
-			<div class="editor-switch">
-				<span class="jk-label">Включена</span>
-				<input
-					type="checkbox"
-					tuiSwitch
-					[checked]="enabled()"
-					(change)="enabled.set($any($event.target).checked)"
-				/>
-			</div>
-
-			<span class="jk-label">Кнопки</span>
-			@for (button of buttons(); track $index; let index = $index) {
-				<div class="telegram-button-row">
-					<tui-textfield>
-						<input
-							tuiInput
-							[value]="button.text"
-							(input)="updateButton(index, 'text', $event)"
-							placeholder="Текст"
-						/>
-					</tui-textfield>
-					<tui-textfield>
-						<input
-							tuiInput
-							[value]="button.url"
-							(input)="updateButton(index, 'url', $event)"
-							placeholder="https://..."
-						/>
-					</tui-textfield>
-					<button type="button" appearance="flat" size="s" tuiButton (click)="removeButton(index)">
-						×
-					</button>
-				</div>
-			}
-			<button type="button" appearance="flat" tuiButton (click)="addButton()">
-				Добавить кнопку
-			</button>
-
-			<div class="editor-actions">
-				<button type="button" appearance="primary" tuiButton (click)="save()">
-					{{ editingId() ? 'Сохранить' : 'Создать' }}
-				</button>
-				@if (editingId()) {
-					<button type="button" appearance="flat" tuiButton (click)="reset()">Отмена</button>
-				}
-			</div>
-		</aside>
 	</div>
 </div>

@@ -1,0 +1,45 @@
+.telegram-editor {
+	display: grid;
+	grid-template-columns: 180px minmax(0, 620px);
+	gap: 10px 16px;
+	align-items: center;
+}
+
+.telegram-editor tui-textfield {
+	width: 100%;
+}
+
+.telegram-buttons {
+	grid-column: 2;
+	display: grid;
+	gap: 8px;
+}
+
+.telegram-button-row {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.telegram-button-row tui-textfield {
+	flex: 1 1 180px;
+}
+
+@media (width <= 900px) {
+	.telegram-editor {
+		grid-template-columns: 1fr;
+	}
+
+	.telegram-buttons {
+		grid-column: 1;
+	}
+}
+
+.telegram-button-row input[type='color'] {
+	padding: 0;
+	border: 1px solid var(--border-normal);
+	border-radius: 8px;
+	background: transparent;
+	inline-size: 36px;
+	block-size: 36px;
+}

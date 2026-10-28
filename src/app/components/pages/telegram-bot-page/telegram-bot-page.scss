@@ -10,6 +10,18 @@
 	justify-self: start;
 }
 
+.telegram-chat-editor {
+	grid-column: 2;
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.telegram-chat-editor tui-textfield {
+	flex: 1 1 auto;
+	min-width: 220px;
+}
+
 .telegram-actions,
 .telegram-button-row {
 	grid-column: 1 / -1;
@@ -60,4 +72,20 @@
 	.automation-grid {
 		grid-template-columns: 1fr;
 	}
+}
+
+.automation-grid.single-column {
+	grid-template-columns: minmax(0, 1fr);
+}
+
+.table-wrap {
+	overflow-x: auto;
+	width: 100%;
+	border: 1px solid var(--border-normal);
+	border-radius: var(--radius-lg);
+	background: var(--surface-elevated-1);
+}
+
+.table-wrap table {
+	width: 100%;
 }

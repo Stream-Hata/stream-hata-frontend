@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import type { Routes } from '@angular/router';
 import { gameResolver } from './components/pages/game-details-page/game-resolver';
 import { gamesResolver } from './components/pages/games-page/games-resolver';
@@ -113,6 +114,12 @@ export const routes: Routes = [
 				path: 'polls',
 				loadComponent: () => import('./components/pages/polls-page/polls-page'),
 				title: 'Опросы · Nameless StreamHata',
+			},
+			{
+				path: 'telegram/editor',
+				loadComponent: () =>
+					import('./components/pages/telegram-command-editor-page/telegram-command-editor-page'),
+				title: 'Редактор команды Telegram · Nameless StreamHata',
 			},
 			{
 				path: 'telegram',

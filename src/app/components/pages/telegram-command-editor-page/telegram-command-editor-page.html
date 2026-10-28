@@ -1,0 +1,165 @@
+<div class="jk-page">
+	<header class="jk-page-header">
+		<div class="jk-page-header-text">
+			<h1 class="jk-h1">Редактор команды Telegram</h1>
+			<p class="jk-caption">Команда, алиасы, разметка, кнопки и поведение ответа.</p>
+		</div>
+		<div class="jk-page-actions">
+			<a routerLink="/app/telegram" appearance="flat" tuiButton>Назад</a>
+			<button type="button" appearance="primary" tuiButton (click)="save()">Сохранить</button>
+		</div>
+	</header>
+
+	<section class="jk-card telegram-editor">
+		<span class="jk-label">Команда</span>
+		<tui-textfield>
+			<input
+				tuiInput
+				[value]="command()"
+				(input)="command.set($any($event.target).value)"
+				placeholder="/start"
+			/>
+		</tui-textfield>
+
+		<span class="jk-label">Название</span>
+		<tui-textfield>
+			<input
+				tuiInput
+				[value]="name()"
+				(input)="name.set($any($event.target).value)"
+				placeholder="Название для меню"
+			/>
+		</tui-textfield>
+
+		<span class="jk-label">Алиасы</span>
+		<tui-textfield>
+			<input
+				tuiInput
+				[value]="aliases()"
+				(input)="aliases.set($any($event.target).value)"
+				placeholder="/help, /h"
+			/>
+		</tui-textfield>
+
+		<span class="jk-label">Описание</span>
+		<tui-textfield>
+			<input
+				tuiInput
+				[value]="description()"
+				(input)="description.set($any($event.target).value)"
+				placeholder="Для меню команд Telegram"
+			/>
+		</tui-textfield>
+
+		<span class="jk-label">Действие</span>
+		<tui-textfield>
+			<input
+				tuiInput
+				[value]="action()"
+				(input)="action.set($any($event.target).value)"
+				placeholder="reply, music, status, ping, delete"
+			/>
+		</tui-textfield>
+
+		<span class="jk-label">Удалять команду</span>
+		<input
+			type="checkbox"
+			tuiSwitch
+			[checked]="deleteCommand()"
+			(change)="deleteCommand.set($any($event.target).checked)"
+		/>
+
+		<span class="jk-label">Ответ</span>
+		<tui-textfield>
+			<textarea
+				rows="8"
+				tuiTextarea
+				[value]="response()"
+				(input)="response.set($any($event.target).value)"
+				placeholder="Текст. {user}, {args}, {date}, {time}"
+			></textarea>
+		</tui-textfield>
+
+		<span class="jk-label">Разметка</span>
+		<tui-textfield>
+			<input
+				tuiInput
+				[value]="parseMode()"
+				(input)="parseMode.set($any($event.target).value)"
+				placeholder="HTML, MarkdownV2 или пусто"
+			/>
+		</tui-textfield>
+
+		<span class="jk-label">Без превью ссылок</span>
+		<input
+			type="checkbox"
+			tuiSwitch
+			[checked]="disablePreview()"
+			(change)="disablePreview.set($any($event.target).checked)"
+		/>
+
+		<span class="jk-label">Включена</span>
+		<input
+			type="checkbox"
+			tuiSwitch
+			[checked]="enabled()"
+			(change)="enabled.set($any($event.target).checked)"
+		/>
+
+		<span class="jk-label">Кнопки</span>
+		<div class="telegram-buttons">
+			@for (button of buttons(); track $index; let index = $index) {
+				<div class="telegram-button-row">
+					<tui-textfield>
+						<input
+							tuiInput
+							[value]="button.text"
+							(input)="updateButton(index, 'text', $event)"
+							placeholder="Текст"
+						/>
+					</tui-textfield>
+					<tui-textfield>
+						<input
+							tuiInput
+							[value]="button.url ?? ''"
+							(input)="updateButton(index, 'url', $event)"
+							placeholder="URL https://..."
+						/>
+					</tui-textfield>
+					<tui-textfield>
+						<input
+							tuiInput
+							[value]="button.callback ?? ''"
+							(input)="updateButton(index, 'callback', $event)"
+							placeholder="callback data"
+						/>
+					</tui-textfield>
+					<tui-textfield>
+						<input
+							tuiInput
+							[value]="button.callbackResponse ?? ''"
+							(input)="updateButton(index, 'callbackResponse', $event)"
+							placeholder="Ответ на callback"
+						/>
+					</tui-textfield>
+					<input
+						type="color"
+						[value]="button.color ?? '#2ea6ff'"
+						(input)="updateButton(index, 'color', $event)"
+						aria-label="Цвет кнопки"
+					/>
+					<button type="button" appearance="flat" size="s" tuiButton (click)="removeButton(index)">
+						×
+					</button>
+				</div>
+			}
+			<button type="button" appearance="flat" tuiButton (click)="addButton()">
+				Добавить кнопку
+			</button>
+		</div>
+
+		@if (error()) {
+			<p class="error-text">{{ error() }}</p>
+		}
+	</section>
+</div>

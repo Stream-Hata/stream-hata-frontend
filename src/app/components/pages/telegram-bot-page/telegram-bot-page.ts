@@ -1,13 +1,14 @@
 import type { TelegramButton, TelegramCommand } from '@shared/types/automation';
 import type { NotifySettings } from '@shared/types/stream';
 import { Component, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { CommandsService } from '@shared/services/commands.service';
 import { NotifyService } from '@shared/services/stream.services';
 import { TuiButton, TuiInput, TuiTextfield } from '@taiga-ui/core';
-import { TuiSwitch, TuiTextarea } from '@taiga-ui/kit';
+import { TuiSwitch } from '@taiga-ui/kit';
 
 @Component({
-	imports: [TuiButton, TuiInput, TuiSwitch, TuiTextarea, TuiTextfield],
+	imports: [RouterLink, TuiButton, TuiInput, TuiSwitch, TuiTextfield],
 	selector: 'app-telegram-bot-page',
 	styleUrl: './telegram-bot-page.scss',
 	templateUrl: './telegram-bot-page.html',
@@ -68,6 +69,18 @@ export default class TelegramBotPage {
 		);
 		this.settings.set({ ...current, telegramChatId: ids[0] ?? '', telegramChatIds: ids });
 		this.newChatId.set('');
+	}
+
+	addActiveChats(): void {
+		this.notify.chats().subscribe({
+			next: ({ chats }) => {
+				this.chats.set(chats);
+				for (const chat of chats) {
+					this.addChatID(chat.id.toString());
+				}
+			},
+			error: () => this.status.set('Не удалось получить активные чаты'),
+		});
 	}
 
 	removeChatID(id: string): void {
@@ -155,7 +168,7 @@ export default class TelegramBotPage {
 				command: this.command().trim(),
 				response: this.response(),
 				enabled: this.enabled(),
-				buttons: this.buttons().filter((item) => item.text.trim() && item.url.trim()),
+				buttons: this.buttons().filter((item) => item.text.trim() && item.url?.trim()),
 			})
 			.subscribe({
 				next: () => {

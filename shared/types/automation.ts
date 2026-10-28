@@ -342,13 +342,23 @@ export interface PollsState {
 
 export interface TelegramButton {
 	text: string;
-	url: string;
+	url?: string;
+	callback?: string;
+	callbackResponse?: string;
+	color?: string;
 }
 
 export interface TelegramCommand {
 	id: string;
 	command: string;
+	name?: string;
+	aliases?: string[];
+	description?: string;
+	action?: string;
+	deleteCommand?: boolean;
 	response: string;
+	parseMode?: string;
+	disablePreview?: boolean;
 	enabled: boolean;
 	buttons?: TelegramButton[];
 }
