@@ -1,5 +1,19 @@
 [
   {
+    "version": "0.7.43-pre-alpha",
+    "date": "2026-10-28",
+    "sections": [
+      {
+        "title": "Исправлено",
+        "items": [
+          {
+            "text": "Добавлен алиас `/overlay/coin` и диагностический preview монетки."
+          }
+        ]
+      }
+    ]
+  },
+  {
     "version": "0.7.42-pre-alpha",
     "date": "2026-10-28",
     "sections": [

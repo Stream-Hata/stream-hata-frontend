@@ -26,6 +26,7 @@ const EMPTY: GameState = { kind: '', label: '', result: '', side: '', viewer: ''
 export class GameOverlay implements AfterViewInit, OnDestroy {
 	@ViewChild('coinHost') private coinHost?: ElementRef<HTMLElement>;
 	readonly mode = input<GameMode>('coin');
+	private readonly preview = new URLSearchParams(location.search).get('preview');
 	private readonly http = inject(HttpClient);
 	private readonly configService = inject(WidgetConfigService);
 	private scene?: DiceScene;
@@ -105,6 +106,11 @@ export class GameOverlay implements AfterViewInit, OnDestroy {
 			this.scene = new DiceScene(this.coinHost.nativeElement);
 		}
 		this.ready.set(true);
+		if (this.preview === 'coin' && this.scene) {
+			this.scene.setSides(2, [this.heads(), this.tails(), '']);
+			this.scene.roll(1);
+			this.visible.set(true);
+		}
 	}
 
 	ngOnDestroy(): void {
