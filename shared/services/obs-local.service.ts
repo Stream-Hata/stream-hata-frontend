@@ -15,6 +15,7 @@ interface ObsResponse {
 
 @Injectable({ providedIn: 'root' })
 export class ObsLocalService {
+	private readonly tauriInvoke: ((command: string, args?: Record<string, unknown>) => Promise<unknown>) | undefined = undefined;
 	private socket: WebSocket | null = null;
 	private identified = false;
 	private url = 'ws://127.0.0.1:4455';
@@ -23,6 +24,15 @@ export class ObsLocalService {
 	private pending = new Map<string, { resolve: (value: Record<string, unknown>) => void; reject: (error: Error) => void }>();
 
 	connect(url: string, password: string): Observable<ObsStatus> {
+		if (this.tauriInvoke) {
+			this.url = url;
+			this.password = password;
+
+			return from(
+				this.tauriInvoke('obs_connect', { url, password }).then((status) => status as ObsStatus),
+			);
+		}
+
 		this.close();
 		this.url = url;
 		this.password = password;
@@ -64,6 +74,10 @@ export class ObsLocalService {
 	}
 
 	status(): Observable<ObsStatus> {
+		if (this.tauriInvoke) {
+			return from(this.tauriInvoke('obs_status').then((status) => status as ObsStatus));
+		}
+
 		if (!this.identified) {
 			return of(this.offline());
 		}
@@ -72,16 +86,28 @@ export class ObsLocalService {
 	}
 
 	disconnect(): Observable<ObsStatus> {
+		if (this.tauriInvoke) {
+			return from(this.tauriInvoke('obs_disconnect').then(() => this.offline()));
+		}
+
 		this.close();
 
 		return of(this.offline());
 	}
 
 	scene(scene: string): Observable<unknown> {
+		if (this.tauriInvoke) {
+			return from(this.tauriInvoke('obs_scene', { scene }));
+		}
+
 		return from(this.request('SetCurrentProgramScene', { sceneName: scene }));
 	}
 
 	mute(input: string): Observable<{ muted: boolean }> {
+		if (this.tauriInvoke) {
+			return from(this.tauriInvoke('obs_mute', { input }).then((result) => result as { muted: boolean }));
+		}
+
 		return from(
 			this.request('GetInputMute', { inputName: input }).then((data) => {
 				const muted = !Boolean(data['inputMuted']);
@@ -92,6 +118,10 @@ export class ObsLocalService {
 	}
 
 	output(output: string, action: string): Observable<unknown> {
+		if (this.tauriInvoke) {
+			return from(this.tauriInvoke('obs_output', { output, action }));
+		}
+
 		const requestType =
 			output === 'stream'
 				? action === 'stop'
