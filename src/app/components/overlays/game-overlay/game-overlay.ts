@@ -4,7 +4,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { WidgetConfigService, type WidgetConfig } from '@shared/services/widgets.service';
 import { catchError, of, switchMap, timer } from 'rxjs';
 import { DiceScene } from '../dice-overlay/dice-scene';
-import { DiceFallback } from '../dice-overlay/dice-fallback';
 
 type GameMode = 'coin' | 'random';
 
@@ -31,11 +30,9 @@ export class GameOverlay implements AfterViewInit, OnDestroy {
 	private readonly http = inject(HttpClient);
 	private readonly configService = inject(WidgetConfigService);
 	private scene?: DiceScene;
-	private fallback?: DiceFallback;
 	private lastRolledAt = '';
 	private hideTimer: ReturnType<typeof setTimeout> | null = null;
 	readonly ready = signal(false);
-	readonly sceneReady = signal(false);
 	readonly rolling = signal(false);
 	readonly visible = signal(false);
 
@@ -85,13 +82,13 @@ export class GameOverlay implements AfterViewInit, OnDestroy {
 				return;
 			}
 
-			(this.scene ?? this.fallback)?.setSides(2, [this.heads(), this.tails(), '']);
+			this.scene?.setSides(2, [this.heads(), this.tails(), '']);
 
 			if (rolledAt !== this.lastRolledAt) {
 				this.lastRolledAt = rolledAt;
 				this.visible.set(true);
 				this.rolling.set(true);
-				(this.scene ?? this.fallback)?.roll(this.coinSide() === 'tails' ? 2 : 1);
+				this.scene?.roll(this.coinSide() === 'tails' ? 2 : 1);
 				setTimeout(() => this.rolling.set(false), 1000);
 
 				if (this.hideTimer) {
@@ -107,16 +104,14 @@ export class GameOverlay implements AfterViewInit, OnDestroy {
 			const accent = getComputedStyle(this.coinHost.nativeElement).getPropertyValue('--accent-primary').trim() || '#ff2ea6';
 			try {
 				this.scene = new DiceScene(this.coinHost.nativeElement, accent);
-				this.sceneReady.set(true);
 			} catch (error) {
-				console.error('[Coin] WebGL unavailable, using 2D fallback', error);
-				this.fallback = new DiceFallback(this.coinHost.nativeElement, accent);
+				console.error('[Coin] WebGL unavailable', error);
 			}
 		}
 		this.ready.set(true);
-		if (this.preview === 'coin' && (this.scene || this.fallback)) {
-			(this.scene ?? this.fallback)?.setSides(2, [this.heads(), this.tails(), '']);
-			(this.scene ?? this.fallback)?.roll(1);
+		if (this.preview === 'coin' && this.scene) {
+			this.scene?.setSides(2, [this.heads(), this.tails(), '']);
+			this.scene?.roll(1);
 			this.visible.set(true);
 		}
 	}
@@ -126,6 +121,5 @@ export class GameOverlay implements AfterViewInit, OnDestroy {
 			clearTimeout(this.hideTimer);
 		}
 		this.scene?.destroy();
-		this.fallback?.destroy();
 	}
 }

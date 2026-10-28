@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, of, switchMap, timer } from 'rxjs';
 import { DiceScene } from './dice-scene';
-import { DiceFallback } from './dice-fallback';
 
 interface DiceState {
 	formula: string;
@@ -25,11 +24,9 @@ export class DiceOverlay implements AfterViewInit, OnDestroy {
 	private readonly http = inject(HttpClient);
 	private readonly previewSides = Number(new URLSearchParams(location.search).get('preview') ?? 0);
 	private scene?: DiceScene;
-	private fallback?: DiceFallback;
 	private lastRolledAt = '';
 	private hideTimer: ReturnType<typeof setTimeout> | null = null;
 	readonly ready = signal(false);
-	readonly sceneReady = signal(false);
 	readonly visible = signal(false);
 	readonly rolling = signal(false);
 
@@ -53,15 +50,7 @@ export class DiceOverlay implements AfterViewInit, OnDestroy {
 
 		return match ? Math.max(1, Number(match[2])) : 6;
 	});
-	readonly fallbackPoints = computed(() => {
-		const count = this.sides() === 4 ? 3 : this.sides() === 8 ? 4 : this.sides() === 10 ? 5 : this.sides() === 12 ? 6 : this.sides() === 20 ? 8 : Math.min(10, Math.max(3, this.sides()));
 
-		return Array.from({ length: count }, (_, index) => {
-			const angle = (Math.PI * 2 * index) / count - Math.PI / 2;
-
-			return `${100 + Math.cos(angle) * 82},${100 + Math.sin(angle) * 82}`;
-		}).join(' ');
-	});
 
 	constructor() {
 		effect(() => {
@@ -77,7 +66,7 @@ export class DiceOverlay implements AfterViewInit, OnDestroy {
 				return;
 			}
 
-			(this.scene ?? this.fallback)?.setSides(sides);
+			this.scene?.setSides(sides);
 
 			if (!rolledAt || rolledAt.startsWith('0001-') || rolledAt === this.lastRolledAt) {
 				return;
@@ -86,7 +75,7 @@ export class DiceOverlay implements AfterViewInit, OnDestroy {
 			this.lastRolledAt = rolledAt;
 			this.visible.set(true);
 			this.rolling.set(true);
-			(this.scene ?? this.fallback)?.roll(result);
+			this.scene?.roll(result);
 			setTimeout(() => this.rolling.set(false), 950);
 
 			if (this.hideTimer) {
@@ -104,14 +93,12 @@ export class DiceOverlay implements AfterViewInit, OnDestroy {
 		const accent = getComputedStyle(this.diceHost.nativeElement).getPropertyValue('--accent-primary').trim() || '#ff2ea6';
 		try {
 			this.scene = new DiceScene(this.diceHost.nativeElement, accent);
-			this.sceneReady.set(true);
 		} catch (error) {
-			console.error('[Dice] WebGL unavailable, using 2D fallback', error);
-			this.fallback = new DiceFallback(this.diceHost.nativeElement, accent);
+			console.error('[Dice] WebGL unavailable', error);
 		}
 		if (this.previewSides > 0) {
-			(this.scene ?? this.fallback)?.setSides(this.previewSides);
-			(this.scene ?? this.fallback)?.roll(Math.min(3, this.previewSides));
+			this.scene?.setSides(this.previewSides);
+			this.scene?.roll(Math.min(3, this.previewSides));
 			this.visible.set(true);
 		}
 		this.ready.set(true);
@@ -122,6 +109,5 @@ export class DiceOverlay implements AfterViewInit, OnDestroy {
 			clearTimeout(this.hideTimer);
 		}
 		this.scene?.destroy();
-		this.fallback?.destroy();
 	}
 }

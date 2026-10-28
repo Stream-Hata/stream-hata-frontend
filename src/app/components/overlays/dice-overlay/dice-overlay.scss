@@ -14,10 +14,12 @@
 }
 
 .dice-card {
+	position: relative;
 	display: flex;
-	gap: 6px;
-	flex-direction: column;
 	align-items: center;
+	justify-content: center;
+	width: 160px;
+	height: 160px;
 	padding: 0;
 	border: 0;
 	background: transparent;
@@ -35,9 +37,14 @@
 }
 
 .dice-kicker {
+	position: absolute;
+	top: -2px;
+	left: 50%;
+	transform: translateX(-50%);
 	color: var(--accent-primary);
 	font: 700 11px/16px var(--font-ui);
 	letter-spacing: 0.18em;
+	white-space: nowrap;
 }
 
 .dice-host {
@@ -52,96 +59,14 @@
 }
 
 .dice-result {
+	position: absolute;
+	z-index: 4;
 	color: var(--widget-text, #f5eaff);
 	font: 800 46px/1 var(--font-ui);
 	text-shadow:
 		0 2px 8px rgb(0 0 0 / 85%),
 		0 0 14px rgb(255 46 166 / 45%);
-}
-
-.dice-formula {
-	color: var(--accent-primary);
-	font: 700 16px/22px var(--font-ui);
-	letter-spacing: 0.08em;
-}
-
-.dice-rolls,
-.dice-viewer {
-	color: var(--text-secondary);
-	font: 600 12px/18px var(--font-ui);
-}
-
-
-.dice-card.rolling .dice-host {
-	animation: dice-host-spin 0.95s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-@keyframes dice-host-spin {
-	0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
-	50% { transform: rotateX(220deg) rotateY(360deg) rotateZ(90deg); }
-	100% { transform: rotateX(360deg) rotateY(720deg) rotateZ(180deg); }
-}
-
-.dice-fallback {
-	position: relative;
-	width: 120px;
-	height: 120px;
-	perspective: 700px;
-}
-
-.fallback-cube {
-	position: relative;
-	width: 100%;
-	height: 100%;
-	transform-style: preserve-3d;
-	animation: fallback-turn 8s linear infinite;
-}
-
-.dice-fallback.rolling .fallback-cube {
-	animation: fallback-roll 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.fallback-face {
-	position: absolute;
-	display: grid;
-	place-items: center;
-	width: 100%;
-	height: 100%;
-	border: 3px solid var(--accent-primary);
-	background: color-mix(in srgb, var(--accent-primary) 35%, #1a1025);
-	color: #fff;
-	font: 800 48px/1 var(--font-ui);
-}
-
-.f-front { transform: translateZ(75px); }
-.f-back { transform: rotateY(180deg) translateZ(75px); }
-.f-right { transform: rotateY(90deg) translateZ(75px); }
-.f-left { transform: rotateY(-90deg) translateZ(75px); }
-.f-top { transform: rotateX(90deg) translateZ(75px); }
-.f-bottom { transform: rotateX(-90deg) translateZ(75px); }
-
-@keyframes fallback-turn {
-	to { transform: rotateX(360deg) rotateY(720deg); }
-}
-
-@keyframes fallback-roll {
-	0% { transform: rotateX(0) rotateY(0); }
-	100% { transform: rotateX(720deg) rotateY(1440deg); }
-}
-
-/* Center the die itself; captions are positioned outside the layout */
-.dice-card {
-	position: relative;
-	width: 160px;
-	height: 160px;
-}
-
-.dice-kicker {
-	position: absolute;
-	top: -2px;
-	left: 50%;
-	transform: translateX(-50%);
-	white-space: nowrap;
+	pointer-events: none;
 }
 
 .dice-formula {
@@ -149,6 +74,9 @@
 	top: 166px;
 	left: 50%;
 	transform: translateX(-50%);
+	color: var(--accent-primary);
+	font: 700 16px/22px var(--font-ui);
+	letter-spacing: 0.08em;
 	white-space: nowrap;
 }
 
@@ -157,6 +85,8 @@
 	top: 190px;
 	left: 50%;
 	transform: translateX(-50%);
+	color: var(--text-secondary);
+	font: 600 12px/18px var(--font-ui);
 	white-space: nowrap;
 }
 
@@ -165,36 +95,7 @@
 	top: 208px;
 	left: 50%;
 	transform: translateX(-50%);
+	color: var(--text-secondary);
+	font: 600 12px/18px var(--font-ui);
 	white-space: nowrap;
-}
-
-.dice-fallback {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-}
-
-.dice-fallback svg {
-	width: 150px;
-	height: 150px;
-	overflow: visible;
-}
-
-.fallback-body {
-	fill: color-mix(in srgb, var(--accent-primary) 42%, #160d20);
-	stroke: var(--accent-primary);
-	stroke-width: 4;
-	filter: drop-shadow(0 8px 14px rgb(0 0 0 / 55%));
-}
-
-.fallback-result {
-	fill: #fff;
-	font: 800 42px/1 var(--font-ui);
-	text-anchor: middle;
-	dominant-baseline: middle;
-}
-
-.dice-fallback.rolling svg {
-	animation: fallback-roll 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
 }

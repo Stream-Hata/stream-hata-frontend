@@ -1,5 +1,19 @@
 [
   {
+    "version": "0.7.55-pre-alpha",
+    "date": "2026-10-28",
+    "sections": [
+      {
+        "title": "Удалено",
+        "items": [
+          {
+            "text": "Удалены CSS/2D-фоллбеки кубика и монетки; используется только Three.js."
+          }
+        ]
+      }
+    ]
+  },
+  {
     "version": "0.7.54-pre-alpha",
     "date": "2026-10-28",
     "sections": [
