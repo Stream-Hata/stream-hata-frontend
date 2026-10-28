@@ -445,7 +445,7 @@ function createDie(N: number, opts: any = {}) {
 	die.add(body);
 	die.add(new THREE.LineSegments(
 		new THREE.EdgesGeometry(data.geometry, 5),
-		new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.35 }),
+		new THREE.LineBasicMaterial({ color: 0xf5eaff, transparent: true, opacity: 0.7 }),
 	));
 
 	const faceByValue = new Map();
