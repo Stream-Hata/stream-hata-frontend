@@ -79,8 +79,8 @@ const TRIGGER_LABELS: Record<string, string> = {
 	'twitch.subscribers': 'Подписчики',
 	'twitch.chatters': 'Зрители в чате',
 };
-const VARIABLE_ACTIONS = ['', 'lastmusic', 'lasttrack', 'np', 'now'];
-const VARIABLE_ACTION_LABELS = ['Не использовать', 'Ссылка на текущую музыку', 'Ссылка на последний трек', 'Сейчас играет (URL)', 'Сейчас играет'];
+const VARIABLE_ACTIONS = ['', 'lastmusic', 'lasttrack', 'np', 'now', 'date', 'time', 'datetime', 'timestamp', 'random', 'dice', 'coinflip', 'points.balance', 'points.top', 'points.shop', 'twitch.followage', 'twitch.accountage', 'twitch.uptime', 'twitch.viewers', 'twitch.title', 'twitch.game', 'twitch.followers', 'twitch.subscribers', 'twitch.chatters'];
+const VARIABLE_ACTION_LABELS = ['Не использовать', 'Ссылка на текущую музыку', 'Ссылка на последний трек', 'Сейчас играет (URL)', 'Сейчас играет', 'Дата', 'Время', 'Дата и время', 'Unix timestamp', 'Случайное значение', 'Кубик', 'Монетка', 'Мой баланс баллов', 'Топ баллов', 'Магазин баллов', 'Дата фоллова', 'Возраст аккаунта', 'Аптайм стрима', 'Зрители', 'Заголовок канала', 'Категория', 'Фолловеры', 'Подписчики', 'Зрители в чате'];
 
 @Component({
 	imports: [RouterLink, TuiButton, TuiChevron, TuiDataListWrapper, TuiDropdown, TuiInput, TuiSelectLike, TuiSwitch, TuiTextarea, TuiTextfield],
