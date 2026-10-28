@@ -800,19 +800,21 @@
                             </div>
 
                             @for (integration of integrations(); track integration.id) {
-                              <div class="cfg-row">
+                              <div class="cfg-row integration-row">
                                 <div class="cfg-text">
                                   <span class="cfg-label">{{ integration.name }}</span>
                                   <span class="jk-caption">{{ integration.status }}</span>
                                 </div>
-                                <input
-                                  aria-label="Включить интеграцию"
-                                  type="checkbox"
-                                  [checked]="integration.enabled"
-                                  (change)="toggleIntegration(integration.id, $event)"
-                                  tuiSwitch
+                                <div class="switch-hit">
+                                  <input
+                                    aria-label="Включить интеграцию"
+                                    type="checkbox"
+                                    [checked]="integration.enabled"
+                                    tuiSwitch
                                   />
+                                  <span class="switch-hit-area" (click)="toggleIntegrationValue(integration.id, !integration.enabled); $event.preventDefault()"></span>
                                 </div>
+                              </div>
                               }
 
                               <div class="cfg-row">

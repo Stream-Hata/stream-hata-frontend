@@ -568,6 +568,10 @@ export default class SettingsPage {
 		this.integrationsService.setEnabled(id, this.check(event)).subscribe();
 	}
 
+	toggleIntegrationValue(id: string, enabled: boolean): void {
+		this.integrationsService.setEnabled(id, enabled).subscribe();
+	}
+
 	webhookUrl(provider: string): string {
 		return this.integrationsService.webhookUrl(provider);
 	}

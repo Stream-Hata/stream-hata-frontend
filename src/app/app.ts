@@ -25,7 +25,7 @@ export class App {
 				input.dataset['tauriBound'] = '1';
 				const host = (input.closest('.cfg-row, .admin-switch, label') ?? input.parentElement) as HTMLElement | null;
 
-				if (!host || host.classList.contains('cfg-row') || host.querySelector('[data-tauri-switch]') || host.hasAttribute('data-no-tauri-switch')) {
+				if (!host || (host.classList.contains('cfg-row') && !host.classList.contains('integration-row')) || host.querySelector('[data-tauri-switch]') || host.hasAttribute('data-no-tauri-switch')) {
 					return;
 				}
 

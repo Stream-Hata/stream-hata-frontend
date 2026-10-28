@@ -302,3 +302,20 @@ html[data-tauri] .settings-nav {
 	display: inline-flex;
 	min-width: 120px;
 }
+
+
+.switch-hit {
+	position: relative;
+	display: inline-flex;
+}
+
+.switch-hit input {
+	pointer-events: none;
+}
+
+.switch-hit-area {
+	position: absolute;
+	cursor: pointer;
+	inset: -8px;
+	z-index: 3;
+}
