@@ -629,6 +629,23 @@ export class DiceScene {
 	}
 
 	private readonly accent: string;
+	private edgeColor = '#f5eaff';
+	private edgeWidth = 1;
+	private edgeOpacity = 0.7;
+
+	setEdgeStyle(color: string, width: number, opacity: number) {
+		this.edgeColor = color;
+		this.edgeWidth = width;
+		this.edgeOpacity = opacity;
+
+		this.die?.traverse((object: any) => {
+			if (object instanceof THREE.LineSegments && object.material instanceof THREE.LineBasicMaterial) {
+				object.material.color.set(color);
+				object.material.linewidth = width;
+				object.material.opacity = opacity;
+			}
+		});
+	}
 
 	setSides(sides: number, labels?: (string | number)[]) {
 		const labelKey = labels?.join('|') ?? '';
@@ -648,6 +665,7 @@ export class DiceScene {
 
 		this.die = createDie(sides, { color, labelValues });
 		this.scene.add(this.die);
+		this.setEdgeStyle(this.edgeColor, this.edgeWidth, this.edgeOpacity);
 		this.animator.place(this.die, 1, { yaw: 0.2 });
 		this.resize();
 	}

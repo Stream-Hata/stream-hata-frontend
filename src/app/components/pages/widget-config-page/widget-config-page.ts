@@ -111,6 +111,9 @@ export default class WidgetConfigPage {
 		gameOutcome: new FormControl('', { nonNullable: true }),
 		gameTextPosition: new FormControl('top', { nonNullable: true }),
 		gameTextAlign: new FormControl('center', { nonNullable: true }),
+		diceEdgeColor: new FormControl('#f5eaff', { nonNullable: true }),
+		diceEdgeWidth: new FormControl(1, { nonNullable: true }),
+		diceEdgeOpacity: new FormControl(0.7, { nonNullable: true }),
 	});
 
 	constructor() {

@@ -95,6 +95,27 @@
                         </div>
                       }
 
+                      @if (kind() === 'dice') {
+                        <div class="cfg-row">
+                          <span class="cfg-label">Обводка граней</span>
+                          <tui-textfield class="cfg-control">
+                            <input aria-label="Цвет обводки кубика" [formControl]="genericForm.controls.diceEdgeColor" tuiInputColor />
+                          </tui-textfield>
+                        </div>
+                        <div class="cfg-row">
+                          <span class="cfg-label">Толщина обводки</span>
+                          <tui-textfield class="cfg-control">
+                            <input aria-label="Толщина обводки" type="number" [min]="1" [max]="4" [step]="1" [formControl]="genericForm.controls.diceEdgeWidth" tuiInputNumber />
+                          </tui-textfield>
+                        </div>
+                        <div class="cfg-row">
+                          <span class="cfg-label">Прозрачность обводки</span>
+                          <tui-textfield class="cfg-control">
+                            <input aria-label="Прозрачность обводки" type="number" [min]="0.1" [max]="1" [step]="0.1" [formControl]="genericForm.controls.diceEdgeOpacity" tuiInputNumber />
+                          </tui-textfield>
+                        </div>
+                      }
+
                       @if (kind() === 'dice' || kind() === 'coinflip' || kind() === 'random') {
                         <div class="cfg-row">
                           <span class="cfg-label">Заголовок</span>
@@ -105,7 +126,7 @@
                         <div class="cfg-row">
                           <span class="cfg-label">Текст результата</span>
                           <tui-textfield class="cfg-control">
-                            <input aria-label="Текст результата" [formControl]="genericForm.controls.gameOutcome" tuiInput placeholder="@{user} · выпало {result}">
+                            <input aria-label="Текст результата" [formControl]="genericForm.controls.gameOutcome" tuiInput placeholder="@{user} выбивает {result}">
                           </tui-textfield>
                         </div>
                         <div class="cfg-row">

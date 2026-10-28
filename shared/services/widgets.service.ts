@@ -78,6 +78,9 @@ export interface WidgetConfig {
 	gameOutcome?: string;
 	gameTextPosition?: 'top' | 'bottom';
 	gameTextAlign?: 'left' | 'center' | 'right';
+	diceEdgeColor?: string;
+	diceEdgeWidth?: number;
+	diceEdgeOpacity?: number;
 }
 
 @Injectable({ providedIn: 'root' })

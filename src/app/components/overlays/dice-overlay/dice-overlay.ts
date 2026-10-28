@@ -51,15 +51,22 @@ export class DiceOverlay implements AfterViewInit, OnDestroy {
 		{ initialValue: { config: {} as WidgetConfig } },
 	);
 	readonly title = computed(() => this.config().config.gameTitle?.trim() || 'DICE');
+	readonly edgeColor = computed(() => this.config().config.diceEdgeColor || '#f5eaff');
+	readonly edgeWidth = computed(() => this.config().config.diceEdgeWidth ?? 1);
+	readonly edgeOpacity = computed(() => this.config().config.diceEdgeOpacity ?? 0.7);
 	readonly textPosition = computed(() => this.config().config.gameTextPosition ?? 'top');
 	readonly textAlign = computed(() => this.config().config.gameTextAlign ?? 'center');
 	readonly outcome = computed(() => {
-		const template = this.config().config.gameOutcome?.trim() || '@{user} · выпало {result}';
+		const template = this.config().config.gameOutcome?.trim() || '@{user} выбивает {result}';
 
 		return template
 			.replaceAll('{user}', this.viewer() || '—')
+			.replaceAll('{nick}', this.viewer() || '—')
 			.replaceAll('{result}', String(this.result()))
-			.replaceAll('{formula}', this.formula());
+			.replaceAll('{number}', String(this.result()))
+			.replaceAll('{formula}', this.formula())
+			.replaceAll('${nick}', this.viewer() || '—')
+			.replaceAll('${number}', String(this.result()));
 	});
 	readonly rolls = computed(() => this.state().rolls ?? []);
 	readonly sides = computed(() => {
@@ -100,6 +107,14 @@ export class DiceOverlay implements AfterViewInit, OnDestroy {
 			}
 			this.hideTimer = setTimeout(() => this.visible.set(false), 8000);
 		});
+
+		effect(() => {
+			this.ready();
+			this.edgeColor();
+			this.edgeWidth();
+			this.edgeOpacity();
+			this.scene?.setEdgeStyle(this.edgeColor(), this.edgeWidth(), this.edgeOpacity());
+		});
 	}
 
 	ngAfterViewInit(): void {
@@ -110,6 +125,7 @@ export class DiceOverlay implements AfterViewInit, OnDestroy {
 		const accent = getComputedStyle(this.diceHost.nativeElement).getPropertyValue('--accent-primary').trim() || '#ff2ea6';
 		try {
 			this.scene = new DiceScene(this.diceHost.nativeElement, accent);
+			this.scene.setEdgeStyle(this.edgeColor(), this.edgeWidth(), this.edgeOpacity());
 		} catch (error) {
 			console.error('[Dice] WebGL unavailable', error);
 		}

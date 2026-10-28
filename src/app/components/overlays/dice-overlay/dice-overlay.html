@@ -5,7 +5,7 @@
 
     <strong class="dice-formula">{{ formula() }}</strong>
     @if (outcome()) {
-      <span class="dice-outcome">{{ outcome() }}</span>
+      <span class="dice-outcome" [class.dice-outcome-large]="sides() > 20">{{ outcome() }}</span>
     }
     @if (rolls().length > 1) {
       <span class="dice-rolls">{{ rolls().join(' + ') }}</span>
