@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import type { TuiLanguage } from '@taiga-ui/i18n';
 import { computed, effect, Injectable, signal } from '@angular/core';
 import { TUI_ENGLISH_LANGUAGE, TUI_RUSSIAN_LANGUAGE } from '@taiga-ui/i18n';
@@ -73,6 +74,7 @@ const DICTIONARY = {
 		'nav.wheel': 'Колесо',
 		'nav.stream': 'Стрим и OBS',
 		'nav.commands': 'Команды',
+		'nav.telegram': 'Telegram-бот',
 		'nav.moderation': 'Модерация',
 		'nav.donations': 'Донаты',
 		'nav.music': 'Музыка',
@@ -94,7 +96,8 @@ const DICTIONARY = {
 		'games.importPlaceholder': 'Название игры для импорта',
 		'games.find': 'Найти и добавить',
 		'games.searching': 'Ищем…',
-		'games.steamHint': 'Steam импортирует игру по названию. Введи название ниже и нажми «Найти и добавить».',
+		'games.steamHint':
+			'Steam импортирует игру по названию. Введи название ниже и нажми «Найти и добавить».',
 		'games.search': 'Поиск игры',
 		'games.searchPlaceholder': 'Название игры…',
 		'games.platform': 'Платформа',
@@ -105,7 +108,8 @@ const DICTIONARY = {
 		'games.loading': 'Загружаем игры…',
 		'games.yearUnknown': 'Год неизвестен',
 		'games.total': 'игр',
-		'games.noDescription': 'Описание пока не добавлено. Его можно дополнить через модерацию каталога.',
+		'games.noDescription':
+			'Описание пока не добавлено. Его можно дополнить через модерацию каталога.',
 		'widgets.title': 'Виджеты',
 		'widgets.subtitle': 'Управление OBS-оверлеями: включение, настройка и URL для Browser Source.',
 		'widgets.hotbar': 'Хотбар',
@@ -173,11 +177,13 @@ const DICTIONARY = {
 		'settings.lowContrast': 'Слишком низкий контраст — текст будет плохо виден.',
 		'settings.pickReadable': 'Подобрать читаемый',
 		'settings.previewTitle': 'Превью интерфейса',
-		'settings.previewText': 'Так выглядят акцентные элементы, бейджи и кнопки после применения настроек.',
+		'settings.previewText':
+			'Так выглядят акцентные элементы, бейджи и кнопки после применения настроек.',
 		'settings.primaryButton': 'Основная кнопка',
 		'settings.secondaryButton': 'Вторичная',
 		'settings.virusMode': 'Шуточный режим вируса',
-		'settings.virusModeHint': 'Отключает баннер и возвращает онбординг при следующем запуске. Включить обратно в настройках нельзя.',
+		'settings.virusModeHint':
+			'Отключает баннер и возвращает онбординг при следующем запуске. Включить обратно в настройках нельзя.',
 		'settings.disableVirus': 'Выключить шуточный режим вируса',
 		'settings.sidebarHeader': 'Показывать шапку сайдбара',
 		'settings.sidebarHeaderHint': 'Логотип и заголовок в боковом меню',
@@ -439,6 +445,7 @@ const DICTIONARY = {
 		'nav.wheel': 'Wheel',
 		'nav.stream': 'Stream & OBS',
 		'nav.commands': 'Commands',
+		'nav.telegram': 'Telegram bot',
 		'nav.moderation': 'Moderation',
 		'nav.donations': 'Donations',
 		'nav.music': 'Music',
@@ -460,7 +467,8 @@ const DICTIONARY = {
 		'games.importPlaceholder': 'Game title to import',
 		'games.find': 'Find and add',
 		'games.searching': 'Searching…',
-		'games.steamHint': 'Steam imports a game by title. Enter the title below and press “Find and add”.',
+		'games.steamHint':
+			'Steam imports a game by title. Enter the title below and press “Find and add”.',
 		'games.search': 'Search games',
 		'games.searchPlaceholder': 'Game title…',
 		'games.platform': 'Platform',
@@ -539,11 +547,13 @@ const DICTIONARY = {
 		'settings.lowContrast': 'Contrast is too low — text will be hard to read.',
 		'settings.pickReadable': 'Pick a readable color',
 		'settings.previewTitle': 'Interface preview',
-		'settings.previewText': 'This is how accent elements, badges and buttons look after applying settings.',
+		'settings.previewText':
+			'This is how accent elements, badges and buttons look after applying settings.',
 		'settings.primaryButton': 'Primary button',
 		'settings.secondaryButton': 'Secondary',
 		'settings.virusMode': 'Joke virus mode',
-		'settings.virusModeHint': 'Hides the banner and returns onboarding on next launch. It cannot be re-enabled in settings.',
+		'settings.virusModeHint':
+			'Hides the banner and returns onboarding on next launch. It cannot be re-enabled in settings.',
 		'settings.disableVirus': 'Disable joke virus mode',
 		'settings.sidebarHeader': 'Show sidebar header',
 		'settings.sidebarHeaderHint': 'Logo and title in the side menu',
@@ -662,7 +672,7 @@ const DICTIONARY = {
 		'wheel.lot.luck': 'Luck',
 		'chat.animation': 'Message animation',
 		'chat.onlyOriginal': 'Original channel only',
-				'commands.title': 'Chat automation',
+		'commands.title': 'Chat automation',
 		'commands.subtitle': 'Commands, timers and triggers — fully configurable.',
 		'commands.editor': 'Editor',
 		'commands.commands': 'Commands',
@@ -738,7 +748,6 @@ const DICTIONARY = {
 		'commands.system': 'System commands',
 		'commands.configure': 'Configure',
 		'commands.add': 'Add',
-
 	},
 } as const;
 

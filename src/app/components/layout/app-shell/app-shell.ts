@@ -1,22 +1,24 @@
+/* eslint-disable max-len */
 import type { TranslationKey } from '@shared/services/i18n.service';
+import type { SteamLibraryGame, SteamMe } from '@shared/services/steam.service';
+import type { SearchItem } from '../app-search/app-search';
 import { Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
-import { imageUrl } from '@shared/helpers/proxy-image';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { DesktopUpdateNotice } from '@shared/components/desktop-update-notice/desktop-update-notice';
+import { UpdateNotice } from '@shared/components/update-notice/update-notice';
 import { TWITCH_CHANNEL_URL } from '@shared/config';
+import { imageUrl } from '@shared/helpers/proxy-image';
 import { AlertsService } from '@shared/services/alerts.service';
 import { AppSettingsService } from '@shared/services/app-settings.service';
+import { GamesCatalogService } from '@shared/services/games-catalog.service';
 import { I18nService } from '@shared/services/i18n.service';
 import { OnboardingService } from '@shared/services/onboarding.service';
-import { IdleCat } from '../../ui/idle-cat/idle-cat';
-import { IdleWarrant } from '../../ui/idle-warrant/idle-warrant';
-import { TwitchService } from '@shared/services/twitch.service';
-import { GamesCatalogService } from '@shared/services/games-catalog.service';
 import { ProfileDataService } from '@shared/services/profile-data.service';
-import { SteamService, type SteamLibraryGame, type SteamMe } from '@shared/services/steam.service';
+import { SteamService } from '@shared/services/steam.service';
+import { TwitchService } from '@shared/services/twitch.service';
 import { TuiButton, TuiIcon, TuiInput, TuiTextfield } from '@taiga-ui/core';
 import {
-	Subject,
 	catchError,
 	debounceTime,
 	distinctUntilChanged,
@@ -24,13 +26,13 @@ import {
 	fromEvent,
 	map,
 	of,
+	Subject,
 	switchMap,
 	timer,
 } from 'rxjs';
-import { UpdateNotice } from '@shared/components/update-notice/update-notice';
-import { DesktopUpdateNotice } from '@shared/components/desktop-update-notice/desktop-update-notice';
+import { IdleCat } from '../../ui/idle-cat/idle-cat';
+import { IdleWarrant } from '../../ui/idle-warrant/idle-warrant';
 import { Logo } from '../../ui/logo/logo';
-import type { SearchItem } from '../app-search/app-search';
 import { AppSearch } from '../app-search/app-search';
 
 interface NavItem {
@@ -52,6 +54,7 @@ const MAIN_NAV: NavItem[] = [
 	{ labelKey: 'nav.wheel', link: '/app/wheel', icon: '@tui.circle-dashed' },
 	{ labelKey: 'nav.stream', link: '/app/stream', icon: '@tui.monitor' },
 	{ labelKey: 'nav.commands', link: '/app/commands', icon: '@tui.terminal' },
+	{ labelKey: 'nav.telegram', link: '/app/telegram', icon: '@tui.send' },
 	{ labelKey: 'nav.moderation', link: '/app/moderation', icon: '@tui.shield' },
 	{ labelKey: 'nav.donations', link: '/app/donations', icon: '@tui.heart' },
 	{ labelKey: 'nav.music', link: '/app/music', icon: '@tui.music' },
@@ -120,16 +123,16 @@ const WIDGET_ITEMS = [
 		RouterLink,
 		RouterLinkActive,
 		RouterOutlet,
+		DesktopUpdateNotice,
 		TuiButton,
 		TuiIcon,
 		TuiInput,
 		TuiTextfield,
-		Logo,
 		UpdateNotice,
-		DesktopUpdateNotice,
+		AppSearch,
 		IdleCat,
 		IdleWarrant,
-		AppSearch,
+		Logo,
 	],
 	selector: 'app-app-shell',
 	styleUrl: './app-shell.scss',
@@ -159,13 +162,13 @@ export default class AppShell {
 	);
 
 	readonly title = computed(() => resolveTitle(this.url()));
-	readonly desktop = navigator.userAgent.includes('NamelessStreamHataDesktop') || '__TAURI_INTERNALS__' in window;
+	readonly desktop =
+		navigator.userAgent.includes('NamelessStreamHataDesktop') || '__TAURI_INTERNALS__' in window;
 	readonly faqUrl = 'https://streamhata.rdpctd.dev/faq';
 	openSystem(event: MouseEvent): void {
 		event.preventDefault();
 		const internals = (window as unknown as Record<string, unknown>)['__TAURI_INTERNALS__'] as
-			| { invoke?: (command: string) => Promise<unknown> }
-			| undefined;
+			{ invoke?: (command: string) => Promise<unknown> } | undefined;
 
 		if (internals?.invoke) {
 			void internals.invoke('open_system_window');
@@ -176,8 +179,7 @@ export default class AppShell {
 
 	openChangelog(): void {
 		const internals = (window as unknown as Record<string, unknown>)['__TAURI_INTERNALS__'] as
-			| { invoke?: (command: string) => Promise<unknown> }
-			| undefined;
+			{ invoke?: (command: string) => Promise<unknown> } | undefined;
 
 		if (internals?.invoke) {
 			void internals.invoke('open_changelog');
@@ -198,6 +200,7 @@ export default class AppShell {
 
 		window.open(this.faqUrl, '_blank');
 	}
+
 	readonly logoLink = this.desktop ? '/app/dashboard' : '/';
 	readonly menuOpen = signal(false);
 	readonly showSidebarHeader = this.appSettings.showSidebarHeader;
@@ -212,6 +215,7 @@ export default class AppShell {
 	toggleSidebar(): void {
 		this.sidebarCollapsed.update((value) => !value);
 	}
+
 	readonly gameResults = signal<SearchItem[]>([]);
 	readonly mainNav = computed(() =>
 		MAIN_NAV.map((item) => ({ ...item, label: this.i18n.t(item.labelKey) })),
@@ -228,10 +232,9 @@ export default class AppShell {
 		(this.twitch()?.user?.displayName ?? 'NS').slice(0, 2).toUpperCase(),
 	);
 
-	readonly steamMe = toSignal(
-		this.steam.me().pipe(catchError(() => of(null))),
-		{ initialValue: null as SteamMe | null },
-	);
+	readonly steamMe = toSignal(this.steam.me().pipe(catchError(() => of(null))), {
+		initialValue: null as SteamMe | null,
+	});
 
 	readonly steamLibrary = toSignal(
 		timer(0, 60_000).pipe(
@@ -244,6 +247,7 @@ export default class AppShell {
 		),
 		{ initialValue: [] as SteamLibraryGame[] },
 	);
+
 	readonly streamOnline = computed(() => Boolean(this.twitch()?.steam?.online));
 	readonly catVisible = signal(false);
 	readonly catTalking = signal(false);
@@ -266,6 +270,7 @@ export default class AppShell {
 
 		return phrases[Math.max(0, this.catStage() - 1)] ?? phrases[2];
 	});
+
 	private catTimer: ReturnType<typeof setTimeout> | undefined;
 	private catCount = 0;
 	readonly loggedIn = computed(() => Boolean(this.twitch()?.valid));
@@ -335,8 +340,7 @@ export default class AppShell {
 
 		window.addEventListener('streamhata-cat-summon', summon);
 		const globalTauri = (window as unknown as Record<string, unknown>)['__TAURI__'] as
-			| { event?: { listen?: (event: string, handler: () => void) => Promise<unknown> } }
-			| undefined;
+			{ event?: { listen?: (event: string, handler: () => void) => Promise<unknown> } } | undefined;
 
 		void globalTauri?.event?.listen?.('cat-summon', summon);
 	}

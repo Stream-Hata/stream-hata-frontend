@@ -1,0 +1,174 @@
+<div class="jk-page">
+	<header class="jk-page-header">
+		<div class="jk-page-header-text">
+			<h1 class="jk-h1">Telegram-бот</h1>
+			<p class="jk-caption">Токен, чат и команды бота. Кнопки открываются под ответом.</p>
+		</div>
+		<div class="jk-page-actions">
+			<button type="button" appearance="flat" tuiButton (click)="test()">Тест</button>
+			<button type="button" appearance="primary" tuiButton (click)="saveSettings()">
+				Сохранить бота
+			</button>
+		</div>
+	</header>
+
+	@if (settings(); as current) {
+		<section class="jk-card telegram-settings">
+			<span class="jk-label">Bot token</span>
+			<tui-textfield>
+				<input
+					type="password"
+					tuiInput
+					[value]="current.telegramToken"
+					(input)="updateSettings('telegramToken', $any($event.target).value)"
+				/>
+			</tui-textfield>
+			<span class="jk-label">Chat ID</span>
+			<tui-textfield>
+				<input
+					tuiInput
+					[value]="current.telegramChatId"
+					(input)="updateSettings('telegramChatId', $any($event.target).value)"
+				/>
+			</tui-textfield>
+			<div class="telegram-actions">
+				<button type="button" appearance="flat" tuiButton (click)="loadChats()">
+					Найти chat ID
+				</button>
+				@for (chat of chats(); track chat.id) {
+					<button
+						type="button"
+						appearance="flat"
+						size="s"
+						tuiButton
+						(click)="updateSettings('telegramChatId', chat.id.toString())"
+					>
+						{{ chat.title || chat.username || chat.id }}
+					</button>
+				}
+			</div>
+			<div class="editor-switch">
+				<span class="jk-label">Бот включён</span>
+				<input
+					type="checkbox"
+					tuiSwitch
+					[checked]="current.enabled"
+					(change)="updateSettings('enabled', $any($event.target).checked)"
+				/>
+			</div>
+			@if (status()) {
+				<span class="jk-caption">{{ status() }}</span>
+			}
+		</section>
+	}
+
+	<div class="automation-grid">
+		<section class="automation-main">
+			<h2 class="jk-h4">Команды</h2>
+			<div class="table-wrap">
+				<table tuiTable>
+					<thead tuiThead>
+						<tr>
+							<th tuiTh>Команда</th>
+							<th tuiTh>Ответ</th>
+							<th tuiTh>Кнопки</th>
+							<th tuiTh></th>
+						</tr>
+					</thead>
+					<tbody tuiTbody>
+						@for (item of commands(); track item.id) {
+							<tr>
+								<td tuiTd>{{ item.command }}</td>
+								<td tuiTd class="response-cell">{{ item.response }}</td>
+								<td tuiTd>{{ item.buttons?.length ?? 0 }}</td>
+								<td tuiTd>
+									<button type="button" appearance="flat" size="s" tuiButton (click)="edit(item)">
+										Изменить
+									</button>
+									<button
+										type="button"
+										appearance="flat"
+										size="s"
+										tuiButton
+										(click)="remove(item.id)"
+									>
+										Удалить
+									</button>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</section>
+
+		<aside class="automation-side">
+			<h2 class="jk-h4">{{ editingId() ? 'Изменить команду' : 'Новая команда' }}</h2>
+			<span class="jk-label">Команда</span>
+			<tui-textfield>
+				<input
+					tuiInput
+					[value]="command()"
+					(input)="command.set($any($event.target).value)"
+					placeholder="/start"
+				/>
+			</tui-textfield>
+			<span class="jk-label">Ответ</span>
+			<tui-textfield>
+				<textarea
+					rows="5"
+					tuiTextarea
+					[value]="response()"
+					(input)="response.set($any($event.target).value)"
+					placeholder="Текст. {user}, {args}, {date}, {time}"
+				></textarea>
+			</tui-textfield>
+			<div class="editor-switch">
+				<span class="jk-label">Включена</span>
+				<input
+					type="checkbox"
+					tuiSwitch
+					[checked]="enabled()"
+					(change)="enabled.set($any($event.target).checked)"
+				/>
+			</div>
+
+			<span class="jk-label">Кнопки</span>
+			@for (button of buttons(); track $index; let index = $index) {
+				<div class="telegram-button-row">
+					<tui-textfield>
+						<input
+							tuiInput
+							[value]="button.text"
+							(input)="updateButton(index, 'text', $event)"
+							placeholder="Текст"
+						/>
+					</tui-textfield>
+					<tui-textfield>
+						<input
+							tuiInput
+							[value]="button.url"
+							(input)="updateButton(index, 'url', $event)"
+							placeholder="https://..."
+						/>
+					</tui-textfield>
+					<button type="button" appearance="flat" size="s" tuiButton (click)="removeButton(index)">
+						×
+					</button>
+				</div>
+			}
+			<button type="button" appearance="flat" tuiButton (click)="addButton()">
+				Добавить кнопку
+			</button>
+
+			<div class="editor-actions">
+				<button type="button" appearance="primary" tuiButton (click)="save()">
+					{{ editingId() ? 'Сохранить' : 'Создать' }}
+				</button>
+				@if (editingId()) {
+					<button type="button" appearance="flat" tuiButton (click)="reset()">Отмена</button>
+				}
+			</div>
+		</aside>
+	</div>
+</div>

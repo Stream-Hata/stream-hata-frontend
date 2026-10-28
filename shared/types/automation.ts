@@ -339,9 +339,15 @@ export interface PollsState {
 	history: Poll[];
 }
 
+export interface TelegramButton {
+	text: string;
+	url: string;
+}
+
 export interface TelegramCommand {
 	id: string;
 	command: string;
 	response: string;
 	enabled: boolean;
+	buttons?: TelegramButton[];
 }

@@ -1,0 +1,17 @@
+.telegram-settings {
+	display: grid;
+	gap: 8px;
+	margin-bottom: 18px;
+}
+
+.telegram-actions,
+.telegram-button-row {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+.telegram-button-row tui-textfield {
+	flex: 1 1 180px;
+}

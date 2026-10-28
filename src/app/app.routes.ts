@@ -115,13 +115,19 @@ export const routes: Routes = [
 				title: 'Опросы · Nameless StreamHata',
 			},
 			{
+				path: 'telegram',
+				loadComponent: () => import('./components/pages/telegram-bot-page/telegram-bot-page'),
+				title: 'Telegram-бот · Nameless StreamHata',
+			},
+			{
 				path: 'commands',
 				loadComponent: () => import('./components/pages/commands-page/commands-page'),
 				title: 'Команды · Nameless StreamHata',
 			},
 			{
 				path: 'commands/editor',
-				loadComponent: () => import('./components/pages/automation-editor-page/automation-editor-page'),
+				loadComponent: () =>
+					import('./components/pages/automation-editor-page/automation-editor-page'),
 				title: 'Редактор автоматизации · Nameless StreamHata',
 			},
 			{
