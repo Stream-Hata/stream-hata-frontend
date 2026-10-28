@@ -282,3 +282,18 @@ tui-popups a[appearance='primary'] *,
 tui-popups [data-appearance='primary'] * {
 	color: var(--text-on-accent) !important;
 }
+
+/* Keep text vertically centered in single-line fields and top-aligned in textareas */
+tui-textfield input[tuiInput],
+tui-textfield input[tuiSelectLike] {
+	align-self: center;
+	line-height: normal;
+}
+
+tui-textfield textarea,
+textarea[tuiTextarea] {
+	align-self: stretch;
+	padding-block: 0.6rem !important;
+	line-height: 1.35 !important;
+	vertical-align: top;
+}

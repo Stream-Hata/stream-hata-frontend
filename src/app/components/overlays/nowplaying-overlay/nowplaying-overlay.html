@@ -9,7 +9,7 @@
           [src]="track.url"
           autoplay
           (playing)="onMediaPlaying()"
-          (pause)="paused.set(true)"
+          (pause)="onMediaPause()"
           (ended)="nextTrack()"
           (error)="handleVideoError()"
           (loadedmetadata)="onMediaMetadata($event)"
@@ -22,7 +22,7 @@
           autoplay
           playsinline
           (playing)="onMediaPlaying()"
-          (pause)="paused.set(true)"
+          (pause)="onMediaPause()"
           (ended)="nextTrack()"
           (error)="handleVideoError()"
           (loadedmetadata)="onMediaMetadata($event)"

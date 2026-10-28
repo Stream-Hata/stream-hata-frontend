@@ -195,7 +195,6 @@ export class NowPlayingOverlay {
 				this.needsGesture.set(true);
 			}
 		}, 2500);
-		this.scheduleEnd();
 	}
 
 	resumePlayback(): void {
@@ -212,6 +211,7 @@ export class NowPlayingOverlay {
 		this.sendCommand('setVolume', [100]);
 		this.paused.set(false);
 		this.needsGesture.set(false);
+		this.scheduleEnd();
 	}
 
 	togglePlayback(): void {
@@ -219,9 +219,11 @@ export class NowPlayingOverlay {
 			if (this.media.nativeElement.paused) {
 				void this.media.nativeElement.play();
 				this.paused.set(false);
+				this.scheduleEnd();
 			} else {
 				this.media.nativeElement.pause();
 				this.paused.set(true);
+				this.clearEndTimer();
 			}
 
 			return;
@@ -235,6 +237,7 @@ export class NowPlayingOverlay {
 
 		this.sendCommand('pauseVideo');
 		this.paused.set(true);
+		this.clearEndTimer();
 	}
 
 	onMediaPlaying(): void {
@@ -243,6 +246,11 @@ export class NowPlayingOverlay {
 		this.needsGesture.set(false);
 		this.clearGestureTimer();
 		this.scheduleEnd();
+	}
+
+	onMediaPause(): void {
+		this.paused.set(true);
+		this.clearEndTimer();
 	}
 
 	onMediaMetadata(event: Event): void {
@@ -308,6 +316,10 @@ export class NowPlayingOverlay {
 	private scheduleEnd(seconds = this.current()?.durationSeconds ?? 0): void {
 		this.clearEndTimer();
 
+		if (this.paused()) {
+			return;
+		}
+
 		const duration = seconds || this.mediaDuration();
 		this.endTimer = setTimeout(
 			() => this.nextTrack(),
@@ -350,6 +362,7 @@ export class NowPlayingOverlay {
 
 		if (state === 2) {
 			this.paused.set(true);
+			this.clearEndTimer();
 		}
 	}
 
