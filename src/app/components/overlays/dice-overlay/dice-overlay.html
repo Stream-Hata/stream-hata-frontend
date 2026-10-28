@@ -2,15 +2,25 @@
   <div class="dice-card" [class.rolling]="rolling()">
     <span class="dice-kicker">DICE</span>
 
-    <div class="dice-scene">
-      <div class="dice-cube" [style.transform]="rolling() ? null : cubeTransform()">
-        <div class="dice-face face-front"><span>{{ faceValue(1) }}</span></div>
-        <div class="dice-face face-back"><span>{{ faceValue(2) }}</span></div>
-        <div class="dice-face face-right"><span>{{ faceValue(3) }}</span></div>
-        <div class="dice-face face-left"><span>{{ faceValue(4) }}</span></div>
-        <div class="dice-face face-top"><span>{{ faceValue(5) }}</span></div>
-        <div class="dice-face face-bottom"><span>{{ faceValue(6) }}</span></div>
-      </div>
+    <div class="dice-scene" [style.perspective.px]="900">
+      @if (sides() === 6) {
+        <div class="dice-cube" [style.transform]="rolling() ? null : cubeTransform()">
+          <div class="dice-face face-front"><span>{{ faceValue(1) }}</span></div>
+          <div class="dice-face face-back"><span>{{ faceValue(2) }}</span></div>
+          <div class="dice-face face-right"><span>{{ faceValue(3) }}</span></div>
+          <div class="dice-face face-left"><span>{{ faceValue(4) }}</span></div>
+          <div class="dice-face face-top"><span>{{ faceValue(5) }}</span></div>
+          <div class="dice-face face-bottom"><span>{{ faceValue(6) }}</span></div>
+        </div>
+      } @else {
+        <div class="dice-prism" [class.rolling]="rolling()" [style.transform]="rolling() ? null : prismTransform()">
+          @for (face of [].constructor(faceCount()); track $index) {
+            <div class="dice-panel" [style.transform]="panelTransform($index)">
+              <span>{{ panelLabel($index) }}</span>
+            </div>
+          }
+        </div>
+      }
       @if (!isClassic()) {
         <strong class="dice-overflow">{{ result() }}</strong>
       }

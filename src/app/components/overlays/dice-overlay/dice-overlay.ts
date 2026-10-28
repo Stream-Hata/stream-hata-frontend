@@ -38,7 +38,19 @@ export class DiceOverlay {
 	readonly formula = computed(() => this.state().formula || '1d6');
 	readonly viewer = computed(() => this.state().viewer || '');
 	readonly rolls = computed(() => this.state().rolls ?? []);
-	readonly isClassic = computed(() => this.result() >= 1 && this.result() <= 6);
+	readonly sides = computed(() => {
+		const match = this.formula().match(/(\d*)d(\d+)/i);
+
+		return match ? Math.max(1, Number(match[2])) : 6;
+	});
+	readonly faceCount = computed(() => Math.min(this.sides(), 20));
+	readonly isClassic = computed(() => this.sides() === 6 && this.result() >= 1 && this.result() <= 6);
+	readonly prismTransform = computed(() => {
+		const index = Math.min(this.faceCount() - 1, Math.max(0, this.result() - 1));
+		const angle = -(index * 360) / Math.max(1, this.faceCount());
+
+		return `rotateX(-10deg) rotateY(${angle}deg)`;
+	});
 	readonly cubeTransform = computed(() => {
 		const rotations: Record<number, string> = {
 			1: 'rotateX(0deg) rotateY(0deg)',
@@ -54,6 +66,14 @@ export class DiceOverlay {
 
 	faceValue(face: number): number {
 		return face;
+	}
+
+	panelTransform(index: number): string {
+		return `rotateY(${(index * 360) / Math.max(1, this.faceCount())}deg) translateZ(72px)`;
+	}
+
+	panelLabel(index: number): number {
+		return index + 1;
 	}
 
 	constructor() {

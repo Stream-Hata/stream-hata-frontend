@@ -12,6 +12,7 @@
 
 .game-card {
 	display: flex;
+	perspective: 900px;
 	gap: 10px;
 	flex-direction: column;
 	align-items: center;
@@ -45,7 +46,9 @@
 	position: relative;
 	width: 118px;
 	height: 118px;
+	transform: rotateX(8deg);
 	transform-style: preserve-3d;
+	will-change: transform;
 }
 
 .game-card.rolling .coin {
@@ -73,7 +76,7 @@
 }
 
 .coin.tails {
-	transform: rotateY(180deg);
+	transform: rotateX(8deg) rotateY(180deg);
 }
 
 .coin-edge {
@@ -137,4 +140,14 @@
 
 .coin {
 	transform-style: preserve-3d;
+}
+
+.coin::before {
+	position: absolute;
+	content: '';
+	border-radius: 50%;
+	background: radial-gradient(circle, rgb(255 46 166 / 22%), rgb(18 18 24 / 92%) 68%);
+	box-shadow: 0 0 38px rgb(255 46 166 / 24%);
+	inset: -10px;
+	transform: translateZ(-6px);
 }
