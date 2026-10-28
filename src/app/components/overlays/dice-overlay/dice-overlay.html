@@ -22,6 +22,10 @@
                 <stop offset="100%" stop-color="rgb(15 8 23)" />
               </linearGradient>
             </defs>
+            <polygon class="poly-back" [attr.points]="polygonPoints()" transform="translate(-10 10)" />
+            @for (facet of facetShades(); track $index) {
+              <polygon class="poly-shade" [attr.points]="facet" [attr.data-even]="$index % 2 === 0" />
+            }
             <polygon class="poly-body" [attr.points]="polygonPoints()" />
             <g class="poly-facets">
               @for (point of facetLines(); track $index) {

@@ -198,3 +198,23 @@
 	text-anchor: middle;
 	dominant-baseline: middle;
 }
+
+
+.poly-back {
+	fill: rgb(10 5 16 / 92%);
+	stroke: color-mix(in srgb, var(--accent-primary) 45%, transparent);
+	stroke-width: 3;
+}
+
+.poly-shade {
+	fill: rgb(255 255 255 / 5%);
+	stroke: none;
+}
+
+.poly-shade[data-even='true'] {
+	fill: rgb(255 46 166 / 9%);
+}
+
+.poly-body {
+	fill-opacity: 0.92;
+}

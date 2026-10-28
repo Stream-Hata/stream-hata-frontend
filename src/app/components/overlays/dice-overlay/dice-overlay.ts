@@ -67,6 +67,16 @@ export class DiceOverlay {
 			};
 		});
 	});
+	readonly facetShades = computed(() => {
+		const count = this.shapeVertices();
+		const points = Array.from({ length: count }, (_, index) => {
+			const angle = (Math.PI * 2 * index) / count - Math.PI / 2;
+
+			return `${100 + Math.cos(angle) * 82},${100 + Math.sin(angle) * 82}`;
+		});
+
+		return points.map((point, index) => `100,100 ${point} ${points[(index + 1) % count]}`);
+	});
 	readonly polyTransform = computed(() => 'rotateX(-10deg) rotateY(-8deg)');
 	readonly showOverflow = computed(() => this.result() > this.sides() || this.sides() > 20);
 	readonly cubeTransform = computed(() => {
