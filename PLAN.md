@@ -62,6 +62,7 @@
 - [ ] OBS WebSocket: постоянный reconnect-прокси в Rust, без переподключения на каждый запрос.
 - [ ] Музыка: очередь, удаление, перестановка и защита от дублей.
 - [ ] Виджеты: кнопка «Проверить»/preview для dice/coin/random/roulette.
+- [ ] Telegram-бот: редактор команд бота (как Twitch), CRUD и выполнение `/start`, `/help`, `/music`, кастомных команд.
 - [ ] Health-check backend + алерт в Telegram при падении БД/OpenBao.
 - [ ] Regression-тесты: auth, команды, музыка, Telegram, OBS, кубик.
 
