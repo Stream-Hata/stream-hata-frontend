@@ -14,6 +14,7 @@ import { DesktopUpdateService } from '@shared/services/desktop-update.service';
 import { IntegrationsService } from '@shared/services/integrations.service';
 import { MetricsService, NetworkService } from '@shared/services/ops.services';
 import { NotifyService } from '@shared/services/stream.services';
+import { WelcomeService } from '@shared/services/welcome.service';
 import { TwitchService } from '@shared/services/twitch.service';
 import {
 	TuiButton,
@@ -35,6 +36,7 @@ import {
 	TuiSegmented,
 	TuiSwitch,
 	TuiTabs,
+	TuiTextarea,
 } from '@taiga-ui/kit';
 import { catchError, map, of, switchMap, timer } from 'rxjs';
 
@@ -96,6 +98,7 @@ const SECTION_DEFS: { id: Section; labelKey: TranslationKey; icon: string }[] = 
 		TuiSlider,
 		TuiSwitch,
 		TuiTabs,
+		TuiTextarea,
 		TuiTextfield,
 	],
 	selector: 'app-settings-page',
@@ -112,6 +115,7 @@ export default class SettingsPage {
 	readonly onboarding = inject(OnboardingService);
 	readonly desktopUpdate = inject(DesktopUpdateService);
 	private readonly injector = inject(Injector);
+	private readonly welcomeService = inject(WelcomeService);
 	readonly desktop = navigator.userAgent.includes('NamelessStreamHataDesktop') || '__TAURI_INTERNALS__' in window;
 	readonly section = signal<Section>('general');
 	readonly language = this.i18n.language;
@@ -164,6 +168,11 @@ export default class SettingsPage {
 	readonly backgroundImage = this.appSettings.backgroundImage;
 	readonly backgroundFileControl = new FormControl<File | null>(null);
 	readonly characterFileControl = new FormControl<File | null>(null);
+	readonly welcomeEnabled = signal(true);
+	readonly welcomeMessages = signal<string[]>([]);
+	readonly welcomeText = signal('');
+	readonly welcomeFileControl = new FormControl<File | null>(null);
+	readonly welcomeSaved = signal(false);
 
 	disableVirusMode(): void {
 		void this.onboarding.disableVirusMode();
@@ -306,6 +315,7 @@ export default class SettingsPage {
 	readonly telegramToken = signal('');
 	readonly telegramChatId = signal('');
 	readonly notifySaved = signal(false);
+	readonly notifyError = signal<string | null>(null);
 	readonly proxyUrl = signal('');
 	readonly proxyEnabled = signal(false);
 	readonly proxyEnabledControl = signalControl(this.proxyEnabled, this.injector);
@@ -383,6 +393,52 @@ export default class SettingsPage {
 		this.characterFileControl.valueChanges
 			.pipe(takeUntilDestroyed(this.destroyRef))
 			.subscribe((file) => this.onCharacterFile(file));
+
+		this.welcomeService.get().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+			next: (config) => {
+				this.welcomeEnabled.set(config.enabled);
+				this.welcomeMessages.set(config.messages);
+				this.welcomeText.set(config.messages.join('\n'));
+			},
+			error: () => undefined,
+		});
+
+		this.welcomeFileControl.valueChanges
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe((file) => this.onWelcomeFile(file));
+	}
+
+	onWelcomeFile(file: File | null): void {
+		if (!file) return;
+
+		const reader = new FileReader();
+		reader.onload = () => {
+			const lines = String(reader.result ?? '')
+				.split(/\r?\n/)
+				.map((line) => line.trim())
+				.filter(Boolean);
+			if (!lines.length) return;
+			const next = [...this.welcomeMessages(), ...lines];
+			this.welcomeMessages.set(next);
+			this.welcomeText.set(next.join('\n'));
+		};
+		reader.readAsText(file);
+	}
+
+	saveWelcome(): void {
+		const messages = this.welcomeText()
+			.split(/\r?\n/)
+			.map((line) => line.trim())
+			.filter(Boolean);
+		this.welcomeService.save({ enabled: this.welcomeEnabled(), messages }).subscribe({
+			next: (config) => {
+				this.welcomeMessages.set(config.messages);
+				this.welcomeText.set(config.messages.join('\n'));
+				this.welcomeSaved.set(true);
+				setTimeout(() => this.welcomeSaved.set(false), 1800);
+			},
+			error: () => undefined,
+		});
 	}
 
 	private applyNotify(settings: NotifySettings): void {
@@ -426,7 +482,27 @@ export default class SettingsPage {
 	}
 
 	testNotify(): void {
-		this.notify.test().subscribe();
+		this.notifyError.set(null);
+		this.notify.test().subscribe({
+			next: () => this.flash(this.notifySaved),
+			error: (response) => this.notifyError.set(response.error?.error ?? 'Не удалось отправить сообщение'),
+		});
+	}
+
+	loadTelegramChats(): void {
+		this.notifyError.set(null);
+		this.notify.chats().subscribe({
+			next: (response) => {
+				if (response.chats.length === 1) {
+					this.telegramChatId.set(String(response.chats[0].id));
+				} else if (response.chats.length > 1) {
+					this.telegramChatId.set(String(response.chats[0].id));
+				} else {
+					this.notifyError.set('Бот не видел ни одного чата. Напиши боту /start в Telegram.');
+				}
+			},
+			error: (response) => this.notifyError.set(response.error?.error ?? 'Не удалось получить чаты Telegram'),
+		});
 	}
 
 	saveNetwork(): void {

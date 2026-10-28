@@ -94,7 +94,11 @@ export class NotifyService {
 	}
 
 	test() {
-		return this.http.post<unknown>('rgg-sync/notify/test', {});
+		return this.http.post<{ ok: boolean }>('rgg-sync/notify/test', {});
+	}
+
+	chats() {
+		return this.http.get<{ chats: { id: number; title?: string; username?: string; type?: string }[] }>('rgg-sync/notify/telegram/chats');
 	}
 }
 

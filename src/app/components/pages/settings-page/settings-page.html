@@ -583,6 +583,12 @@
                             />
                           </tui-textfield>
                         </div>
+                        <div class="cfg-row">
+                          <span class="cfg-label">Найти chat ID</span>
+                          <button size="s" type="button" (click)="loadTelegramChats()" appearance="secondary" tuiButton>
+                            Получить из Telegram
+                          </button>
+                        </div>
 
                         <div class="cfg-row">
                           <span class="cfg-label">Проверка</span>
@@ -738,6 +744,57 @@
                                 class="jk-caption"
                               >Подключение и отключение подсистем без перезапуска.</p>
                             </header>
+
+                            <div class="cfg-row">
+                              <div class="cfg-text">
+                                <span class="cfg-label">Приветствие новых чатеров</span>
+                                <span class="jk-caption">Сообщение при первом сообщении зрителя</span>
+                              </div>
+                              <input
+                                aria-label="Включить приветствие"
+                                type="checkbox"
+                                [checked]="welcomeEnabled()"
+                                (change)="welcomeEnabled.set($any($event.target).checked)"
+                                tuiSwitch
+                              />
+                            </div>
+
+                            <div class="cfg-row">
+                              <span class="cfg-label">Тексты приветствия</span>
+                              <tui-textfield class="cfg-control">
+                                <textarea
+                                  aria-label="Тексты приветствия"
+                                  rows="4"
+                                  tuiTextarea
+                                  [value]="welcomeText()"
+                                  (input)="welcomeText.set(value($event))"
+                                ></textarea>
+                              </tui-textfield>
+                            </div>
+
+                            <div class="cfg-row">
+                              <div class="cfg-text">
+                                <span class="cfg-label">Загрузить из файла</span>
+                                <span class="jk-caption">TXT, по одному сообщению на строку</span>
+                              </div>
+                              <label class="background-file" tuiInputFiles>
+                                <input
+                                  accept=".txt,text/plain"
+                                  appearance="file"
+                                  tuiInputFiles
+                                  [formControl]="welcomeFileControl"
+                                  [maxFileSize]="1024 * 1024"
+                                />
+                                <span>Выбрать файл</span>
+                              </label>
+                            </div>
+
+                            <div class="cfg-row">
+                              <span class="cfg-label">Формат: &#123;user&#125;, &#123;login&#125;, &#123;channel&#125;</span>
+                              <button appearance="primary" size="s" type="button" (click)="saveWelcome()" tuiButton>
+                                {{ welcomeSaved() ? 'Сохранено' : 'Сохранить приветствие' }}
+                              </button>
+                            </div>
 
                             @for (integration of integrations(); track integration.id) {
                               <div class="cfg-row">
