@@ -601,7 +601,7 @@ export class DiceScene {
 		this.renderer.domElement.className = 'dice-canvas';
 		this.host.replaceChildren(this.renderer.domElement);
 
-		this.camera.position.set(0, 8.8, 10.2);
+		this.camera.position.set(0, 5.2, 6.2);
 		this.camera.lookAt(0, 0.4, 0);
 		this.scene.add(new THREE.HemisphereLight(0xffffff, 0x334455, 1.25));
 		const sun = new THREE.DirectionalLight(0xffffff, 2.6);
