@@ -22,6 +22,7 @@ export interface NotifySettings {
 	discordWebhook: string;
 	telegramToken: string;
 	telegramChatId: string;
+	telegramChatIds?: string[];
 	onStreamOnline: boolean;
 	onStreamOffline: boolean;
 	onAlerts: boolean;

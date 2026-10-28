@@ -24,14 +24,36 @@
 				/>
 			</tui-textfield>
 			<span class="jk-label">Chat ID</span>
-			<tui-textfield>
-				<input
-					tuiInput
-					[value]="current.telegramChatId"
-					(input)="updateSettings('telegramChatId', $any($event.target).value)"
-				/>
-			</tui-textfield>
+			<div class="telegram-chat-list">
+				@for (id of current.telegramChatIds ?? [current.telegramChatId]; track id) {
+					@if (id) {
+						<span class="telegram-chat-chip">
+							{{ id }}
+							<button
+								type="button"
+								appearance="flat"
+								size="xs"
+								tuiButton
+								(click)="removeChatID(id)"
+							>
+								×
+							</button>
+						</span>
+					}
+				}
+			</div>
 			<div class="telegram-actions">
+				<tui-textfield>
+					<input
+						tuiInput
+						[value]="newChatId()"
+						(input)="newChatId.set($any($event.target).value)"
+						placeholder="-100... или @channel"
+					/>
+				</tui-textfield>
+				<button type="button" appearance="flat" tuiButton (click)="addChatID()">
+					Добавить чат
+				</button>
 				<button type="button" appearance="flat" tuiButton (click)="loadChats()">
 					Найти chat ID
 				</button>
@@ -41,7 +63,7 @@
 						appearance="flat"
 						size="s"
 						tuiButton
-						(click)="updateSettings('telegramChatId', chat.id.toString())"
+						(click)="addChatID(chat.id.toString())"
 					>
 						{{ chat.title || chat.username || chat.id }}
 					</button>

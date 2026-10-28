@@ -1,11 +1,18 @@
 .telegram-settings {
 	display: grid;
-	gap: 8px;
+	grid-template-columns: 140px minmax(0, 520px);
+	gap: 10px 16px;
+	align-items: center;
 	margin-bottom: 18px;
+}
+
+.telegram-settings > .jk-label {
+	justify-self: start;
 }
 
 .telegram-actions,
 .telegram-button-row {
+	grid-column: 1 / -1;
 	display: flex;
 	gap: 8px;
 	flex-wrap: wrap;
@@ -14,4 +21,43 @@
 
 .telegram-button-row tui-textfield {
 	flex: 1 1 180px;
+}
+
+.automation-grid {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+	gap: 18px;
+	align-items: start;
+}
+
+.automation-side {
+	display: grid;
+	gap: 8px;
+}
+
+.automation-side tui-textfield {
+	width: 100%;
+}
+
+.editor-switch {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
+
+.editor-actions {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	margin-top: 8px;
+}
+
+@media (width <= 980px) {
+	.telegram-settings {
+		grid-template-columns: 1fr;
+	}
+
+	.automation-grid {
+		grid-template-columns: 1fr;
+	}
 }

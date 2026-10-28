@@ -19,6 +19,7 @@ export default class TelegramBotPage {
 	readonly settings = signal<NotifySettings | null>(null);
 	readonly commands = signal<TelegramCommand[]>([]);
 	readonly chats = signal<{ id: number; title?: string; username?: string }[]>([]);
+	readonly newChatId = signal('');
 	readonly status = signal('');
 	readonly editingId = signal<string | null>(null);
 	readonly command = signal('/start');
@@ -31,7 +32,12 @@ export default class TelegramBotPage {
 	}
 
 	load(): void {
-		this.notify.settings().subscribe((settings) => this.settings.set(settings));
+		this.notify.settings().subscribe((settings) => {
+			this.settings.set(settings);
+			if (!settings.telegramChatIds?.length && settings.telegramChatId) {
+				this.settings.set({ ...settings, telegramChatIds: [settings.telegramChatId] });
+			}
+		});
 		this.reloadCommands();
 	}
 
@@ -47,6 +53,32 @@ export default class TelegramBotPage {
 		if (current) {
 			this.settings.set({ ...current, [field]: value });
 		}
+	}
+
+	addChatID(id = this.newChatId()): void {
+		const value = id.trim();
+		const current = this.settings();
+
+		if (!value || !current) {
+			return;
+		}
+
+		const ids = [...(current.telegramChatIds ?? []), value].filter(
+			(item, index, list) => list.indexOf(item) === index,
+		);
+		this.settings.set({ ...current, telegramChatId: ids[0] ?? '', telegramChatIds: ids });
+		this.newChatId.set('');
+	}
+
+	removeChatID(id: string): void {
+		const current = this.settings();
+
+		if (!current) {
+			return;
+		}
+
+		const ids = (current.telegramChatIds ?? []).filter((item) => item !== id);
+		this.settings.set({ ...current, telegramChatId: ids[0] ?? '', telegramChatIds: ids });
 	}
 
 	saveSettings(): void {

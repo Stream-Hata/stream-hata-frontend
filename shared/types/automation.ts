@@ -7,6 +7,7 @@ export interface ChatCommand {
 	reply?: string;
 	limitReply?: string;
 	lineBreaks?: boolean;
+	singleMessage?: boolean;
 	cooldownSeconds: number;
 	userLevel: string;
 	enabled: boolean;

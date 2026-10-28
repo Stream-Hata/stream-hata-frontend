@@ -436,6 +436,7 @@ export default class AutomationEditorPage {
 	readonly commandValue = signal('');
 	readonly commandReply = signal('');
 	readonly commandLineBreaks = signal(false);
+	readonly commandSingleMessage = signal(false);
 	readonly commandReplyMultiline = computed(
 		() => !this.commandReply() || this.commandReply().includes('\n'),
 	);
@@ -525,6 +526,7 @@ export default class AutomationEditorPage {
 				this.commandValue.set(command.response);
 				this.commandReply.set(command.reply ?? '');
 				this.commandLineBreaks.set(Boolean(command.lineBreaks));
+				this.commandSingleMessage.set(Boolean(command.singleMessage));
 				this.commandLimitReply.set(command.limitReply ?? '');
 				this.commandCooldown.set(command.cooldownSeconds);
 				this.commandLevel.set(command.userLevel);
