@@ -278,9 +278,10 @@ function assignValues(faces: any[], N: number) {
 function polyData(N: number) {
 	let faces;
 
-	if ([4, 6, 8, 12, 20].includes(N)) faces = dualFaces(platonicNormals(N));
+	if (N === 4) faces = dualFaces(platonicNormals(6));
+	else if ([6, 8, 12, 20].includes(N)) faces = dualFaces(platonicNormals(N));
 	else if (N === 2) faces = prismFaces(48, 1, 0.35, false);
-	else if (N === 3) faces = prismFaces(3, 1, 2.4, true);
+	else if (N === 3) faces = dualFaces(platonicNormals(4));
 	else if (N % 2 === 0 && N <= 16) faces = dualFaces(trapezohedronNormals(N));
 	else faces = dualFaces(relaxedSphere(N));
 
@@ -296,7 +297,19 @@ function polyData(N: number) {
 		f.pts.forEach((p) => p.multiplyScalar(scale));
 		analyze(f);
 	});
-	assignValues(faces, N);
+	if (N === 4) {
+		faces.forEach((face, index) => {
+			face.labeled = index < 4;
+			face.value = index < 4 ? index + 1 : undefined;
+		});
+	} else if (N === 3) {
+		faces.forEach((face, index) => {
+			face.labeled = index < 3;
+			face.value = index < 3 ? index + 1 : undefined;
+		});
+	} else {
+		assignValues(faces, N);
+	}
 
 	const pos = [];
 	const nrm = [];
