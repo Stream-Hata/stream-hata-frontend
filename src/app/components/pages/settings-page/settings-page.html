@@ -756,8 +756,8 @@
                               <input
                                 aria-label="Включить приветствие"
                                 type="checkbox"
-                                [checked]="welcomeEnabled()"
-                                (change)="welcomeEnabled.set($any($event.target).checked)"
+                                [ngModel]="welcomeEnabled()"
+                                (ngModelChange)="welcomeEnabled.set($event)"
                                 tuiSwitch
                               />
                             </div>
@@ -799,7 +799,7 @@
                               </button>
                             </div>
 
-                            @for (integration of integrations(); track integration.id) {
+                            @for (integration of integrationRows(); track integration.id) {
                               <div class="cfg-row integration-row">
                                 <div class="cfg-text">
                                   <span class="cfg-label">{{ integration.name }}</span>
@@ -809,7 +809,8 @@
                                   <input
                                     aria-label="Включить интеграцию"
                                     type="checkbox"
-                                    [checked]="integration.enabled"
+                                    [ngModel]="integration.enabled"
+                                    (ngModelChange)="toggleIntegrationValue(integration.id, $event)"
                                     tuiSwitch
                                   />
                                   <span class="switch-hit-area" (click)="toggleIntegrationValue(integration.id, !integration.enabled); $event.preventDefault()"></span>

@@ -2,7 +2,7 @@ import type { TranslationKey } from '@shared/services/i18n.service';
 import type { NotifySettings } from '@shared/types/stream';
 import { Component, computed, DestroyRef, inject, Injector, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { contrastRatio } from '@shared/helpers/color';
 import { signalControl } from '@shared/helpers/form-control';
@@ -81,6 +81,7 @@ const SECTION_DEFS: { id: Section; labelKey: TranslationKey; icon: string }[] = 
 
 @Component({
 	imports: [
+		FormsModule,
 		ReactiveFormsModule,
 		RouterLink,
 		TuiBadge,
@@ -563,13 +564,33 @@ export default class SettingsPage {
 		),
 		{ initialValue: [] },
 	);
+	private readonly integrationOverrides = signal<Record<string, boolean>>({});
+	readonly integrationRows = computed(() =>
+		this.integrations().map((integration) => ({
+			...integration,
+			enabled: this.integrationOverrides()[integration.id] ?? integration.enabled,
+		})),
+	);
 
 	toggleIntegration(id: string, event: Event): void {
 		this.integrationsService.setEnabled(id, this.check(event)).subscribe();
 	}
 
 	toggleIntegrationValue(id: string, enabled: boolean): void {
-		this.integrationsService.setEnabled(id, enabled).subscribe();
+		this.integrationOverrides.update((state) => ({ ...state, [id]: enabled }));
+		this.integrationsService.setEnabled(id, enabled).subscribe({
+			next: (integration) => {
+				this.integrationOverrides.update((state) => ({ ...state, [id]: integration.enabled }));
+			},
+			error: () => {
+				this.integrationOverrides.update((state) => {
+					const next = { ...state };
+					delete next[id];
+
+					return next;
+				});
+			},
+		});
 	}
 
 	webhookUrl(provider: string): string {
