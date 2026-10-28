@@ -57,6 +57,15 @@
 			>
 				{{ i18n.t('commands.variables') }}
 			</button>
+			<button
+				type="button"
+				[class.active-tab]="tab() === 'telegram'"
+				(click)="tab.set('telegram')"
+				appearance="jkit-tint-cyan"
+				tuiButton
+			>
+				Telegram
+			</button>
 		</div>
 	</header>
 
@@ -468,7 +477,7 @@
 				</div>
 			</aside>
 		</div>
-	} @else {
+	} @else if (tab() === 'triggers') {
 		<section class="automation-main">
 			<div class="triggers-head">
 				<h2 class="jk-h4">{{ i18n.t('commands.triggersTitle') }}</h2>
@@ -574,6 +583,96 @@
 				</table>
 			</div>
 		</section>
+	} @else if (tab() === 'telegram') {
+		<div class="automation-grid">
+			<section class="automation-main">
+				<h2 class="jk-h4">Команды Telegram-бота</h2>
+				<div class="table-wrap">
+					<table tuiTable>
+						<thead tuiThead>
+							<tr>
+								<th tuiTh>Команда</th>
+								<th tuiTh>Ответ</th>
+								<th tuiTh>Вкл.</th>
+								<th tuiTh class="col-actions"></th>
+							</tr>
+						</thead>
+						<tbody tuiTbody>
+							@for (command of telegramCommands().commands; track command.id) {
+								<tr>
+									<td tuiTd class="name-cell">{{ command.command }}</td>
+									<td tuiTd class="response-cell">{{ command.response }}</td>
+									<td tuiTd>{{ command.enabled ? 'Да' : 'Нет' }}</td>
+									<td tuiTd class="col-actions">
+										<button
+											size="s"
+											type="button"
+											appearance="flat"
+											(click)="editTelegram(command)"
+											tuiButton
+										>
+											Изменить
+										</button>
+										<button
+											class="danger-action"
+											size="s"
+											type="button"
+											appearance="flat"
+											(click)="removeTelegram(command.id)"
+											tuiButton
+										>
+											Удалить
+										</button>
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			</section>
+			<aside class="automation-side">
+				<h2 class="jk-h4">{{ telegramEditingId() ? 'Изменить команду' : 'Новая команда' }}</h2>
+				<span class="jk-label">Команда</span>
+				<tui-textfield>
+					<input
+						tuiInput
+						[value]="telegramCommand()"
+						(input)="telegramCommand.set(value($event))"
+						placeholder="/start"
+					/>
+				</tui-textfield>
+				<span class="jk-label">Ответ</span>
+				<tui-textfield>
+					<textarea
+						tuiTextarea
+						rows="6"
+						[value]="telegramResponse()"
+						(input)="telegramResponse.set(value($event))"
+						placeholder="Текст ответа. {user}, {args}, {date}, {time}"
+					></textarea>
+				</tui-textfield>
+				<div class="editor-switch">
+					<span class="jk-label">Включена</span>
+					<div class="switch-hit">
+						<input type="checkbox" class="accent-switch" [checked]="telegramEnabled()" tuiSwitch />
+						<span
+							class="switch-hit-area"
+							(click)="telegramEnabled.set(!telegramEnabled()); $event.preventDefault()"
+						></span>
+					</div>
+				</div>
+				<div class="editor-actions">
+					<button type="button" appearance="primary" (click)="saveTelegram()" tuiButton>
+						{{ telegramEditingId() ? 'Сохранить' : 'Создать' }}
+					</button>
+					@if (telegramEditingId()) {
+						<button type="button" appearance="flat" (click)="resetTelegramForm()" tuiButton>
+							Отмена
+						</button>
+					}
+				</div>
+			</aside>
+		</div>
 	}
 </div>
 

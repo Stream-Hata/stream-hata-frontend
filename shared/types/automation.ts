@@ -338,3 +338,10 @@ export interface PollsState {
 	prediction: PollPrediction | null;
 	history: Poll[];
 }
+
+export interface TelegramCommand {
+	id: string;
+	command: string;
+	response: string;
+	enabled: boolean;
+}

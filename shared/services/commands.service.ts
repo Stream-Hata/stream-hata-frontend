@@ -1,8 +1,8 @@
-/* eslint-disable max-len */
 import type {
 	ChatCommand,
 	CommandVariable,
 	MessageTimer,
+	TelegramCommand,
 	TwitchReward,
 	TwitchRewardsState,
 } from '@shared/types/automation';
@@ -19,6 +19,18 @@ export class CommandsService {
 
 	exportText() {
 		return this.http.get('rgg-sync/commands/export', { responseType: 'text' });
+	}
+
+	telegramCommands() {
+		return this.http.get<{ commands: TelegramCommand[] }>('rgg-sync/telegram/commands');
+	}
+
+	saveTelegramCommand(command: Partial<TelegramCommand>) {
+		return this.http.post<TelegramCommand>('rgg-sync/telegram/commands', command);
+	}
+
+	removeTelegramCommand(id: string) {
+		return this.http.delete<void>(`rgg-sync/telegram/commands/${id}`);
 	}
 
 	save(command: Partial<ChatCommand>) {

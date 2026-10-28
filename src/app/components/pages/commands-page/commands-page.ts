@@ -2,6 +2,7 @@ import type {
 	ChatCommand,
 	CommandVariable,
 	MessageTimer,
+	TelegramCommand,
 	Trigger,
 	TwitchReward,
 	TwitchRewardsState,
@@ -164,7 +165,9 @@ export default class CommandsPage {
 	private readonly destroyRef = inject(DestroyRef);
 	private readonly injector = inject(Injector);
 
-	readonly tab = signal<'commands' | 'timers' | 'triggers' | 'rewards' | 'variables'>('commands');
+	readonly tab = signal<'commands' | 'timers' | 'triggers' | 'rewards' | 'variables' | 'telegram'>(
+		'commands',
+	);
 	readonly refresh = signal(0);
 
 	readonly commands = toSignal(
@@ -456,6 +459,62 @@ export default class CommandsPage {
 	readonly testResult = signal<string | null>(null);
 	readonly error = signal<string | null>(null);
 	readonly commandOverrides = signal<Record<string, boolean>>({});
+	readonly telegramCommands = toSignal(
+		merge(timer(0, 15000), toObservable(this.refresh)).pipe(
+			switchMap(() =>
+				this.service
+					.telegramCommands()
+					.pipe(catchError(() => of({ commands: [] as TelegramCommand[] }))),
+			),
+		),
+		{ initialValue: { commands: [] as TelegramCommand[] } },
+	);
+
+	readonly telegramEditingId = signal<string | null>(null);
+	readonly telegramCommand = signal('/start');
+	readonly telegramResponse = signal('');
+	readonly telegramEnabled = signal(true);
+
+	editTelegram(command: TelegramCommand): void {
+		this.telegramEditingId.set(command.id);
+		this.telegramCommand.set(command.command);
+		this.telegramResponse.set(command.response);
+		this.telegramEnabled.set(command.enabled);
+	}
+
+	resetTelegramForm(): void {
+		this.telegramEditingId.set(null);
+		this.telegramCommand.set('/start');
+		this.telegramResponse.set('');
+		this.telegramEnabled.set(true);
+	}
+
+	saveTelegram(): void {
+		if (!this.telegramCommand().trim()) {
+			this.error.set('Укажите команду Telegram');
+			return;
+		}
+		this.service
+			.saveTelegramCommand({
+				id: this.telegramEditingId() ?? undefined,
+				command: this.telegramCommand().trim(),
+				response: this.telegramResponse(),
+				enabled: this.telegramEnabled(),
+			})
+			.subscribe({
+				next: () => {
+					this.refresh.update((value) => value + 1);
+					this.resetTelegramForm();
+				},
+				error: () => this.error.set('Не удалось сохранить команду Telegram'),
+			});
+	}
+
+	removeTelegram(id: string): void {
+		this.service.removeTelegramCommand(id).subscribe(() => {
+			this.refresh.update((value) => value + 1);
+		});
+	}
 
 	async exportCommands(): Promise<void> {
 		const text = await firstValueFrom(this.service.exportText().pipe(catchError(() => of(''))));
