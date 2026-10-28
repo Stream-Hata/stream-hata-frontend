@@ -233,7 +233,7 @@ function polygonPrism(sides: number): BufferGeometry {
 	return geometry;
 }
 
-function buildGeometry(sides: number): { geometry: BufferGeometry; values: number[] } {
+export function buildGeometry(sides: number): { geometry: BufferGeometry; values: number[] } {
 	switch (sides) {
 		case 2:
 			return { geometry: new CylinderGeometry(1.25, 1.25, 0.28, 32, 1, false), values: [1, 2, 1] };

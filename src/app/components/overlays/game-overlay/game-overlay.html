@@ -3,9 +3,6 @@
     @if (mode() === 'coin') {
       <span class="game-kicker">МОНЕТКА</span>
       <div #coinHost class="coin-host"></div>
-      @if (!sceneReady()) {
-        <div class="coin-fallback">{{ result() }}</div>
-      }
       <strong class="game-result">{{ result() }}</strong>
       @if (viewer()) {
         <span class="game-viewer">{{ viewer() }}</span>

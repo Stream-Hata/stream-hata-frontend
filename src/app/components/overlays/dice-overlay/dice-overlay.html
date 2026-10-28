@@ -2,14 +2,7 @@
   <div class="dice-card" [class.visible]="visible()" [class.rolling]="rolling()">
     <span class="dice-kicker">DICE</span>
     <div #diceHost class="dice-host"></div>
-    @if (!sceneReady()) {
-      <div class="dice-fallback" [class.rolling]="rolling()">
-        <svg viewBox="0 0 200 200" role="img" [attr.aria-label]="formula()">
-          <polygon class="fallback-body" [attr.points]="fallbackPoints()" />
-          <text class="fallback-result" x="100" y="112">{{ result() }}</text>
-        </svg>
-      </div>
-    }
+
     @if (sides() > 20) {
       <strong class="dice-result">{{ result() }}</strong>
     }
