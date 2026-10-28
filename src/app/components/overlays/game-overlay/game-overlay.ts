@@ -27,7 +27,10 @@ export class GameOverlay {
 	private readonly http = inject(HttpClient);
 	private readonly configService = inject(WidgetConfigService);
 	private lastRolledAt = '';
+	private lastShown = '';
+	private hideTimer: ReturnType<typeof setTimeout> | null = null;
 	readonly rolling = signal(false);
+	readonly visible = signal(false);
 
 	readonly state = toSignal(
 		timer(0, 650).pipe(

@@ -16,11 +16,11 @@ const TYPES: { value: EditorType; label: string }[] = [
 	{ value: 'variable', label: 'Переменная' },
 ];
 
-const ACTIONS = ['say', 'announce', 'shoutout', 'raid', 'raid.cancel', 'marker', 'clip', 'delete', 'ban', 'unban', 'timeout', 'shield.on', 'shield.off', 'title.set', 'game.set', 'commercial', 'poll', 'poll.end', 'points.add', 'points.remove', 'points.set', 'points.balance', 'points.top', 'points.shop', 'points.redeem', 'music.add', 'music.current', 'lastmusic', 'wheel', 'games.slots', 'games.wheel', 'games.trivia', 'games.duel', 'games.accept', 'quote.add', 'quotes.random', 'dice', 'coinflip', 'random', 'variable.set', 'variable.inc', 'variable.dec', 'command.run', 'timer.start', 'timer.pause', 'timer.reset', 'timer.add', 'twitch.followage', 'twitch.accountage', 'twitch.uptime', 'twitch.viewers', 'twitch.title', 'twitch.game', 'twitch.followers', 'twitch.subscribers', 'twitch.chatters', 'widget.enable', 'widget.disable', 'widget.toggle', 'widget.config', 'alert.test', 'roulette.spin', 'reward.create', 'reward.update', 'reward.delete', 'reward.fulfill', 'mod.add', 'mod.remove', 'vip.add', 'vip.remove', 'chat.settings' ];
-const ACTION_LABELS = ['Сообщение в чат', 'Анонс', 'Шаут', 'Рейд', 'Отменить рейд', 'Маркер стрима', 'Создать клип', 'Удалить сообщение', 'Бан', 'Разбан', 'Таймаут', 'Shield Mode вкл', 'Shield Mode выкл', 'Сменить заголовок', 'Сменить категорию', 'Реклама', 'Создать опрос', 'Завершить опрос', 'Начислить баллы', 'Снять баллы', 'Установить баллы', 'Мой баланс', 'Топ баллов', 'Магазин баллов', 'Купить награду', 'Добавить музыку', 'Текущая музыка', 'Ссылка на музыку', 'Колесо', 'Слоты', 'Колесо игры', 'Викторина', 'Дуэль', 'Принять дуэль', 'Добавить цитату', 'Случайная цитата', 'Кубик', 'Монетка', 'Случайный выбор', 'Установить переменную', 'Увеличить переменную', 'Уменьшить переменную', 'Запустить команду', 'Старт таймера', 'Пауза таймера', 'Сброс таймера', 'Изменить таймер', 'Дата фоллова', 'Возраст аккаунта', 'Аптайм стрима', 'Зрители', 'Заголовок', 'Категория', 'Фолловеры', 'Подписчики', 'Зрители в чате', 'Включить виджет', 'Выключить виджет', 'Переключить виджет', 'Настроить виджет (kind|json)', 'Тест алерта', 'Запустить рулетку', 'Создать награду', 'Обновить награду', 'Удалить награду', 'Выполнить награду', 'Добавить модератора', 'Снять модератора', 'Добавить VIP', 'Снять VIP', 'Настройки чата' ];
+const ACTIONS = ['say', 'announce', 'shoutout', 'raid', 'raid.cancel', 'marker', 'clip', 'delete', 'ban', 'unban', 'timeout', 'shield.on', 'shield.off', 'title.set', 'game.set', 'commercial', 'poll', 'poll.end', 'points.add', 'points.remove', 'points.set', 'points.balance', 'points.top', 'points.shop', 'points.redeem', 'music.add', 'music.current', 'lastmusic', 'wheel', 'games.slots', 'games.wheel', 'games.trivia', 'games.duel', 'games.accept', 'quote.add', 'quotes.random', 'dice', 'coinflip', 'random', 'variable.set', 'variable.inc', 'variable.dec', 'command.run', 'timer.start', 'timer.pause', 'timer.reset', 'timer.add', 'twitch.followage', 'twitch.accountage', 'twitch.uptime', 'twitch.viewers', 'twitch.title', 'twitch.game', 'twitch.followers', 'twitch.subscribers', 'twitch.chatters', 'widget.enable', 'widget.disable', 'widget.toggle', 'widget.config', 'alert.test', 'roulette.spin', 'reward.create', 'reward.update', 'reward.delete', 'reward.fulfill', 'mod.add', 'mod.remove', 'vip.add', 'vip.remove', 'chat.settings', 'random.number' ];
+const ACTION_LABELS = ['Сообщение в чат', 'Анонс', 'Шаут', 'Рейд', 'Отменить рейд', 'Маркер стрима', 'Создать клип', 'Удалить сообщение', 'Бан', 'Разбан', 'Таймаут', 'Shield Mode вкл', 'Shield Mode выкл', 'Сменить заголовок', 'Сменить категорию', 'Реклама', 'Создать опрос', 'Завершить опрос', 'Начислить баллы', 'Снять баллы', 'Установить баллы', 'Мой баланс', 'Топ баллов', 'Магазин баллов', 'Купить награду', 'Добавить музыку', 'Текущая музыка', 'Ссылка на музыку', 'Колесо', 'Слоты', 'Колесо игры', 'Викторина', 'Дуэль', 'Принять дуэль', 'Добавить цитату', 'Случайная цитата', 'Кубик', 'Монетка', 'Случайный выбор', 'Установить переменную', 'Увеличить переменную', 'Уменьшить переменную', 'Запустить команду', 'Старт таймера', 'Пауза таймера', 'Сброс таймера', 'Изменить таймер', 'Дата фоллова', 'Возраст аккаунта', 'Аптайм стрима', 'Зрители', 'Заголовок', 'Категория', 'Фолловеры', 'Подписчики', 'Зрители в чате', 'Включить виджет', 'Выключить виджет', 'Переключить виджет', 'Настроить виджет (kind|json)', 'Тест алерта', 'Запустить рулетку', 'Создать награду', 'Обновить награду', 'Удалить награду', 'Выполнить награду', 'Добавить модератора', 'Снять модератора', 'Добавить VIP', 'Снять VIP', 'Настройки чата', 'Случайное число' ];
 const LEVELS = ['everyone', 'subscriber', 'vip', 'moderator', 'broadcaster'];
 const LEVEL_LABELS = ['Все', 'Сабы', 'VIP', 'Модераторы', 'Стример'];
-const TRIGGER_ACTIONS = ['say', 'announce', 'shoutout', 'raid', 'raid.cancel', 'marker', 'clip', 'delete', 'ban', 'unban', 'timeout', 'shield.on', 'shield.off', 'title.set', 'game.set', 'commercial', 'poll', 'poll.end', 'points.add', 'points.remove', 'points.set', 'points.balance', 'points.top', 'points.shop', 'points.redeem', 'music.add', 'music.current', 'lastmusic', 'wheel', 'games.slots', 'games.wheel', 'games.trivia', 'games.duel', 'games.accept', 'quote.add', 'quotes.random', 'dice', 'coinflip', 'random', 'variable.set', 'variable.inc', 'variable.dec', 'command.run', 'timer.start', 'timer.pause', 'timer.reset', 'timer.add', 'twitch.followage', 'twitch.accountage', 'twitch.uptime', 'twitch.viewers', 'twitch.title', 'twitch.game', 'twitch.followers', 'twitch.subscribers', 'twitch.chatters', 'widget.enable', 'widget.disable', 'widget.toggle', 'widget.config', 'alert.test', 'roulette.spin', 'reward.create', 'reward.update', 'reward.delete', 'reward.fulfill', 'mod.add', 'mod.remove', 'vip.add', 'vip.remove', 'chat.settings' ];
+const TRIGGER_ACTIONS = ['say', 'announce', 'shoutout', 'raid', 'raid.cancel', 'marker', 'clip', 'delete', 'ban', 'unban', 'timeout', 'shield.on', 'shield.off', 'title.set', 'game.set', 'commercial', 'poll', 'poll.end', 'points.add', 'points.remove', 'points.set', 'points.balance', 'points.top', 'points.shop', 'points.redeem', 'music.add', 'music.current', 'lastmusic', 'wheel', 'games.slots', 'games.wheel', 'games.trivia', 'games.duel', 'games.accept', 'quote.add', 'quotes.random', 'dice', 'coinflip', 'random', 'variable.set', 'variable.inc', 'variable.dec', 'command.run', 'timer.start', 'timer.pause', 'timer.reset', 'timer.add', 'twitch.followage', 'twitch.accountage', 'twitch.uptime', 'twitch.viewers', 'twitch.title', 'twitch.game', 'twitch.followers', 'twitch.subscribers', 'twitch.chatters', 'widget.enable', 'widget.disable', 'widget.toggle', 'widget.config', 'alert.test', 'roulette.spin', 'reward.create', 'reward.update', 'reward.delete', 'reward.fulfill', 'mod.add', 'mod.remove', 'vip.add', 'vip.remove', 'chat.settings', 'random.number' ];
 const TRIGGER_LABELS: Record<string, string> = {
 	'say': 'Сообщение в чат',
 	'announce': 'Анонс',
@@ -61,6 +61,7 @@ const TRIGGER_LABELS: Record<string, string> = {
 	'dice': 'Кубик',
 	'coinflip': 'Монетка',
 	'random': 'Случайный выбор',
+	'random.number': 'Случайное число',
 	'variable.set': 'Установить переменную',
 	'variable.inc': 'Увеличить переменную',
 	'variable.dec': 'Уменьшить переменную',
@@ -94,8 +95,8 @@ const TRIGGER_LABELS: Record<string, string> = {
 	'vip.remove': 'Снять VIP',
 	'chat.settings': 'Настройки чата',
 };
-const VARIABLE_ACTIONS = ['', 'lastmusic', 'lasttrack', 'np', 'now', 'date', 'time', 'datetime', 'timestamp', 'random', 'dice', 'dice.name', 'dice.result', 'coinflip', 'points.balance', 'points.top', 'points.shop', 'twitch.followage', 'twitch.accountage', 'twitch.uptime', 'twitch.viewers', 'twitch.title', 'twitch.game', 'twitch.followers', 'twitch.subscribers', 'twitch.chatters', 'widget.enabled'];
-const VARIABLE_ACTION_LABELS = ['Не использовать', 'Ссылка на текущую музыку', 'Ссылка на последний трек', 'Сейчас играет (URL)', 'Сейчас играет', 'Дата', 'Время', 'Дата и время', 'Unix timestamp', 'Случайное значение', 'Кубик', 'Имя кубика', 'Результат кубика', 'Монетка', 'Мой баланс баллов', 'Топ баллов', 'Магазин баллов', 'Дата фоллова', 'Возраст аккаунта', 'Аптайм стрима', 'Зрители', 'Заголовок канала', 'Категория', 'Фолловеры', 'Подписчики', 'Зрители в чате', 'Статус виджета'];
+const VARIABLE_ACTIONS = ['', 'lastmusic', 'lasttrack', 'np', 'now', 'date', 'time', 'datetime', 'timestamp', 'random', 'random.number', 'dice', 'dice.name', 'dice.result', 'coinflip', 'points.balance', 'points.top', 'points.shop', 'twitch.followage', 'twitch.accountage', 'twitch.uptime', 'twitch.viewers', 'twitch.title', 'twitch.game', 'twitch.followers', 'twitch.subscribers', 'twitch.chatters', 'widget.enabled'];
+const VARIABLE_ACTION_LABELS = ['Не использовать', 'Ссылка на текущую музыку', 'Ссылка на последний трек', 'Сейчас играет (URL)', 'Сейчас играет', 'Дата', 'Время', 'Дата и время', 'Unix timestamp', 'Случайное значение', 'Случайное число', 'Кубик', 'Имя кубика', 'Результат кубика', 'Монетка', 'Мой баланс баллов', 'Топ баллов', 'Магазин баллов', 'Дата фоллова', 'Возраст аккаунта', 'Аптайм стрима', 'Зрители', 'Заголовок канала', 'Категория', 'Фолловеры', 'Подписчики', 'Зрители в чате', 'Статус виджета'];
 
 @Component({
 	imports: [RouterLink, TuiButton, TuiChevron, TuiDataListWrapper, TuiDropdown, TuiInput, TuiSelectLike, TuiSwitch, TuiTextarea, TuiTextfield],
@@ -143,6 +144,10 @@ export default class AutomationEditorPage {
 	]);
 	readonly actionHint = computed(() => this.hintFor(this.commandAction()));
 	readonly variableHint = computed(() => this.hintFor(this.variableAction()));
+	readonly commandRangeFrom = signal(1);
+	readonly commandRangeTo = signal(100);
+	readonly variableRangeFrom = signal(1);
+	readonly variableRangeTo = signal(100);
 	readonly error = signal('');
 	readonly saved = signal(false);
 
@@ -169,6 +174,7 @@ export default class AutomationEditorPage {
 				this.commandCooldown.set(command.cooldownSeconds);
 				this.commandLevel.set(command.userLevel);
 				this.commandEnabled.set(command.enabled);
+				this.syncCommandRange();
 			}
 		}
 
@@ -190,6 +196,7 @@ export default class AutomationEditorPage {
 				this.variableName.set(variable.name);
 				this.variableValue.set(variable.value);
 				this.variableAction.set(variable.action);
+				this.syncVariableRange();
 			}
 		}
 	}
@@ -255,6 +262,8 @@ export default class AutomationEditorPage {
 				return 'Значение задаёт конкретный кубик, например d100; иначе берётся из сообщения.';
 			case 'random':
 				return 'Варианты через | (да|нет|может) или диапазон 1-100.';
+			case 'random.number':
+				return 'Диапазон от и до; результат — целое число.';
 			case 'coinflip':
 				return 'Пусто — случайно; heads/tails (орёл/решка) — принудительно нужная сторона.';
 			case 'poll':
@@ -285,7 +294,52 @@ export default class AutomationEditorPage {
 
 	setCommandAction(label: string): void {
 		const index = ACTION_LABELS.indexOf(label);
-		if (index >= 0) this.commandAction.set(ACTIONS[index]);
+		if (index >= 0) {
+			this.commandAction.set(ACTIONS[index]);
+			this.syncCommandRange();
+		}
+	}
+
+	updateCommandRange(field: 'from' | 'to', value: number): void {
+		if (field === 'from') this.commandRangeFrom.set(Math.min(value, this.commandRangeTo()));
+		if (field === 'to') this.commandRangeTo.set(Math.max(value, this.commandRangeFrom()));
+		this.commandValue.set(`${this.commandRangeFrom()}-${this.commandRangeTo()}`);
+	}
+
+	updateVariableRange(field: 'from' | 'to', value: number): void {
+		if (field === 'from') this.variableRangeFrom.set(Math.min(value, this.variableRangeTo()));
+		if (field === 'to') this.variableRangeTo.set(Math.max(value, this.variableRangeFrom()));
+		this.variableValue.set(`${this.variableRangeFrom()}-${this.variableRangeTo()}`);
+	}
+
+	private syncCommandRange(): void {
+		if (!['random', 'random.number'].includes(this.commandAction())) return;
+		const range = this.parseRange(this.commandValue());
+		if (range) {
+			this.commandRangeFrom.set(range[0]);
+			this.commandRangeTo.set(range[1]);
+		} else if (!this.commandValue()) {
+			this.commandValue.set('1-100');
+		}
+	}
+
+	private syncVariableRange(): void {
+		if (!['random', 'random.number'].includes(this.variableAction())) return;
+		const range = this.parseRange(this.variableValue());
+		if (range) {
+			this.variableRangeFrom.set(range[0]);
+			this.variableRangeTo.set(range[1]);
+		} else if (!this.variableValue()) {
+			this.variableValue.set('1-100');
+		}
+	}
+
+	private parseRange(value: string): [number, number] | null {
+		const match = value.trim().match(/^(-?\d+)\s*(?:-|\.\.|:)\s*(-?\d+)$/);
+		if (!match) return null;
+		const from = Number(match[1]);
+		const to = Number(match[2]);
+		return from <= to ? [from, to] : [to, from];
 	}
 
 	setCommandLevel(label: string): void {
@@ -300,6 +354,9 @@ export default class AutomationEditorPage {
 
 	setVariableAction(label: string): void {
 		const index = this.variableActionLabels.indexOf(label);
-		if (index >= 0) this.variableAction.set(this.variableActionValues[index]);
+		if (index >= 0) {
+			this.variableAction.set(this.variableActionValues[index]);
+			this.syncVariableRange();
+		}
 	}
 }

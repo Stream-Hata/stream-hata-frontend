@@ -30,6 +30,14 @@
       <span class="jk-label">Значение действия</span>
       <tui-textfield><textarea tuiTextarea rows="2" [value]="commandValue()" (input)="commandValue.set($any($event.target).value)"></textarea></tui-textfield>
       @if (actionHint()) { <span class="jk-caption">{{ actionHint() }}</span> }
+      @if (commandAction() === 'random' || commandAction() === 'random.number') {
+        <div class="range-editor">
+          <span class="jk-label">От {{ commandRangeFrom() }}</span>
+          <input type="range" min="0" max="1000" [value]="commandRangeFrom()" (input)="updateCommandRange('from', +$any($event.target).value)" />
+          <span class="jk-label">До {{ commandRangeTo() }}</span>
+          <input type="range" min="0" max="1000" [value]="commandRangeTo()" (input)="updateCommandRange('to', +$any($event.target).value)" />
+        </div>
+      }
       <span class="jk-label">Ответ бота</span>
       <tui-textfield><textarea tuiTextarea rows="2" [value]="commandReply()" (input)="commandReply.set($any($event.target).value)"></textarea></tui-textfield>
       <span class="jk-label">Вставить переменную</span>
@@ -72,6 +80,14 @@
         <tui-data-list-wrapper *tuiDropdown [itemContent]="accentOption" [items]="variableActionLabels" (itemClick)="setVariableAction($event)"></tui-data-list-wrapper>
       </tui-textfield>
       @if (variableHint()) { <span class="jk-caption">{{ variableHint() }}</span> }
+      @if (variableAction() === 'random' || variableAction() === 'random.number') {
+        <div class="range-editor">
+          <span class="jk-label">От {{ variableRangeFrom() }}</span>
+          <input type="range" min="0" max="1000" [value]="variableRangeFrom()" (input)="updateVariableRange('from', +$any($event.target).value)" />
+          <span class="jk-label">До {{ variableRangeTo() }}</span>
+          <input type="range" min="0" max="1000" [value]="variableRangeTo()" (input)="updateVariableRange('to', +$any($event.target).value)" />
+        </div>
+      }
     }
 
     @if (error()) { <p class="error-text">{{ error() }}</p> }

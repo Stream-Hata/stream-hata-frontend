@@ -62,3 +62,18 @@ html[data-tauri] .switch-hit input[tuiSwitch] {
 	cursor: pointer;
 	inset: 0;
 }
+
+.range-editor {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 8px 12px;
+	align-items: center;
+	padding: 10px 12px;
+	border: 1px solid var(--border-normal);
+	border-radius: var(--radius-md);
+}
+
+.range-editor input[type='range'] {
+	accent-color: var(--accent-primary);
+	width: 100%;
+}

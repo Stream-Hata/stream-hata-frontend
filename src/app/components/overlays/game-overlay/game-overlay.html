@@ -1,5 +1,6 @@
 <div class="game-stage">
-  @if (mode() === 'coin') {
+  @if (!visible()) {
+  } @else if (mode() === 'coin') {
     <div class="game-card" [class.rolling]="rolling()">
       <span class="game-kicker">МОНЕТКА</span>
       <div class="coin" [class.tails]="coinSide() === 'tails'" [style.transform]="rolling() ? null : coinTransform()">

@@ -28,7 +28,9 @@ export class DiceOverlay implements AfterViewInit {
 	private lastAnimated = '';
 	private readonly hostReady = signal(false);
 	private lastRolledAt = '';
+	private hideTimer: ReturnType<typeof setTimeout> | null = null;
 	readonly rolling = signal(false);
+	readonly visible = signal(false);
 
 	readonly state = toSignal(
 		timer(0, 700).pipe(
@@ -118,20 +120,27 @@ export class DiceOverlay implements AfterViewInit {
 	constructor() {
 		effect(() => {
 			const rolledAt = this.state().rolledAt;
-			if (!rolledAt || rolledAt === this.lastRolledAt) {
+			if (!rolledAt || rolledAt.startsWith('0001-') || rolledAt === this.lastRolledAt) {
 				return;
 			}
 
 			this.lastRolledAt = rolledAt;
+			this.visible.set(true);
 			this.rolling.set(true);
 			setTimeout(() => this.rolling.set(false), 900);
 			this.syncLibrary(rolledAt);
+
+			if (this.hideTimer) {
+				clearTimeout(this.hideTimer);
+			}
+			this.hideTimer = setTimeout(() => this.visible.set(false), 8000);
 		});
 
 		effect(() => {
 			this.hostReady();
+			this.visible();
 			this.librarySides();
-			this.syncLibrary();
+			setTimeout(() => this.syncLibrary(), 0);
 		});
 	}
 

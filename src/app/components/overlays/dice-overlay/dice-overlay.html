@@ -1,4 +1,5 @@
 <div class="dice-stage">
+  @if (visible()) {
   <div class="dice-card" [class.rolling]="rolling()">
     <span class="dice-kicker">DICE</span>
 
@@ -42,4 +43,5 @@
       <span class="dice-viewer">{{ viewer() }}</span>
     }
   </div>
+  }
 </div>
