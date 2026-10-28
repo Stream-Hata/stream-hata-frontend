@@ -336,9 +336,14 @@ function assignValues(faces: Face[], N: number): void {
 function polyData(N: number): DieData {
 	let faces: Face[];
 
+	let triangle = false;
+
 	if ([4, 6, 8, 12, 20].includes(N)) faces = dualFaces(platonicNormals(N));
 	else if (N === 2) faces = prismFaces(48, 1, 0.35, false);
-	else if (N === 3) faces = prismFaces(3, 1, 2.4, true);
+	else if (N === 3) {
+		faces = dualFaces(platonicNormals(4));
+		triangle = true;
+	}
 	else if (N % 2 === 0 && N <= 16) faces = dualFaces(trapezohedronNormals(N));
 	else faces = dualFaces(relaxedSphere(N));
 
@@ -354,7 +359,16 @@ function polyData(N: number): DieData {
 		f.pts.forEach((p) => p.multiplyScalar(scale));
 		analyze(f);
 	});
-	assignValues(faces, N);
+	if (triangle) {
+		const values = [1, 2, 3, 1];
+
+		faces.forEach((face, index) => {
+			face.value = values[index] ?? 1;
+			face.labeled = true;
+		});
+	} else {
+		assignValues(faces, N);
+	}
 
 	const positions: number[] = [];
 
@@ -389,11 +403,11 @@ function labelTexture(value: string | number, accent: Color): CanvasTexture {
 
 	if (context) {
 		context.clearRect(0, 0, 256, 256);
-		context.font = '800 150px Inter, sans-serif';
+		context.font = '800 116px Inter, sans-serif';
 		context.textAlign = 'center';
 		context.textBaseline = 'middle';
 		context.lineJoin = 'round';
-		context.lineWidth = 18;
+		context.lineWidth = 14;
 		context.strokeStyle = 'rgba(0,0,0,.65)';
 		context.strokeText(String(value), 128, 138);
 		context.fillStyle = '#fff';
@@ -431,7 +445,7 @@ function createDie(sides: number, accent: Color, labels?: (string | number)[]): 
 	for (const face of data.faces) {
 		if (!face.labeled || face.value === undefined || !face.pts.length) continue;
 		const value = labels?.[face.value - 1] ?? face.value;
-		const side = face.r2 * 2 * (face.k <= 3 ? 0.78 : 0.95);
+		const side = face.r2 * 2 * (face.k <= 3 ? 0.62 : 0.82);
 		const material = new MeshStandardMaterial({
 			map: labelTexture(value, accent),
 			transparent: true,
@@ -480,7 +494,7 @@ export class DiceScene {
 		this.renderer.setClearColor(0x000000, 0);
 		this.renderer.domElement.className = 'dice-canvas';
 		this.host.replaceChildren(this.renderer.domElement);
-		this.camera.position.set(4.2, 2.8, 7.2);
+		this.camera.position.set(3.6, 2.4, 6.2);
 		this.camera.lookAt(0, 0, 0);
 		this.scene.add(new AmbientLight(0xffffff, 0.65));
 		const light = new DirectionalLight(0xffd6f4, 3.6);
