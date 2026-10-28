@@ -51,6 +51,15 @@ export class DiceOverlay implements AfterViewInit, OnDestroy {
 
 		return match ? Math.max(1, Number(match[2])) : 6;
 	});
+	readonly fallbackPoints = computed(() => {
+		const count = this.sides() === 4 ? 3 : this.sides() === 8 ? 4 : this.sides() === 10 ? 5 : this.sides() === 12 ? 6 : this.sides() === 20 ? 8 : Math.min(10, Math.max(3, this.sides()));
+
+		return Array.from({ length: count }, (_, index) => {
+			const angle = (Math.PI * 2 * index) / count - Math.PI / 2;
+
+			return `${100 + Math.cos(angle) * 82},${100 + Math.sin(angle) * 82}`;
+		}).join(' ');
+	});
 
 	constructor() {
 		effect(() => {

@@ -145,8 +145,8 @@
 
 
 .coin-host {
-	width: 170px;
-	height: 170px;
+	width: 140px;
+	height: 140px;
 }
 
 .coin-host .dice-canvas {
@@ -189,4 +189,42 @@
 	background: color-mix(in srgb, var(--accent-primary) 35%, #1a1025);
 	color: #fff;
 	font: 800 38px/1 var(--font-ui);
+}
+
+/* Center the coin/result itself */
+.game-card {
+	position: relative;
+	width: 140px;
+	height: 140px;
+}
+
+.game-kicker {
+	position: absolute;
+	top: -24px;
+	left: 50%;
+	transform: translateX(-50%);
+	white-space: nowrap;
+}
+
+.game-result {
+	position: absolute;
+	top: 146px;
+	left: 50%;
+	transform: translateX(-50%);
+	white-space: nowrap;
+}
+
+.game-viewer {
+	position: absolute;
+	top: 172px;
+	left: 50%;
+	transform: translateX(-50%);
+	white-space: nowrap;
+}
+
+.coin-fallback {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 }

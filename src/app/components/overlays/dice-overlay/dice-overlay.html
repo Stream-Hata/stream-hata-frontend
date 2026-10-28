@@ -4,14 +4,10 @@
     <div #diceHost class="dice-host"></div>
     @if (!sceneReady()) {
       <div class="dice-fallback" [class.rolling]="rolling()">
-        <div class="fallback-cube">
-          <span class="fallback-face f-front">{{ result() }}</span>
-          <span class="fallback-face f-back">{{ result() }}</span>
-          <span class="fallback-face f-right">{{ result() }}</span>
-          <span class="fallback-face f-left">{{ result() }}</span>
-          <span class="fallback-face f-top">{{ result() }}</span>
-          <span class="fallback-face f-bottom">{{ result() }}</span>
-        </div>
+        <svg viewBox="0 0 200 200" role="img" [attr.aria-label]="formula()">
+          <polygon class="fallback-body" [attr.points]="fallbackPoints()" />
+          <text class="fallback-result" x="100" y="112">{{ result() }}</text>
+        </svg>
       </div>
     }
     @if (sides() > 20) {

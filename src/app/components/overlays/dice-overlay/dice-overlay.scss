@@ -41,8 +41,8 @@
 }
 
 .dice-host {
-	width: 190px;
-	height: 190px;
+	width: 145px;
+	height: 145px;
 }
 
 .dice-host .dice-canvas {
@@ -84,8 +84,8 @@
 
 .dice-fallback {
 	position: relative;
-	width: 150px;
-	height: 150px;
+	width: 120px;
+	height: 120px;
 	perspective: 700px;
 }
 
@@ -127,4 +127,74 @@
 @keyframes fallback-roll {
 	0% { transform: rotateX(0) rotateY(0); }
 	100% { transform: rotateX(720deg) rotateY(1440deg); }
+}
+
+/* Center the die itself; captions are positioned outside the layout */
+.dice-card {
+	position: relative;
+	width: 145px;
+	height: 145px;
+}
+
+.dice-kicker {
+	position: absolute;
+	top: -2px;
+	left: 50%;
+	transform: translateX(-50%);
+	white-space: nowrap;
+}
+
+.dice-formula {
+	position: absolute;
+	top: 150px;
+	left: 50%;
+	transform: translateX(-50%);
+	white-space: nowrap;
+}
+
+.dice-rolls {
+	position: absolute;
+	top: 174px;
+	left: 50%;
+	transform: translateX(-50%);
+	white-space: nowrap;
+}
+
+.dice-viewer {
+	position: absolute;
+	top: 192px;
+	left: 50%;
+	transform: translateX(-50%);
+	white-space: nowrap;
+}
+
+.dice-fallback {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.dice-fallback svg {
+	width: 150px;
+	height: 150px;
+	overflow: visible;
+}
+
+.fallback-body {
+	fill: color-mix(in srgb, var(--accent-primary) 42%, #160d20);
+	stroke: var(--accent-primary);
+	stroke-width: 4;
+	filter: drop-shadow(0 8px 14px rgb(0 0 0 / 55%));
+}
+
+.fallback-result {
+	fill: #fff;
+	font: 800 42px/1 var(--font-ui);
+	text-anchor: middle;
+	dominant-baseline: middle;
+}
+
+.dice-fallback.rolling svg {
+	animation: fallback-roll 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
 }

@@ -52,6 +52,7 @@ export class NowPlayingOverlay {
 	readonly current = computed<Track | null>(
 		() => this.playlist().find((track) => track.videoId === this.currentId()) ?? null,
 	);
+	readonly currentKind = computed(() => this.current()?.kind ?? '');
 	readonly thumbnailFailed = signal(false);
 	readonly playbackStarted = signal(false);
 	readonly needsGesture = signal(false);
@@ -67,7 +68,7 @@ export class NowPlayingOverlay {
 	readonly showControls = computed(() => this.config().config.showControls !== false);
 	readonly videoUrl = computed<SafeResourceUrl | null>(() => {
 		const videoId = this.currentId();
-		const kind = this.current()?.kind;
+		const kind = this.currentKind();
 
 		if (!videoId || kind === 'audio' || kind === 'video') {
 			return null;
