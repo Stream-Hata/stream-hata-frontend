@@ -238,7 +238,7 @@ function buildGeometry(sides: number): { geometry: BufferGeometry; values: numbe
 		case 2:
 			return { geometry: new CylinderGeometry(1.25, 1.25, 0.28, 32, 1, false), values: [1, 2, 1] };
 		case 3:
-			return { geometry: trianglePrism(), values: [1, 2, 3, 1, 2] };
+			return { geometry: groupPolyhedron(new TetrahedronGeometry(1.35)), values: [1, 2, 3, 1] };
 		case 4:
 			return { geometry: groupPolyhedron(new TetrahedronGeometry(1.35)), values: [1, 2, 3, 4] };
 		case 6:
