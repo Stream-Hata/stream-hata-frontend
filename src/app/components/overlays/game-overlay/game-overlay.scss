@@ -123,3 +123,15 @@
 	60% { transform: translateX(-6px) rotate(-1deg); }
 	80% { transform: translateX(6px) rotate(1deg); }
 }
+
+
+.random-host {
+	width: 140px;
+	height: 140px;
+}
+
+.random-host .random-canvas {
+	display: block;
+	width: 100%;
+	height: 100%;
+}

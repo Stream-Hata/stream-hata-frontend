@@ -58,16 +58,7 @@
 	height: 100%;
 }
 
-.dice-result {
-	position: absolute;
-	z-index: 4;
-	color: var(--widget-text, #f5eaff);
-	font: 800 46px/1 var(--font-ui);
-	text-shadow:
-		0 2px 8px rgb(0 0 0 / 85%),
-		0 0 14px rgb(255 46 166 / 45%);
-	pointer-events: none;
-}
+
 
 .dice-formula {
 	position: absolute;
@@ -80,9 +71,19 @@
 	white-space: nowrap;
 }
 
-.dice-rolls {
+.dice-outcome {
 	position: absolute;
 	top: 190px;
+	left: 50%;
+	transform: translateX(-50%);
+	color: var(--widget-text, #f5eaff);
+	font: 700 13px/18px var(--font-ui);
+	white-space: nowrap;
+}
+
+.dice-rolls {
+	position: absolute;
+	top: 212px;
 	left: 50%;
 	transform: translateX(-50%);
 	color: var(--text-secondary);
@@ -92,7 +93,7 @@
 
 .dice-viewer {
 	position: absolute;
-	top: 208px;
+	top: 230px;
 	left: 50%;
 	transform: translateX(-50%);
 	color: var(--text-secondary);

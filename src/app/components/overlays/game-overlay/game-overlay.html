@@ -8,11 +8,8 @@
         <span class="game-viewer">{{ viewer() }}</span>
       }
     } @else {
-      <span class="game-kicker">СЛУЧАЙНЫЙ ВЫБОР</span>
-      <div class="slot-window">
-        <span class="slot-reel">{{ label() || '...' }}</span>
-        <strong class="slot-result">{{ result() || '?' }}</strong>
-      </div>
+      <span class="game-kicker">РУЛЕТКА</span>
+      <div #randomHost class="random-host"></div>
       @if (viewer()) {
         <span class="game-viewer">{{ viewer() }}</span>
       }

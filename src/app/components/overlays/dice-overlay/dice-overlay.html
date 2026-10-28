@@ -3,15 +3,12 @@
     <span class="dice-kicker">DICE</span>
     <div #diceHost class="dice-host"></div>
 
-    @if (sides() > 20) {
-      <strong class="dice-result">{{ result() }}</strong>
-    }
     <strong class="dice-formula">{{ formula() }}</strong>
+    @if (viewer()) {
+      <span class="dice-outcome">@{{ viewer() }} · выпало {{ result() }}</span>
+    }
     @if (rolls().length > 1) {
       <span class="dice-rolls">{{ rolls().join(' + ') }}</span>
-    }
-    @if (viewer()) {
-      <span class="dice-viewer">{{ viewer() }}</span>
     }
   </div>
 </div>

@@ -3,7 +3,8 @@ import { AfterViewInit, Component, computed, effect, ElementRef, inject, input, 
 import { toSignal } from '@angular/core/rxjs-interop';
 import { WidgetConfigService, type WidgetConfig } from '@shared/services/widgets.service';
 import { catchError, of, switchMap, timer } from 'rxjs';
-import { DiceScene } from '../dice-overlay/dice-scene';
+import { CoinScene } from './coin-scene';
+import { RandomWheel } from './random-scene';
 
 type GameMode = 'coin' | 'random';
 
@@ -25,11 +26,13 @@ const EMPTY: GameState = { kind: '', label: '', result: '', side: '', viewer: ''
 })
 export class GameOverlay implements AfterViewInit, OnDestroy {
 	@ViewChild('coinHost') private coinHost?: ElementRef<HTMLElement>;
+	@ViewChild('randomHost') private randomHost?: ElementRef<HTMLElement>;
 	readonly mode = input<GameMode>('coin');
 	private readonly preview = new URLSearchParams(location.search).get('preview');
 	private readonly http = inject(HttpClient);
 	private readonly configService = inject(WidgetConfigService);
-	private scene?: DiceScene;
+	private scene?: CoinScene;
+	private randomScene?: RandomWheel;
 	private lastRolledAt = '';
 	private hideTimer: ReturnType<typeof setTimeout> | null = null;
 	readonly ready = signal(false);
@@ -82,13 +85,19 @@ export class GameOverlay implements AfterViewInit, OnDestroy {
 				return;
 			}
 
-			this.scene?.setSides(2, [this.heads(), this.tails(), '']);
+			if (this.scene) {
+				this.scene.setLabels(this.heads(), this.tails());
+			}
+
+			if (this.randomScene) {
+				this.randomScene.spin(this.label(), this.result());
+			}
 
 			if (rolledAt !== this.lastRolledAt) {
 				this.lastRolledAt = rolledAt;
 				this.visible.set(true);
 				this.rolling.set(true);
-				this.scene?.roll(this.coinSide() === 'tails' ? 2 : 1);
+				this.scene?.flip(this.coinSide() === 'tails' ? 'tails' : 'heads');
 				setTimeout(() => this.rolling.set(false), 1000);
 
 				if (this.hideTimer) {
@@ -101,17 +110,15 @@ export class GameOverlay implements AfterViewInit, OnDestroy {
 
 	ngAfterViewInit(): void {
 		if (this.coinHost) {
-			const accent = getComputedStyle(this.coinHost.nativeElement).getPropertyValue('--accent-primary').trim() || '#ff2ea6';
-			try {
-				this.scene = new DiceScene(this.coinHost.nativeElement, accent);
-			} catch (error) {
-				console.error('[Coin] WebGL unavailable', error);
-			}
+			this.scene = new CoinScene(this.coinHost.nativeElement);
+		}
+		if (this.randomHost) {
+			this.randomScene = new RandomWheel(this.randomHost.nativeElement, getComputedStyle(this.randomHost.nativeElement).getPropertyValue('--accent-primary').trim() || '#ff2ea6');
 		}
 		this.ready.set(true);
 		if (this.preview === 'coin' && this.scene) {
-			this.scene?.setSides(2, [this.heads(), this.tails(), '']);
-			this.scene?.roll(1);
+			this.scene.setLabels(this.heads(), this.tails());
+			this.scene.flip('heads');
 			this.visible.set(true);
 		}
 	}
@@ -121,5 +128,6 @@ export class GameOverlay implements AfterViewInit, OnDestroy {
 			clearTimeout(this.hideTimer);
 		}
 		this.scene?.destroy();
+		this.randomScene?.destroy();
 	}
 }
