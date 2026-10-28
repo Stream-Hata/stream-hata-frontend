@@ -1,8 +1,8 @@
+import { AfterViewInit, Component, computed, effect, ElementRef, inject, OnDestroy, signal, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component, computed, effect, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, of, switchMap, timer } from 'rxjs';
-import { DiceRoller, type Die, type DieType } from '@gnuton/css-dice-roller';
+import { DiceScene } from './dice-scene';
 
 interface DiceState {
 	formula: string;
@@ -19,18 +19,16 @@ const EMPTY: DiceState = { formula: '1d6', result: 6, rolls: [6], viewer: '', ro
 	styleUrl: './dice-overlay.scss',
 	templateUrl: './dice-overlay.html',
 })
-export class DiceOverlay implements AfterViewInit {
+export class DiceOverlay implements AfterViewInit, OnDestroy {
 	@ViewChild('diceHost') private diceHost?: ElementRef<HTMLElement>;
 	private readonly http = inject(HttpClient);
-	private roller?: DiceRoller;
-	private die?: Die;
-	private renderedSides = 0;
-	private lastAnimated = '';
-	private readonly hostReady = signal(false);
+	private readonly previewSides = Number(new URLSearchParams(location.search).get('preview') ?? 0);
+	private scene?: DiceScene;
 	private lastRolledAt = '';
 	private hideTimer: ReturnType<typeof setTimeout> | null = null;
-	readonly rolling = signal(false);
+	readonly ready = signal(false);
 	readonly visible = signal(false);
+	readonly rolling = signal(false);
 
 	readonly state = toSignal(
 		timer(0, 700).pipe(
@@ -52,87 +50,23 @@ export class DiceOverlay implements AfterViewInit {
 
 		return match ? Math.max(1, Number(match[2])) : 6;
 	});
-	readonly faceCount = computed(() => Math.min(this.sides(), 20));
-	readonly librarySides = computed(() => [4, 6, 8, 10, 12, 20].includes(this.sides()) ? this.sides() : 0);
-	readonly isClassic = computed(() => this.sides() === 6 && this.result() >= 1 && this.result() <= 6);
-	readonly polygonCoords = computed(() => {
-		const count = this.shapeVertices();
-
-		return Array.from({ length: count }, (_, index) => {
-			const angle = (Math.PI * 2 * index) / count - Math.PI / 2;
-
-			return {
-				x: 100 + Math.cos(angle) * 82,
-				y: 100 + Math.sin(angle) * 82,
-			};
-		});
-	});
-	readonly polygonPoints = computed(() => this.polygonCoords().map((point) => `${point.x},${point.y}`).join(' '));
-	readonly sideFaces = computed(() => {
-		const points = this.polygonCoords();
-
-		return points.map((point, index) => {
-			const next = points[(index + 1) % points.length];
-
-			return `${point.x},${point.y} ${next.x},${next.y} ${next.x - 12},${next.y + 12} ${point.x - 12},${point.y + 12}`;
-		});
-	});
-	readonly facetLines = computed(() => {
-		const count = this.shapeVertices();
-
-		return Array.from({ length: count }, (_, index) => {
-			const angle = (Math.PI * 2 * index) / count - Math.PI / 2;
-
-			return {
-				x: 100 + Math.cos(angle) * 82,
-				y: 100 + Math.sin(angle) * 82,
-			};
-		});
-	});
-	readonly facetShades = computed(() => {
-		const count = this.shapeVertices();
-		const points = Array.from({ length: count }, (_, index) => {
-			const angle = (Math.PI * 2 * index) / count - Math.PI / 2;
-
-			return `${100 + Math.cos(angle) * 82},${100 + Math.sin(angle) * 82}`;
-		});
-
-		return points.map((point, index) => `100,100 ${point} ${points[(index + 1) % count]}`);
-	});
-	readonly polyTransform = computed(() => 'rotateX(-18deg) rotateY(-18deg)');
-	readonly coinTransform = computed(() => this.result() === 2 ? 'rotateX(8deg) rotateY(180deg)' : 'rotateX(8deg) rotateY(0deg)');
-	readonly showOverflow = computed(() => this.result() > this.sides() || this.sides() > 20);
-	readonly cubeTransform = computed(() => {
-		const rotations: Record<number, string> = {
-			1: 'rotateX(0deg) rotateY(0deg)',
-			2: 'rotateX(0deg) rotateY(180deg)',
-			3: 'rotateX(0deg) rotateY(-90deg)',
-			4: 'rotateX(0deg) rotateY(90deg)',
-			5: 'rotateX(-90deg) rotateY(0deg)',
-			6: 'rotateX(90deg) rotateY(0deg)',
-		};
-
-		return rotations[this.result()] ?? 'rotateX(0deg) rotateY(0deg)';
-	});
-
-	faceValue(face: number): number {
-		return face;
-	}
-
-	shapeVertices(): number {
-		switch (this.sides()) {
-			case 4: return 3;
-			case 8: return 4;
-			case 10: return 5;
-			case 12: return 6;
-			case 20: return 8;
-			default: return Math.min(8, Math.max(3, this.sides()));
-		}
-	}
 
 	constructor() {
 		effect(() => {
+			if (this.previewSides > 0) {
+				return;
+			}
+
+			const sides = this.sides();
 			const rolledAt = this.state().rolledAt;
+			const result = this.result();
+
+			if (!this.ready() || !this.scene) {
+				return;
+			}
+
+			this.scene.setSides(sides);
+
 			if (!rolledAt || rolledAt.startsWith('0001-') || rolledAt === this.lastRolledAt) {
 				return;
 			}
@@ -140,71 +74,34 @@ export class DiceOverlay implements AfterViewInit {
 			this.lastRolledAt = rolledAt;
 			this.visible.set(true);
 			this.rolling.set(true);
-			setTimeout(() => this.rolling.set(false), 900);
-			this.syncLibrary(rolledAt);
+			this.scene.roll(result);
+			setTimeout(() => this.rolling.set(false), 950);
 
 			if (this.hideTimer) {
 				clearTimeout(this.hideTimer);
 			}
 			this.hideTimer = setTimeout(() => this.visible.set(false), 8000);
 		});
-
-		effect(() => {
-			this.hostReady();
-			this.visible();
-			this.librarySides();
-			setTimeout(() => this.syncLibrary(), 0);
-		});
 	}
 
 	ngAfterViewInit(): void {
-		this.hostReady.set(true);
+		if (!this.diceHost) {
+			return;
+		}
+
+		this.scene = new DiceScene(this.diceHost.nativeElement);
+		if (this.previewSides > 0) {
+			this.scene.setSides(this.previewSides);
+			this.scene.roll(Math.min(3, this.previewSides));
+			this.visible.set(true);
+		}
+		this.ready.set(true);
 	}
 
-	private syncLibrary(rolledAt = ''): void {
-		if (!this.hostReady() || !this.diceHost) {
-			return;
+	ngOnDestroy(): void {
+		if (this.hideTimer) {
+			clearTimeout(this.hideTimer);
 		}
-
-		const sides = this.librarySides();
-		if (!sides) {
-			this.roller?.clear();
-			this.roller = undefined;
-			this.die = undefined;
-			this.renderedSides = 0;
-
-			return;
-		}
-
-		if (!this.roller || this.renderedSides !== sides) {
-			this.diceHost.nativeElement.replaceChildren();
-			this.roller = new DiceRoller(this.diceHost.nativeElement);
-			this.roller.updateSettings({
-				theme: 'theme-obsidian',
-				baseColor: '#1a1025',
-				secondaryColor: '#22e0ff',
-				textColor: '#f5eaff',
-				scale: 132,
-				animation: 'chaotic',
-				speed: 0.9,
-				dragEnabled: false,
-			});
-			this.die = this.roller.addDie(`d${sides}` as DieType)[0];
-			this.renderedSides = sides;
-		}
-
-		if (!this.die) {
-			return;
-		}
-
-		const result = Math.min(Math.max(1, this.result()), sides);
-		if (rolledAt && rolledAt !== this.lastAnimated) {
-			this.lastAnimated = rolledAt;
-			void this.die.roll().then(() => this.die?.setResult(result));
-
-			return;
-		}
-
-		this.die.setResult(result);
+		this.scene?.destroy();
 	}
 }

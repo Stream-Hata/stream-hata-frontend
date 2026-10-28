@@ -12,13 +12,23 @@
 
 .dice-card {
 	display: flex;
-	gap: 8px;
+	gap: 6px;
 	flex-direction: column;
 	align-items: center;
 	padding: 0;
 	border: 0;
 	background: transparent;
 	box-shadow: none;
+	opacity: 0;
+	transform: scale(0.92);
+	transition:
+		opacity 180ms ease,
+		transform 220ms ease;
+}
+
+.dice-card.visible {
+	opacity: 1;
+	transform: scale(1);
 }
 
 .dice-kicker {
@@ -27,66 +37,23 @@
 	letter-spacing: 0.18em;
 }
 
-.dice-scene {
-	position: relative;
-	width: 132px;
-	height: 132px;
-	margin: 8px 0;
-	perspective: 800px;
+.dice-host {
+	width: 190px;
+	height: 190px;
 }
 
-.dice-cube {
-	position: relative;
+.dice-host .dice-canvas {
+	display: block;
 	width: 100%;
 	height: 100%;
-	transform-style: preserve-3d;
-	transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.dice-card.rolling .dice-cube {
-	animation: dice-tumble 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.dice-face {
-	position: absolute;
-	display: grid;
-	place-items: center;
-	width: 132px;
-	height: 132px;
-	border: 3px solid var(--accent-primary);
-	border-radius: 22px;
-	background:
-		radial-gradient(circle at 30% 25%, rgb(255 255 255 / 18%), transparent 55%),
-		rgb(25 18 34 / 96%);
+.dice-result {
 	color: var(--widget-text, #f5eaff);
-	font: 800 56px/1 var(--font-ui);
-	backface-visibility: hidden;
-	box-shadow:
-		inset 0 0 22px rgb(255 46 166 / 18%),
-		0 0 26px rgb(255 46 166 / 18%);
-}
-
-.face-front { transform: translateZ(66px); }
-.face-back { transform: rotateY(180deg) translateZ(66px); }
-.face-right { transform: rotateY(90deg) translateZ(66px); }
-.face-left { transform: rotateY(-90deg) translateZ(66px); }
-.face-top { transform: rotateX(90deg) translateZ(66px); }
-.face-bottom { transform: rotateX(-90deg) translateZ(66px); }
-
-.dice-overflow {
-	position: absolute;
-	display: grid;
-	place-items: center;
-	width: 86px;
-	height: 86px;
-	border: 3px solid var(--accent-primary);
-	border-radius: 50%;
-	background: rgb(18 18 24 / 92%);
-	color: var(--widget-text, #f5eaff);
-	font: 800 34px/1 var(--font-ui);
-	transform: translate(-50%, -50%);
-	inset: 50% auto auto 50%;
-	box-shadow: 0 0 30px rgb(255 46 166 / 35%);
+	font: 800 46px/1 var(--font-ui);
+	text-shadow:
+		0 2px 8px rgb(0 0 0 / 85%),
+		0 0 14px rgb(255 46 166 / 45%);
 }
 
 .dice-formula {
@@ -99,239 +66,4 @@
 .dice-viewer {
 	color: var(--text-secondary);
 	font: 600 12px/18px var(--font-ui);
-}
-
-@keyframes dice-tumble {
-	0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1); }
-	25% { transform: rotateX(220deg) rotateY(160deg) rotateZ(70deg) scale(1.12); }
-	55% { transform: rotateX(480deg) rotateY(390deg) rotateZ(190deg) scale(0.94); }
-	80% { transform: rotateX(650deg) rotateY(620deg) rotateZ(300deg) scale(1.05); }
-	100% { transform: rotateX(720deg) rotateY(720deg) rotateZ(360deg) scale(1); }
-}
-
-.dice-prism {
-	position: absolute;
-	width: 132px;
-	height: 132px;
-	transform-style: preserve-3d;
-	transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.dice-prism.rolling {
-	animation: dice-tumble 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.dice-panel {
-	position: absolute;
-	display: grid;
-	place-items: center;
-	top: 10px;
-	left: 50%;
-	width: 54px;
-	height: 112px;
-	margin-left: -27px;
-	border: 2px solid var(--accent-primary);
-	border-radius: 12px;
-	background:
-		radial-gradient(circle at 30% 25%, rgb(255 255 255 / 16%), transparent 60%),
-		rgb(25 18 34 / 96%);
-	color: var(--widget-text, #f5eaff);
-	font: 800 20px/1 var(--font-ui);
-	backface-visibility: hidden;
-	box-shadow: inset 0 0 18px rgb(255 46 166 / 16%);
-}
-
-
-
-.dice-face,
-.dice-panel {
-	box-shadow:
-		inset 0 0 22px rgb(255 46 166 / 18%),
-		0 0 26px rgb(255 46 166 / 18%);
-}
-
-.dice-poly {
-	position: absolute;
-	z-index: 1;
-	width: 132px;
-	height: 132px;
-	transform-style: preserve-3d;
-	transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
-	filter: drop-shadow(0 0 18px rgb(255 46 166 / 30%));
-}
-
-.dice-poly.rolling {
-	animation: dice-tumble 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.dice-poly svg {
-	width: 100%;
-	height: 100%;
-	overflow: visible;
-}
-
-.poly-body {
-	fill: url(#dicePolyFill);
-	stroke: var(--accent-primary);
-	stroke-width: 4;
-}
-
-.poly-facets line {
-	stroke: color-mix(in srgb, var(--accent-primary) 65%, white);
-	stroke-width: 1.5;
-	opacity: 0.65;
-}
-
-.poly-result {
-	fill: var(--widget-text, #f5eaff);
-	font: 800 42px/1 var(--font-ui);
-	text-anchor: middle;
-	dominant-baseline: middle;
-}
-
-
-.poly-back {
-	fill: rgb(10 5 16 / 92%);
-	stroke: color-mix(in srgb, var(--accent-primary) 45%, transparent);
-	stroke-width: 3;
-}
-
-.poly-shade {
-	fill: rgb(255 255 255 / 5%);
-	stroke: none;
-}
-
-.poly-shade[data-even='true'] {
-	fill: rgb(255 46 166 / 9%);
-}
-
-.poly-body {
-	fill-opacity: 0.92;
-}
-
-.dice-host {
-	position: absolute;
-	display: grid;
-	place-items: center;
-	width: 132px;
-	height: 132px;
-}
-
-.dice-host .dice-wrapper {
-	margin: 0;
-	--dice-size: 132px;
-	--dice-text-scale: 1;
-}
-
-
-.dice-host.hide-labels .face-content {
-	opacity: 0;
-}
-
-.dice-overlay-result {
-	position: absolute;
-	z-index: 4;
-	color: var(--widget-text, #f5eaff);
-	font: 800 46px/1 var(--font-ui);
-	text-shadow:
-		0 2px 8px rgb(0 0 0 / 85%),
-		0 0 14px rgb(255 46 166 / 45%);
-	pointer-events: none;
-}
-
-
-.poly-sides polygon {
-	fill: rgb(18 10 26 / 96%);
-	stroke: color-mix(in srgb, var(--accent-primary) 55%, transparent);
-	stroke-width: 2;
-}
-
-.dice-host .die-face {
-	filter: drop-shadow(0 3px 8px rgb(0 0 0 / 65%));
-}
-
-.dice-host .die-face:nth-child(2n) .face-shape {
-	filter: brightness(0.72) saturate(1.1);
-}
-
-.dice-host .die-face:nth-child(3n) .face-shape {
-	filter: brightness(1.22) saturate(1.15);
-}
-
-.dice-host .die-face:nth-child(5n) .face-shape {
-	filter: brightness(0.88);
-}
-
-.dice-host::after {
-	position: absolute;
-	z-index: -1;
-	bottom: -18px;
-	left: 50%;
-	width: 86px;
-	height: 18px;
-	border-radius: 50%;
-	background: radial-gradient(ellipse, rgb(0 0 0 / 55%), transparent 70%);
-	content: '';
-	filter: blur(4px);
-	transform: translateX(-50%);
-}
-
-.dice-coin {
-	position: relative;
-	width: 118px;
-	height: 118px;
-	transform-style: preserve-3d;
-	transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.dice-coin.rolling {
-	animation: dice-tumble 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.dice-coin-face {
-	position: absolute;
-	display: grid;
-	place-items: center;
-	width: 100%;
-	height: 100%;
-	border: 3px solid var(--accent-primary);
-	border-radius: 50%;
-	background: radial-gradient(circle at 35% 30%, rgb(255 255 255 / 20%), rgb(25 18 34 / 96%));
-	color: var(--widget-text, #f5eaff);
-	font: 800 44px/1 var(--font-ui);
-	backface-visibility: hidden;
-}
-
-.dice-coin-back {
-	transform: rotateY(180deg);
-}
-
-.dice-coin-edge {
-	position: absolute;
-	inset: 8px;
-	border: 1px dashed rgb(255 255 255 / 25%);
-	border-radius: 50%;
-}
-
-.dice-sphere {
-	position: absolute;
-	display: grid;
-	place-items: center;
-	width: 132px;
-	height: 132px;
-	border: 3px solid var(--accent-primary);
-	border-radius: 50%;
-	background:
-		radial-gradient(circle at 30% 25%, rgb(255 255 255 / 32%), transparent 35%),
-		radial-gradient(circle at 65% 70%, rgb(255 46 166 / 30%), transparent 55%),
-		rgb(25 18 34 / 96%);
-	color: var(--widget-text, #f5eaff);
-	font: 800 42px/1 var(--font-ui);
-	box-shadow:
-		inset -18px -18px 32px rgb(0 0 0 / 55%),
-		0 0 30px rgb(255 46 166 / 24%);
-}
-
-.dice-sphere.rolling {
-	animation: dice-tumble 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
 }

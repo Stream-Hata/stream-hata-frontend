@@ -140,3 +140,27 @@
 }
 
 
+
+.coin-host {
+	width: 170px;
+	height: 170px;
+}
+
+.coin-host .dice-canvas {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.game-card {
+	opacity: 0;
+	transform: scale(0.92);
+	transition:
+		opacity 180ms ease,
+		transform 220ms ease;
+}
+
+.game-card.visible {
+	opacity: 1;
+	transform: scale(1);
+}

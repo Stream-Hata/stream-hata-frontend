@@ -1,20 +1,13 @@
 <div class="game-stage">
-  @if (!visible()) {
-  } @else if (mode() === 'coin') {
-    <div class="game-card" [class.rolling]="rolling()">
+  <div class="game-card" [class.visible]="visible()" [class.rolling]="rolling()">
+    @if (mode() === 'coin') {
       <span class="game-kicker">МОНЕТКА</span>
-      <div class="coin" [class.tails]="coinSide() === 'tails'" [style.transform]="rolling() ? null : coinTransform()">
-        <span class="coin-edge"></span>
-        <span class="coin-face coin-front">{{ heads() }}</span>
-        <span class="coin-face coin-back">{{ tails() }}</span>
-      </div>
-      <strong class="game-result">{{ result() || '?' }}</strong>
+      <div #coinHost class="coin-host"></div>
+      <strong class="game-result">{{ result() }}</strong>
       @if (viewer()) {
         <span class="game-viewer">{{ viewer() }}</span>
       }
-    </div>
-  } @else {
-    <div class="game-card" [class.rolling]="rolling()">
+    } @else {
       <span class="game-kicker">СЛУЧАЙНЫЙ ВЫБОР</span>
       <div class="slot-window">
         <span class="slot-reel">{{ label() || '...' }}</span>
@@ -23,6 +16,6 @@
       @if (viewer()) {
         <span class="game-viewer">{{ viewer() }}</span>
       }
-    </div>
-  }
+    }
+  </div>
 </div>

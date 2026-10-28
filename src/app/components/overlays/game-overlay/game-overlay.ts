@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, computed, effect, inject, input, signal } from '@angular/core';
+import { AfterViewInit, Component, computed, effect, ElementRef, inject, input, OnDestroy, signal, ViewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { WidgetConfigService, type WidgetConfig } from '@shared/services/widgets.service';
 import { catchError, of, switchMap, timer } from 'rxjs';
+import { DiceScene } from '../dice-overlay/dice-scene';
 
 type GameMode = 'coin' | 'random';
 
@@ -22,13 +23,15 @@ const EMPTY: GameState = { kind: '', label: '', result: '', side: '', viewer: ''
 	styleUrl: './game-overlay.scss',
 	templateUrl: './game-overlay.html',
 })
-export class GameOverlay {
+export class GameOverlay implements AfterViewInit, OnDestroy {
+	@ViewChild('coinHost') private coinHost?: ElementRef<HTMLElement>;
 	readonly mode = input<GameMode>('coin');
 	private readonly http = inject(HttpClient);
 	private readonly configService = inject(WidgetConfigService);
+	private scene?: DiceScene;
 	private lastRolledAt = '';
-	private lastShown = '';
 	private hideTimer: ReturnType<typeof setTimeout> | null = null;
+	readonly ready = signal(false);
 	readonly rolling = signal(false);
 	readonly visible = signal(false);
 
@@ -53,9 +56,6 @@ export class GameOverlay {
 	readonly result = computed(() => this.active() ? this.state().result : '');
 	readonly label = computed(() => this.active() ? this.state().label : '');
 	readonly viewer = computed(() => this.active() ? this.state().viewer : '');
-	readonly coinTransform = computed(() => this.coinSide() === 'tails'
-		? 'rotateX(8deg) rotateY(180deg)'
-		: 'rotateX(8deg) rotateY(0deg)');
 	readonly coinSide = computed(() => {
 		const state = this.state();
 
@@ -69,13 +69,48 @@ export class GameOverlay {
 	constructor() {
 		effect(() => {
 			const rolledAt = this.state().rolledAt;
-			if (!this.active() || !rolledAt || rolledAt === this.lastRolledAt) {
+			const active = this.active();
+
+			if (!this.ready()) {
 				return;
 			}
 
-			this.lastRolledAt = rolledAt;
-			this.rolling.set(true);
-			setTimeout(() => this.rolling.set(false), 1100);
+			if (!active || !rolledAt || rolledAt.startsWith('0001-')) {
+				this.visible.set(false);
+
+				return;
+			}
+
+			if (this.scene) {
+				this.scene.setSides(2, [this.heads(), this.tails(), '']);
+			}
+
+			if (rolledAt !== this.lastRolledAt) {
+				this.lastRolledAt = rolledAt;
+				this.visible.set(true);
+				this.rolling.set(true);
+				this.scene?.roll(this.coinSide() === 'tails' ? 2 : 1);
+				setTimeout(() => this.rolling.set(false), 1000);
+
+				if (this.hideTimer) {
+					clearTimeout(this.hideTimer);
+				}
+				this.hideTimer = setTimeout(() => this.visible.set(false), 8000);
+			}
 		});
+	}
+
+	ngAfterViewInit(): void {
+		if (this.coinHost) {
+			this.scene = new DiceScene(this.coinHost.nativeElement);
+		}
+		this.ready.set(true);
+	}
+
+	ngOnDestroy(): void {
+		if (this.hideTimer) {
+			clearTimeout(this.hideTimer);
+		}
+		this.scene?.destroy();
 	}
 }

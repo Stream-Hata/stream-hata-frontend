@@ -1,58 +1,10 @@
 <div class="dice-stage">
-  @if (visible()) {
-  <div class="dice-card" [class.rolling]="rolling()">
+  <div class="dice-card" [class.visible]="visible()" [class.rolling]="rolling()">
     <span class="dice-kicker">DICE</span>
-
-    <div class="dice-scene" [style.perspective.px]="900">
-      @if (sides() === 2) {
-        <div class="dice-coin" [class.rolling]="rolling()" [style.transform]="rolling() ? null : coinTransform()">
-          <span class="dice-coin-face dice-coin-front">1</span>
-          <span class="dice-coin-face dice-coin-back">2</span>
-          <span class="dice-coin-edge"></span>
-        </div>
-      } @else if (sides() > 20) {
-        <div class="dice-sphere" [class.rolling]="rolling()">
-          <strong>{{ result() }}</strong>
-        </div>
-      } @else if (librarySides()) {
-        <div #diceHost class="dice-host" [class.hide-labels]="sides() >= 10"></div>
-        @if (sides() >= 10) {
-          <strong class="dice-overlay-result">{{ result() }}</strong>
-        }
-      } @else {
-        <div class="dice-poly" [class.rolling]="rolling()" [style.transform]="rolling() ? null : polyTransform()">
-          <svg viewBox="0 0 200 200" role="img" [attr.aria-label]="formula()">
-            <defs>
-              <linearGradient id="dicePolyFill" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="rgb(70 36 86)" />
-                <stop offset="55%" stop-color="rgb(30 18 42)" />
-                <stop offset="100%" stop-color="rgb(15 8 23)" />
-              </linearGradient>
-            </defs>
-            <g class="poly-sides">
-              @for (side of sideFaces(); track $index) {
-                <polygon [attr.points]="side" />
-              }
-            </g>
-            <polygon class="poly-back" [attr.points]="polygonPoints()" transform="translate(-12 12)" />
-            @for (facet of facetShades(); track $index) {
-              <polygon class="poly-shade" [attr.points]="facet" [attr.data-even]="$index % 2 === 0" />
-            }
-            <polygon class="poly-body" [attr.points]="polygonPoints()" />
-            <g class="poly-facets">
-              @for (point of facetLines(); track $index) {
-                <line x1="100" y1="100" [attr.x2]="point.x" [attr.y2]="point.y" />
-              }
-            </g>
-            <text class="poly-result" x="100" y="112">{{ result() }}</text>
-          </svg>
-        </div>
-      }
-      @if (showOverflow()) {
-        <strong class="dice-overflow">{{ result() }}</strong>
-      }
-    </div>
-
+    <div #diceHost class="dice-host"></div>
+    @if (sides() > 20) {
+      <strong class="dice-result">{{ result() }}</strong>
+    }
     <strong class="dice-formula">{{ formula() }}</strong>
     @if (rolls().length > 1) {
       <span class="dice-rolls">{{ rolls().join(' + ') }}</span>
@@ -61,5 +13,4 @@
       <span class="dice-viewer">{{ viewer() }}</span>
     }
   </div>
-  }
 </div>
