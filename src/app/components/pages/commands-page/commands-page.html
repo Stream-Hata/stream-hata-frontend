@@ -289,7 +289,7 @@
           <span class="jk-label">{{ i18n.t('commands.name') }}</span>
           <tui-textfield><input [attr.aria-label]="i18n.t('commands.variableName')" tuiInput type="text" [value]="variableName()" (input)="variableName.set(value($event))" /></tui-textfield>
           <span class="jk-label">{{ i18n.t('commands.variableValue') }}</span>
-          <tui-textfield><textarea [attr.aria-label]="i18n.t('commands.variableValue')" rows="3" tuiTextarea [value]="variableValue()" (input)="variableValue.set(value($event))"></textarea></tui-textfield>
+          <tui-textfield><textarea [attr.aria-label]="i18n.t('commands.variableValue')" rows="6" tuiTextarea [value]="variableValue()" (input)="variableValue.set(value($event))"></textarea></tui-textfield>
           <span class="jk-label">{{ i18n.t('commands.action') }}</span>
           <tui-textfield tuiChevron>
             <input [attr.aria-label]="i18n.t('commands.variableAction')" [readonly]="true" [value]="variableActionLabels[variableActionValues.indexOf(variableActionControl.value)]" [style.color]="accent()" tuiInput tuiSelectLike />
