@@ -13,6 +13,26 @@ interface SaveFileWindow extends Window {
 }
 
 export async function saveTextFile(name: string, text: string, type = 'text/plain'): Promise<void> {
+	const internals = (
+		window as unknown as {
+			__TAURI_INTERNALS__?: {
+				invoke?: (command: string, args?: Record<string, unknown>) => Promise<unknown>;
+			};
+		}
+	).__TAURI_INTERNALS__;
+
+	if (internals?.invoke) {
+		try {
+			const saved = await internals.invoke('save_text_file', { name, text });
+
+			if (typeof saved === 'boolean') {
+				return;
+			}
+		} catch {
+			// fallback to the browser API below
+		}
+	}
+
 	const picker = (window as SaveFileWindow).showSaveFilePicker;
 	const extension = type === 'text/csv' ? '.csv' : type === 'application/json' ? '.json' : '.txt';
 
