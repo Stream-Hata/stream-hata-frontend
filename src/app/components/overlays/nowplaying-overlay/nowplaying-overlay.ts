@@ -1,9 +1,22 @@
+import type { ElementRef } from '@angular/core';
+import type { SafeResourceUrl } from '@angular/platform-browser';
+import type { WidgetConfig } from '@shared/services/widgets.service';
 import type { MusicListResponse, Track } from '@shared/types/music';
-import { Component, computed, DestroyRef, effect, ElementRef, HostListener, inject, signal, untracked, ViewChild } from '@angular/core';
+import {
+	Component,
+	computed,
+	DestroyRef,
+	effect,
+	HostListener,
+	inject,
+	signal,
+	untracked,
+	ViewChild,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { DomSanitizer, type SafeResourceUrl } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { MusicService } from '@shared/services/music.service';
-import { WidgetConfigService, type WidgetConfig } from '@shared/services/widgets.service';
+import { WidgetConfigService } from '@shared/services/widgets.service';
 import { catchError, of, switchMap, timer } from 'rxjs';
 
 @Component({
@@ -29,16 +42,20 @@ export class NowPlayingOverlay {
 
 	readonly state = toSignal(
 		timer(0, 3000).pipe(
-			switchMap(() => this.music.list().pipe(catchError(() => of(null as MusicListResponse | null)))),
+			switchMap(() =>
+				this.music.list().pipe(catchError(() => of(null as MusicListResponse | null))),
+			),
 		),
 		{ initialValue: null as MusicListResponse | null },
 	);
+
 	readonly config = toSignal(
-		this.configService.watch('nowplaying').pipe(
-			catchError(() => of({ config: {} as WidgetConfig })),
-		),
+		this.configService
+			.watch('nowplaying')
+			.pipe(catchError(() => of({ config: {} as WidgetConfig }))),
 		{ initialValue: { config: {} as WidgetConfig } },
 	);
+
 	readonly playlist = computed(() => {
 		const today = new Date().toLocaleDateString('en-CA');
 
@@ -46,12 +63,14 @@ export class NowPlayingOverlay {
 			.filter((track) => new Date(track.lastAddedAt).toLocaleDateString('en-CA') === today)
 			.sort((left, right) => Date.parse(left.lastAddedAt) - Date.parse(right.lastAddedAt));
 	});
+
 	readonly currentId = signal<string | null>(this.storedCurrentId());
 	readonly reloadKey = signal(0);
 	readonly finished = signal(false);
 	readonly current = computed<Track | null>(
 		() => this.playlist().find((track) => track.videoId === this.currentId()) ?? null,
 	);
+
 	readonly currentKind = computed(() => this.current()?.kind ?? '');
 	readonly thumbnailFailed = signal(false);
 	readonly playbackStarted = signal(false);
@@ -64,8 +83,11 @@ export class NowPlayingOverlay {
 
 		return videoId ? `rgg-sync/music/thumbnail?id=${encodeURIComponent(videoId)}` : '';
 	});
+
 	readonly showVideo = computed(() => this.config().config.showVideo !== false);
 	readonly showControls = computed(() => this.config().config.showControls !== false);
+	private lastVideoKey = '';
+	private lastVideoUrl: SafeResourceUrl | null = null;
 	readonly videoUrl = computed<SafeResourceUrl | null>(() => {
 		const videoId = this.currentId();
 		const kind = this.currentKind();
@@ -74,9 +96,34 @@ export class NowPlayingOverlay {
 			return null;
 		}
 
-		return this.sanitizer.bypassSecurityTrustResourceUrl(
-			`https://www.youtube.com/embed/${encodeURIComponent(videoId)}?autoplay=1&controls=1&autohide=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&fs=0&disablekb=1&cc_load_policy=0&playsinline=1&enablejsapi=1&origin=${encodeURIComponent(location.origin)}&reload=${this.reloadKey()}`,
+		const key = `${videoId}|${kind}|${this.reloadKey()}`;
+		if (key === this.lastVideoKey) {
+			return this.lastVideoUrl;
+		}
+
+		const params = [
+			'autoplay=1',
+			'controls=1',
+			'autohide=1',
+			'modestbranding=1',
+			'rel=0',
+			'showinfo=0',
+			'iv_load_policy=3',
+			'fs=0',
+			'disablekb=1',
+			'cc_load_policy=0',
+			'playsinline=1',
+			'enablejsapi=1',
+			`origin=${encodeURIComponent(location.origin)}`,
+			`reload=${this.reloadKey()}`,
+		].join('&');
+
+		this.lastVideoKey = key;
+		this.lastVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+			`https://www.youtube.com/embed/${encodeURIComponent(videoId)}?${params}`,
 		);
+
+		return this.lastVideoUrl;
 	});
 
 	constructor() {
@@ -93,7 +140,6 @@ export class NowPlayingOverlay {
 			}
 
 			let added: string[] = [];
-			const wasEmpty = this.queue.length === 0;
 
 			if (!this.queue.length) {
 				this.queue = [...ids];
@@ -169,7 +215,9 @@ export class NowPlayingOverlay {
 		}
 
 		if (payload?.event === 'infoDelivery') {
-			this.applyPlayerState(typeof payload.info === 'object' ? payload.info.playerState : undefined);
+			this.applyPlayerState(
+				typeof payload.info === 'object' ? payload.info.playerState : undefined,
+			);
 		}
 
 		if (payload?.event === 'onError') {
@@ -185,10 +233,7 @@ export class NowPlayingOverlay {
 		setTimeout(() => this.listenToPlayer(frame), 3000);
 
 		for (const func of ['playVideo', 'unMute']) {
-			frame.contentWindow?.postMessage(
-				JSON.stringify({ event: 'command', func, args: [] }),
-				'*',
-			);
+			frame.contentWindow?.postMessage(JSON.stringify({ event: 'command', func, args: [] }), '*');
 		}
 
 		this.videoError.set(false);
@@ -324,10 +369,11 @@ export class NowPlayingOverlay {
 		}
 
 		const duration = seconds || this.mediaDuration();
-		this.endTimer = setTimeout(
-			() => this.nextTrack(),
-			Math.max(15, duration + 10) * 1000,
-		);
+		if (!duration) {
+			return;
+		}
+
+		this.endTimer = setTimeout(() => this.nextTrack(), Math.max(15, duration + 10) * 1000);
 	}
 
 	private clearEndTimer(): void {
@@ -407,7 +453,10 @@ export class NowPlayingOverlay {
 	private persistCurrent(videoId: string | null): void {
 		try {
 			if (videoId) {
-				localStorage.setItem('nsh.nowplaying.current', JSON.stringify({ id: videoId, at: Date.now() }));
+				localStorage.setItem(
+					'nsh.nowplaying.current',
+					JSON.stringify({ id: videoId, at: Date.now() }),
+				);
 			} else {
 				localStorage.removeItem('nsh.nowplaying.current');
 			}
@@ -416,7 +465,9 @@ export class NowPlayingOverlay {
 		}
 	}
 
-	private parseMessage(data: unknown): { event?: string; info?: number | { playerState?: number } } | null {
+	private parseMessage(
+		data: unknown,
+	): { event?: string; info?: number | { playerState?: number } } | null {
 		if (typeof data === 'object' && data !== null) {
 			return data as { event?: string; info?: number | { playerState?: number } };
 		}

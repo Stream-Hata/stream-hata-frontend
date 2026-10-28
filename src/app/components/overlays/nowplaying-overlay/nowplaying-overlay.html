@@ -1,81 +1,83 @@
 <div class="overlay-stage">
-  <span class="nowplaying-kicker">NOW PLAYING</span>
-  <article class="nowplaying-card">
-    @if (current(); as track) {
-      @if (track.kind === 'audio') {
-        <audio
-          #media
-          class="nowplaying-media nowplaying-media-audio"
-          [src]="track.url"
-          autoplay
-          (playing)="onMediaPlaying()"
-          (pause)="onMediaPause()"
-          (ended)="nextTrack()"
-          (error)="handleVideoError()"
-          (loadedmetadata)="onMediaMetadata($event)"
-        ></audio>
-      } @else if (track.kind === 'video') {
-        <video
-          #media
-          class="nowplaying-media"
-          [src]="track.url"
-          autoplay
-          playsinline
-          (playing)="onMediaPlaying()"
-          (pause)="onMediaPause()"
-          (ended)="nextTrack()"
-          (error)="handleVideoError()"
-          (loadedmetadata)="onMediaMetadata($event)"
-        ></video>
-      } @else if (videoUrl(); as video) {
-        <iframe
-          #player
-          id="nowplaying-player"
-          class="nowplaying-video"
-          [class.nowplaying-video-hidden]="!showVideo() || videoError()"
-          [src]="video"
-          title="Now playing"
-          allow="autoplay; encrypted-media"
-          referrerpolicy="strict-origin-when-cross-origin"
-          (load)="onVideoLoad($event)"
-        ></iframe>
-      }
-      @if ((!showVideo() || videoError()) && thumbnailUrl() && !thumbnailFailed()) {
-        <img
-          class="nowplaying-cover"
-          [alt]="track.title"
-          [src]="thumbnailUrl()"
-          (error)="thumbnailFailed.set(true)"
-        />
-      } @else if (!showVideo() || videoError()) {
-        <span class="nowplaying-cover nowplaying-cover-empty" aria-hidden="true">♪</span>
-      }
-      @if (videoError()) {
-        <span class="nowplaying-error">Видео недоступно встраиванию</span>
-      }
-      @if (needsGesture()) {
-        <button class="nowplaying-play" type="button" (click)="resumePlayback()">
-          ▶ Включить звук
-        </button>
-      }
-      <div class="nowplaying-meta">
-        <strong class="nowplaying-title">{{ track.title }}</strong>
-        <span class="nowplaying-author">{{ track.author }} · {{ duration() }}</span>
-      </div>
-    } @else {
-      <span class="jk-caption nowplaying-empty">
-        {{ finished() ? 'Очередь закончилась' : 'Трек-лист пуст' }}
-      </span>
-    }
-  </article>
-  @if (current() && showControls()) {
-    <div class="nowplaying-controls">
-      <button class="nowplaying-control" type="button" (click)="togglePlayback()">
-        {{ paused() ? '▶ Играть' : '❚❚ Пауза' }}
-      </button>
-      <button class="nowplaying-control" type="button" (click)="skipTrack()">
-        Пропустить →
-      </button>
-    </div>
-  }
+	<span class="nowplaying-kicker">NOW PLAYING</span>
+	<article class="nowplaying-card">
+		@if (current(); as track) {
+			@if (track.kind === 'audio') {
+				<audio
+					#media
+					class="nowplaying-media nowplaying-media-audio"
+					[src]="track.url"
+					autoplay
+					(playing)="onMediaPlaying()"
+					(pause)="onMediaPause()"
+					(ended)="nextTrack()"
+					(error)="handleVideoError()"
+					(loadedmetadata)="onMediaMetadata($event)"
+				></audio>
+			} @else if (track.kind === 'video') {
+				<video
+					#media
+					class="nowplaying-media"
+					[src]="track.url"
+					autoplay
+					playsinline
+					(playing)="onMediaPlaying()"
+					(pause)="onMediaPause()"
+					(ended)="nextTrack()"
+					(error)="handleVideoError()"
+					(loadedmetadata)="onMediaMetadata($event)"
+				></video>
+			} @else if (videoUrl(); as video) {
+				<iframe
+					#player
+					id="nowplaying-player"
+					class="nowplaying-video"
+					[class.nowplaying-video-hidden]="!showVideo() || videoError()"
+					[src]="video"
+					title="Now playing"
+					allow="autoplay; encrypted-media"
+					referrerpolicy="strict-origin-when-cross-origin"
+					(load)="onVideoLoad($event)"
+				></iframe>
+			}
+			@if ((!showVideo() || videoError()) && thumbnailUrl() && !thumbnailFailed()) {
+				<img
+					class="nowplaying-cover"
+					[alt]="track.title"
+					[src]="thumbnailUrl()"
+					(error)="thumbnailFailed.set(true)"
+				/>
+			} @else if (!showVideo() || videoError()) {
+				<span class="nowplaying-cover nowplaying-cover-empty" aria-hidden="true">♪</span>
+			}
+			@if (videoError()) {
+				<span class="nowplaying-error">Видео недоступно встраиванию</span>
+			}
+			@if (needsGesture()) {
+				<button class="nowplaying-play" type="button" (click)="resumePlayback()">
+					▶ Включить звук
+				</button>
+			}
+			<div class="nowplaying-meta">
+				<strong class="nowplaying-title">{{ track.title }}</strong>
+				<span class="nowplaying-author">{{ track.author }} · {{ duration() }}</span>
+			</div>
+		} @else {
+			<span class="jk-caption nowplaying-empty">
+				{{ finished() ? 'Очередь закончилась' : 'Трек-лист пуст' }}
+			</span>
+		}
+	</article>
+	@if (current()) {
+		<div class="nowplaying-controls">
+			@if (showControls()) {
+				<button class="nowplaying-control" type="button" (click)="togglePlayback()">
+					{{ paused() ? '▶ Играть' : '❚❚ Пауза' }}
+				</button>
+			}
+			<button class="nowplaying-control nowplaying-skip" type="button" (click)="skipTrack()">
+				Пропустить →
+			</button>
+		</div>
+	}
 </div>
