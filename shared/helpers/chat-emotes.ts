@@ -1,7 +1,7 @@
 import type { LiveChatMessage } from '../types/chat';
 
 export interface ChatSegment {
-	type: 'text' | 'emote';
+	type: 'text' | 'emote' | 'mention';
 	text: string;
 	url?: string;
 	source?: 'twitch' | '7tv';
@@ -46,6 +46,12 @@ export function buildChatSegments(
 
 			if (url) {
 				segments.push({ type: 'emote', text: part, url, source: '7tv' });
+
+				continue;
+			}
+
+			if (/^@[^\s@]+$/.test(part)) {
+				segments.push({ type: 'mention', text: part });
 
 				continue;
 			}

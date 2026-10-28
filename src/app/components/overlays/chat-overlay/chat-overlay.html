@@ -25,6 +25,8 @@
                 [attr.aria-label]="segment.text"
                 [style.background-image]="'url(' + segment.url + ')'"
               ></span>
+            } @else if (segment.type === 'mention') {
+              <span class="chat-mention">{{ segment.text }}</span>
             } @else {
               <span>{{ segment.text }}</span>
             }

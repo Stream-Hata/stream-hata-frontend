@@ -85,3 +85,13 @@
 .chat-card.no-animation .chat-line {
 	animation: none;
 }
+
+
+.chat-mention {
+	display: inline-block;
+	padding: 0 4px;
+	border-radius: 5px;
+	background: color-mix(in srgb, var(--accent-primary) 22%, transparent);
+	color: var(--accent-primary);
+	font-weight: 700;
+}
