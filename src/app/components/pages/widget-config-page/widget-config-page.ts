@@ -35,6 +35,7 @@ import { DonationConfig } from '../../widgets/donation-config/donation-config';
 import { RouletteConfigForm } from '../../widgets/roulette-config/roulette-config';
 import { HotbarConfig } from '../../widgets/hotbar-config/hotbar-config';
 import { HotbarPreview } from '../../widgets/hotbar-preview/hotbar-preview';
+import { WebglHelp } from '@shared/components/webgl-help/webgl-help';
 
 const STYLE_LABELS: Record<string, string> = {
 	standard: 'Standard',
@@ -64,7 +65,31 @@ const KIND_TITLES: Record<string, string> = {
 };
 
 @Component({
-	imports: [ReactiveFormsModule, RouterLink, TuiBadge, TuiButton, TuiChevron, TuiDataListWrapper, TuiDropdown, TuiIcon, TuiInput, TuiInputColor, TuiInputNumber, TuiSegmented, TuiSelectLike, TuiSlider, TuiSwitch, TuiTextfield, AlertPreview, DonationConfig, HotbarConfig, HotbarPreview, RouletteConfigForm, Timer],
+	imports: [
+		ReactiveFormsModule,
+		RouterLink,
+		TuiBadge,
+		TuiButton,
+		TuiChevron,
+		TuiDataListWrapper,
+		TuiDropdown,
+		TuiIcon,
+		TuiInput,
+		TuiInputColor,
+		TuiInputNumber,
+		TuiSegmented,
+		TuiSelectLike,
+		TuiSlider,
+		TuiSwitch,
+		TuiTextfield,
+		AlertPreview,
+		DonationConfig,
+		HotbarConfig,
+		HotbarPreview,
+		RouletteConfigForm,
+		Timer,
+		WebglHelp,
+	],
 	selector: 'app-widget-config-page',
 	providers: [
 		tuiItemsHandlersProvider({
@@ -81,7 +106,19 @@ export default class WidgetConfigPage {
 	private readonly widgetConfig = inject(WidgetConfigService);
 	private readonly store = inject(HotbarStore);
 	readonly i18n = inject(I18nService);
-	readonly genericKinds = ['audio', 'wheel', 'dice', 'coinflip', 'random', 'quotes', 'chat', 'points', 'music', 'nowplaying', 'streaks'];
+	readonly genericKinds = [
+		'audio',
+		'wheel',
+		'dice',
+		'coinflip',
+		'random',
+		'quotes',
+		'chat',
+		'points',
+		'music',
+		'nowplaying',
+		'streaks',
+	];
 	readonly isGeneric = computed(() => this.genericKinds.includes(this.kind()));
 	readonly genericConfig = signal<WidgetConfig>({});
 	readonly hotbarConfig = signal<WidgetConfig>({});
@@ -139,7 +176,7 @@ export default class WidgetConfigPage {
 		});
 
 		this.genericForm.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
-			this.genericConfig.update((config) => ({ ...config, ...value } as WidgetConfig));
+			this.genericConfig.update((config) => ({ ...config, ...value }) as WidgetConfig);
 		});
 
 		this.widgetConfig
@@ -150,7 +187,10 @@ export default class WidgetConfigPage {
 					this.genericConfig.set(response.config);
 					this.hotbarConfig.set(response.config);
 					this.genericForm.patchValue(
-						{ ...response.config, chatOnlyOriginal: response.config.chatChannelMode === 'original' } as any,
+						{
+							...response.config,
+							chatOnlyOriginal: response.config.chatChannelMode === 'original',
+						} as any,
 						{ emitEvent: false },
 					);
 					this.applyJurySettings(response.config);
@@ -643,7 +683,9 @@ export default class WidgetConfigPage {
 							timerShowLabel: this.labels(),
 							timerDurationSeconds: this.hours() * 3600 + this.minutes() * 60 + this.seconds(),
 							timerCountFromSeconds:
-							this.countFromHours() * 3600 + this.countFromMinutes() * 60 + this.countFromSeconds(),
+								this.countFromHours() * 3600 +
+								this.countFromMinutes() * 60 +
+								this.countFromSeconds(),
 							timerCountToSeconds: this.countUpLimit()
 								? this.countToHours() * 3600 + this.countToMinutes() * 60 + this.countToSeconds()
 								: null,

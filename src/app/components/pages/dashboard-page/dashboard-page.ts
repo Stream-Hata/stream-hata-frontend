@@ -20,6 +20,7 @@ import { TuiButton, TuiIcon, TuiLink } from '@taiga-ui/core';
 import { TuiBadge, TuiProgressBar } from '@taiga-ui/kit';
 import { catchError, of, switchMap, timer } from 'rxjs';
 import { ApprovalRing } from '../../ui/approval-ring/approval-ring';
+import { WebglHelp } from '@shared/components/webgl-help/webgl-help';
 
 @Component({
 	imports: [
@@ -35,6 +36,7 @@ import { ApprovalRing } from '../../ui/approval-ring/approval-ring';
 		TuiTableTh,
 		TuiTableThead,
 		ApprovalRing,
+		WebglHelp,
 	],
 	selector: 'app-dashboard-page',
 	styleUrl: './dashboard-page.scss',

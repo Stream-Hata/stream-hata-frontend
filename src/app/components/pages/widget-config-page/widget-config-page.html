@@ -1,1206 +1,1065 @@
 <div class="jk-page config-page">
-  <header class="jk-page-header">
-    <div class="jk-page-header-text">
-      <h1 class="jk-h1">Настройка виджета</h1>
-      <p class="jk-caption">{{ kindTitle() }} · прозрачный фон для OBS</p>
-    </div>
-
-    <div class="jk-page-actions">
-      <a appearance="jkit-tint" routerLink="/app/widgets" tuiButton>Назад</a>
-      <button appearance="primary" tuiButton type="button" (click)="save()">
-        {{ saved() ? 'Сохранено' : 'Сохранить' }}
-      </button>
-    </div>
-  </header>
-
-  <div class="config-grid">
-    <div class="config-panel">
-      <section class="cfg-section appearance-section">
-        <header class="cfg-head">
-          <h2 class="cfg-title">Внешний вид</h2>
-          <p class="jk-caption">Прозрачность, цвета и масштаб этого виджета.</p>
-        </header>
-
-        <div class="cfg-row">
-          <div class="cfg-text">
-            <span class="cfg-label">Прозрачный фон</span>
-            <span class="jk-caption">Как в OBS-превью</span>
-          </div>
-          <input
-            type="checkbox"
-            aria-label="Прозрачный фон"
-            [formControl]="genericForm.controls.transparent"
-            tuiSwitch
-          ></div>
-
-          <div class="cfg-row">
-            <span class="cfg-label">Цвет фона</span>
-            <tui-textfield class="cfg-control">
-              <input
-                aria-label="Цвет фона виджета"
-                [formControl]="genericForm.controls.backgroundColor"
-                tuiInputColor
-              ></tui-textfield>
-            </div>
-
-            <div class="cfg-row">
-              <span class="cfg-label">Цвет текста</span>
-              <tui-textfield class="cfg-control">
-                <input
-                  aria-label="Цвет текста виджета"
-                  [formControl]="genericForm.controls.textColor"
-                  tuiInputColor
-                ></tui-textfield>
-              </div>
-
-              <div class="cfg-row">
-                <span class="cfg-label">Акцент</span>
-                <tui-textfield class="cfg-control">
-                  <input
-                    aria-label="Акцентный цвет виджета"
-                    [formControl]="genericForm.controls.accentColor"
-                    tuiInputColor
-                  ></tui-textfield>
-                </div>
-
-                <div class="cfg-row">
-                  <span class="cfg-label">Масштаб</span>
-                  <tui-textfield class="cfg-control">
-                    <input tuiInputNumber
-                      aria-label="Масштаб виджета"
-                      [min]="0.5" [max]="2"
-                      [step]="0.05"
-                     
-                      [formControl]="genericForm.controls.scale"
-                    ></tui-textfield>
-                  </div>
-                </section>
-
-                @if (isGeneric()) {
-                  <section class="cfg-section">
-                    <header class="cfg-head">
-                      <h2 class="cfg-title">{{ kindTitle() }}</h2>
-                      <p class="jk-caption">Настройки оверлея и источника данных.</p>
-                    </header>
-
-                    @if (kind() !== 'wheel') {
-                      <div class="cfg-row">
-                        <span class="cfg-label">Заголовок</span>
-                        <tui-textfield>
-                          <input
-                            aria-label="Заголовок виджета"
-                            [formControl]="genericForm.controls.title"
-                            tuiInput
-                          ></tui-textfield>
-                        </div>
-                      }
-
-                      @if (kind() === 'dice') {
-                        <div class="cfg-row">
-                          <span class="cfg-label">Обводка граней</span>
-                          <tui-textfield class="cfg-control">
-                            <input aria-label="Цвет обводки кубика" [formControl]="genericForm.controls.diceEdgeColor" tuiInputColor />
-                          </tui-textfield>
-                        </div>
-                        <div class="cfg-row">
-                          <span class="cfg-label">Толщина обводки</span>
-                          <tui-textfield class="cfg-control">
-                            <input aria-label="Толщина обводки" type="number" [min]="1" [max]="4" [step]="1" [formControl]="genericForm.controls.diceEdgeWidth" tuiInputNumber />
-                          </tui-textfield>
-                        </div>
-                        <div class="cfg-row">
-                          <span class="cfg-label">Прозрачность обводки</span>
-                          <tui-textfield class="cfg-control">
-                            <input aria-label="Прозрачность обводки" type="number" [min]="0.1" [max]="1" [step]="0.1" [formControl]="genericForm.controls.diceEdgeOpacity" tuiInputNumber />
-                          </tui-textfield>
-                        </div>
-                      }
-
-                      @if (kind() === 'dice' || kind() === 'coinflip' || kind() === 'random') {
-                        <div class="cfg-row">
-                          <span class="cfg-label">Заголовок</span>
-                          <tui-textfield class="cfg-control">
-                            <input aria-label="Заголовок игрового виджета" [formControl]="genericForm.controls.gameTitle" tuiInput>
-                          </tui-textfield>
-                        </div>
-                        <div class="cfg-row">
-                          <span class="cfg-label">Текст результата</span>
-                          <tui-textfield class="cfg-control">
-                            <input aria-label="Текст результата" [formControl]="genericForm.controls.gameOutcome" tuiInput placeholder="@{user} выбивает {result}">
-                          </tui-textfield>
-                        </div>
-                        <div class="cfg-row">
-                          <span class="cfg-label">Положение текста</span>
-                          <tui-segmented [formControl]="genericForm.controls.gameTextPosition">
-                            <label>Сверху</label>
-                            <label>Снизу</label>
-                          </tui-segmented>
-                        </div>
-                        <div class="cfg-row">
-                          <span class="cfg-label">Выравнивание</span>
-                          <tui-segmented [formControl]="genericForm.controls.gameTextAlign">
-                            <label>Слева</label>
-                            <label>Центр</label>
-                            <label>Справа</label>
-                          </tui-segmented>
-                        </div>
-                      }
-
-                      @if (kind() === 'coinflip') {
-                        <div class="cfg-row">
-                          <span class="cfg-label">Сторона «орёл»</span>
-                          <tui-textfield><input aria-label="Сторона орёл" [formControl]="genericForm.controls.coinHeads" tuiInput></tui-textfield>
-                        </div>
-                        <div class="cfg-row">
-                          <span class="cfg-label">Сторона «решка»</span>
-                          <tui-textfield><input aria-label="Сторона решка" [formControl]="genericForm.controls.coinTails" tuiInput></tui-textfield>
-                        </div>
-                      }
-
-                      @if (kind() === 'nowplaying') {
-                        <div class="cfg-row">
-                          <span class="cfg-label">Показывать видео</span>
-                          <input
-                            type="checkbox"
-                            aria-label="Показывать видео"
-                            [formControl]="genericForm.controls.showVideo"
-                            tuiSwitch
-                          />
-                        </div>
-                        <div class="cfg-row">
-                          <span class="cfg-label">Показывать кнопки управления</span>
-                          <input
-                            type="checkbox"
-                            aria-label="Показывать кнопки управления"
-                            [formControl]="genericForm.controls.showControls"
-                            tuiSwitch
-                          />
-                        </div>
-                      }
-
-                      @if (kind() === 'chat' || kind() === 'points' || kind() === 'music') {
-                        <div class="cfg-row">
-                          <span class="cfg-label">Максимум строк</span>
-                          <tui-textfield class="cfg-control">
-                            <input tuiInputNumber
-                              aria-label="Максимум строк" [min]="1"
-                             
-                              [formControl]="genericForm.controls.maxRows"
-                            ></tui-textfield>
-                          </div>
-                        }
-
-                        @if (kind() === 'chat') {
-                          <div class="cfg-row">
-                            <span class="cfg-label">Показывать эмоты</span>
-                            <input
-                              type="checkbox"
-                              aria-label="Показывать эмоты"
-                              [formControl]="genericForm.controls.showEmotes"
-                              tuiSwitch
-                            ></div>
-                            <div class="cfg-row">
-                              <span class="cfg-label">Показывать время</span>
-                              <input
-                                type="checkbox"
-                                aria-label="Показывать время"
-                                [formControl]="genericForm.controls.showTimestamps"
-                                tuiSwitch
-                              ></div>
-                            <div class="cfg-row">
-                              <span class="cfg-label">{{ i18n.t('chat.onlyOriginal') }}</span>
-                              <input
-                                type="checkbox"
-                                [attr.aria-label]="i18n.t('chat.onlyOriginal')"
-                                [formControl]="genericForm.controls.chatOnlyOriginal"
-                                tuiSwitch
-                              ></div>
-                            <div class="cfg-row">
-                              <span class="cfg-label">{{ i18n.t('chat.animation') }}</span>
-                              <input
-                                type="checkbox"
-                                [attr.aria-label]="i18n.t('chat.animation')"
-                                [formControl]="genericForm.controls.chatAnimation"
-                                tuiSwitch
-                              ></div>
-                            }
-
-                            @if (kind() === 'streaks') {
-                              <div class="cfg-row">
-                                <span class="cfg-label">Минимальный стрик</span>
-                                <tui-textfield class="cfg-control">
-                                  <input tuiInputNumber
-                                    aria-label="Минимальный стрик" [min]="1"
-                                   
-                                    [formControl]="genericForm.controls.streakMin"
-                                  ></tui-textfield>
-                                </div>
-                                <div class="cfg-row">
-                                  <span class="cfg-label">Показывать каждый N-й стрик</span>
-                                  <tui-textfield class="cfg-control">
-                                    <input tuiInputNumber
-                                      aria-label="Период стриков" [min]="1"
-                                     
-                                      [formControl]="genericForm.controls.streakEvery"
-                                    ></tui-textfield>
-                                  </div>
-                                  <div class="cfg-row">
-                                    <span class="cfg-label">Длительность, сек</span>
-                                    <tui-textfield class="cfg-control">
-                                      <input tuiInputNumber
-                                        aria-label="Длительность уведомления" [min]="2"
-                                       
-                                        [formControl]="genericForm.controls.durationSeconds"
-                                      ></tui-textfield>
-                                    </div>
-                                  }
-
-                                  @if (kind() === 'audio') {
-                                    <div class="cfg-row">
-                                      <span class="cfg-label">Длительность звука, сек</span>
-                                      <tui-textfield class="cfg-control">
-                                        <input tuiInputNumber
-                                          aria-label="Длительность звука" [min]="1"
-                                         
-                                          [formControl]="genericForm.controls.durationSeconds"
-                                        ></tui-textfield>
-                                      </div>
-                                    }
-
-                                    @if (kind() === 'wheel') {
-                                      <div class="cfg-row">
-                                        <span class="cfg-label">Полная настройка колеса</span>
-                                        <a
-                                          size="s"
-                                          appearance="jkit-tint"
-                                          routerLink="/app/wheel"
-                                          tuiButton
-                                        >Открыть</a>
-                                      </div>
-                                    }
-                                  </section>
-                                }
-
-                                @if (kind() === 'hotbar') {
-                                  <section class="cfg-section">
-                                    <app-hotbar-config
-                                      [config]="hotbarConfig()"
-                                      (configChange)="hotbarConfig.set($event)"
-                                    />
-                                  </section>
-                                }
-
-                                @if (kind() === 'roulette') {
-                                  <section class="cfg-section">
-                                    <app-roulette-config />
-                                  </section>
-                                }
-
-                                @if (kind() === 'jury') {
-                                  <section class="cfg-section">
-                                    <header class="cfg-head">
-                                      <h2 class="cfg-title">Основное</h2>
-                                      <p class="jk-caption">Стиль отображения и тема виджета.</p>
-                                    </header>
-
-                                    <div class="cfg-row">
-                                      <span class="cfg-label">Стиль</span>
-                                      <tui-textfield
-                                        class="cfg-control"
-                                        [tuiTextfieldCleaner]="false"
-                                        tuiChevron
-                                      >
-                                        <input
-                                          type="text"
-                                          aria-label="Стиль"
-                                          [formControl]="juryStyleControl"
-                                          tuiInput
-                                          tuiSelectLike
-                                        >
-                                          <tui-data-list-wrapper
-                                            *tuiDropdown
-                                            [items]="juryStyleValues"
-                                            (itemClick)="juryStyle.set($event)"
-                                          ></tui-data-list-wrapper>
-                                        </tui-textfield>
-                                      </div>
-
-                                      <div class="cfg-row">
-                                        <span class="cfg-label">Тема</span>
-                                        <tui-segmented
-                                          [activeItemIndex]="themeIndex()"
-                                          (activeItemIndexChange)="setTheme($event)"
-                                        >
-                                          <button type="button">Dark</button>
-                                          <button type="button">Light</button>
-                                        </tui-segmented>
-                                      </div>
-
-                                      <div class="cfg-row">
-                                        <span class="cfg-label">Плотность</span>
-                                        <tui-segmented
-                                          [activeItemIndex]="densityIndex()"
-                                          (activeItemIndexChange)="setDensity($event)"
-                                        >
-                                          <button type="button">S</button>
-                                          <button type="button">M</button>
-                                          <button type="button">L</button>
-                                        </tui-segmented>
-                                      </div>
-                                    </section>
-
-                                    <section class="cfg-section">
-                                      <header class="cfg-head">
-                                        <h2 class="cfg-title">Видимость</h2>
-                                        <p class="jk-caption">Что показывать в кадре.</p>
-                                      </header>
-
-                                      <div class="cfg-row">
-                                        <div class="cfg-text">
-                                          <span class="cfg-label">Название канала</span>
-                                          <span class="jk-caption">Заголовок и статус LIVE</span>
-                                        </div>
-                                        <input
-                                          aria-label="Название канала"
-                                          type="checkbox"
-                                          [formControl]="showChannelControl"
-                                          tuiSwitch
-                                          />
-                                        </div>
-
-                                        <div class="cfg-row">
-                                          <div class="cfg-text">
-                                            <span class="cfg-label">Вопрос</span>
-                                            <span
-                                              class="jk-caption"
-                                            >Текст текущего голосования</span>
-                                          </div>
-                                          <input
-                                            aria-label="Вопрос"
-                                            type="checkbox"
-                                            [formControl]="showQuestionControl"
-                                            tuiSwitch
-                                            />
-                                          </div>
-
-                                          <div class="cfg-row">
-                                            <div class="cfg-text">
-                                              <span class="cfg-label">Авторы</span>
-                                              <span class="jk-caption">Ник и контекст совета</span>
-                                            </div>
-                                            <input
-                                              aria-label="Авторы"
-                                              type="checkbox"
-                                              [formControl]="showAuthorsControl"
-                                              tuiSwitch
-                                              />
-                                            </div>
-
-                                            <div class="cfg-row">
-                                              <div class="cfg-text">
-                                                <span class="cfg-label">Прогресс</span>
-                                                <span class="jk-caption">Полосы голосования</span>
-                                              </div>
-                                              <input
-                                                aria-label="Прогресс"
-                                                type="checkbox"
-                                                [formControl]="showProgressControl"
-                                                tuiSwitch
-                                                />
-                                              </div>
-                                            <div class="cfg-row">
-                                              <div class="cfg-text">
-                                                <span class="cfg-label">Таймер</span>
-                                                <span class="jk-caption">Оставшееся время голосования</span>
-                                              </div>
-                                              <input
-                                                aria-label="Таймер жюри"
-                                                type="checkbox"
-                                                [formControl]="genericForm.controls.juryShowTimer"
-                                                tuiSwitch
-                                                />
-                                              </div>
-                                            <div class="cfg-row">
-                                              <span class="cfg-label">Цвет «За»</span>
-                                              <tui-textfield class="cfg-control">
-                                                <input
-                                                  aria-label="Цвет полосы «За»"
-                                                  [formControl]="genericForm.controls.juryYeaColor"
-                                                  tuiInputColor
-                                                ></tui-textfield>
-                                              </div>
-                                            <div class="cfg-row">
-                                              <span class="cfg-label">Цвет «Против»</span>
-                                              <tui-textfield class="cfg-control">
-                                                <input
-                                                  aria-label="Цвет полосы «Против»"
-                                                  [formControl]="genericForm.controls.juryNeiColor"
-                                                  tuiInputColor
-                                                ></tui-textfield>
-                                              </div>
-                                            </section>
-
-                                            <section class="cfg-section">
-                                              <header class="cfg-head">
-                                                <h2 class="cfg-title">Анимация</h2>
-                                                <p
-                                                  class="jk-caption"
-                                                >Появление и смена состояния.</p>
-                                              </header>
-
-                                              <div class="cfg-row">
-                                                <span class="cfg-label">Анимировать</span>
-                                                <input
-                                                  aria-label="Анимировать"
-                                                  type="checkbox"
-                                                  [formControl]="animationControl"
-                                                  tuiSwitch
-                                                  />
-                                                </div>
-
-                                                <div class="cfg-row">
-                                                  <div class="cfg-text">
-                                                    <span class="cfg-label">Скорость</span>
-                                                    <span
-                                                      class="jk-caption"
-                                                    >Длительность переходов · {{ speed() }}%</span>
-                                                  </div>
-                                                  <input
-                                                    aria-label="Скорость анимации"
-                                                    class="cfg-slider"
-                                                    max="100"
-                                                    min="0"
-                                                    type="range"
-                                                    [value]="speed()"
-                                                    (input)="speed.set(+$any($event.target).value)"
-                                                    tuiSlider
-                                                    />
-                                                  </div>
-                                                </section>
-                                              } @else if (kind() === 'timer') {
-                                                <section class="cfg-section">
-                                                  <header class="cfg-head">
-                                                    <h2 class="cfg-title">Основное</h2>
-                                                    <p
-                                                      class="jk-caption"
-                                                    >Режим и длительность отсчёта.</p>
-                                                  </header>
-
-                                                  <div class="cfg-row">
-                                                    <span class="cfg-label">Режим</span>
-                                                    <tui-segmented
-                                                      [activeItemIndex]="timerModeIndex()"
-                                                      (activeItemIndexChange)="setTimerMode($event)"
-                                                    >
-                                                      <button type="button">Countdown</button>
-                                                      <button type="button">Count-up</button>
-                                                    </tui-segmented>
-                                                  </div>
-
-                                                  @if (timerMode() === 'countdown') {
-                                                    <div class="cfg-row">
-                                                      <span class="cfg-label">Длительность</span>
-                                                      <div class="cfg-duration">
-                                                        <input type="number" tuiInput
-                                                          aria-label="Часы"
-                                                          class="jk-input cfg-duration-input" max="23" min="0"
-                                                         
-                                                          [value]="hours()"
-                                                          (input)="hours.set(+$any($event.target).value)"
-                                                          />
-                                                          <span class="cfg-duration-sep">:</span>
-                                                          <input type="number" tuiInput
-                                                            aria-label="Минуты"
-                                                            class="jk-input cfg-duration-input" max="59" min="0"
-                                                           
-                                                            [value]="minutes()"
-                                                            (input)="minutes.set(+$any($event.target).value)"
-                                                            />
-                                                            <span class="cfg-duration-sep">:</span>
-                                                            <input type="number" tuiInput
-                                                              aria-label="Секунды"
-                                                              class="jk-input cfg-duration-input" max="59" min="0"
-                                                             
-                                                              [value]="seconds()"
-                                                              (input)="seconds.set(+$any($event.target).value)"
-                                                              />
-                                                            </div>
-                                                          </div>
-                                                        } @else {
-                                                          <div class="cfg-row">
-                                                            <span class="cfg-label">От</span>
-                                                            <div class="cfg-duration">
-                                                              <input tuiInputNumber
-                                                                aria-label="Начало: часы"
-                                                                class="jk-input cfg-duration-input" [max]="23" [min]="0"
-                                                               
-                                                                [formControl]="countFromHoursControl"
-                                                                />
-                                                                <span
-                                                                  class="cfg-duration-sep"
-                                                                >:</span>
-                                                                <input tuiInputNumber
-                                                                  aria-label="Начало: минуты"
-                                                                  class="jk-input cfg-duration-input" [max]="59" [min]="0"
-                                                                 
-                                                                  [formControl]="countFromMinutesControl"
-                                                                  />
-                                                                  <span
-                                                                    class="cfg-duration-sep"
-                                                                  >:</span>
-                                                                  <input tuiInputNumber
-                                                                    aria-label="Начало: секунды"
-                                                                    class="jk-input cfg-duration-input" [max]="59" [min]="0"
-                                                                   
-                                                                    [formControl]="countFromSecondsControl"
-                                                                    />
-                                                                  </div>
-                                                                </div>
-
-                                                                <div class="cfg-row">
-                                                                  <div class="cfg-text">
-                                                                    <span
-                                                                      class="cfg-label"
-                                                                    >Ограничить</span>
-                                                                    <span
-                                                                      class="jk-caption"
-                                                                    >Остановить счёт на значении «До»</span>
-                                                                  </div>
-                                                                  <input
-                                                                    aria-label="Ограничить счёт"
-                                                                    type="checkbox"
-                                                                    [formControl]="countUpLimitControl"
-                                                                    tuiSwitch
-                                                                    />
-                                                                  </div>
-
-                                                                  @if (countUpLimit()) {
-                                                                    <div class="cfg-row">
-                                                                      <span
-                                                                        class="cfg-label"
-                                                                      >До</span>
-                                                                      <div class="cfg-duration">
-                                                                        <input tuiInputNumber
-                                                                          aria-label="Конец: часы"
-                                                                          class="jk-input cfg-duration-input" [max]="23" [min]="0"
-                                                                         
-                                                                          [formControl]="countToHoursControl"
-                                                                          />
-                                                                          <span
-                                                                            class="cfg-duration-sep"
-                                                                          >:</span>
-                                                                          <input tuiInputNumber
-                                                                            aria-label="Конец: минуты"
-                                                                            class="jk-input cfg-duration-input" [max]="59" [min]="0"
-                                                                           
-                                                                            [formControl]="countToMinutesControl"
-                                                                            />
-                                                                            <span
-                                                                              class="cfg-duration-sep"
-                                                                            >:</span>
-                                                                            <input tuiInputNumber
-                                                                              aria-label="Конец: секунды"
-                                                                              class="jk-input cfg-duration-input" [max]="59" [min]="0"
-                                                                             
-                                                                              [formControl]="countToSecondsControl"
-                                                                              />
-                                                                            </div>
-                                                                          </div>
-                                                                        }
-                                                                      }
-
-                                                                      <div class="cfg-row">
-                                                                        <div class="cfg-text">
-                                                                          <span
-                                                                            class="cfg-label"
-                                                                          >Подпись</span>
-                                                                          <span
-                                                                            class="jk-caption"
-                                                                          >Текст над таймером</span>
-                                                                        </div>
-                                                                        <input
-                                                                          aria-label="Подпись"
-                                                                          type="checkbox"
-                                                                          [formControl]="labelsControl"
-                                                                          tuiSwitch
-                                                                          />
-                                                                        </div>
-
-                                                                        @if (labels()) {
-                                                                          <div class="cfg-row">
-                                                                            <span
-                                                                              class="cfg-label"
-                                                                            >Текст подписи</span>
-                                                                            <input
-                                                                              aria-label="Текст подписи"
-                                                                              class="jk-input cfg-control"
-                                                                              type="text"
-                                                                              [value]="labelText()"
-                                                                              (input)="labelText.set($any($event.target).value)"
-                                                                              />
-                                                                            </div>
-                                                                          }
-                                                                        </section>
-
-                                                                        <section
-                                                                          class="cfg-section"
-                                                                        >
-                                                                          <header class="cfg-head">
-                                                                            <h2
-                                                                              class="cfg-title"
-                                                                            >Внешний вид</h2>
-                                                                            <p
-                                                                              class="jk-caption"
-                                                                            >Размер и начертание цифр.</p>
-                                                                          </header>
-
-                                                                          <div class="cfg-row">
-                                                                            <span
-                                                                              class="cfg-label"
-                                                                            >Шрифт</span>
-                                                                            <tui-textfield
-                                                                              class="cfg-control"
-                                                                              tuiChevron
-                                                                            >
-                                                                              <input
-                                                                                aria-label="Шрифт таймера"
-                                                                                [formControl]="timerFontControl"
-                                                                                tuiInput
-                                                                                tuiSelectLike
-                                                                              >
-                                                                                <tui-data-list-wrapper
-                                                                                  *tuiDropdown
-                                                                                  [items]="timerFontValues"
-                                                                                  (itemClick)="timerFont.set($event)"
-                                                                                ></tui-data-list-wrapper>
-                                                                              </tui-textfield>
-                                                                            </div>
-
-                                                                            <div class="cfg-row cfg-row-column">
-                                                                              <span class="cfg-label">Свой шрифт</span>
-                                                                              <span class="jk-caption">Файл woff2/woff/ttf/otf до 2 МБ или прямая ссылка</span>
-                                                                              <input
-                                                                                class="font-upload"
-                                                                                type="file"
-                                                                                accept=".woff2,.woff,.ttf,.otf"
-                                                                                (change)="onFontFile($event)"
-                                                                              />
-                                                                              <tui-textfield>
-                                                                                <input
-                                                                                  aria-label="URL своего шрифта"
-                                                                                  placeholder="https://.../font.woff2"
-                                                                                  type="text"
-                                                                                  [value]="timerFontUrl()"
-                                                                                  (input)="timerFontUrl.set($any($event.target).value); timerFont.set('NSH Custom Timer Font')"
-                                                                                  tuiInput
-                                                                                />
-                                                                              </tui-textfield>
-                                                                              @if (timerFontUrl()) {
-                                                                                <button appearance="flat" size="s" tuiButton type="button" (click)="clearFont()">
-                                                                                  Убрать свой шрифт
-                                                                                </button>
-                                                                              }
-                                                                              @if (fontError()) {
-                                                                                <span class="roulette-error">{{ fontError() }}</span>
-                                                                              }
-                                                                            </div>
-
-                                                                            <div class="cfg-row">
-                                                                              <span
-                                                                                class="cfg-label"
-                                                                              >Размер</span>
-                                                                              <tui-segmented
-                                                                                [activeItemIndex]="timeSizeIndex()"
-                                                                                (activeItemIndexChange)="setTimeSize($event)"
-                                                                              >
-                                                                                <button
-                                                                                  type="button"
-                                                                                >S</button>
-                                                                                <button
-                                                                                  type="button"
-                                                                                >M</button>
-                                                                                <button
-                                                                                  type="button"
-                                                                                >L</button>
-                                                                              </tui-segmented>
-                                                                            </div>
-
-                                                                            <div class="cfg-row">
-                                                                              <span
-                                                                                class="cfg-label"
-                                                                              >По горизонтали</span>
-                                                                              <tui-segmented
-                                                                                [activeItemIndex]="timerAlignIndex()"
-                                                                                (activeItemIndexChange)="setTimerAlign($event)"
-                                                                              >
-                                                                                <button
-                                                                                  type="button"
-                                                                                >Слева</button>
-                                                                                <button
-                                                                                  type="button"
-                                                                                >Центр</button>
-                                                                                <button
-                                                                                  type="button"
-                                                                                >Справа</button>
-                                                                              </tui-segmented>
-                                                                            </div>
-
-                                                                            <div class="cfg-row">
-                                                                              <span
-                                                                                class="cfg-label"
-                                                                              >По вертикали</span>
-                                                                              <tui-segmented
-                                                                                [activeItemIndex]="timerVerticalAlignIndex()"
-                                                                                (activeItemIndexChange)="setTimerVerticalAlign($event)"
-                                                                              >
-                                                                                <button
-                                                                                  type="button"
-                                                                                >Сверху</button>
-                                                                                <button
-                                                                                  type="button"
-                                                                                >Центр</button>
-                                                                                <button
-                                                                                  type="button"
-                                                                                >Снизу</button>
-                                                                              </tui-segmented>
-                                                                            </div>
-
-                                                                            <div class="cfg-row">
-                                                                              <div class="cfg-text">
-                                                                                <span
-                                                                                  class="cfg-label"
-                                                                                >Полоса прогресса</span>
-                                                                                <span
-                                                                                  class="jk-caption"
-                                                                                >Заполняется по мере отсчёта</span>
-                                                                              </div>
-                                                                              <input
-                                                                                aria-label="Полоса прогресса"
-                                                                                type="checkbox"
-                                                                                [formControl]="showTimerProgressControl"
-                                                                                tuiSwitch
-                                                                                />
-                                                                              </div>
-
-                                                                              @if (showTimerProgress()) {
-                                                                                <div
-                                                                                  class="cfg-row"
-                                                                                >
-                                                                                  <span
-                                                                                    class="cfg-label"
-                                                                                  >Цвет полосы</span>
-                                                                                  <tui-textfield
-                                                                                    class="cfg-control"
-                                                                                  >
-                                                                                    <input
-                                                                                      aria-label="Цвет полосы прогресса"
-                                                                                      [formControl]="timerProgressColorControl"
-                                                                                      tuiInputColor
-                                                                                    ></tui-textfield>
-                                                                                  </div>
-                                                                                }
-                                                                              </section>
-                                                                            } @else if (kind() === 'alerts') {
-                                                                              <section
-                                                                                class="cfg-section"
-                                                                                [formGroup]="alertTypeForm"
-                                                                              >
-                                                                                <header
-                                                                                  class="cfg-head"
-                                                                                >
-                                                                                  <h2
-                                                                                    class="cfg-title"
-                                                                                  >События</h2>
-                                                                                  <p
-                                                                                    class="jk-caption"
-                                                                                  >Какие алерты показывать в эфире.</p>
-                                                                                </header>
-
-                                                                                @for (type of alertTypeList; track type.key) {
-                                                                                  <div
-                                                                                    class="cfg-row"
-                                                                                  >
-                                                                                    <span
-                                                                                      class="cfg-label"
-                                                                                    >{{ type.label }}</span>
-                                                                                    <div
-                                                                                      class="alert-type-actions"
-                                                                                    >
-                                                                                      <button
-                                                                                        size="xs"
-                                                                                        type="button"
-                                                                                        (click)="testAlert(type.key)"
-                                                                                        appearance="flat"
-                                                                                        tuiButton
-                                                                                      >
-                                                                                        Тест
-                                                                                      </button>
-                                                                                      <input
-                                                                                        aria-label="Включить тип алерта"
-                                                                                        type="checkbox"
-                                                                                        [formControlName]="type.key"
-                                                                                        tuiSwitch
-                                                                                        />
-                                                                                      </div>
-                                                                                    </div>
-                                                                                  }
-
-                                                                                  <div
-                                                                                    class="cfg-row"
-                                                                                  >
-                                                                                    <div
-                                                                                      class="cfg-text"
-                                                                                    >
-                                                                                      <span
-                                                                                        class="cfg-label"
-                                                                                      >Длительность показа</span>
-                                                                                      <span
-                                                                                        class="jk-caption"
-                                                                                      >Секунды на экране · {{ alertDuration() }}</span>
-                                                                                    </div>
-                                                                                    <input
-                                                                                      aria-label="Длительность показа"
-                                                                                      class="cfg-slider"
-                                                                                      max="15"
-                                                                                      min="2"
-                                                                                      type="range"
-                                                                                      [value]="alertDuration()"
-                                                                                      (input)="setAlertDuration($event)"
-                                                                                      (change)="saveAlertSettings()"
-                                                                                      tuiSlider
-                                                                                      />
-                                                                                    </div>
-
-                                                                                    <div
-                                                                                      class="cfg-row"
-                                                                                    >
-                                                                                      <div
-                                                                                        class="cfg-text"
-                                                                                      >
-                                                                                        <span
-                                                                                          class="cfg-label"
-                                                                                        >Звук алерта</span>
-                                                                                        <span
-                                                                                          class="jk-caption"
-                                                                                        >Проигрывается в OBS Browser Source</span>
-                                                                                      </div>
-                                                                                      <input
-                                                                                        aria-label="Включить звук алерта"
-                                                                                        type="checkbox"
-                                                                                        [formControl]="alertSoundEnabledControl"
-                                                                                        tuiSwitch
-                                                                                        />
-                                                                                      </div>
-
-                                                                                      <div
-                                                                                        class="cfg-row cfg-row-column"
-                                                                                      >
-                                                                                        <span
-                                                                                          class="cfg-label"
-                                                                                        >URL звука</span>
-                                                                                        <tui-textfield>
-                                                                                          <input
-                                                                                            aria-label="URL звука"
-                                                                                            placeholder="https://.../alert.mp3"
-                                                                                            [value]="alertSoundUrl()"
-                                                                                            (input)="alertSoundUrl.set($any($event.target).value)"
-                                                                                            (change)="saveAlertSettings()"
-                                                                                            tuiInput
-                                                                                            />
-                                                                                          </tui-textfield>
-                                                                                        </div>
-
-                                                                                        <div
-                                                                                          class="cfg-row"
-                                                                                        >
-                                                                                          <div
-                                                                                            class="cfg-text"
-                                                                                          >
-                                                                                            <span
-                                                                                              class="cfg-label"
-                                                                                            >Громкость</span>
-                                                                                            <span
-                                                                                              class="jk-caption"
-                                                                                            >{{ alertSoundVolume() }}%</span>
-                                                                                          </div>
-                                                                                          <input
-                                                                                            aria-label="Громкость звука"
-                                                                                            class="cfg-slider"
-                                                                                            max="100"
-                                                                                            min="0"
-                                                                                            type="range"
-                                                                                            [value]="alertSoundVolume()"
-                                                                                            (input)="alertSoundVolume.set(+$any($event.target).value)"
-                                                                                            (change)="saveAlertSettings()"
-                                                                                            tuiSlider
-                                                                                            />
-                                                                                          </div>
-                                                                                        </section>
-
-                                                                                        <section
-                                                                                          class="cfg-section"
-                                                                                        >
-                                                                                          <header
-                                                                                            class="cfg-head"
-                                                                                          >
-                                                                                            <h2
-                                                                                              class="cfg-title"
-                                                                                            >Последние алерты</h2>
-                                                                                            <p
-                                                                                              class="jk-caption"
-                                                                                            >Лента событий канала (обновляется автоматически).</p>
-                                                                                          </header>
-
-                                                                                          @if (alertEvents().length) {
-                                                                                            @for (event of alertEvents().slice(0, 6); track event.id) {
-                                                                                              <div
-                                                                                                class="alert-row"
-                                                                                              >
-                                                                                                <span
-                                                                                                  class="alert-icon"
-                                                                                                >
-                                                                                                  <tui-icon
-                                                                                                    icon="@tui.bell" />
-                                                                                                  </span>
-                                                                                                  <div
-                                                                                                    class="cfg-text"
-                                                                                                  >
-                                                                                                    <span
-                                                                                                      class="cfg-label"
-                                                                                                    >{{ event.username }}</span>
-                                                                                                    <span
-                                                                                                      class="jk-caption"
-                                                                                                    >{{ event.message }}</span>
-                                                                                                  </div>
-                                                                                                  <span appearance="neutral" tuiBadge>{{
-                                                                                                    alertTypeLabels[event.type] ?? event.type
-                                                                                                  }}</span>
-                                                                                              </div>
-                                                                                            }
-                                                                                          } @else {
-                                                                                            <p
-                                                                                              class="jk-body-sm jk-muted"
-                                                                                            >
-                                                                                              События появятся после первых фолловеров, подписок и битсов.
-                                                                                            </p>
-                                                                                          }
-                                                                                        </section>
-                                                                                      } @else if (kind() === 'donations') {
-<app-donation-config />
-} @else {
-                                                                                              <section
-                                                                                                class="cfg-section"
-                                                                                              >
-                                                                                                <header
-                                                                                                  class="cfg-head"
-                                                                                                >
-                                                                                                  <h2
-                                                                                                    class="cfg-title"
-                                                                                                  >Список событий</h2>
-                                                                                                  <p
-                                                                                                    class="jk-caption"
-                                                                                                  >Сколько строк показывать в виджете.</p>
-                                                                                                </header>
-
-                                                                                                <div
-                                                                                                  class="cfg-row"
-                                                                                                >
-                                                                                                  <div
-                                                                                                    class="cfg-text"
-                                                                                                  >
-                                                                                                    <span
-                                                                                                      class="cfg-label"
-                                                                                                    >Строк в списке</span>
-                                                                                                    <span
-                                                                                                      class="jk-caption"
-                                                                                                    >От 1 до 10 · {{ eventsRows() }}</span>
-                                                                                                  </div>
-                                                                                                  <input
-                                                                                                    aria-label="Строк в списке"
-                                                                                                    class="cfg-slider"
-                                                                                                    max="10"
-                                                                                                    min="1"
-                                                                                                    type="range"
-                                                                                                    [value]="eventsRows()"
-                                                                                                    (input)="eventsRows.set(+$any($event.target).value)"
-                                                                                                    tuiSlider
-                                                                                                    />
-                                                                                                  </div>
-
-                                                                                                  <div
-                                                                                                    class="cfg-row"
-                                                                                                  >
-                                                                                                    <span
-                                                                                                      class="cfg-label"
-                                                                                                    >Показывать прошедшие</span>
-                                                                                                    <input
-                                                                                                      aria-label="Показывать прошедшие"
-                                                                                                      type="checkbox"
-                                                                                                      [formControl]="eventsPastControl"
-                                                                                                      tuiSwitch
-                                                                                                      />
-                                                                                                    </div>
-                                                                                                  </section>
-                                                                                                }
-                                                                                              </div>
-
-                                                                                              <aside
-                                                                                                class="preview-panel"
-                                                                                              >
-                                                                                                <div
-                                                                                                  class="preview-head"
-                                                                                                >
-                                                                                                  <span
-                                                                                                    class="jk-label"
-                                                                                                  >Превью</span>
-                                                                                                  <span
-                                                                                                    appearance="info"
-                                                                                                    tuiBadge
-                                                                                                  >16:9 · прозрачный</span>
-                                                                                                </div>
-
-                                                                                                <div
-                                                                                                  class="preview-stage jk-checkerboard"
-                                                                                                  [class.preview-light]="kind() === 'jury' && theme() === 'light'"
-                                                                                                  [style.alignItems]="timerVerticalItems()"
-                                                                                                  [style.justifyContent]="timerAlignItems()"
-                                                                                                >
-                                                                                                  @if (kind() === 'jury') {
-                                                                                                    <div
-                                                                                                      class="pv-jury"
-                                                                                                      [class]="'density-' + density()"
-                                                                                                    >
-                                                                                                      @if (showChannel()) {
-                                                                                                        <div
-                                                                                                          class="pv-head"
-                                                                                                        >
-                                                                                                          <span>Чат-жюри</span>
-                                                                                                          <span
-                                                                                                            class="pv-live"
-                                                                                                          >Live</span>
-                                                                                                        </div>
-                                                                                                      }
-
-                                                                                                      @if (showQuestion()) {
-                                                                                                        <p
-                                                                                                          class="pv-question"
-                                                                                                        >Спрятаться или сражаться?</p>
-                                                                                                      }
-
-                                                                                                      @if (showAuthors()) {
-                                                                                                        <p
-                                                                                                          class="pv-author"
-                                                                                                        >Совет из чата · AI-оценка</p>
-                                                                                                      }
-
-                                                                                                      @if (showProgress()) {
-                                                                                                        <div
-                                                                                                          class="pv-bars"
-                                                                                                        >
-                                                                                                          <span class="pv-bar"><span class="pv-fill yea" style="width: 72%"></span></span>
-                                                                                                          <span class="pv-bar"><span class="pv-fill nei" style="width: 28%"></span></span>
-                                                                                                        </div>
-                                                                                                      }
-
-                                                                                                      <span
-                                                                                                        class="pv-time"
-                                                                                                      >00:12</span>
-                                                                                                    </div>
-                                                                                                  } @else if (kind() === 'timer') {
-                                                                                                    <div
-                                                                                                      class="pv-timer"
-                                                                                                      [class]="'time-' + timeSize()"
-                                                                                                      [style.alignItems]="timerAlignItems()"
-                                                                                                      [style.textAlign]="timerAlign()"
-                                                                                                    >
-                                                                                                      @if (labels()) {
-                                                                                                        <span
-                                                                                                          class="pv-timer-label"
-                                                                                                          [style.color]="timerTextColor()"
-                                                                                                        >{{ labelText() }}</span>
-                                                                                                      }
-
-                                                                                                      <span
-                                                                                                        class="pv-timer-value"
-                                                                                                        [style.font-family]="timerFontFamily()"
-                                                                                                        [style.color]="timerTextColor()"
-                                                                                                      >{{ time() }}</span>
-
-                                                                                                      @if (showTimerProgress()) {
-                                                                                                        <span
-                                                                                                          class="pv-bar pv-timer-bar"
-                                                                                                        >
-                                                                                                          <span
-                                                                                                            class="pv-fill cyan"
-                                                                                                            [style.width.%]="timerProgress()"
-                                                                                                            [style.background]="timerProgressColor()"
-                                                                                                          ></span>
-                                                                                                        </span>
-                                                                                                      }
-                                                                                                    </div>
-                                                                                                  } @else if (kind() === 'hotbar') {
-                                                                                                    <app-hotbar-preview [slots]="hotbarConfig().hotbarSlots ?? []" />
-                                                                                                  } @else if (kind() === 'roulette') {
-                                                                                                    <div class="pv-events">
-                                                                                                      <div class="pv-event-row">
-                                                                                                        <tui-icon icon="@tui.dices" />
-                                                                                                        <div class="pv-event-text">
-                                                                                                          <span>Рулетка игр</span>
-                                                                                                          <span class="jk-caption">Запуск в разделе «Рулетка»</span>
-                                                                                                        </div>
-                                                                                                      </div>
-                                                                                                    </div>
-                                                                                                  } @else if (kind() === 'alerts') {
-                                                                                                    <app-alert-preview
-
-                                                                                                      />
-                                                                                                    } @else {
-                                                                                                      <div
-                                                                                                        class="pv-events"
-                                                                                                      >
-                                                                                                        <div
-                                                                                                          class="pv-event-row"
-                                                                                                        >
-                                                                                                          <tui-icon
-                                                                                                            icon="@tui.plus"
-
-                                                                                                            />
-                                                                                                            <div
-                                                                                                              class="pv-event-text"
-                                                                                                            >
-                                                                                                              <span>Событие канала</span>
-                                                                                                              <span
-                                                                                                                class="jk-caption"
-                                                                                                              >реальное время</span>
-                                                                                                            </div>
-                                                                                                          </div>
-
-                                                                                                          <span
-                                                                                                            class="pv-event-active"
-                                                                                                          >
-                                                                                                            <span
-                                                                                                              class="jk-dot jk-dot-online"
-                                                                                                            ></span>
-                                                                                                            Активно
-                                                                                                          </span>
-                                                                                                        </div>
-                                                                                                      }
-                                                                                                    </div>
-
-                                                                                                    <p
-                                                                                                      class="jk-caption preview-note"
-                                                                                                    >Размер OBS-источника: 460×180 · фон прозрачный</p>
-
-                                                                                                    @if (kind() === 'timer') {
-                                                                                                      <div
-                                                                                                        class="timer-widget-controls"
-                                                                                                      >
-                                                                                                        <app-timer
-                                                                                                          class="timer-controls-only"
-                                                                                                          />
-                                                                                                        </div>
-                                                                                                      }
-                                                                                                    </aside>
-                                                                                                  </div>
-
-                                                                                                </div>
+	<app-webgl-help #webglHelp />
+		<header class="jk-page-header">
+		<div class="jk-page-header-text">
+			<h1 class="jk-h1">Настройка виджета</h1>
+			<p class="jk-caption">{{ kindTitle() }} · прозрачный фон для OBS</p>
+		</div>
+
+		<div class="jk-page-actions">
+			<a appearance="jkit-tint" routerLink="/app/widgets" tuiButton>Назад</a>
+			@if (kind() === 'dice' || kind() === 'coinflip') {
+				<button type="button" appearance="flat" tuiButton (click)="webglHelp.open()">
+					Проверить WebGL
+				</button>
+			}
+			@if (kind() === 'dice' || kind() === 'coinflip') {
+				<button type="button" appearance="flat" tuiButton (click)="webglHelp.open()">
+					Проверить WebGL
+				</button>
+			}
+			<button appearance="primary" tuiButton type="button" (click)="save()">
+				{{ saved() ? 'Сохранено' : 'Сохранить' }}
+			</button>
+		</div>
+	</header>
+
+	<div class="config-grid">
+		<div class="config-panel">
+			<section class="cfg-section appearance-section">
+				<header class="cfg-head">
+					<h2 class="cfg-title">Внешний вид</h2>
+					<p class="jk-caption">Прозрачность, цвета и масштаб этого виджета.</p>
+				</header>
+
+				<div class="cfg-row">
+					<div class="cfg-text">
+						<span class="cfg-label">Прозрачный фон</span>
+						<span class="jk-caption">Как в OBS-превью</span>
+					</div>
+					<input
+						type="checkbox"
+						aria-label="Прозрачный фон"
+						[formControl]="genericForm.controls.transparent"
+						tuiSwitch
+					/>
+				</div>
+
+				<div class="cfg-row">
+					<span class="cfg-label">Цвет фона</span>
+					<tui-textfield class="cfg-control">
+						<input
+							aria-label="Цвет фона виджета"
+							[formControl]="genericForm.controls.backgroundColor"
+							tuiInputColor
+					/></tui-textfield>
+				</div>
+
+				<div class="cfg-row">
+					<span class="cfg-label">Цвет текста</span>
+					<tui-textfield class="cfg-control">
+						<input
+							aria-label="Цвет текста виджета"
+							[formControl]="genericForm.controls.textColor"
+							tuiInputColor
+					/></tui-textfield>
+				</div>
+
+				<div class="cfg-row">
+					<span class="cfg-label">Акцент</span>
+					<tui-textfield class="cfg-control">
+						<input
+							aria-label="Акцентный цвет виджета"
+							[formControl]="genericForm.controls.accentColor"
+							tuiInputColor
+					/></tui-textfield>
+				</div>
+
+				<div class="cfg-row">
+					<span class="cfg-label">Масштаб</span>
+					<tui-textfield class="cfg-control">
+						<input
+							tuiInputNumber
+							aria-label="Масштаб виджета"
+							[min]="0.5"
+							[max]="2"
+							[step]="0.05"
+							[formControl]="genericForm.controls.scale"
+					/></tui-textfield>
+				</div>
+			</section>
+
+			@if (isGeneric()) {
+				<section class="cfg-section">
+					<header class="cfg-head">
+						<h2 class="cfg-title">{{ kindTitle() }}</h2>
+						<p class="jk-caption">Настройки оверлея и источника данных.</p>
+					</header>
+
+					@if (kind() !== 'wheel') {
+						<div class="cfg-row">
+							<span class="cfg-label">Заголовок</span>
+							<tui-textfield>
+								<input
+									aria-label="Заголовок виджета"
+									[formControl]="genericForm.controls.title"
+									tuiInput
+							/></tui-textfield>
+						</div>
+					}
+
+					@if (kind() === 'dice') {
+						<div class="cfg-row">
+							<span class="cfg-label">Обводка граней</span>
+							<tui-textfield class="cfg-control">
+								<input
+									aria-label="Цвет обводки кубика"
+									[formControl]="genericForm.controls.diceEdgeColor"
+									tuiInputColor
+								/>
+							</tui-textfield>
+						</div>
+						<div class="cfg-row">
+							<span class="cfg-label">Толщина обводки</span>
+							<tui-textfield class="cfg-control">
+								<input
+									aria-label="Толщина обводки"
+									type="number"
+									[min]="1"
+									[max]="4"
+									[step]="1"
+									[formControl]="genericForm.controls.diceEdgeWidth"
+									tuiInputNumber
+								/>
+							</tui-textfield>
+						</div>
+						<div class="cfg-row">
+							<span class="cfg-label">Прозрачность обводки</span>
+							<tui-textfield class="cfg-control">
+								<input
+									aria-label="Прозрачность обводки"
+									type="number"
+									[min]="0.1"
+									[max]="1"
+									[step]="0.1"
+									[formControl]="genericForm.controls.diceEdgeOpacity"
+									tuiInputNumber
+								/>
+							</tui-textfield>
+						</div>
+					}
+
+					@if (kind() === 'dice' || kind() === 'coinflip' || kind() === 'random') {
+						<div class="cfg-row">
+							<span class="cfg-label">Заголовок</span>
+							<tui-textfield class="cfg-control">
+								<input
+									aria-label="Заголовок игрового виджета"
+									[formControl]="genericForm.controls.gameTitle"
+									tuiInput
+								/>
+							</tui-textfield>
+						</div>
+						<div class="cfg-row">
+							<span class="cfg-label">Текст результата</span>
+							<tui-textfield class="cfg-control">
+								<input
+									aria-label="Текст результата"
+									placeholder="@{user} выбивает {result}"
+									[formControl]="genericForm.controls.gameOutcome"
+									tuiInput
+								/>
+							</tui-textfield>
+						</div>
+						<div class="cfg-row">
+							<span class="cfg-label">Положение текста</span>
+							<tui-segmented [formControl]="genericForm.controls.gameTextPosition">
+								<label>Сверху</label>
+								<label>Снизу</label>
+							</tui-segmented>
+						</div>
+						<div class="cfg-row">
+							<span class="cfg-label">Выравнивание</span>
+							<tui-segmented [formControl]="genericForm.controls.gameTextAlign">
+								<label>Слева</label>
+								<label>Центр</label>
+								<label>Справа</label>
+							</tui-segmented>
+						</div>
+					}
+
+					@if (kind() === 'coinflip') {
+						<div class="cfg-row">
+							<span class="cfg-label">Сторона «орёл»</span>
+							<tui-textfield
+								><input
+									aria-label="Сторона орёл"
+									[formControl]="genericForm.controls.coinHeads"
+									tuiInput
+							/></tui-textfield>
+						</div>
+						<div class="cfg-row">
+							<span class="cfg-label">Сторона «решка»</span>
+							<tui-textfield
+								><input
+									aria-label="Сторона решка"
+									[formControl]="genericForm.controls.coinTails"
+									tuiInput
+							/></tui-textfield>
+						</div>
+					}
+
+					@if (kind() === 'nowplaying') {
+						<div class="cfg-row">
+							<span class="cfg-label">Показывать видео</span>
+							<input
+								type="checkbox"
+								aria-label="Показывать видео"
+								[formControl]="genericForm.controls.showVideo"
+								tuiSwitch
+							/>
+						</div>
+						<div class="cfg-row">
+							<span class="cfg-label">Показывать кнопки управления</span>
+							<input
+								type="checkbox"
+								aria-label="Показывать кнопки управления"
+								[formControl]="genericForm.controls.showControls"
+								tuiSwitch
+							/>
+						</div>
+					}
+
+					@if (kind() === 'chat' || kind() === 'points' || kind() === 'music') {
+						<div class="cfg-row">
+							<span class="cfg-label">Максимум строк</span>
+							<tui-textfield class="cfg-control">
+								<input
+									tuiInputNumber
+									aria-label="Максимум строк"
+									[min]="1"
+									[formControl]="genericForm.controls.maxRows"
+							/></tui-textfield>
+						</div>
+					}
+
+					@if (kind() === 'chat') {
+						<div class="cfg-row">
+							<span class="cfg-label">Показывать эмоты</span>
+							<input
+								type="checkbox"
+								aria-label="Показывать эмоты"
+								[formControl]="genericForm.controls.showEmotes"
+								tuiSwitch
+							/>
+						</div>
+						<div class="cfg-row">
+							<span class="cfg-label">Показывать время</span>
+							<input
+								type="checkbox"
+								aria-label="Показывать время"
+								[formControl]="genericForm.controls.showTimestamps"
+								tuiSwitch
+							/>
+						</div>
+						<div class="cfg-row">
+							<span class="cfg-label">{{ i18n.t('chat.onlyOriginal') }}</span>
+							<input
+								type="checkbox"
+								[attr.aria-label]="i18n.t('chat.onlyOriginal')"
+								[formControl]="genericForm.controls.chatOnlyOriginal"
+								tuiSwitch
+							/>
+						</div>
+						<div class="cfg-row">
+							<span class="cfg-label">{{ i18n.t('chat.animation') }}</span>
+							<input
+								type="checkbox"
+								[attr.aria-label]="i18n.t('chat.animation')"
+								[formControl]="genericForm.controls.chatAnimation"
+								tuiSwitch
+							/>
+						</div>
+					}
+
+					@if (kind() === 'streaks') {
+						<div class="cfg-row">
+							<span class="cfg-label">Минимальный стрик</span>
+							<tui-textfield class="cfg-control">
+								<input
+									tuiInputNumber
+									aria-label="Минимальный стрик"
+									[min]="1"
+									[formControl]="genericForm.controls.streakMin"
+							/></tui-textfield>
+						</div>
+						<div class="cfg-row">
+							<span class="cfg-label">Показывать каждый N-й стрик</span>
+							<tui-textfield class="cfg-control">
+								<input
+									tuiInputNumber
+									aria-label="Период стриков"
+									[min]="1"
+									[formControl]="genericForm.controls.streakEvery"
+							/></tui-textfield>
+						</div>
+						<div class="cfg-row">
+							<span class="cfg-label">Длительность, сек</span>
+							<tui-textfield class="cfg-control">
+								<input
+									tuiInputNumber
+									aria-label="Длительность уведомления"
+									[min]="2"
+									[formControl]="genericForm.controls.durationSeconds"
+							/></tui-textfield>
+						</div>
+					}
+
+					@if (kind() === 'audio') {
+						<div class="cfg-row">
+							<span class="cfg-label">Длительность звука, сек</span>
+							<tui-textfield class="cfg-control">
+								<input
+									tuiInputNumber
+									aria-label="Длительность звука"
+									[min]="1"
+									[formControl]="genericForm.controls.durationSeconds"
+							/></tui-textfield>
+						</div>
+					}
+
+					@if (kind() === 'wheel') {
+						<div class="cfg-row">
+							<span class="cfg-label">Полная настройка колеса</span>
+							<a size="s" appearance="jkit-tint" routerLink="/app/wheel" tuiButton>Открыть</a>
+						</div>
+					}
+				</section>
+			}
+
+			@if (kind() === 'hotbar') {
+				<section class="cfg-section">
+					<app-hotbar-config [config]="hotbarConfig()" (configChange)="hotbarConfig.set($event)" />
+				</section>
+			}
+
+			@if (kind() === 'roulette') {
+				<section class="cfg-section">
+					<app-roulette-config />
+				</section>
+			}
+
+			@if (kind() === 'jury') {
+				<section class="cfg-section">
+					<header class="cfg-head">
+						<h2 class="cfg-title">Основное</h2>
+						<p class="jk-caption">Стиль отображения и тема виджета.</p>
+					</header>
+
+					<div class="cfg-row">
+						<span class="cfg-label">Стиль</span>
+						<tui-textfield class="cfg-control" [tuiTextfieldCleaner]="false" tuiChevron>
+							<input
+								type="text"
+								aria-label="Стиль"
+								[formControl]="juryStyleControl"
+								tuiInput
+								tuiSelectLike
+							/>
+							<tui-data-list-wrapper
+								*tuiDropdown
+								[items]="juryStyleValues"
+								(itemClick)="juryStyle.set($event)"
+							></tui-data-list-wrapper>
+						</tui-textfield>
+					</div>
+
+					<div class="cfg-row">
+						<span class="cfg-label">Тема</span>
+						<tui-segmented
+							[activeItemIndex]="themeIndex()"
+							(activeItemIndexChange)="setTheme($event)"
+						>
+							<button type="button">Dark</button>
+							<button type="button">Light</button>
+						</tui-segmented>
+					</div>
+
+					<div class="cfg-row">
+						<span class="cfg-label">Плотность</span>
+						<tui-segmented
+							[activeItemIndex]="densityIndex()"
+							(activeItemIndexChange)="setDensity($event)"
+						>
+							<button type="button">S</button>
+							<button type="button">M</button>
+							<button type="button">L</button>
+						</tui-segmented>
+					</div>
+				</section>
+
+				<section class="cfg-section">
+					<header class="cfg-head">
+						<h2 class="cfg-title">Видимость</h2>
+						<p class="jk-caption">Что показывать в кадре.</p>
+					</header>
+
+					<div class="cfg-row">
+						<div class="cfg-text">
+							<span class="cfg-label">Название канала</span>
+							<span class="jk-caption">Заголовок и статус LIVE</span>
+						</div>
+						<input
+							aria-label="Название канала"
+							type="checkbox"
+							[formControl]="showChannelControl"
+							tuiSwitch
+						/>
+					</div>
+
+					<div class="cfg-row">
+						<div class="cfg-text">
+							<span class="cfg-label">Вопрос</span>
+							<span class="jk-caption">Текст текущего голосования</span>
+						</div>
+						<input
+							aria-label="Вопрос"
+							type="checkbox"
+							[formControl]="showQuestionControl"
+							tuiSwitch
+						/>
+					</div>
+
+					<div class="cfg-row">
+						<div class="cfg-text">
+							<span class="cfg-label">Авторы</span>
+							<span class="jk-caption">Ник и контекст совета</span>
+						</div>
+						<input
+							aria-label="Авторы"
+							type="checkbox"
+							[formControl]="showAuthorsControl"
+							tuiSwitch
+						/>
+					</div>
+
+					<div class="cfg-row">
+						<div class="cfg-text">
+							<span class="cfg-label">Прогресс</span>
+							<span class="jk-caption">Полосы голосования</span>
+						</div>
+						<input
+							aria-label="Прогресс"
+							type="checkbox"
+							[formControl]="showProgressControl"
+							tuiSwitch
+						/>
+					</div>
+					<div class="cfg-row">
+						<div class="cfg-text">
+							<span class="cfg-label">Таймер</span>
+							<span class="jk-caption">Оставшееся время голосования</span>
+						</div>
+						<input
+							aria-label="Таймер жюри"
+							type="checkbox"
+							[formControl]="genericForm.controls.juryShowTimer"
+							tuiSwitch
+						/>
+					</div>
+					<div class="cfg-row">
+						<span class="cfg-label">Цвет «За»</span>
+						<tui-textfield class="cfg-control">
+							<input
+								aria-label="Цвет полосы «За»"
+								[formControl]="genericForm.controls.juryYeaColor"
+								tuiInputColor
+						/></tui-textfield>
+					</div>
+					<div class="cfg-row">
+						<span class="cfg-label">Цвет «Против»</span>
+						<tui-textfield class="cfg-control">
+							<input
+								aria-label="Цвет полосы «Против»"
+								[formControl]="genericForm.controls.juryNeiColor"
+								tuiInputColor
+						/></tui-textfield>
+					</div>
+				</section>
+
+				<section class="cfg-section">
+					<header class="cfg-head">
+						<h2 class="cfg-title">Анимация</h2>
+						<p class="jk-caption">Появление и смена состояния.</p>
+					</header>
+
+					<div class="cfg-row">
+						<span class="cfg-label">Анимировать</span>
+						<input
+							aria-label="Анимировать"
+							type="checkbox"
+							[formControl]="animationControl"
+							tuiSwitch
+						/>
+					</div>
+
+					<div class="cfg-row">
+						<div class="cfg-text">
+							<span class="cfg-label">Скорость</span>
+							<span class="jk-caption">Длительность переходов · {{ speed() }}%</span>
+						</div>
+						<input
+							aria-label="Скорость анимации"
+							class="cfg-slider"
+							max="100"
+							min="0"
+							type="range"
+							[value]="speed()"
+							(input)="speed.set(+$any($event.target).value)"
+							tuiSlider
+						/>
+					</div>
+				</section>
+			} @else if (kind() === 'timer') {
+				<section class="cfg-section">
+					<header class="cfg-head">
+						<h2 class="cfg-title">Основное</h2>
+						<p class="jk-caption">Режим и длительность отсчёта.</p>
+					</header>
+
+					<div class="cfg-row">
+						<span class="cfg-label">Режим</span>
+						<tui-segmented
+							[activeItemIndex]="timerModeIndex()"
+							(activeItemIndexChange)="setTimerMode($event)"
+						>
+							<button type="button">Countdown</button>
+							<button type="button">Count-up</button>
+						</tui-segmented>
+					</div>
+
+					@if (timerMode() === 'countdown') {
+						<div class="cfg-row">
+							<span class="cfg-label">Длительность</span>
+							<div class="cfg-duration">
+								<input
+									type="number"
+									aria-label="Часы"
+									class="jk-input cfg-duration-input"
+									max="23"
+									min="0"
+									[value]="hours()"
+									(input)="hours.set(+$any($event.target).value)"
+									tuiInput
+								/>
+								<span class="cfg-duration-sep">:</span>
+								<input
+									type="number"
+									aria-label="Минуты"
+									class="jk-input cfg-duration-input"
+									max="59"
+									min="0"
+									[value]="minutes()"
+									(input)="minutes.set(+$any($event.target).value)"
+									tuiInput
+								/>
+								<span class="cfg-duration-sep">:</span>
+								<input
+									type="number"
+									aria-label="Секунды"
+									class="jk-input cfg-duration-input"
+									max="59"
+									min="0"
+									[value]="seconds()"
+									(input)="seconds.set(+$any($event.target).value)"
+									tuiInput
+								/>
+							</div>
+						</div>
+					} @else {
+						<div class="cfg-row">
+							<span class="cfg-label">От</span>
+							<div class="cfg-duration">
+								<input
+									aria-label="Начало: часы"
+									class="jk-input cfg-duration-input"
+									[max]="23"
+									[min]="0"
+									[formControl]="countFromHoursControl"
+									tuiInputNumber
+								/>
+								<span class="cfg-duration-sep">:</span>
+								<input
+									aria-label="Начало: минуты"
+									class="jk-input cfg-duration-input"
+									[max]="59"
+									[min]="0"
+									[formControl]="countFromMinutesControl"
+									tuiInputNumber
+								/>
+								<span class="cfg-duration-sep">:</span>
+								<input
+									aria-label="Начало: секунды"
+									class="jk-input cfg-duration-input"
+									[max]="59"
+									[min]="0"
+									[formControl]="countFromSecondsControl"
+									tuiInputNumber
+								/>
+							</div>
+						</div>
+
+						<div class="cfg-row">
+							<div class="cfg-text">
+								<span class="cfg-label">Ограничить</span>
+								<span class="jk-caption">Остановить счёт на значении «До»</span>
+							</div>
+							<input
+								aria-label="Ограничить счёт"
+								type="checkbox"
+								[formControl]="countUpLimitControl"
+								tuiSwitch
+							/>
+						</div>
+
+						@if (countUpLimit()) {
+							<div class="cfg-row">
+								<span class="cfg-label">До</span>
+								<div class="cfg-duration">
+									<input
+										aria-label="Конец: часы"
+										class="jk-input cfg-duration-input"
+										[max]="23"
+										[min]="0"
+										[formControl]="countToHoursControl"
+										tuiInputNumber
+									/>
+									<span class="cfg-duration-sep">:</span>
+									<input
+										aria-label="Конец: минуты"
+										class="jk-input cfg-duration-input"
+										[max]="59"
+										[min]="0"
+										[formControl]="countToMinutesControl"
+										tuiInputNumber
+									/>
+									<span class="cfg-duration-sep">:</span>
+									<input
+										aria-label="Конец: секунды"
+										class="jk-input cfg-duration-input"
+										[max]="59"
+										[min]="0"
+										[formControl]="countToSecondsControl"
+										tuiInputNumber
+									/>
+								</div>
+							</div>
+						}
+					}
+
+					<div class="cfg-row">
+						<div class="cfg-text">
+							<span class="cfg-label">Подпись</span>
+							<span class="jk-caption">Текст над таймером</span>
+						</div>
+						<input aria-label="Подпись" type="checkbox" [formControl]="labelsControl" tuiSwitch />
+					</div>
+
+					@if (labels()) {
+						<div class="cfg-row">
+							<span class="cfg-label">Текст подписи</span>
+							<input
+								aria-label="Текст подписи"
+								class="jk-input cfg-control"
+								type="text"
+								[value]="labelText()"
+								(input)="labelText.set($any($event.target).value)"
+							/>
+						</div>
+					}
+				</section>
+
+				<section class="cfg-section">
+					<header class="cfg-head">
+						<h2 class="cfg-title">Внешний вид</h2>
+						<p class="jk-caption">Размер и начертание цифр.</p>
+					</header>
+
+					<div class="cfg-row">
+						<span class="cfg-label">Шрифт</span>
+						<tui-textfield class="cfg-control" tuiChevron>
+							<input
+								aria-label="Шрифт таймера"
+								[formControl]="timerFontControl"
+								tuiInput
+								tuiSelectLike
+							/>
+							<tui-data-list-wrapper
+								*tuiDropdown
+								[items]="timerFontValues"
+								(itemClick)="timerFont.set($event)"
+							></tui-data-list-wrapper>
+						</tui-textfield>
+					</div>
+
+					<div class="cfg-row cfg-row-column">
+						<span class="cfg-label">Свой шрифт</span>
+						<span class="jk-caption">Файл woff2/woff/ttf/otf до 2 МБ или прямая ссылка</span>
+						<input
+							class="font-upload"
+							type="file"
+							accept=".woff2,.woff,.ttf,.otf"
+							(change)="onFontFile($event)"
+						/>
+						<tui-textfield>
+							<input
+								aria-label="URL своего шрифта"
+								placeholder="https://.../font.woff2"
+								type="text"
+								[value]="timerFontUrl()"
+								(input)="
+									timerFontUrl.set($any($event.target).value);
+									timerFont.set('NSH Custom Timer Font')
+								"
+								tuiInput
+							/>
+						</tui-textfield>
+						@if (timerFontUrl()) {
+							<button size="s" type="button" (click)="clearFont()" appearance="flat" tuiButton>
+								Убрать свой шрифт
+							</button>
+						}
+						@if (fontError()) {
+							<span class="roulette-error">{{ fontError() }}</span>
+						}
+					</div>
+
+					<div class="cfg-row">
+						<span class="cfg-label">Размер</span>
+						<tui-segmented
+							[activeItemIndex]="timeSizeIndex()"
+							(activeItemIndexChange)="setTimeSize($event)"
+						>
+							<button type="button">S</button>
+							<button type="button">M</button>
+							<button type="button">L</button>
+						</tui-segmented>
+					</div>
+
+					<div class="cfg-row">
+						<span class="cfg-label">По горизонтали</span>
+						<tui-segmented
+							[activeItemIndex]="timerAlignIndex()"
+							(activeItemIndexChange)="setTimerAlign($event)"
+						>
+							<button type="button">Слева</button>
+							<button type="button">Центр</button>
+							<button type="button">Справа</button>
+						</tui-segmented>
+					</div>
+
+					<div class="cfg-row">
+						<span class="cfg-label">По вертикали</span>
+						<tui-segmented
+							[activeItemIndex]="timerVerticalAlignIndex()"
+							(activeItemIndexChange)="setTimerVerticalAlign($event)"
+						>
+							<button type="button">Сверху</button>
+							<button type="button">Центр</button>
+							<button type="button">Снизу</button>
+						</tui-segmented>
+					</div>
+
+					<div class="cfg-row">
+						<div class="cfg-text">
+							<span class="cfg-label">Полоса прогресса</span>
+							<span class="jk-caption">Заполняется по мере отсчёта</span>
+						</div>
+						<input
+							aria-label="Полоса прогресса"
+							type="checkbox"
+							[formControl]="showTimerProgressControl"
+							tuiSwitch
+						/>
+					</div>
+
+					@if (showTimerProgress()) {
+						<div class="cfg-row">
+							<span class="cfg-label">Цвет полосы</span>
+							<tui-textfield class="cfg-control">
+								<input
+									aria-label="Цвет полосы прогресса"
+									[formControl]="timerProgressColorControl"
+									tuiInputColor
+							/></tui-textfield>
+						</div>
+					}
+				</section>
+			} @else if (kind() === 'alerts') {
+				<section class="cfg-section" [formGroup]="alertTypeForm">
+					<header class="cfg-head">
+						<h2 class="cfg-title">События</h2>
+						<p class="jk-caption">Какие алерты показывать в эфире.</p>
+					</header>
+
+					@for (type of alertTypeList; track type.key) {
+						<div class="cfg-row">
+							<span class="cfg-label">{{ type.label }}</span>
+							<div class="alert-type-actions">
+								<button
+									size="xs"
+									type="button"
+									(click)="testAlert(type.key)"
+									appearance="flat"
+									tuiButton
+								>
+									Тест
+								</button>
+								<input
+									aria-label="Включить тип алерта"
+									type="checkbox"
+									[formControlName]="type.key"
+									tuiSwitch
+								/>
+							</div>
+						</div>
+					}
+
+					<div class="cfg-row">
+						<div class="cfg-text">
+							<span class="cfg-label">Длительность показа</span>
+							<span class="jk-caption">Секунды на экране · {{ alertDuration() }}</span>
+						</div>
+						<input
+							aria-label="Длительность показа"
+							class="cfg-slider"
+							max="15"
+							min="2"
+							type="range"
+							[value]="alertDuration()"
+							(input)="setAlertDuration($event)"
+							(change)="saveAlertSettings()"
+							tuiSlider
+						/>
+					</div>
+
+					<div class="cfg-row">
+						<div class="cfg-text">
+							<span class="cfg-label">Звук алерта</span>
+							<span class="jk-caption">Проигрывается в OBS Browser Source</span>
+						</div>
+						<input
+							aria-label="Включить звук алерта"
+							type="checkbox"
+							[formControl]="alertSoundEnabledControl"
+							tuiSwitch
+						/>
+					</div>
+
+					<div class="cfg-row cfg-row-column">
+						<span class="cfg-label">URL звука</span>
+						<tui-textfield>
+							<input
+								aria-label="URL звука"
+								placeholder="https://.../alert.mp3"
+								[value]="alertSoundUrl()"
+								(input)="alertSoundUrl.set($any($event.target).value)"
+								(change)="saveAlertSettings()"
+								tuiInput
+							/>
+						</tui-textfield>
+					</div>
+
+					<div class="cfg-row">
+						<div class="cfg-text">
+							<span class="cfg-label">Громкость</span>
+							<span class="jk-caption">{{ alertSoundVolume() }}%</span>
+						</div>
+						<input
+							aria-label="Громкость звука"
+							class="cfg-slider"
+							max="100"
+							min="0"
+							type="range"
+							[value]="alertSoundVolume()"
+							(input)="alertSoundVolume.set(+$any($event.target).value)"
+							(change)="saveAlertSettings()"
+							tuiSlider
+						/>
+					</div>
+				</section>
+
+				<section class="cfg-section">
+					<header class="cfg-head">
+						<h2 class="cfg-title">Последние алерты</h2>
+						<p class="jk-caption">Лента событий канала (обновляется автоматически).</p>
+					</header>
+
+					@if (alertEvents().length) {
+						@for (event of alertEvents().slice(0, 6); track event.id) {
+							<div class="alert-row">
+								<span class="alert-icon">
+									<tui-icon icon="@tui.bell" />
+								</span>
+								<div class="cfg-text">
+									<span class="cfg-label">{{ event.username }}</span>
+									<span class="jk-caption">{{ event.message }}</span>
+								</div>
+								<span appearance="neutral" tuiBadge>{{
+									alertTypeLabels[event.type] ?? event.type
+								}}</span>
+							</div>
+						}
+					} @else {
+						<p class="jk-body-sm jk-muted">
+							События появятся после первых фолловеров, подписок и битсов.
+						</p>
+					}
+				</section>
+			} @else if (kind() === 'donations') {
+				<app-donation-config />
+			} @else {
+				<section class="cfg-section">
+					<header class="cfg-head">
+						<h2 class="cfg-title">Список событий</h2>
+						<p class="jk-caption">Сколько строк показывать в виджете.</p>
+					</header>
+
+					<div class="cfg-row">
+						<div class="cfg-text">
+							<span class="cfg-label">Строк в списке</span>
+							<span class="jk-caption">От 1 до 10 · {{ eventsRows() }}</span>
+						</div>
+						<input
+							aria-label="Строк в списке"
+							class="cfg-slider"
+							max="10"
+							min="1"
+							type="range"
+							[value]="eventsRows()"
+							(input)="eventsRows.set(+$any($event.target).value)"
+							tuiSlider
+						/>
+					</div>
+
+					<div class="cfg-row">
+						<span class="cfg-label">Показывать прошедшие</span>
+						<input
+							aria-label="Показывать прошедшие"
+							type="checkbox"
+							[formControl]="eventsPastControl"
+							tuiSwitch
+						/>
+					</div>
+				</section>
+			}
+		</div>
+
+		<aside class="preview-panel">
+			<div class="preview-head">
+				<span class="jk-label">Превью</span>
+				<span appearance="info" tuiBadge>16:9 · прозрачный</span>
+			</div>
+
+			<div
+				class="preview-stage jk-checkerboard"
+				[class.preview-light]="kind() === 'jury' && theme() === 'light'"
+				[style.alignItems]="timerVerticalItems()"
+				[style.justifyContent]="timerAlignItems()"
+			>
+				@if (kind() === 'jury') {
+					<div class="pv-jury" [class]="'density-' + density()">
+						@if (showChannel()) {
+							<div class="pv-head">
+								<span>Чат-жюри</span>
+								<span class="pv-live">Live</span>
+							</div>
+						}
+
+						@if (showQuestion()) {
+							<p class="pv-question">Спрятаться или сражаться?</p>
+						}
+
+						@if (showAuthors()) {
+							<p class="pv-author">Совет из чата · AI-оценка</p>
+						}
+
+						@if (showProgress()) {
+							<div class="pv-bars">
+								<span class="pv-bar"><span class="pv-fill yea" style="width: 72%"></span></span>
+								<span class="pv-bar"><span class="pv-fill nei" style="width: 28%"></span></span>
+							</div>
+						}
+
+						<span class="pv-time">00:12</span>
+					</div>
+				} @else if (kind() === 'timer') {
+					<div
+						class="pv-timer"
+						[class]="'time-' + timeSize()"
+						[style.alignItems]="timerAlignItems()"
+						[style.textAlign]="timerAlign()"
+					>
+						@if (labels()) {
+							<span class="pv-timer-label" [style.color]="timerTextColor()">{{ labelText() }}</span>
+						}
+
+						<span
+							class="pv-timer-value"
+							[style.font-family]="timerFontFamily()"
+							[style.color]="timerTextColor()"
+							>{{ time() }}</span
+						>
+
+						@if (showTimerProgress()) {
+							<span class="pv-bar pv-timer-bar">
+								<span
+									class="pv-fill cyan"
+									[style.width.%]="timerProgress()"
+									[style.background]="timerProgressColor()"
+								></span>
+							</span>
+						}
+					</div>
+				} @else if (kind() === 'hotbar') {
+					<app-hotbar-preview [slots]="hotbarConfig().hotbarSlots ?? []" />
+				} @else if (kind() === 'roulette') {
+					<div class="pv-events">
+						<div class="pv-event-row">
+							<tui-icon icon="@tui.dices" />
+							<div class="pv-event-text">
+								<span>Рулетка игр</span>
+								<span class="jk-caption">Запуск в разделе «Рулетка»</span>
+							</div>
+						</div>
+					</div>
+				} @else if (kind() === 'alerts') {
+					<app-alert-preview />
+				} @else {
+					<div class="pv-events">
+						<div class="pv-event-row">
+							<tui-icon icon="@tui.plus" />
+							<div class="pv-event-text">
+								<span>Событие канала</span>
+								<span class="jk-caption">реальное время</span>
+							</div>
+						</div>
+
+						<span class="pv-event-active">
+							<span class="jk-dot jk-dot-online"></span>
+							Активно
+						</span>
+					</div>
+				}
+			</div>
+
+			<p class="jk-caption preview-note">Размер OBS-источника: 460×180 · фон прозрачный</p>
+
+			@if (kind() === 'timer') {
+				<div class="timer-widget-controls">
+					<app-timer class="timer-controls-only" />
+				</div>
+			}
+		</aside>
+	</div>
+</div>

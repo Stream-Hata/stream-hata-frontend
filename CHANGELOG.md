@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.8.7-pre-alpha] - 2026-10-29
+
+### Добавлено
+- WebGL-попап с проверкой WebGL2 и инструкцией для OBS.
+- Prometheus endpoint `/rgg-sync/prometheus`.
+
+### Исправлено
+- Порог доверия AI и дефолтные команды Telegram.
+
 ## [0.8.6-pre-alpha] - 2026-10-29
 
 ### Исправлено

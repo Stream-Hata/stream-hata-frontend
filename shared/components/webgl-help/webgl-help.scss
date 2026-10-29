@@ -1,0 +1,90 @@
+.webgl-backdrop {
+	position: fixed;
+	z-index: 1000;
+	background: rgb(8 4 16 / 72%);
+	backdrop-filter: blur(8px);
+	inset: 0;
+}
+
+.webgl-dialog {
+	position: fixed;
+	z-index: 1001;
+	top: 50%;
+	left: 50%;
+	display: grid;
+	gap: 14px;
+	width: min(560px, calc(100vw - 32px));
+	padding: 26px;
+	border: 1px solid color-mix(in srgb, var(--accent-primary) 35%, transparent);
+	border-radius: 24px;
+	background: var(--surface-elevated-1);
+	box-shadow: 0 30px 90px rgb(0 0 0 / 55%);
+	transform: translate(-50%, -50%);
+}
+
+.webgl-close {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+}
+
+.webgl-icon {
+	display: grid;
+	width: 52px;
+	height: 52px;
+	border-radius: 16px;
+	background: color-mix(in srgb, var(--accent-primary) 16%, transparent);
+	color: var(--accent-primary);
+	font-size: 26px;
+	place-items: center;
+}
+
+.webgl-dialog h2 {
+	margin: 0;
+	font: 700 24px/1.2 var(--tui-font-heading);
+}
+
+.webgl-status {
+	display: flex;
+	gap: 10px;
+	padding: 12px 14px;
+	border-radius: 14px;
+	align-items: flex-start;
+}
+
+.webgl-status-ok {
+	background: color-mix(in srgb, #22c55e 14%, transparent);
+	color: #86efac;
+}
+
+.webgl-status-bad {
+	background: color-mix(in srgb, #ef4444 14%, transparent);
+	color: #fca5a5;
+}
+
+.webgl-status div {
+	display: grid;
+	gap: 2px;
+}
+
+.webgl-steps {
+	display: grid;
+	gap: 7px;
+	margin: 0;
+	padding-left: 20px;
+	color: var(--text-secondary);
+	font: 400 14px/1.45 var(--tui-font-text);
+}
+
+.webgl-steps code {
+	padding: 1px 5px;
+	border-radius: 5px;
+	background: var(--surface-elevated-2);
+}
+
+.webgl-actions {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+}

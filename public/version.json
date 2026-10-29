@@ -1,8 +1,9 @@
 {
-	"version": "0.8.6-pre-alpha",
-	"build": "2026-10-29T12:03:36.051Z",
-	"notes": [
-		"Порог доверия AI сохраняется и отображается в dashboard.",
-		"В Telegram-боте показываются все дефолтные команды."
-	]
+  "version": "0.8.7-pre-alpha",
+  "build": "2026-10-29T12:37:21.568Z",
+  "notes": [
+    "WebGL-попап с проверкой WebGL2 и инструкцией для OBS.",
+    "Prometheus endpoint `/rgg-sync/prometheus`.",
+    "Порог доверия AI и дефолтные команды Telegram."
+  ]
 }
