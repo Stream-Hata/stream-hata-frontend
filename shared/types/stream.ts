@@ -24,6 +24,7 @@ export interface NotifySettings {
 	telegramToken: string;
 	telegramChatId: string;
 	telegramChatIds?: string[];
+	telegramOwnerLogin?: string;
 	onStreamOnline: boolean;
 	onStreamOffline: boolean;
 	onAlerts: boolean;

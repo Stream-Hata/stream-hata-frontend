@@ -123,6 +123,7 @@ export default class TelegramBotPage {
 			return;
 		}
 
+		current.telegramOwnerLogin = this.twitchName();
 		this.notify.save(current).subscribe({
 			next: (settings) => {
 				this.settings.set(settings);
