@@ -32,6 +32,10 @@ export default class FeedbackPage {
 					? 'FE'
 					: 'DT',
 	);
+	readonly platform = signal('');
+	readonly platformOptions = ['Twitch', 'YouTube', 'Vimeo', 'OBS', 'Browser', 'Desktop', 'Другое'];
+	readonly platformLabel = computed(() => this.platform() || 'Не выбрано');
+	readonly attachments = signal<{ label: string; url: string; enabled: boolean }[]>([]);
 	readonly reason = signal('');
 	readonly reasons = signal<string[]>([]);
 	readonly reasonQuery = signal('');
@@ -73,6 +77,9 @@ export default class FeedbackPage {
 	readonly actual = signal('');
 	readonly version = signal('');
 	readonly severity = signal('medium');
+	readonly severityValues = ['low', 'medium', 'high', 'critical'];
+	readonly severityLabels = ['Низкая', 'Средняя', 'Высокая', 'Критичная'];
+	readonly severityLabel = computed(() => this.severityLabels[this.severityValues.indexOf(this.severity())] ?? 'Средняя');
 	readonly pageUrl = signal('');
 	readonly environment = signal('');
 	readonly contact = signal('');
@@ -98,6 +105,38 @@ export default class FeedbackPage {
 		if (index >= 0) {
 			this.kind.set(this.kindValues[index] as FeedbackReport['kind']);
 		}
+	}
+
+	setSeverity(label: string): void {
+		const index = this.severityLabels.indexOf(label);
+		if (index >= 0) {
+			this.severity.set(this.severityValues[index]);
+		}
+	}
+
+	setPlatform(label: string): void {
+		this.platform.set(label === 'Не выбрано' ? '' : label);
+	}
+
+	addAttachment(): void {
+		this.attachments.update((items) => [...items, { label: '', url: '', enabled: true }]);
+	}
+
+	updateAttachment(index: number, field: 'label' | 'url', event: Event): void {
+		const value = (event.target as HTMLInputElement).value;
+		this.attachments.update((items) =>
+			items.map((item, itemIndex) => (itemIndex === index ? { ...item, [field]: value } : item)),
+		);
+	}
+
+	toggleAttachment(index: number): void {
+		this.attachments.update((items) =>
+			items.map((item, itemIndex) => (itemIndex === index ? { ...item, enabled: !item.enabled } : item)),
+		);
+	}
+
+	removeAttachment(index: number): void {
+		this.attachments.update((items) => items.filter((_, itemIndex) => itemIndex !== index));
 	}
 
 	addReason(label: string): void {
@@ -150,6 +189,8 @@ export default class FeedbackPage {
 		this.feedback
 			.submit({
 				area: this.area(),
+				platform: this.platform(),
+				attachments: this.attachments().filter((item) => item.url.trim()),
 				reason: this.reasons()[0] ?? '',
 				reasons: this.reasons(),
 				kind: this.kind(),

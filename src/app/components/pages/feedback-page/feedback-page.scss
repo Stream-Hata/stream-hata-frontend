@@ -88,3 +88,18 @@
 .feedback-custom-reason tui-textfield {
 	flex: 1 1 auto;
 }
+
+.feedback-attachments {
+	display: grid;
+	gap: 8px;
+}
+
+.feedback-attachment-row {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.feedback-attachment-row tui-textfield {
+	flex: 1 1 180px;
+}

@@ -53,3 +53,7 @@ agents-state/
 agent-state/
 .opencode/
 .claude/
+
+config.json
+config.fixed.json
+feedback-config.json

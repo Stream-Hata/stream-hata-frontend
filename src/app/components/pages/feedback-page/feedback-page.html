@@ -31,6 +31,30 @@
 				></tui-data-list-wrapper>
 			</tui-textfield>
 		</label>
+		@if (kind() !== 'feedback') {
+			<label>
+				<span class="jk-label">Критичность</span>
+				<tui-textfield tuiChevron>
+					<input [readonly]="true" tuiInput tuiSelectLike [value]="severityLabel()" />
+					<tui-data-list-wrapper
+						*tuiDropdown
+						[items]="severityLabels"
+						(itemClick)="setSeverity($event)"
+					></tui-data-list-wrapper>
+				</tui-textfield>
+			</label>
+		}
+		<label>
+			<span class="jk-label">Платформа</span>
+			<tui-textfield tuiChevron>
+				<input [readonly]="true" tuiInput tuiSelectLike [value]="platformLabel()" />
+				<tui-data-list-wrapper
+					*tuiDropdown
+					[items]="platformOptions"
+					(itemClick)="setPlatform($event)"
+				></tui-data-list-wrapper>
+			</tui-textfield>
+		</label>
 		<label>
 			<span class="jk-label">Причина</span>
 			<tui-textfield tuiChevron>
@@ -80,6 +104,24 @@
 		<label>
 			<span class="jk-label">Описание</span>
 			<tui-editor [formControl]="descriptionControl" />
+		</label>
+		<label>
+			<span class="jk-label">Дополнения</span>
+			<div class="feedback-attachments">
+				@for (attachment of attachments(); track $index; let index = $index) {
+					<div class="feedback-attachment-row">
+						<tui-textfield>
+							<input tuiInput [value]="attachment.label" (input)="updateAttachment(index, 'label', $event)" placeholder="Название" />
+						</tui-textfield>
+						<tui-textfield>
+							<input tuiInput [value]="attachment.url" (input)="updateAttachment(index, 'url', $event)" placeholder="https://vimeo.com/..." />
+						</tui-textfield>
+						<button type="button" class="tg-toggle" [class.tg-toggle-on]="attachment.enabled" (click)="toggleAttachment(index)"><span></span></button>
+						<button type="button" appearance="flat" size="s" tuiButton (click)="removeAttachment(index)">×</button>
+					</div>
+				}
+				<button type="button" appearance="flat" tuiButton (click)="addAttachment()">Добавить ссылку</button>
+			</div>
 		</label>
 		<label>
 			<span class="jk-label">Шаги воспроизведения</span>

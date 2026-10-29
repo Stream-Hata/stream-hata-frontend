@@ -3,7 +3,9 @@ import { inject, Injectable } from '@angular/core';
 
 export interface FeedbackReport {
 	area: 'backend' | 'frontend' | 'desktop';
+	platform: string;
 	reason: string;
+	attachments: FeedbackAttachment[];
 	reasons: string[];
 	kind: 'bug' | 'suggestion' | 'feedback';
 	title: string;
@@ -34,4 +36,10 @@ export class FeedbackService {
 	submit(report: FeedbackReport) {
 		return this.http.post<FeedbackResult>('rgg-sync/feedback', report);
 	}
+}
+
+export interface FeedbackAttachment {
+	label: string;
+	url: string;
+	enabled: boolean;
 }
