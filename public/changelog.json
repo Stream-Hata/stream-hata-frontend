@@ -1,5 +1,31 @@
 [
   {
+    "version": "0.8.11-pre-alpha",
+    "date": "2026-10-29",
+    "sections": [
+      {
+        "title": "Добавлено",
+        "items": [
+          {
+            "text": "Каталог из 218 причин feedback по Backend/Frontend/Desktop."
+          },
+          {
+            "text": "Taiga-дропдауны причины с поиском."
+          },
+          {
+            "text": "Feedback-бот: список issue и смена состояния."
+          },
+          {
+            "text": "Issue создаются от StreamHata App с assignee p7x_dev."
+          },
+          {
+            "text": "Feedback-конфиг хранится в OpenBao."
+          }
+        ]
+      }
+    ]
+  },
+  {
     "version": "0.8.10-pre-alpha",
     "date": "2026-10-29",
     "sections": [

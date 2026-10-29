@@ -2,6 +2,7 @@ import type { FeedbackReport } from '@shared/services/feedback.service';
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FeedbackService } from '@shared/services/feedback.service';
+import { FEEDBACK_REASONS } from '@shared/config/feedback-reasons';
 import { TwitchService } from '@shared/services/twitch.service';
 import { TuiButton, TuiDropdown, TuiInput, TuiSelectLike, TuiTextfield } from '@taiga-ui/core';
 import { TuiChevron, TuiDataListWrapper, TuiTextarea } from '@taiga-ui/kit';
@@ -26,28 +27,14 @@ export default class FeedbackPage {
 	readonly areaLabels = ['Frontend', 'Backend', 'Desktop'];
 	readonly kindValues = ['bug', 'suggestion', 'feedback'];
 	readonly kindLabels = ['Баг', 'Предложение', 'Фидбек'];
-	readonly reasonOptions = [
-		'Кнопка не работает',
-		'Страница не открывается',
-		'Ошибка авторизации',
-		'Не приходит уведомление',
-		'Не работает команда',
-		'Не работает Telegram-бот',
-		'Не работает OBS WebSocket',
-		'Виджет пустой / WebGL',
-		'Не добавляется музыка',
-		'Проблема с баллами',
-		'Проблема с рулеткой',
-		'Проблема с кубиком/монеткой',
-		'Проблема с базой данных',
-		'Проблема с GitHub issue',
-		'Долго загружается',
-		'Неверные данные',
-		'Другое',
-	];
+	readonly reasonsForArea = computed(() => FEEDBACK_REASONS.filter((item) => item.area === this.area()));
+	readonly reasonLabels = computed(() =>
+		this.reasonsForArea().map((item) => `${item.group} · ${item.label}`),
+	);
 	readonly filteredReasons = computed(() => {
 		const query = this.reasonQuery().trim().toLowerCase();
-		return query ? this.reasonOptions.filter((item) => item.toLowerCase().includes(query)) : this.reasonOptions;
+		const labels = this.reasonLabels();
+		return query ? labels.filter((item) => item.toLowerCase().includes(query)) : labels;
 	});
 	readonly title = signal('');
 	readonly description = signal('');
@@ -69,6 +56,8 @@ export default class FeedbackPage {
 		const index = this.areaLabels.indexOf(label);
 		if (index >= 0) {
 			this.area.set(this.areaValues[index] as FeedbackReport['area']);
+			this.reason.set('');
+			this.reasonQuery.set('');
 		}
 	}
 
@@ -79,9 +68,14 @@ export default class FeedbackPage {
 		}
 	}
 
-	setReason(reason: string): void {
-		this.reason.set(reason);
-		this.reasonQuery.set(reason);
+	setReason(label: string): void {
+		const item = this.reasonsForArea().find(
+			(candidate) => `${candidate.group} · ${candidate.label}` === label,
+		);
+		if (item) {
+			this.reason.set(item.value);
+			this.reasonQuery.set(label);
+		}
 	}
 
 	constructor() {

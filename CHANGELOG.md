@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.8.11-pre-alpha] - 2026-10-29
+
+### Добавлено
+- Каталог из 218 причин feedback по Backend/Frontend/Desktop.
+- Taiga-дропдауны причины с поиском.
+- Feedback-бот: список issue и смена состояния.
+- Issue создаются от StreamHata App с assignee p7x_dev.
+- Feedback-конфиг хранится в OpenBao.
+
 ## [0.8.10-pre-alpha] - 2026-10-29
 
 ### Исправлено

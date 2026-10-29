@@ -1,10 +1,11 @@
 {
-  "version": "0.8.10-pre-alpha",
-  "build": "2026-10-29T16:02:55.760Z",
+  "version": "0.8.11-pre-alpha",
+  "build": "2026-10-29T16:18:22.354Z",
   "notes": [
-    "Действие Telegram-команды — Taiga-дропдаун со всеми действиями.",
-    "Свитчи Telegram-редактора переключаются напрямую.",
-    "Feedback: Taiga-дропдауны и поиск причины.",
-    "OBS: создание сцен и drag&drop."
+    "Каталог из 218 причин feedback по Backend/Frontend/Desktop.",
+    "Taiga-дропдауны причины с поиском.",
+    "Feedback-бот: список issue и смена состояния.",
+    "Issue создаются от StreamHata App с assignee p7x_dev.",
+    "Feedback-конфиг хранится в OpenBao."
   ]
 }
