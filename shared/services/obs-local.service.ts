@@ -105,6 +105,22 @@ export class ObsLocalService {
 		return from(this.request('SetCurrentProgramScene', { sceneName: scene }));
 	}
 
+	createScene(scene: string): Observable<unknown> {
+		if (this.tauriInvoke) {
+			return from(this.tauriInvoke('obs_create_scene', { scene }));
+		}
+
+		return from(this.request('CreateScene', { sceneName: scene }));
+	}
+
+	reorderScene(scene: string, index: number): Observable<unknown> {
+		if (this.tauriInvoke) {
+			return from(this.tauriInvoke('obs_reorder_scene', { scene, index }));
+		}
+
+		return from(this.request('SetSceneIndex', { sceneName: scene, sceneIndex: index }));
+	}
+
 	mute(input: string): Observable<{ muted: boolean }> {
 		if (this.tauriInvoke) {
 			return from(this.tauriInvoke('obs_mute', { input }).then((result) => result as { muted: boolean }));

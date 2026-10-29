@@ -88,12 +88,29 @@
                   <button
                     class="scene-chip jk-chip"
                     type="button"
+                    draggable="true"
                     [class.jk-chip-active]="scene === obsStatus()?.currentScene"
+                    (dragstart)="startSceneDrag(scene)"
+                    (dragover)="$event.preventDefault()"
+                    (drop)="dropScene(scene)"
                     (click)="setScene(scene)"
                   >
                     {{ scene }}
                   </button>
                 }
+              </div>
+              <div class="scene-create">
+                <tui-textfield>
+                  <input
+                    aria-label="Новая сцена OBS"
+                    placeholder="Название новой сцены"
+                    tuiInput
+                    [value]="newScene()"
+                    (input)="newScene.set(value($event))"
+                    (keydown.enter)="createScene()"
+                  />
+                </tui-textfield>
+                <button type="button" appearance="flat" tuiButton (click)="createScene()">Добавить сцену</button>
               </div>
 
               <div class="scene-sources">

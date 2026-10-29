@@ -11,19 +11,42 @@
 	<section class="jk-card feedback-form">
 		<label>
 			<span class="jk-label">Что сломалось / где проблема</span>
-			<select [(ngModel)]="area">
-				<option value="frontend">Frontend</option>
-				<option value="backend">Backend</option>
-				<option value="desktop">Desktop</option>
-			</select>
+			<tui-textfield tuiChevron>
+				<input [readonly]="true" tuiInput tuiSelectLike [value]="areaLabel()" />
+				<tui-data-list-wrapper
+					*tuiDropdown
+					[items]="areaLabels"
+					(itemClick)="setArea($event)"
+				></tui-data-list-wrapper>
+			</tui-textfield>
 		</label>
 		<label>
 			<span class="jk-label">Тип обращения</span>
-			<select [(ngModel)]="kind">
-				<option value="bug">Баг</option>
-				<option value="suggestion">Предложение</option>
-				<option value="feedback">Просто фидбек</option>
-			</select>
+			<tui-textfield tuiChevron>
+				<input [readonly]="true" tuiInput tuiSelectLike [value]="kindLabel()" />
+				<tui-data-list-wrapper
+					*tuiDropdown
+					[items]="kindLabels"
+					(itemClick)="setKind($event)"
+				></tui-data-list-wrapper>
+			</tui-textfield>
+		</label>
+		<label>
+			<span class="jk-label">Причина</span>
+			<tui-textfield tuiChevron>
+				<input
+					tuiInput
+					tuiSelectLike
+					[value]="reasonQuery()"
+					(input)="reasonQuery.set($any($event.target).value)"
+					placeholder="Начни вводить причину…"
+				/>
+				<tui-data-list-wrapper
+					*tuiDropdown
+					[items]="filteredReasons()"
+					(itemClick)="setReason($event)"
+				></tui-data-list-wrapper>
+			</tui-textfield>
 		</label>
 		<label>
 			<span class="jk-label">Заголовок</span>

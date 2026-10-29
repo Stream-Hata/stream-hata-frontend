@@ -61,10 +61,12 @@
 		</select>
 
 		<span class="jk-label">Удалять команду</span>
-		<div class="switch-hit">
-			<input type="checkbox" tuiSwitch [checked]="deleteCommand()" />
-			<span class="switch-hit-area" (click)="deleteCommand.set(!deleteCommand()); $event.preventDefault()"></span>
-		</div>
+		<input
+			type="checkbox"
+			tuiSwitch
+			[checked]="deleteCommand()"
+			(change)="deleteCommand.set($any($event.target).checked)"
+		/>
 
 		<span class="jk-label">Ответ</span>
 		<tui-textfield>
@@ -96,10 +98,12 @@
 		/>
 
 		<span class="jk-label">Включена</span>
-		<div class="switch-hit">
-			<input type="checkbox" tuiSwitch [checked]="enabled()" />
-			<span class="switch-hit-area" (click)="enabled.set(!enabled()); $event.preventDefault()"></span>
-		</div>
+		<input
+			type="checkbox"
+			tuiSwitch
+			[checked]="enabled()"
+			(change)="enabled.set($any($event.target).checked)"
+		/>
 
 		<span class="jk-label">Кнопки</span>
 		<div class="telegram-buttons">

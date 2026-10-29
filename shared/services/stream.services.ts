@@ -47,6 +47,18 @@ export class ObsService {
 			: this.http.post<unknown>('rgg-sync/obs/action', { type: 'scene', scene });
 	}
 
+	createScene(scene: string) {
+		return this.isDesktop()
+			? defer(() => this.local.createScene(scene))
+			: this.http.post<unknown>('rgg-sync/obs/action', { type: 'create_scene', scene });
+	}
+
+	reorderScene(scene: string, index: number) {
+		return this.isDesktop()
+			? defer(() => this.local.reorderScene(scene, index))
+			: this.http.post<unknown>('rgg-sync/obs/action', { type: 'reorder_scene', scene, index });
+	}
+
 	mute(input: string) {
 		return this.isDesktop()
 			? defer(() => this.local.mute(input))

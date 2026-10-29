@@ -1,13 +1,13 @@
 import type { FeedbackReport } from '@shared/services/feedback.service';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FeedbackService } from '@shared/services/feedback.service';
 import { TwitchService } from '@shared/services/twitch.service';
-import { TuiButton, TuiInput, TuiTextfield } from '@taiga-ui/core';
-import { TuiTextarea } from '@taiga-ui/kit';
+import { TuiButton, TuiDropdown, TuiInput, TuiSelectLike, TuiTextfield } from '@taiga-ui/core';
+import { TuiChevron, TuiDataListWrapper, TuiTextarea } from '@taiga-ui/kit';
 
 @Component({
-	imports: [FormsModule, TuiButton, TuiInput, TuiTextarea, TuiTextfield],
+	imports: [FormsModule, TuiButton, TuiChevron, TuiDataListWrapper, TuiDropdown, TuiInput, TuiSelectLike, TuiTextarea, TuiTextfield],
 	selector: 'app-feedback-page',
 	styleUrl: './feedback-page.scss',
 	templateUrl: './feedback-page.html',
@@ -16,8 +16,39 @@ export default class FeedbackPage {
 	private readonly feedback = inject(FeedbackService);
 	private readonly twitch = inject(TwitchService);
 
-	readonly area: FeedbackReport['area'] = 'frontend';
-	readonly kind: FeedbackReport['kind'] = 'bug';
+	readonly area = signal<FeedbackReport['area']>('frontend');
+	readonly areaLabel = computed(() => this.areaLabels[this.areaValues.indexOf(this.area())] ?? 'Frontend');
+	readonly kind = signal<FeedbackReport['kind']>('bug');
+	readonly kindLabel = computed(() => this.kindLabels[this.kindValues.indexOf(this.kind())] ?? 'Баг');
+	readonly reason = signal('');
+	readonly reasonQuery = signal('');
+	readonly areaValues = ['frontend', 'backend', 'desktop'];
+	readonly areaLabels = ['Frontend', 'Backend', 'Desktop'];
+	readonly kindValues = ['bug', 'suggestion', 'feedback'];
+	readonly kindLabels = ['Баг', 'Предложение', 'Фидбек'];
+	readonly reasonOptions = [
+		'Кнопка не работает',
+		'Страница не открывается',
+		'Ошибка авторизации',
+		'Не приходит уведомление',
+		'Не работает команда',
+		'Не работает Telegram-бот',
+		'Не работает OBS WebSocket',
+		'Виджет пустой / WebGL',
+		'Не добавляется музыка',
+		'Проблема с баллами',
+		'Проблема с рулеткой',
+		'Проблема с кубиком/монеткой',
+		'Проблема с базой данных',
+		'Проблема с GitHub issue',
+		'Долго загружается',
+		'Неверные данные',
+		'Другое',
+	];
+	readonly filteredReasons = computed(() => {
+		const query = this.reasonQuery().trim().toLowerCase();
+		return query ? this.reasonOptions.filter((item) => item.toLowerCase().includes(query)) : this.reasonOptions;
+	});
 	readonly title = signal('');
 	readonly description = signal('');
 	readonly steps = signal('');
@@ -34,6 +65,25 @@ export default class FeedbackPage {
 	readonly result = signal<string | null>(null);
 	readonly error = signal('');
 
+	setArea(label: string): void {
+		const index = this.areaLabels.indexOf(label);
+		if (index >= 0) {
+			this.area.set(this.areaValues[index] as FeedbackReport['area']);
+		}
+	}
+
+	setKind(label: string): void {
+		const index = this.kindLabels.indexOf(label);
+		if (index >= 0) {
+			this.kind.set(this.kindValues[index] as FeedbackReport['kind']);
+		}
+	}
+
+	setReason(reason: string): void {
+		this.reason.set(reason);
+		this.reasonQuery.set(reason);
+	}
+
 	constructor() {
 		this.twitch.login().subscribe((profile) => {
 			this.author.set(profile?.user?.username ?? '');
@@ -46,8 +96,9 @@ export default class FeedbackPage {
 		this.result.set(null);
 		this.feedback
 			.submit({
-				area: this.area,
-				kind: this.kind,
+				area: this.area(),
+				reason: this.reason(),
+				kind: this.kind(),
 				title: this.title(),
 				description: this.description(),
 				steps: this.steps(),

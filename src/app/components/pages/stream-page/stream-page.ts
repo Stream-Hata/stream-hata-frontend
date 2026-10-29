@@ -55,6 +55,8 @@ export default class StreamPage {
 
 	readonly obsUrl = signal('ws://127.0.0.1:4455');
 	readonly obsPassword = signal('');
+	readonly newScene = signal('');
+	private draggedScene = '';
 	readonly obsError = signal<string | null>(null);
 
 	readonly title = signal('');
@@ -146,6 +148,41 @@ export default class StreamPage {
 
 	disconnectObs(): void {
 		this.obs.disconnect().subscribe(() => this.refresh.update((v) => v + 1));
+	}
+
+	createScene(): void {
+		const scene = this.newScene().trim();
+
+		if (!scene) {
+			return;
+		}
+
+		this.obs.createScene(scene).subscribe(() => {
+			this.newScene.set('');
+			this.refresh.update((value) => value + 1);
+		});
+	}
+
+	startSceneDrag(scene: string): void {
+		this.draggedScene = scene;
+	}
+
+	dropScene(target: string): void {
+		const source = this.draggedScene;
+		this.draggedScene = '';
+
+		if (!source || source === target) {
+			return;
+		}
+
+		const scenes = this.obsStatus()?.scenes ?? [];
+		const index = scenes.indexOf(target);
+
+		if (index < 0) {
+			return;
+		}
+
+		this.obs.reorderScene(source, index).subscribe(() => this.refresh.update((value) => value + 1));
 	}
 
 	setScene(scene: string): void {

@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 
 export interface FeedbackReport {
 	area: 'backend' | 'frontend' | 'desktop';
+	reason: string;
 	kind: 'bug' | 'suggestion' | 'feedback';
 	title: string;
 	description: string;

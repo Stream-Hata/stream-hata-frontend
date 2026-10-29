@@ -229,3 +229,14 @@
 	color: var(--text-secondary);
 	font: 500 12px/1.4 var(--tui-font-text);
 }
+
+.scene-create {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	margin: 10px 0;
+}
+
+.scene-chip {
+	cursor: grab;
+}
