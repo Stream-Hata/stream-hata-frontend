@@ -1,5 +1,19 @@
 [
   {
+    "version": "0.9.9-pre-alpha",
+    "date": "2026-10-29",
+    "sections": [
+      {
+        "title": "Исправлено",
+        "items": [
+          {
+            "text": "Шапка feedback центрирована."
+          }
+        ]
+      }
+    ]
+  },
+  {
     "version": "0.9.8-pre-alpha",
     "date": "2026-10-29",
     "sections": [

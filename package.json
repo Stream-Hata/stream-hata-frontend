@@ -1,6 +1,6 @@
 {
   "name": "nameless-streamhata",
-  "version": "0.9.8-pre-alpha",
+  "version": "0.9.9-pre-alpha",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

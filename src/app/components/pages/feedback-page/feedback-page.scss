@@ -1,5 +1,11 @@
 .feedback-page .jk-page-header {
 	position: static;
+	justify-content: center;
+	text-align: center;
+}
+
+.feedback-page .jk-page-header-text {
+	align-items: center;
 }
 
 .feedback-form {
