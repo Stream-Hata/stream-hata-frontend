@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import type { TuiLanguage } from '@taiga-ui/i18n';
 import { computed, effect, Injectable, signal } from '@angular/core';
 import { TUI_ENGLISH_LANGUAGE, TUI_RUSSIAN_LANGUAGE } from '@taiga-ui/i18n';
@@ -75,6 +74,7 @@ const DICTIONARY = {
 		'nav.stream': 'Стрим и OBS',
 		'nav.commands': 'Команды',
 		'nav.telegram': 'Telegram-бот',
+		'nav.feedback': 'Обратная связь',
 		'nav.moderation': 'Модерация',
 		'nav.donations': 'Донаты',
 		'nav.music': 'Музыка',
@@ -446,6 +446,7 @@ const DICTIONARY = {
 		'nav.stream': 'Stream & OBS',
 		'nav.commands': 'Commands',
 		'nav.telegram': 'Telegram bot',
+		'nav.feedback': 'Feedback',
 		'nav.moderation': 'Moderation',
 		'nav.donations': 'Donations',
 		'nav.music': 'Music',

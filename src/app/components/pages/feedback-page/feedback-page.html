@@ -1,0 +1,113 @@
+<div class="jk-page">
+	<header class="jk-page-header">
+		<div class="jk-page-header-text">
+			<h1 class="jk-h1">Обратная связь</h1>
+			<p class="jk-caption">
+				Баг, предложение или отзыв. Баги и предложения создают issue в GitHub.
+			</p>
+		</div>
+	</header>
+
+	<section class="jk-card feedback-form">
+		<label>
+			<span class="jk-label">Что сломалось / где проблема</span>
+			<select [(ngModel)]="area">
+				<option value="frontend">Frontend</option>
+				<option value="backend">Backend</option>
+				<option value="desktop">Desktop</option>
+			</select>
+		</label>
+		<label>
+			<span class="jk-label">Тип обращения</span>
+			<select [(ngModel)]="kind">
+				<option value="bug">Баг</option>
+				<option value="suggestion">Предложение</option>
+				<option value="feedback">Просто фидбек</option>
+			</select>
+		</label>
+		<label>
+			<span class="jk-label">Заголовок</span>
+			<tui-textfield
+				><input tuiInput [value]="title()" (input)="title.set($any($event.target).value)"
+			/></tui-textfield>
+		</label>
+		<label>
+			<span class="jk-label">Описание</span>
+			<tui-textfield>
+				<textarea
+					rows="5"
+					tuiTextarea
+					[value]="description()"
+					(input)="description.set($any($event.target).value)"
+				></textarea>
+			</tui-textfield>
+		</label>
+		<label>
+			<span class="jk-label">Шаги воспроизведения</span>
+			<tui-textfield>
+				<textarea
+					rows="4"
+					tuiTextarea
+					[value]="steps()"
+					(input)="steps.set($any($event.target).value)"
+				></textarea>
+			</tui-textfield>
+		</label>
+		<div class="feedback-row">
+			<label>
+				<span class="jk-label">Ожидалось</span>
+				<tui-textfield
+					><input tuiInput [value]="expected()" (input)="expected.set($any($event.target).value)"
+				/></tui-textfield>
+			</label>
+			<label>
+				<span class="jk-label">Фактически</span>
+				<tui-textfield
+					><input tuiInput [value]="actual()" (input)="actual.set($any($event.target).value)"
+				/></tui-textfield>
+			</label>
+		</div>
+		<div class="feedback-row">
+			<label>
+				<span class="jk-label">Версия</span>
+				<tui-textfield
+					><input
+						tuiInput
+						[value]="version()"
+						(input)="version.set($any($event.target).value)"
+						placeholder="0.8.4"
+				/></tui-textfield>
+			</label>
+			<label>
+				<span class="jk-label">Контакт</span>
+				<tui-textfield
+					><input
+						tuiInput
+						[value]="contact()"
+						(input)="contact.set($any($event.target).value)"
+						placeholder="Discord / Telegram"
+				/></tui-textfield>
+			</label>
+		</div>
+		<label class="feedback-honeypot">
+			<span>Website</span>
+			<input
+				[value]="website()"
+				(input)="website.set($any($event.target).value)"
+				tabindex="-1"
+				autocomplete="off"
+			/>
+		</label>
+
+		@if (error()) {
+			<p class="error-text">{{ error() }}</p>
+		}
+		@if (result()) {
+			<p class="feedback-success">Отправлено: {{ result() }}</p>
+		}
+
+		<button type="button" appearance="primary" tuiButton [disabled]="sending()" (click)="submit()">
+			{{ sending() ? 'Отправка…' : 'Отправить' }}
+		</button>
+	</section>
+</div>

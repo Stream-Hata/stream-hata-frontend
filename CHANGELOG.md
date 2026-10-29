@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.5-pre-alpha] - 2026-10-29
+
+### Добавлено
+
+- Форма обратной связи: баг/предложение/фидбек, область BE/FE/DE, создание GitHub issue, Telegram-уведомление и запись в БД.
+- Скрытый endpoint `/rgg-sync/feedback/config` для GitHub App и отдельного Telegram-бота.
+
 ## [0.8.4-pre-alpha] - 2026-10-29
 
 ### Исправлено

@@ -55,6 +55,7 @@ const MAIN_NAV: NavItem[] = [
 	{ labelKey: 'nav.stream', link: '/app/stream', icon: '@tui.monitor' },
 	{ labelKey: 'nav.commands', link: '/app/commands', icon: '@tui.terminal' },
 	{ labelKey: 'nav.telegram', link: '/app/telegram', icon: '@tui.send' },
+	{ labelKey: 'nav.feedback', link: '/app/feedback', icon: '@tui.message-square' },
 	{ labelKey: 'nav.moderation', link: '/app/moderation', icon: '@tui.shield' },
 	{ labelKey: 'nav.donations', link: '/app/donations', icon: '@tui.heart' },
 	{ labelKey: 'nav.music', link: '/app/music', icon: '@tui.music' },
@@ -164,6 +165,7 @@ export default class AppShell {
 	readonly title = computed(() => resolveTitle(this.url()));
 	readonly desktop =
 		navigator.userAgent.includes('NamelessStreamHataDesktop') || '__TAURI_INTERNALS__' in window;
+
 	readonly faqUrl = 'https://streamhata.rdpctd.dev/faq';
 	openSystem(event: MouseEvent): void {
 		event.preventDefault();

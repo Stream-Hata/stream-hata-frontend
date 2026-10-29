@@ -1,8 +1,8 @@
 {
-	"version": "0.8.4-pre-alpha",
-	"build": "2026-10-29T05:52:05.088Z",
+	"version": "0.8.5-pre-alpha",
+	"build": "2026-10-29T11:16:55.605Z",
 	"notes": [
-		"Возвращена кнопка «Новая команда» в Telegram-боте.",
-		"Таблица команд Telegram снова использует Taiga Table и растянута на всю ширину."
+		"Форма обратной связи: баг/предложение/фидбек, область BE/FE/DE, создание GitHub issue, Telegram-уведомление и запись в БД.",
+		"Скрытый endpoint `/rgg-sync/feedback/config` для GitHub App и отдельного Telegram-бота."
 	]
 }
