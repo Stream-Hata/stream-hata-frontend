@@ -1,5 +1,28 @@
 [
   {
+    "version": "0.8.10-pre-alpha",
+    "date": "2026-10-29",
+    "sections": [
+      {
+        "title": "Исправлено",
+        "items": [
+          {
+            "text": "Действие Telegram-команды — Taiga-дропдаун со всеми действиями."
+          },
+          {
+            "text": "Свитчи Telegram-редактора переключаются напрямую."
+          },
+          {
+            "text": "Feedback: Taiga-дропдауны и поиск причины."
+          },
+          {
+            "text": "OBS: создание сцен и drag&drop."
+          }
+        ]
+      }
+    ]
+  },
+  {
     "version": "0.8.9-pre-alpha",
     "date": "2026-10-29",
     "sections": [

@@ -52,13 +52,14 @@
 		</tui-textfield>
 
 		<span class="jk-label">Действие</span>
-		<select class="telegram-select" [value]="action()" (change)="action.set($any($event.target).value)">
-			<option value="reply">Ответ текстом</option>
-			<option value="music">Музыка</option>
-			<option value="status">Статус стрима</option>
-			<option value="ping">Ping</option>
-			<option value="delete">Только удалить команду</option>
-		</select>
+		<tui-textfield tuiChevron>
+			<input [readonly]="true" tuiInput tuiSelectLike [value]="actionLabel()" />
+			<tui-data-list-wrapper
+				*tuiDropdown
+				[items]="actionLabels"
+				(itemClick)="setAction($event)"
+			></tui-data-list-wrapper>
+		</tui-textfield>
 
 		<span class="jk-label">Удалять команду</span>
 		<input
