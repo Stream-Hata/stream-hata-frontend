@@ -24,6 +24,9 @@ export default class FeedbackPage {
 	readonly expected = signal('');
 	readonly actual = signal('');
 	readonly version = signal('');
+	readonly severity = signal('medium');
+	readonly pageUrl = signal('');
+	readonly environment = signal('');
 	readonly contact = signal('');
 	readonly website = signal('');
 	readonly author = signal('');
@@ -51,6 +54,9 @@ export default class FeedbackPage {
 				expected: this.expected(),
 				actual: this.actual(),
 				version: this.version(),
+				severity: this.severity(),
+				pageUrl: this.pageUrl(),
+				environment: this.environment(),
 				contact: this.contact(),
 				author: this.author(),
 				website: this.website(),

@@ -1,6 +1,6 @@
 {
 	"version": "0.8.5-pre-alpha",
-	"build": "2026-10-29T11:16:55.605Z",
+	"build": "2026-10-29T11:20:44.106Z",
 	"notes": [
 		"Форма обратной связи: баг/предложение/фидбек, область BE/FE/DE, создание GitHub issue, Telegram-уведомление и запись в БД.",
 		"Скрытый endpoint `/rgg-sync/feedback/config` для GitHub App и отдельного Telegram-бота."

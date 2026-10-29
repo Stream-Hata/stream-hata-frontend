@@ -10,6 +10,9 @@ export interface FeedbackReport {
 	expected: string;
 	actual: string;
 	version: string;
+	severity: string;
+	pageUrl: string;
+	environment: string;
 	contact: string;
 	author: string;
 	website: string;
