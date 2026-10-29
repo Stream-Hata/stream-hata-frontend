@@ -1,5 +1,22 @@
 [
 	{
+		"version": "0.8.4-pre-alpha",
+		"date": "2026-10-29",
+		"sections": [
+			{
+				"title": "Исправлено",
+				"items": [
+					{
+						"text": "Возвращена кнопка «Новая команда» в Telegram-боте."
+					},
+					{
+						"text": "Таблица команд Telegram снова использует Taiga Table и растянута на всю ширину."
+					}
+				]
+			}
+		]
+	},
+	{
 		"version": "0.8.3-pre-alpha",
 		"date": "2026-10-28",
 		"sections": [

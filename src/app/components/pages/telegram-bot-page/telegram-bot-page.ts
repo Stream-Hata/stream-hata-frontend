@@ -4,11 +4,29 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommandsService } from '@shared/services/commands.service';
 import { NotifyService } from '@shared/services/stream.services';
+import {
+	TuiTable,
+	TuiTableTbody,
+	TuiTableTd,
+	TuiTableTh,
+	TuiTableThead,
+} from '@taiga-ui/addon-table';
 import { TuiButton, TuiInput, TuiTextfield } from '@taiga-ui/core';
 import { TuiSwitch } from '@taiga-ui/kit';
 
 @Component({
-	imports: [RouterLink, TuiButton, TuiInput, TuiSwitch, TuiTextfield],
+	imports: [
+		RouterLink,
+		TuiButton,
+		TuiInput,
+		TuiSwitch,
+		TuiTable,
+		TuiTableTbody,
+		TuiTableTd,
+		TuiTableTh,
+		TuiTableThead,
+		TuiTextfield,
+	],
 	selector: 'app-telegram-bot-page',
 	styleUrl: './telegram-bot-page.scss',
 	templateUrl: './telegram-bot-page.html',
