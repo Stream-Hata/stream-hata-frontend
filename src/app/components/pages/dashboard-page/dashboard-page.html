@@ -1,307 +1,305 @@
 <div class="jk-page">
-  <header class="jk-page-header">
-    <div class="jk-page-header-text">
-      <h1 class="jk-h1">Дашборд</h1>
-      <p class="jk-caption">{{ todayLabel() }} · всё под контролем</p>
-    </div>
+	<header class="jk-page-header">
+		<div class="jk-page-header-text">
+			<h1 class="jk-h1">Дашборд</h1>
+			<p class="jk-caption">{{ todayLabel() }} · всё под контролем</p>
+		</div>
 
-    <div class="jk-page-actions">
-      <button appearance="jkit-tint-cyan" tuiButton type="button" (click)="openClip()">
-        <tui-icon icon="@tui.scissors" />
-        Клип
-      </button>
-      <a appearance="jkit-tint" routerLink="/app/widgets" tuiButton>Виджеты</a>
-      <a appearance="primary" routerLink="/app/events" tuiButton>
-        <tui-icon icon="@tui.plus" />
-        Событие
-      </a>
-    </div>
-  </header>
+		<div class="jk-page-actions">
+			<button appearance="jkit-tint-cyan" tuiButton type="button" (click)="openClip()">
+				<tui-icon icon="@tui.scissors" />
+				Клип
+			</button>
+			<a appearance="jkit-tint" routerLink="/app/widgets" tuiButton>Виджеты</a>
+			<a appearance="primary" routerLink="/app/events" tuiButton>
+				<tui-icon icon="@tui.plus" />
+				Событие
+			</a>
+		</div>
+	</header>
 
-  <section class="stream-card">
-    <div class="stream-status">
-      <span class="jk-dot jk-dot-live"></span>
-      <div class="stream-status-text">
-        <span class="stream-status-title">{{ online() ? 'В эфире' : 'Стрим не в эфире' }}</span>
-        <span class="jk-caption">канал {{ channel() }}</span>
-      </div>
-    </div>
+	<section class="stream-card">
+		<div class="stream-status">
+			<span class="jk-dot jk-dot-live"></span>
+			<div class="stream-status-text">
+				<span class="stream-status-title">{{ online() ? 'В эфире' : 'Стрим не в эфире' }}</span>
+				<span class="jk-caption">канал {{ channel() }}</span>
+			</div>
+		</div>
 
-    <div class="stream-stats">
-      <div class="stream-stat">
-        <span class="jk-label">Зрители</span>
-        <span class="stream-stat-value">{{ viewers() }}</span>
-      </div>
-      <div class="stream-stat">
-        <span class="jk-label">Сообщения</span>
-        <span class="stream-stat-value">{{ messageCount() }}</span>
-      </div>
-      <div class="stream-stat">
-        <span class="jk-label">Голосов</span>
-        <span class="stream-stat-value">{{ votes() }}</span>
-      </div>
-    </div>
+		<div class="stream-stats">
+			<div class="stream-stat">
+				<span class="jk-label">Зрители</span>
+				<span class="stream-stat-value">{{ viewers() }}</span>
+			</div>
+			<div class="stream-stat">
+				<span class="jk-label">Сообщения</span>
+				<span class="stream-stat-value">{{ messageCount() }}</span>
+			</div>
+			<div class="stream-stat">
+				<span class="jk-label">Голосов</span>
+				<span class="stream-stat-value">{{ votes() }}</span>
+			</div>
+		</div>
 
-    <div class="stream-actions">
-      @if (!twitch()?.valid) {
-        <a appearance="primary" routerLink="/app/twitch" tuiButton>Подключить Twitch</a>
-      }
-      <a appearance="jkit-tint" routerLink="/app/chat-jury" tuiButton>Жюри</a>
-      <a appearance="jkit-tint-cyan" routerLink="/app/widgets" tuiButton>Таймер</a>
-      <a appearance="primary" routerLink="/app/chat-jury" tuiButton>Создать жюри</a>
-    </div>
-  </section>
+		<div class="stream-actions">
+			@if (!twitch()?.valid) {
+				<a appearance="primary" routerLink="/app/twitch" tuiButton>Подключить Twitch</a>
+			}
+			<a appearance="jkit-tint" routerLink="/app/chat-jury" tuiButton>Жюри</a>
+			<a appearance="jkit-tint-cyan" routerLink="/app/widgets" tuiButton>Таймер</a>
+			<a appearance="primary" routerLink="/app/chat-jury" tuiButton>Создать жюри</a>
+		</div>
+	</section>
 
-  <section class="metrics">
-    <article class="metric-card">
-      <span class="jk-label">Зрители</span>
-      <div class="metric-row">
-        <span class="jk-metric">{{ viewers() }}</span>
-        <span class="delta positive">в эфире</span>
-      </div>
-    </article>
+	<section class="metrics">
+		<article class="metric-card">
+			<span class="jk-label">Зрители</span>
+			<div class="metric-row">
+				<span class="jk-metric">{{ viewers() }}</span>
+				<span class="delta positive">в эфире</span>
+			</div>
+		</article>
 
-    <article class="metric-card">
-      <span class="jk-label">Подписчики</span>
-      <div class="metric-row">
-        <span class="jk-metric">{{ subscribers() }}</span>
-        <span class="delta positive">сабов</span>
-      </div>
-    </article>
+		<article class="metric-card">
+			<span class="jk-label">Подписчики</span>
+			<div class="metric-row">
+				<span class="jk-metric">{{ subscribers() }}</span>
+				<span class="delta positive">сабов</span>
+			</div>
+		</article>
 
-    <article class="metric-card">
-      <span class="jk-label">Сообщения</span>
-      <div class="metric-row">
-        <span class="jk-metric">{{ messageCount() }}</span>
-        <span class="delta">за сессию</span>
-      </div>
-    </article>
+		<article class="metric-card">
+			<span class="jk-label">Сообщения</span>
+			<div class="metric-row">
+				<span class="jk-metric">{{ messageCount() }}</span>
+				<span class="delta">за сессию</span>
+			</div>
+		</article>
 
-    <article class="metric-card">
-      <span class="jk-label">Голоса</span>
-      <div class="metric-row">
-        <span class="jk-metric">{{ votes() }}</span>
-        <span class="delta">{{ approval() }}% одобр.</span>
-      </div>
-      <progress
-        class="metric-progress"
-        max="100"
-        size="s"
-        [value]="approval()"
-        tuiProgressBar
-      ></progress>
-    </article>
-  </section>
+		<article class="metric-card">
+			<span class="jk-label">Голоса</span>
+			<div class="metric-row">
+				<span class="jk-metric">{{ votes() }}</span>
+				<span class="delta">{{ approval() }}% одобр.</span>
+			</div>
+			<progress
+				class="metric-progress"
+				max="100"
+				size="s"
+				[value]="approval()"
+				tuiProgressBar
+			></progress>
+		</article>
+	</section>
 
-  <div class="dashboard-grid">
-    <section class="jk-card jury-card">
-      <div class="jury-head">
-        <div class="jury-head-left">
-          <h2 class="jk-h4">Чат-жюри</h2>
-          @if (jury()) {
-            <span appearance="positive" tuiBadge>Активно</span>
-          } @else {
-            <span appearance="neutral" tuiBadge>Ожидание</span>
-          }
-        </div>
-        <span class="jk-caption">Последние 30 минут</span>
-      </div>
+	<div class="dashboard-grid">
+		<section class="jk-card jury-card">
+			<div class="jury-head">
+				<div class="jury-head-left">
+					<h2 class="jk-h4">Чат-жюри</h2>
+					@if (jury()) {
+						<span appearance="positive" tuiBadge>Активно</span>
+					} @else {
+						<span appearance="neutral" tuiBadge>Ожидание</span>
+					}
+				</div>
+				<span class="jk-caption">Последние 30 минут</span>
+			</div>
 
-      <h3 class="jury-question">{{ question() }}</h3>
+			<h3 class="jury-question">{{ question() }}</h3>
 
-      @if (author()) {
-        <div class="jury-author">
-          <span class="jk-avatar jk-avatar-s jk-avatar-purple">
-            {{ author().slice(0, 2).toUpperCase() }}
-          </span>
-          <span
-            class="jk-body-sm jk-muted"
-          >Совет от {{ author() }} · доверие AI {{ confidence() }}%</span
-        >
-      </div>
-    }
+			@if (author()) {
+				<div class="jury-author">
+					<span class="jk-avatar jk-avatar-s jk-avatar-purple">
+						{{ author().slice(0, 2).toUpperCase() }}
+					</span>
+					<span class="jk-body-sm jk-muted"
+						>Совет от {{ author() }} · доверие AI {{ confidence() }}%</span
+					>
+				</div>
+			}
 
-    <div class="jury-body">
-      <div class="jury-votes">
-        <div class="vote-row">
-          <span class="vote-name">Yea</span>
-          <span class="vote-bar">
-            <span class="vote-fill yea" [style.width.%]="yeaPercent()"></span>
-          </span>
-          <span class="vote-num">{{ yea() }}</span>
-          <span class="vote-pct">{{ yeaPercent() }}%</span>
-        </div>
+			<div class="jury-body">
+				<div class="jury-votes">
+					<div class="vote-row">
+						<span class="vote-name">Yea</span>
+						<span class="vote-bar">
+							<span class="vote-fill yea" [style.width.%]="yeaPercent()"></span>
+						</span>
+						<span class="vote-num">{{ yea() }}</span>
+						<span class="vote-pct">{{ yeaPercent() }}%</span>
+					</div>
 
-        <div class="vote-row">
-          <span class="vote-name">Nei</span>
-          <span class="vote-bar">
-            <span class="vote-fill nei" [style.width.%]="neiPercent()"></span>
-          </span>
-          <span class="vote-num">{{ nei() }}</span>
-          <span class="vote-pct">{{ neiPercent() }}%</span>
-        </div>
+					<div class="vote-row">
+						<span class="vote-name">Nei</span>
+						<span class="vote-bar">
+							<span class="vote-fill nei" [style.width.%]="neiPercent()"></span>
+						</span>
+						<span class="vote-num">{{ nei() }}</span>
+						<span class="vote-pct">{{ neiPercent() }}%</span>
+					</div>
 
-        <p class="jury-total jk-caption">
-          Всего голосов: {{ votes() }} · одобрение {{ approval() }}%
-        </p>
-      </div>
+					<p class="jury-total jk-caption">
+						Всего голосов: {{ votes() }} · одобрение {{ approval() }}%
+					</p>
+				</div>
 
-      <app-approval-ring [value]="approval()" />
-    </div>
+				<app-approval-ring [value]="approval()" />
+			</div>
 
-    @if (verdict()) {
-      <p class="jury-verdict jk-body-sm">{{ verdict() }}</p>
-    }
+			@if (verdict()) {
+				<p class="jury-verdict jk-body-sm">{{ verdict() }}</p>
+			}
 
-    <div class="jury-foot">
-      <span class="jk-caption">{{ votes() }} голосов в чате</span>
+			<div class="jury-foot">
+				<span class="jk-caption">{{ votes() }} голосов в чате</span>
 
-      <div class="jury-actions">
-        <button type="button" (click)="finishJury()" appearance="jkit-tint" tuiButton>
-          Завершить
-        </button>
-        <a appearance="primary" routerLink="/app/chat-jury" tuiButton>Новое голосование</a>
-      </div>
-    </div>
-  </section>
+				<div class="jury-actions">
+					<button type="button" (click)="finishJury()" appearance="jkit-tint" tuiButton>
+						Завершить
+					</button>
+					<a appearance="primary" routerLink="/app/chat-jury" tuiButton>Новое голосование</a>
+				</div>
+			</div>
+		</section>
 
-  <aside class="side-card jk-card">
-    <h2 class="jk-h4">Сейчас в эфире</h2>
+		<aside class="side-card jk-card">
+			<h2 class="jk-h4">Сейчас в эфире</h2>
 
-    <div class="stream-row">
-      <span class="jk-icon-tile jk-icon-tile-s jk-icon-tile-cyan">
-        <tui-icon icon="@tui.plus" />
-      </span>
-      <div class="stream-info">
-        <span class="stream-name">{{ online() ? 'Стрим активен' : 'Стрим оффлайн' }}</span>
-        <span class="jk-caption">{{ channel() }} · чатерсов {{ chatters() }}</span>
-      </div>
-    </div>
+			<div class="stream-row">
+				<span class="jk-icon-tile jk-icon-tile-s jk-icon-tile-cyan">
+					<tui-icon icon="@tui.plus" />
+				</span>
+				<div class="stream-info">
+					<span class="stream-name">{{ online() ? 'Стрим активен' : 'Стрим оффлайн' }}</span>
+					<span class="jk-caption">{{ channel() }} · чатерсов {{ chatters() }}</span>
+				</div>
+			</div>
 
-    <span class="jk-label side-label">Виджеты</span>
+			<span class="jk-label side-label">Виджеты</span>
 
-    <a class="more-link" routerLink="/app/widgets" tuiLink>
-      Открыть библиотеку виджетов
-      <tui-icon icon="@tui.arrow-right" />
-    </a>
+			<a class="more-link" routerLink="/app/widgets" tuiLink>
+				Открыть библиотеку виджетов
+				<tui-icon icon="@tui.arrow-right" />
+			</a>
 
-    <span class="jk-label side-label">Последние события</span>
+			<span class="jk-label side-label">Последние события</span>
 
-    <div class="event-list">
-      @for (event of recentEvents(); track event.id) {
-        <div class="event-row">
-          <span class="event-icon yellow">
-            <tui-icon icon="@tui.sparkles" />
-          </span>
-          <div class="event-info">
-            <span>{{ event.type }}</span>
-            <span class="jk-caption">{{ event.createdAt.slice(11, 16) }}</span>
-          </div>
-        </div>
-      } @empty {
-      <p class="jk-caption">Событий пока нет.</p>
-    }
-  </div>
+			<div class="event-list">
+				@for (event of recentEvents(); track event.id) {
+					<div class="event-row">
+						<span class="event-icon yellow">
+							<tui-icon icon="@tui.sparkles" />
+						</span>
+						<div class="event-info">
+							<span>{{ event.type }}</span>
+							<span class="jk-caption">{{ event.createdAt.slice(11, 16) }}</span>
+						</div>
+					</div>
+				} @empty {
+					<p class="jk-caption">Событий пока нет.</p>
+				}
+			</div>
 
-  <span class="jk-label side-label">Аналитика сессии</span>
+			<span class="jk-label side-label">Аналитика сессии</span>
 
-  @if (session().current; as current) {
-    <div class="analytics-rows">
-      <div class="analytics-row">
-        <span class="jk-caption">Пик зрителей</span>
-        <span class="jk-numeric">{{ current.peakViewers }}</span>
-      </div>
-      <div class="analytics-row">
-        <span class="jk-caption">Среднее</span>
-        <span class="jk-numeric">{{ current.avgViewers }}</span>
-      </div>
-      <div class="analytics-row">
-        <span class="jk-caption">Сообщений</span>
-        <span class="jk-numeric">{{ messageCount() }}</span>
-      </div>
-    </div>
-  } @else {
-    <p class="jk-caption">Сессия начнётся со стартом стрима.</p>
-  }
+			@if (session().current; as current) {
+				<div class="analytics-rows">
+					<div class="analytics-row">
+						<span class="jk-caption">Пик зрителей</span>
+						<span class="jk-numeric">{{ current.peakViewers }}</span>
+					</div>
+					<div class="analytics-row">
+						<span class="jk-caption">Среднее</span>
+						<span class="jk-numeric">{{ current.avgViewers }}</span>
+					</div>
+					<div class="analytics-row">
+						<span class="jk-caption">Сообщений</span>
+						<span class="jk-numeric">{{ messageCount() }}</span>
+					</div>
+				</div>
+			} @else {
+				<p class="jk-caption">Сессия начнётся со стартом стрима.</p>
+			}
 
-  <a class="more-link" download href="{{ analyticsExportUrl }}"> Экспорт CSV </a>
-</aside>
-</div>
+			<a class="more-link" download href="{{ analyticsExportUrl }}"> Экспорт CSV </a>
+		</aside>
+	</div>
 
-<section class="activity">
-  <div class="activity-head">
-    <h2 class="jk-h4">Недавняя активность</h2>
-    <a class="more-link" routerLink="/app/events" tuiLink>
-      Вся активность
-      <tui-icon icon="@tui.arrow-right" />
-    </a>
-  </div>
+	<section class="activity">
+		<div class="activity-head">
+			<h2 class="jk-h4">Недавняя активность</h2>
+			<a class="more-link" routerLink="/app/events" tuiLink>
+				Вся активность
+				<tui-icon icon="@tui.arrow-right" />
+			</a>
+		</div>
 
-  <div class="activity-grid">
-    @for (event of recentEvents(); track event.id) {
-      <div class="activity-item">
-        <span class="activity-icon cyan">
-          <tui-icon icon="@tui.sparkles" />
-        </span>
-        <div class="activity-text">
-          <span>{{ event.type }} · {{ event.username }}</span>
-          <span class="jk-caption">{{ event.createdAt.slice(11, 16) }}</span>
-        </div>
-      </div>
-    } @empty {
-    <p class="jk-caption">Активность появится после подключения Twitch.</p>
-  }
-</div>
-</section>
+		<div class="activity-grid">
+			@for (event of recentEvents(); track event.id) {
+				<div class="activity-item">
+					<span class="activity-icon cyan">
+						<tui-icon icon="@tui.sparkles" />
+					</span>
+					<div class="activity-text">
+						<span>{{ event.type }} · {{ event.username }}</span>
+						<span class="jk-caption">{{ event.createdAt.slice(11, 16) }}</span>
+					</div>
+				</div>
+			} @empty {
+				<p class="jk-caption">Активность появится после подключения Twitch.</p>
+			}
+		</div>
+	</section>
 
-<section class="jk-section">
-  <h2 class="jk-h4">Последние события</h2>
+	<section class="jk-section">
+		<h2 class="jk-h4">Последние события</h2>
 
-  @if (recentEvents().length) {
-    <div class="table-wrap">
-      <table tuiTable>
-        <thead tuiThead>
-          <tr>
-            <th tuiTh>Событие</th>
-            <th tuiTh>Зритель</th>
-            <th tuiTh>Время</th>
-          </tr>
-        </thead>
+		@if (recentEvents().length) {
+			<div class="table-wrap">
+				<table tuiTable>
+					<thead tuiThead>
+						<tr>
+							<th tuiTh>Событие</th>
+							<th tuiTh>Зритель</th>
+							<th tuiTh>Время</th>
+						</tr>
+					</thead>
 
-        <tbody tuiTbody>
-          @for (event of recentEvents(); track event.id) {
-            <tr>
-              <td tuiTd>
-                <span class="table-event">
-                  <tui-icon class="cyan" icon="@tui.sparkles" />
-                  {{ event.type }}
-                </span>
-              </td>
-              <td tuiTd>{{ event.username }}</td>
-              <td tuiTd>{{ event.createdAt.slice(11, 16) }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  } @else {
-    <div class="jk-card jk-empty">
-      <span class="jk-empty-icon"><tui-icon icon="@tui.calendar-days" /></span>
-      <span class="jk-h4">Событий пока нет</span>
-      <span
-        class="jk-body-sm jk-muted"
-      >Подключите Twitch — события канала появятся автоматически.</span
-    >
-  </div>
-}
-</section>
+					<tbody tuiTbody>
+						@for (event of recentEvents(); track event.id) {
+							<tr>
+								<td tuiTd>
+									<span class="table-event">
+										<tui-icon class="cyan" icon="@tui.sparkles" />
+										{{ event.type }}
+									</span>
+								</td>
+								<td tuiTd>{{ event.username }}</td>
+								<td tuiTd>{{ event.createdAt.slice(11, 16) }}</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		} @else {
+			<div class="jk-card jk-empty">
+				<span class="jk-empty-icon"><tui-icon icon="@tui.calendar-days" /></span>
+				<span class="jk-h4">Событий пока нет</span>
+				<span class="jk-body-sm jk-muted"
+					>Подключите Twitch — события канала появятся автоматически.</span
+				>
+			</div>
+		}
+	</section>
 
-<div class="hint">
-  <tui-icon icon="@tui.info" />
-  <p class="hint-text">
-    <strong>Подсказка.</strong>
-    AI отклонит совет с доверием ниже 60% — чат не увидит спам в жюри
-  </p>
-  <a appearance="jkit-tint" routerLink="/app/settings" size="s" tuiButton>Настроить</a>
-</div>
+	<div class="hint">
+		<tui-icon icon="@tui.info" />
+		<p class="hint-text">
+			<strong>Подсказка.</strong>
+			AI отклонит совет с доверием ниже {{ juryThreshold() }}% — чат не увидит спам в жюри
+		</p>
+		<a appearance="jkit-tint" routerLink="/app/settings" size="s" tuiButton>Настроить</a>
+	</div>
 </div>

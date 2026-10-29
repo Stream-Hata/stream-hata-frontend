@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import type { TranslationKey } from '@shared/services/i18n.service';
 import type { NotifySettings } from '@shared/types/stream';
 import { Component, computed, DestroyRef, inject, Injector, signal } from '@angular/core';
@@ -8,6 +7,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { contrastRatio } from '@shared/helpers/color';
 import { signalControl } from '@shared/helpers/form-control';
 import { AppSettingsService } from '@shared/services/app-settings.service';
+import { ChatJuryService } from '@shared/services/chat-jury.service';
 import { DesktopUpdateService } from '@shared/services/desktop-update.service';
 import { DonationsService } from '@shared/services/donations.service';
 import { I18nService } from '@shared/services/i18n.service';
@@ -122,6 +122,7 @@ export default class SettingsPage {
 	private readonly welcomeService = inject(WelcomeService);
 	readonly desktop =
 		navigator.userAgent.includes('NamelessStreamHataDesktop') || '__TAURI_INTERNALS__' in window;
+
 	readonly section = signal<Section>('general');
 	readonly language = this.i18n.language;
 	readonly languageControl = signalControl(this.language, this.injector);
@@ -210,6 +211,20 @@ export default class SettingsPage {
 		this.appSettings.backgroundImage.set('');
 	}
 
+	saveJury(): void {
+		if (!this.juryLoaded) {
+			return;
+		}
+
+		this.chatJury
+			.saveSettings({
+				enabled: this.juryEnabled(),
+				duration_seconds: Number(this.duration()),
+				min_confidence: this.threshold() / 100,
+			})
+			.subscribe({ error: () => undefined });
+	}
+
 	saveSettings(): void {
 		this.appSettings.saveNow().subscribe(() => {
 			this.saved.set(true);
@@ -292,6 +307,7 @@ export default class SettingsPage {
 
 	/* Jury */
 	readonly threshold = signal(60);
+	readonly juryEnabled = signal(true);
 	readonly duration = signal('30');
 	readonly durationControl = signalControl(this.duration, this.injector);
 	readonly quorum = signal('10');
@@ -333,6 +349,8 @@ export default class SettingsPage {
 	private readonly notify = inject(NotifyService);
 	private readonly network = inject(NetworkService);
 	private readonly metricsService = inject(MetricsService);
+	private readonly chatJury = inject(ChatJuryService);
+	private juryLoaded = false;
 	private readonly twitchService = inject(TwitchService);
 	readonly twitch = toSignal(
 		timer(0, 30000).pipe(
@@ -373,6 +391,19 @@ export default class SettingsPage {
 				error: () => undefined,
 			});
 
+		this.chatJury
+			.getSettings()
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe({
+				next: (settings) => {
+					this.juryEnabled.set(settings.enabled);
+					this.threshold.set(Math.round(settings.min_confidence * 100));
+					this.duration.set(String(settings.duration_seconds));
+					this.juryLoaded = true;
+				},
+				error: () => undefined,
+			});
+
 		this.notify
 			.settings()
 			.pipe(takeUntilDestroyed(this.destroyRef))
@@ -388,6 +419,10 @@ export default class SettingsPage {
 		this.digestControl.valueChanges
 			.pipe(takeUntilDestroyed(this.destroyRef))
 			.subscribe(() => this.saveNotify());
+
+		this.durationControl.valueChanges
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe(() => this.saveJury());
 
 		this.notifyEnabledControl.valueChanges
 			.pipe(takeUntilDestroyed(this.destroyRef))

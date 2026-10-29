@@ -1,8 +1,8 @@
 {
-	"version": "0.8.5-pre-alpha",
-	"build": "2026-10-29T11:20:44.106Z",
+	"version": "0.8.6-pre-alpha",
+	"build": "2026-10-29T12:03:36.051Z",
 	"notes": [
-		"Форма обратной связи: баг/предложение/фидбек, область BE/FE/DE, создание GitHub issue, Telegram-уведомление и запись в БД.",
-		"Скрытый endpoint `/rgg-sync/feedback/config` для GitHub App и отдельного Telegram-бота."
+		"Порог доверия AI сохраняется и отображается в dashboard.",
+		"В Telegram-боте показываются все дефолтные команды."
 	]
 }

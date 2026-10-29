@@ -429,6 +429,7 @@
 								type="range"
 								[value]="threshold()"
 								(input)="threshold.set($any($event.target).value)"
+								(change)="saveJury()"
 								tuiSlider
 							/>
 						</div>

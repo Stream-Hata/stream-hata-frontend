@@ -61,14 +61,18 @@ export default class DashboardPage {
 
 	readonly recentEvents = computed(() => this.alerts()?.events?.slice(0, 3) ?? []);
 
-	readonly messageCount = computed(() => this.session().current?.messages ?? this.session().messages);
+	readonly messageCount = computed(
+		() => this.session().current?.messages ?? this.session().messages,
+	);
 
 	readonly session = toSignal(
 		timer(0, 15000).pipe(
 			switchMap(() =>
 				this.analytics
 					.state()
-					.pipe(catchError(() => of({ current: null, history: [], messages: 0 } as AnalyticsState))),
+					.pipe(
+						catchError(() => of({ current: null, history: [], messages: 0 } as AnalyticsState)),
+					),
 			),
 		),
 		{ initialValue: { current: null, history: [], messages: 0 } as AnalyticsState },
@@ -77,6 +81,17 @@ export default class DashboardPage {
 	get analyticsExportUrl(): string {
 		return this.analytics.exportUrl;
 	}
+
+	readonly jurySettings = toSignal(
+		timer(0, 30000).pipe(
+			switchMap(() => this.chatJury.getSettings().pipe(catchError(() => of(null)))),
+		),
+		{ initialValue: null },
+	);
+
+	readonly juryThreshold = computed(() =>
+		Math.round((this.jurySettings()?.min_confidence ?? 0.6) * 100),
+	);
 
 	readonly jury = toSignal(
 		timer(0, 5000).pipe(
