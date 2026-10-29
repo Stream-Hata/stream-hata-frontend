@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.1-pre-alpha] - 2026-10-29
+
+### Изменено
+- Платформа в feedback — Linux/Windows/macOS/Android/iOS.
+- Версия выбирается из Taiga-дропдауна со списком версий.
+
 ## [1.0.0-pre-alpha] - 2026-10-29
 
 ### Добавлено

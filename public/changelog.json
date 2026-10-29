@@ -1,5 +1,22 @@
 [
   {
+    "version": "1.0.1-pre-alpha",
+    "date": "2026-10-29",
+    "sections": [
+      {
+        "title": "Изменено",
+        "items": [
+          {
+            "text": "Платформа в feedback — Linux/Windows/macOS/Android/iOS."
+          },
+          {
+            "text": "Версия выбирается из Taiga-дропдауна со списком версий."
+          }
+        ]
+      }
+    ]
+  },
+  {
     "version": "1.0.0-pre-alpha",
     "date": "2026-10-29",
     "sections": [

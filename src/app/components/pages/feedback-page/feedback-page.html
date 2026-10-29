@@ -151,13 +151,14 @@
 		<div class="feedback-row">
 			<label>
 				<span class="jk-label">Версия</span>
-				<tui-textfield
-					><input
-						tuiInput
-						[value]="version()"
-						(input)="version.set($any($event.target).value)"
-						placeholder="0.8.4"
-				/></tui-textfield>
+				<tui-textfield tuiChevron>
+					<input [readonly]="true" tuiInput tuiSelectLike [value]="versionLabel()" />
+					<tui-data-list-wrapper
+						*tuiDropdown
+						[items]="versionOptions"
+						(itemClick)="setVersion($event)"
+					></tui-data-list-wrapper>
+				</tui-textfield>
 			</label>
 			<label>
 				<span class="jk-label">Контакт</span>

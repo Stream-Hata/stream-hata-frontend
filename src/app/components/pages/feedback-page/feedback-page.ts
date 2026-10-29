@@ -33,7 +33,7 @@ export default class FeedbackPage {
 					: 'DT',
 	);
 	readonly platform = signal('');
-	readonly platformOptions = ['Twitch', 'YouTube', 'Vimeo', 'OBS', 'Browser', 'Desktop', 'Другое'];
+	readonly platformOptions = ['Linux', 'Windows', 'macOS', 'Android', 'iOS', 'Другое'];
 	readonly platformLabel = computed(() => this.platform() || 'Не выбрано');
 	readonly attachments = signal<{ label: string; url: string; enabled: boolean }[]>([]);
 	readonly reason = signal('');
@@ -76,6 +76,27 @@ export default class FeedbackPage {
 	readonly expected = signal('');
 	readonly actual = signal('');
 	readonly version = signal('');
+	readonly versionOptions = [
+		'1.0.0-pre-alpha',
+		'0.9.9-pre-alpha',
+		'0.9.8-pre-alpha',
+		'0.9.7-pre-alpha',
+		'0.9.6-pre-alpha',
+		'0.9.5-pre-alpha',
+		'0.9.4-pre-alpha',
+		'0.9.3-pre-alpha',
+		'0.9.2-pre-alpha',
+		'0.9.1-pre-alpha',
+		'0.9.0-pre-alpha',
+		'0.8.11-pre-alpha',
+		'0.8.9-pre-alpha',
+		'0.8.8-pre-alpha',
+		'0.8.7-pre-alpha',
+		'0.8.6-pre-alpha',
+		'0.8.5-pre-alpha',
+		'Не знаю',
+	];
+	readonly versionLabel = computed(() => this.version() || 'Не выбрано');
 	readonly severity = signal('medium');
 	readonly severityValues = ['low', 'medium', 'high', 'critical'];
 	readonly severityLabels = ['Низкая', 'Средняя', 'Высокая', 'Критичная'];
@@ -112,6 +133,10 @@ export default class FeedbackPage {
 		if (index >= 0) {
 			this.severity.set(this.severityValues[index]);
 		}
+	}
+
+	setVersion(label: string): void {
+		this.version.set(label === 'Не выбрано' ? '' : label);
 	}
 
 	setPlatform(label: string): void {
