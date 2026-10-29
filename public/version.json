@@ -1,8 +1,7 @@
 {
-  "version": "1.0.1-pre-alpha",
-  "build": "2026-10-29T21:39:23.026Z",
+  "version": "1.0.2-pre-alpha",
+  "build": "2026-10-29T22:11:17.059Z",
   "notes": [
-    "Платформа в feedback — Linux/Windows/macOS/Android/iOS.",
-    "Версия выбирается из Taiga-дропдауна со списком версий."
+    "Now Playing снова запускает существующую очередь при открытии."
   ]
 }

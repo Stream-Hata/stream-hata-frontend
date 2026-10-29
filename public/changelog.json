@@ -1,5 +1,19 @@
 [
   {
+    "version": "1.0.2-pre-alpha",
+    "date": "2026-10-29",
+    "sections": [
+      {
+        "title": "Исправлено",
+        "items": [
+          {
+            "text": "Now Playing снова запускает существующую очередь при открытии."
+          }
+        ]
+      }
+    ]
+  },
+  {
     "version": "1.0.1-pre-alpha",
     "date": "2026-10-29",
     "sections": [

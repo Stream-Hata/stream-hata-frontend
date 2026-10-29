@@ -161,11 +161,11 @@ export class NowPlayingOverlay {
 			}
 
 			if (!this.currentId() || !this.queue.includes(this.currentId() ?? '')) {
-				// Do not start an existing queue just because the widget was opened.
-				// Only a newly added track starts playback automatically.
 				if (added.length) {
 					this.finished.set(false);
 					this.currentId.set(added[added.length - 1]);
+				} else if (!this.finished() && this.queue.length) {
+					this.currentId.set(this.queue[0]);
 				}
 			}
 		});
