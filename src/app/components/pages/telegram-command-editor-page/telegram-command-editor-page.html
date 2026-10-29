@@ -80,6 +80,49 @@
 			></textarea>
 		</tui-textfield>
 
+		<span class="jk-label">Ответ в личке</span>
+		<tui-textfield>
+			<textarea
+				rows="3"
+				tuiTextarea
+				[value]="responsePrivate()"
+				(input)="responsePrivate.set($any($event.target).value)"
+				placeholder="Если пусто — используется общий ответ"
+			></textarea>
+		</tui-textfield>
+
+		<span class="jk-label">Ответ в канале</span>
+		<tui-textfield>
+			<textarea
+				rows="3"
+				tuiTextarea
+				[value]="responseChannel()"
+				(input)="responseChannel.set($any($event.target).value)"
+				placeholder="Если пусто — используется общий ответ"
+			></textarea>
+		</tui-textfield>
+
+		<span class="jk-label">Ответ в группе</span>
+		<tui-textfield>
+			<textarea
+				rows="3"
+				tuiTextarea
+				[value]="responseGroup()"
+				(input)="responseGroup.set($any($event.target).value)"
+				placeholder="Если пусто — используется общий ответ"
+			></textarea>
+		</tui-textfield>
+
+		<span class="jk-label">Цепочка команд</span>
+		<tui-textfield>
+			<input
+				tuiInput
+				[value]="chain()"
+				(input)="chain.set($any($event.target).value)"
+				placeholder="/one, /two, /three"
+			/>
+		</tui-textfield>
+
 		<span class="jk-label">Разметка</span>
 		<tui-textfield>
 			<input

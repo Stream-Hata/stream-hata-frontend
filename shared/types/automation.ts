@@ -357,6 +357,10 @@ export interface TelegramCommand {
 	action?: string;
 	deleteCommand?: boolean;
 	response: string;
+	responsePrivate?: string;
+	responseChannel?: string;
+	responseGroup?: string;
+	chain?: string[];
 	parseMode?: string;
 	disablePreview?: boolean;
 	enabled: boolean;

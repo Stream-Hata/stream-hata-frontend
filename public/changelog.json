@@ -1,5 +1,25 @@
 [
   {
+    "version": "0.9.3-pre-alpha",
+    "date": "2026-10-29",
+    "sections": [
+      {
+        "title": "Добавлено",
+        "items": [
+          {
+            "text": "Telegram: отдельные ответы для лички, канала и группы."
+          },
+          {
+            "text": "Telegram: цепочки команд."
+          },
+          {
+            "text": "Feedback: TuiEditor и автовыбор проекта."
+          }
+        ]
+      }
+    ]
+  },
+  {
     "version": "0.9.2-pre-alpha",
     "date": "2026-10-29",
     "sections": [

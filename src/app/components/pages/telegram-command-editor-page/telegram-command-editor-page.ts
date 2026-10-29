@@ -29,6 +29,10 @@ export default class TelegramCommandEditorPage {
 	readonly actionLabel = () => TELEGRAM_ACTION_LABELS[this.action()] ?? this.action();
 	readonly deleteCommand = signal(false);
 	readonly response = signal('');
+	readonly responsePrivate = signal('');
+	readonly responseChannel = signal('');
+	readonly responseGroup = signal('');
+	readonly chain = signal('');
 	readonly parseMode = signal('');
 	readonly disablePreview = signal(false);
 	readonly enabled = signal(true);
@@ -55,6 +59,10 @@ export default class TelegramCommandEditorPage {
 		this.action.set(item.action ?? 'reply');
 		this.deleteCommand.set(Boolean(item.deleteCommand));
 		this.response.set(item.response);
+		this.responsePrivate.set(item.responsePrivate ?? '');
+		this.responseChannel.set(item.responseChannel ?? '');
+		this.responseGroup.set(item.responseGroup ?? '');
+		this.chain.set((item.chain ?? []).join(', '));
 		this.parseMode.set(item.parseMode ?? '');
 		this.disablePreview.set(Boolean(item.disablePreview));
 		this.enabled.set(item.enabled);
@@ -106,6 +114,10 @@ export default class TelegramCommandEditorPage {
 				action: this.action().trim() || 'reply',
 				deleteCommand: this.deleteCommand(),
 				response: this.response(),
+				responsePrivate: this.responsePrivate(),
+				responseChannel: this.responseChannel(),
+				responseGroup: this.responseGroup(),
+				chain: this.chain().split(',').map((item) => item.trim()).filter(Boolean),
 				parseMode: this.parseMode(),
 				disablePreview: this.disablePreview(),
 				enabled: this.enabled(),
