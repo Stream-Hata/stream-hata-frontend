@@ -4,6 +4,7 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommandsService } from '@shared/services/commands.service';
 import { NotifyService } from '@shared/services/stream.services';
+import { TwitchService } from '@shared/services/twitch.service';
 import {
 	TuiTable,
 	TuiTableTbody,
@@ -34,6 +35,8 @@ import { TuiSwitch } from '@taiga-ui/kit';
 export default class TelegramBotPage {
 	private readonly commandsService = inject(CommandsService);
 	private readonly notify = inject(NotifyService);
+	private readonly twitch = inject(TwitchService);
+	readonly twitchName = signal('');
 
 	readonly settings = signal<NotifySettings | null>(null);
 	readonly commands = signal<TelegramCommand[]>([]);
@@ -58,6 +61,7 @@ export default class TelegramBotPage {
 			}
 		});
 		this.reloadCommands();
+		this.twitch.login().subscribe((profile) => this.twitchName.set(profile?.user?.username ?? ''));
 	}
 
 	reloadCommands(): void {
@@ -193,6 +197,7 @@ export default class TelegramBotPage {
 					this.status.set('Команда сохранена');
 					this.reset();
 					this.reloadCommands();
+		this.twitch.login().subscribe((profile) => this.twitchName.set(profile?.user?.username ?? ''));
 				},
 				error: () => this.status.set('Не удалось сохранить команду'),
 			});

@@ -2,7 +2,11 @@
 	<header class="jk-page-header">
 		<div class="jk-page-header-text">
 			<h1 class="jk-h1">Telegram-бот</h1>
-			<p class="jk-caption">Токен, чат и команды бота. Кнопки открываются под ответом.</p>
+			<p class="jk-caption">
+				Бот привязан к Twitch-аккаунту
+				<strong>{{ twitchName() || 'не подключён' }}</strong>
+				и отвечает только в добавленных chat ID.
+			</p>
 		</div>
 		<div class="jk-page-actions">
 			<a routerLink="/app/telegram/editor" appearance="primary" tuiButton>Новая команда</a>
