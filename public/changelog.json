@@ -1,5 +1,22 @@
 [
   {
+    "version": "0.9.8-pre-alpha",
+    "date": "2026-10-29",
+    "sections": [
+      {
+        "title": "Исправлено",
+        "items": [
+          {
+            "text": "Feedback-конфиг хранится только в OpenBao."
+          },
+          {
+            "text": "Шапка feedback больше не перекрывает форму."
+          }
+        ]
+      }
+    ]
+  },
+  {
     "version": "0.9.7-pre-alpha",
     "date": "2026-10-29",
     "sections": [

@@ -1,4 +1,4 @@
-<div class="jk-page">
+<div class="jk-page feedback-page">
 	<header class="jk-page-header">
 		<div class="jk-page-header-text">
 			<h1 class="jk-h1">Обратная связь</h1>
@@ -56,7 +56,8 @@
 					<button type="button" appearance="flat" size="xs" tuiButton (click)="removeReason(reason)">×</button>
 				</span>
 			}
-			<div class="feedback-custom-reason">
+			@if (customReasonVisible()) {
+				<div class="feedback-custom-reason">
 				<tui-textfield>
 					<input
 						tuiInput
@@ -66,11 +67,12 @@
 						(keydown.enter)="addCustomReason()"
 					/>
 				</tui-textfield>
-				<button type="button" appearance="flat" tuiButton (click)="addCustomReason()">Добавить</button>
-			</div>
+					<button type="button" appearance="flat" tuiButton (click)="addCustomReason()">Добавить</button>
+				</div>
+			}
 		</div>
 		<label>
-			<span class="jk-label">Заголовок</span>
+			<span class="jk-label">Заголовок · {{ prefixPreview() }}</span>
 			<tui-textfield
 				><input tuiInput [value]="title()" (input)="title.set($any($event.target).value)"
 			/></tui-textfield>

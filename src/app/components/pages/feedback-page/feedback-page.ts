@@ -23,10 +23,20 @@ export default class FeedbackPage {
 	readonly areaLabel = computed(() => this.areaLabels[this.areaValues.indexOf(this.area())] ?? 'Frontend');
 	readonly kind = signal<FeedbackReport['kind']>('bug');
 	readonly kindLabel = computed(() => this.kindLabels[this.kindValues.indexOf(this.kind())] ?? 'Баг');
+	readonly prefixPreview = computed(() =>
+		this.kind() === 'feedback'
+			? 'FB'
+			: this.area() === 'backend'
+				? 'BE'
+				: this.area() === 'frontend'
+					? 'FE'
+					: 'DT',
+	);
 	readonly reason = signal('');
 	readonly reasons = signal<string[]>([]);
 	readonly reasonQuery = signal('');
 	readonly customReason = signal('');
+	readonly customReasonVisible = signal(false);
 	readonly areaValues = ['frontend', 'backend', 'desktop'];
 	readonly areaLabels = ['Frontend', 'Backend', 'Desktop'];
 	readonly kindValues = ['bug', 'suggestion', 'feedback'];
@@ -43,6 +53,10 @@ export default class FeedbackPage {
 			const values = groups.get(key) ?? [];
 			values.push(item.label);
 			groups.set(key, values);
+		}
+
+		if (!query || 'своя причина'.includes(query)) {
+			groups.set('Другое', ['Своя причина']);
 		}
 
 		return {
@@ -75,6 +89,7 @@ export default class FeedbackPage {
 			this.reason.set('');
 			this.reasons.set([]);
 			this.reasonQuery.set('');
+			this.customReasonVisible.set(false);
 		}
 	}
 
@@ -86,6 +101,14 @@ export default class FeedbackPage {
 	}
 
 	addReason(label: string): void {
+		if (label === 'Своя причина') {
+			this.customReasonVisible.set(true);
+			this.reasonQuery.set(label);
+
+			return;
+		}
+
+		this.customReasonVisible.set(false);
 		const item = FEEDBACK_REASONS.find(
 			(candidate) =>
 				candidate.label === label &&
