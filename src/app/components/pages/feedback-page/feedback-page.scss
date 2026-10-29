@@ -2,8 +2,9 @@
 	display: grid;
 	gap: 14px;
 	width: 100%;
-	max-width: 100%;
+	max-width: 960px;
 	min-width: 0;
+	margin-inline: auto;
 }
 
 .feedback-form label {
