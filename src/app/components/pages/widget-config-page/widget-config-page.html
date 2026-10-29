@@ -13,11 +13,6 @@
 					Проверить WebGL
 				</button>
 			}
-			@if (kind() === 'dice' || kind() === 'coinflip') {
-				<button type="button" appearance="flat" tuiButton (click)="webglHelp.open()">
-					Проверить WebGL
-				</button>
-			}
 			<button appearance="primary" tuiButton type="button" (click)="save()">
 				{{ saved() ? 'Сохранено' : 'Сохранить' }}
 			</button>

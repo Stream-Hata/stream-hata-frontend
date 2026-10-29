@@ -41,14 +41,16 @@
 		}
 
 		<ol class="webgl-steps">
-			<li>Открой OBS → <strong>Настройки</strong> → <strong>Браузер</strong>.</li>
-			<li>Включи аппаратное ускорение / GPU rendering, если есть такой пункт.</li>
-			<li>Для Linux-плагина проверь, что запуск идёт без <code>--disable-gpu</code>.</li>
-			<li>Добавь виджет как Browser Source и обнови источник.</li>
-			<li>Нажми «Проверить WebGL» ещё раз.</li>
+			<li>В OBS добавь источник <strong>Browser</strong> (Browser Source).</li>
+			<li>В поле <strong>URL</strong> вставь <code>https://streamhata.rdpctd.dev/webgl-check</code>.</li>
+			<li>Поставь размер <strong>1280×720</strong> и нажми <strong>OK</strong>.</li>
+			<li>Посмотри на статус: «WebGL2 работает» — всё готово.</li>
+			<li>Если «WebGL2 недоступен» — включи аппаратное ускорение в OBS и browser source, обнови OBS/плагин и перезапусти OBS.</li>
+			<li>После проверки замени URL на ссылку нужного виджета из раздела «Виджеты».</li>
 		</ol>
 
 		<div class="webgl-actions">
+			<a routerLink="/webgl-check" appearance="flat" tuiButton (click)="close()">Открыть тестовую страницу</a>
 			<a routerLink="/app/widgets/dice/config" appearance="flat" tuiButton (click)="close()"
 				>Открыть настройки кубика</a
 			>

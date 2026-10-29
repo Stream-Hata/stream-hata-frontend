@@ -40,15 +40,22 @@
       <span class="nav-group">{{ labels().main }}</span>
 
       @for (item of mainNav(); track item.link) {
-        <a
-          class="nav-item"
-          [routerLink]="item.link"
-          (click)="menuOpen.set(false)"
-          routerLinkActive="nav-item-active"
-        >
-          <tui-icon [icon]="item.icon" />
-          <span>{{ item.label }}</span>
-        </a>
+        @if (item.external) {
+          <a class="nav-item" [href]="item.link" target="_blank" rel="noopener" (click)="menuOpen.set(false)">
+            <tui-icon [icon]="item.icon" />
+            <span>{{ item.label }}</span>
+          </a>
+        } @else {
+          <a
+            class="nav-item"
+            [routerLink]="item.link"
+            (click)="menuOpen.set(false)"
+            routerLinkActive="nav-item-active"
+          >
+            <tui-icon [icon]="item.icon" />
+            <span>{{ item.label }}</span>
+          </a>
+        }
       }
 
       <span class="nav-group">{{ labels().system }}</span>
@@ -82,13 +89,15 @@
 
     </nav>
 
-    <a class="sidebar-foot" routerLink="/app/twitch" (click)="menuOpen.set(false)">
-      <tui-icon icon="@tui.alert-triangle" />
-      <span class="foot-text">
-        <span class="foot-title">{{ streamOnline() ? 'В эфире' : labels().offline }}</span>
-        <span class="foot-link">{{ labels().checkTwitch }}</span>
-      </span>
-    </a>
+    @if (!streamOnline()) {
+      <a class="sidebar-foot" routerLink="/app/twitch" (click)="menuOpen.set(false)">
+        <tui-icon icon="@tui.alert-triangle" />
+        <span class="foot-text">
+          <span class="foot-title">{{ labels().offline }}</span>
+          <span class="foot-link">{{ labels().checkTwitch }}</span>
+        </span>
+      </a>
+    }
   </aside>
 
   @if (menuOpen()) {

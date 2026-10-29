@@ -193,13 +193,17 @@ export class ObsLocalService {
 		]);
 		const scenes = (sceneList['scenes'] as Array<{ sceneName?: string }> | undefined) ?? [];
 		const inputs = (inputList['inputs'] as Array<{ inputName?: string }> | undefined) ?? [];
+		const currentScene = String(sceneList['currentProgramSceneName'] ?? '');
+		const sceneItems = await this.request('GetSceneItemList', { sceneName: currentScene });
+		const sources = (sceneItems['sceneItems'] as Array<{ sourceName?: string }> | undefined) ?? [];
 
 		return {
 			connected: true,
 			url: this.url,
 			scenes: scenes.map((scene) => scene.sceneName ?? '').filter(Boolean),
-			currentScene: String(sceneList['currentProgramSceneName'] ?? ''),
+			currentScene,
 			inputs: inputs.map((input) => input.inputName ?? '').filter(Boolean),
+			sources: sources.map((source) => source.sourceName ?? '').filter(Boolean),
 			streaming: Boolean(stream['outputActive']),
 			recording: Boolean(record['outputActive']),
 		};
@@ -249,6 +253,7 @@ export class ObsLocalService {
 			scenes: [],
 			currentScene: '',
 			inputs: [],
+			sources: [],
 			streaming: false,
 			recording: false,
 		};

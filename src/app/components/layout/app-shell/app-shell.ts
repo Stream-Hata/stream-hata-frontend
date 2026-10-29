@@ -39,6 +39,7 @@ interface NavItem {
 	labelKey: TranslationKey;
 	link: string;
 	icon: string;
+	external?: boolean;
 }
 
 const MAIN_NAV: NavItem[] = [
@@ -55,7 +56,7 @@ const MAIN_NAV: NavItem[] = [
 	{ labelKey: 'nav.stream', link: '/app/stream', icon: '@tui.monitor' },
 	{ labelKey: 'nav.commands', link: '/app/commands', icon: '@tui.terminal' },
 	{ labelKey: 'nav.telegram', link: '/app/telegram', icon: '@tui.send' },
-	{ labelKey: 'nav.feedback', link: '/app/feedback', icon: '@tui.message-square' },
+	{ labelKey: 'nav.feedback', link: 'https://streamhata.rdpctd.dev/feedback', icon: '@tui.message-square', external: true },
 	{ labelKey: 'nav.moderation', link: '/app/moderation', icon: '@tui.shield' },
 	{ labelKey: 'nav.donations', link: '/app/donations', icon: '@tui.heart' },
 	{ labelKey: 'nav.music', link: '/app/music', icon: '@tui.music' },

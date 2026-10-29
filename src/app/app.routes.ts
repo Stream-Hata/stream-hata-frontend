@@ -7,6 +7,16 @@ import { desktopGuard, landingGuard } from './guards/desktop.guard';
 
 export const routes: Routes = [
 	{
+		path: 'feedback',
+		loadComponent: () => import('./components/pages/feedback-page/feedback-page'),
+		title: 'Обратная связь · Nameless StreamHata',
+	},
+	{
+		path: 'webgl-check',
+		loadComponent: () => import('./components/pages/webgl-check-page/webgl-check-page'),
+		title: 'Проверка WebGL · StreamHata',
+	},
+	{
 		path: '',
 		canActivate: [landingGuard],
 		loadComponent: () => import('./components/pages/landing-page/landing-page'),

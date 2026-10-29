@@ -7,6 +7,11 @@
 
     <div class="jk-page-actions">
       @if (obsStatus()?.connected) {
+        @if (obsStatus()?.streaming) {
+          <button type="button" appearance="jkit-tint" tuiButton (click)="output('stream', 'stop')">Остановить стрим</button>
+        } @else {
+          <button type="button" appearance="primary" tuiButton (click)="output('stream', 'start')">Начать стрим</button>
+        }
         <span appearance="positive" tuiBadge>OBS подключён</span>
       } @else {
         <span appearance="neutral" tuiBadge>OBS оффлайн</span>
@@ -89,6 +94,15 @@
                     {{ scene }}
                   </button>
                 }
+              </div>
+
+              <div class="scene-sources">
+                <span class="jk-label">Источники выбранной сцены</span>
+                <div class="source-list">
+                  @for (source of obsStatus()?.sources; track source) {
+                    <span class="source-chip">{{ source }}</span>
+                  }
+                </div>
               </div>
 
               <div class="obs-split">

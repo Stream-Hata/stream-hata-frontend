@@ -43,3 +43,12 @@
 	inline-size: 36px;
 	block-size: 36px;
 }
+
+.telegram-select {
+	min-height: 40px;
+	padding: 8px 12px;
+	border: 1px solid var(--border-normal);
+	border-radius: 10px;
+	background: var(--surface-elevated-1);
+	color: var(--text-primary);
+}

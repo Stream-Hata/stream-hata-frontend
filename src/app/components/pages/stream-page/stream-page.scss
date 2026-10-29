@@ -209,3 +209,23 @@
 .stream-timer app-timer-preview {
 	width: 100%;
 }
+
+.scene-sources {
+	display: grid;
+	gap: 8px;
+	margin: 14px 0;
+}
+
+.source-list {
+	display: flex;
+	gap: 6px;
+	flex-wrap: wrap;
+}
+
+.source-chip {
+	padding: 4px 9px;
+	border: 1px solid var(--border-normal);
+	border-radius: 999px;
+	color: var(--text-secondary);
+	font: 500 12px/1.4 var(--tui-font-text);
+}

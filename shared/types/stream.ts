@@ -4,6 +4,7 @@ export interface ObsStatus {
 	scenes: string[];
 	currentScene: string;
 	inputs: string[];
+	sources: string[];
 	streaming: boolean;
 	recording: boolean;
 	error?: string;

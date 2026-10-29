@@ -52,22 +52,19 @@
 		</tui-textfield>
 
 		<span class="jk-label">Действие</span>
-		<tui-textfield>
-			<input
-				tuiInput
-				[value]="action()"
-				(input)="action.set($any($event.target).value)"
-				placeholder="reply, music, status, ping, delete"
-			/>
-		</tui-textfield>
+		<select class="telegram-select" [value]="action()" (change)="action.set($any($event.target).value)">
+			<option value="reply">Ответ текстом</option>
+			<option value="music">Музыка</option>
+			<option value="status">Статус стрима</option>
+			<option value="ping">Ping</option>
+			<option value="delete">Только удалить команду</option>
+		</select>
 
 		<span class="jk-label">Удалять команду</span>
-		<input
-			type="checkbox"
-			tuiSwitch
-			[checked]="deleteCommand()"
-			(change)="deleteCommand.set($any($event.target).checked)"
-		/>
+		<div class="switch-hit">
+			<input type="checkbox" tuiSwitch [checked]="deleteCommand()" />
+			<span class="switch-hit-area" (click)="deleteCommand.set(!deleteCommand()); $event.preventDefault()"></span>
+		</div>
 
 		<span class="jk-label">Ответ</span>
 		<tui-textfield>
@@ -99,12 +96,10 @@
 		/>
 
 		<span class="jk-label">Включена</span>
-		<input
-			type="checkbox"
-			tuiSwitch
-			[checked]="enabled()"
-			(change)="enabled.set($any($event.target).checked)"
-		/>
+		<div class="switch-hit">
+			<input type="checkbox" tuiSwitch [checked]="enabled()" />
+			<span class="switch-hit-area" (click)="enabled.set(!enabled()); $event.preventDefault()"></span>
+		</div>
 
 		<span class="jk-label">Кнопки</span>
 		<div class="telegram-buttons">

@@ -19,7 +19,8 @@ import {
 	TuiSelectLike,
 	TuiTextfield,
 } from '@taiga-ui/core';
-import { TuiBadge, TuiChevron, TuiDataListWrapper } from '@taiga-ui/kit';
+import { TuiBadge, TuiChevron, TuiDataListWrapper, TuiInputDateTime } from '@taiga-ui/kit';
+import { TuiDay, TuiTime } from '@taiga-ui/cdk';
 import { catchError, of, switchMap, timer } from 'rxjs';
 
 const DATE_FORMAT: Intl.DateTimeFormatOptions = {
@@ -73,6 +74,7 @@ const STATUS_BADGES: Record<string, string> = {
 		TuiTableTh,
 		TuiTableThead,
 		TuiTextfield,
+		TuiInputDateTime,
 	],
 	providers: [
 		tuiItemsHandlersProvider({
@@ -92,7 +94,7 @@ export default class EventsPage {
 	readonly formOpen = signal(false);
 	readonly title = signal('');
 	readonly type = signal('custom');
-	readonly startsAt = signal('');
+	readonly startsAt = signal<readonly [TuiDay, TuiTime | null] | null>(null);
 	readonly eventForm = new FormGroup({
 		title: signalControl(this.title, this.injector),
 		type: signalControl(this.type, this.injector),
@@ -158,6 +160,20 @@ export default class EventsPage {
 		return STATUS_BADGES[status] ?? 'neutral';
 	}
 
+	startsAtISO(): string {
+		const value = this.startsAt();
+
+		if (!value) {
+			return '';
+		}
+
+		const [day, time] = value;
+		const date = day.toLocalNativeDate();
+		date.setHours(time?.hours ?? 0, time?.minutes ?? 0, 0, 0);
+
+		return date.toISOString();
+	}
+
 	formatDate(value?: string): string {
 		if (!value) {
 			return '—';
@@ -179,12 +195,12 @@ export default class EventsPage {
 			.create({
 				title,
 				type: this.type(),
-				startsAt: this.startsAt() ? new Date(this.startsAt()).toISOString() : undefined,
+				startsAt: this.startsAt() ? this.startsAtISO() : undefined,
 			})
 			.pipe(takeUntilDestroyed(this.destroyRef))
 			.subscribe(() => {
 				this.title.set('');
-				this.startsAt.set('');
+				this.startsAt.set(null);
 				this.formOpen.set(false);
 				this.refresh.update((value) => value + 1);
 			});

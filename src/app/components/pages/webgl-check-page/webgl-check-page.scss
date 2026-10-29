@@ -1,0 +1,80 @@
+.check-page {
+	display: grid;
+	gap: 18px;
+	max-width: 760px;
+	margin: 40px auto;
+	padding: 24px;
+}
+
+.check-kicker {
+	color: var(--accent-primary);
+	font: 700 12px/1 var(--tui-font-text);
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+}
+
+.check-page h1 {
+	margin: 0;
+	font: 700 36px/1.1 var(--tui-font-heading);
+}
+
+.check-caption,
+.check-steps {
+	color: var(--text-secondary);
+	font: 400 15px/1.55 var(--tui-font-text);
+}
+
+.check-card {
+	display: flex;
+	gap: 14px;
+	padding: 18px;
+	border: 1px solid var(--border-normal);
+	border-radius: 18px;
+	background: var(--surface-elevated-1);
+	align-items: flex-start;
+}
+
+.check-card div {
+	display: grid;
+	gap: 4px;
+}
+
+.check-ok {
+	border-color: color-mix(in srgb, #22c55e 45%, transparent);
+}
+
+.check-bad {
+	border-color: color-mix(in srgb, #ef4444 45%, transparent);
+}
+
+.check-steps {
+	padding: 18px;
+	border-radius: 18px;
+	background: var(--surface-elevated-1);
+}
+
+.check-steps h2 {
+	margin-top: 0;
+	color: var(--text-primary);
+	font: 700 20px/1.2 var(--tui-font-heading);
+}
+
+.check-steps ol {
+	display: grid;
+	gap: 8px;
+	padding-left: 22px;
+}
+
+.check-steps code {
+	word-break: break-all;
+	padding: 2px 6px;
+	border-radius: 6px;
+	background: var(--surface-elevated-2);
+	color: var(--accent-primary);
+}
+
+.check-actions {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+}

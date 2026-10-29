@@ -1,0 +1,38 @@
+<main class="check-page">
+  <span class="check-kicker">StreamHata · Browser Source</span>
+  <h1>Проверка WebGL2</h1>
+  <p class="check-caption">
+    Эта страница проверяет, умеет ли ваш OBS Browser Source рисовать WebGL2. Откройте её внутри OBS,
+    а не в обычном браузере.
+  </p>
+
+  <section class="check-card" [class.check-ok]="supported()" [class.check-bad]="checked() && !supported()">
+    <tui-icon [icon]="supported() ? '@tui.circle-check' : checked() ? '@tui.circle-alert' : '@tui.loader'" />
+    <div>
+      <strong>{{ supported() ? 'WebGL2 работает' : checked() ? 'WebGL2 недоступен' : 'Проверяем…' }}</strong>
+      @if (supported()) {
+        <span>{{ renderer() }}</span>
+        <span>{{ vendor() }} · {{ size() }}</span>
+      } @else if (checked()) {
+        <span>Browser Source не смог создать WebGL2-контекст.</span>
+      }
+    </div>
+  </section>
+
+  <section class="check-steps">
+    <h2>Что делать по шагам</h2>
+    <ol>
+      <li>В OBS добавьте источник <strong>Browser</strong> (Browser Source).</li>
+      <li>В поле <strong>URL</strong> вставьте ссылку этой страницы: <code>{{ location }}</code>.</li>
+      <li>Ширина/высота — например <strong>1280×720</strong>, галочка «Обновить при появлении» — включена.</li>
+      <li>Нажмите <strong>OK</strong> и посмотрите на статус выше. Если «WebGL2 работает» — всё готово.</li>
+      <li>Если «WebGL2 недоступен»: включите аппаратное ускорение в OBS и в browser source, обновите OBS/плагин, перезапустите OBS.</li>
+      <li>После проверки замените URL на ссылку нужного виджета из раздела «Виджеты».</li>
+    </ol>
+  </section>
+
+  <div class="check-actions">
+    <button type="button" appearance="primary" tuiButton (click)="check()">Проверить ещё раз</button>
+    <button type="button" appearance="flat" tuiButton (click)="copyLink()">Скопировать ссылку</button>
+  </div>
+</main>
