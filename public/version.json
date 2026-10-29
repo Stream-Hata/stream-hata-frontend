@@ -1,11 +1,5 @@
 {
-  "version": "0.8.11-pre-alpha",
-  "build": "2026-10-29T16:18:22.354Z",
-  "notes": [
-    "Каталог из 218 причин feedback по Backend/Frontend/Desktop.",
-    "Taiga-дропдауны причины с поиском.",
-    "Feedback-бот: список issue и смена состояния.",
-    "Issue создаются от StreamHata App с assignee p7x_dev.",
-    "Feedback-конфиг хранится в OpenBao."
-  ]
+	"version": "0.9.0-pre-alpha",
+	"build": "2026-10-29T18:12:51.940Z",
+	"notes": ["Переход на версионирование 0.9.x после 0.8.9."]
 }
