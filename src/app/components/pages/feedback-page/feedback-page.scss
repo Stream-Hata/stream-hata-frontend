@@ -50,3 +50,30 @@
 		grid-template-columns: 1fr;
 	}
 }
+
+.feedback-reasons {
+	display: flex;
+	gap: 6px;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+.feedback-reason-chip {
+	display: inline-flex;
+	gap: 4px;
+	align-items: center;
+	padding: 4px 8px;
+	border-radius: 999px;
+	background: var(--surface-elevated-2);
+}
+
+.feedback-custom-reason {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	flex: 1 1 320px;
+}
+
+.feedback-custom-reason tui-textfield {
+	flex: 1 1 auto;
+}

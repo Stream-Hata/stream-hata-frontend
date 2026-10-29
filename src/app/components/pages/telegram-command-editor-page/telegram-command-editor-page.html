@@ -62,12 +62,14 @@
 		</tui-textfield>
 
 		<span class="jk-label">Удалять команду</span>
-		<input
-			type="checkbox"
-			tuiSwitch
-			[checked]="deleteCommand()"
-			(change)="deleteCommand.set($any($event.target).checked)"
-		/>
+		<button
+			type="button"
+			class="tg-toggle"
+			[class.tg-toggle-on]="deleteCommand()"
+			(click)="deleteCommand.set(!deleteCommand())"
+		>
+			<span></span>
+		</button>
 
 		<span class="jk-label">Ответ</span>
 		<tui-textfield>
@@ -142,12 +144,14 @@
 		/>
 
 		<span class="jk-label">Включена</span>
-		<input
-			type="checkbox"
-			tuiSwitch
-			[checked]="enabled()"
-			(change)="enabled.set($any($event.target).checked)"
-		/>
+		<button
+			type="button"
+			class="tg-toggle"
+			[class.tg-toggle-on]="enabled()"
+			(click)="enabled.set(!enabled())"
+		>
+			<span></span>
+		</button>
 
 		<span class="jk-label">Кнопки</span>
 		<div class="telegram-buttons">

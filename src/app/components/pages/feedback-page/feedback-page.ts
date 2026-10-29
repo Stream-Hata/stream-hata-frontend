@@ -24,20 +24,33 @@ export default class FeedbackPage {
 	readonly kind = signal<FeedbackReport['kind']>('bug');
 	readonly kindLabel = computed(() => this.kindLabels[this.kindValues.indexOf(this.kind())] ?? 'Баг');
 	readonly reason = signal('');
+	readonly reasons = signal<string[]>([]);
 	readonly reasonQuery = signal('');
+	readonly customReason = signal('');
 	readonly areaValues = ['frontend', 'backend', 'desktop'];
 	readonly areaLabels = ['Frontend', 'Backend', 'Desktop'];
 	readonly kindValues = ['bug', 'suggestion', 'feedback'];
 	readonly kindLabels = ['Баг', 'Предложение', 'Фидбек'];
-	readonly reasonsForArea = computed(() => FEEDBACK_REASONS);
-	readonly reasonLabels = computed(() =>
-		this.reasonsForArea().map((item) => `${this.areaLabels[this.areaValues.indexOf(item.area)]} · ${item.group} · ${item.label}`),
-	);
-	readonly filteredReasons = computed(() => {
+	readonly filteredGroups = computed(() => {
 		const query = this.reasonQuery().trim().toLowerCase();
-		const labels = this.reasonLabels();
-		return query ? labels.filter((item) => item.toLowerCase().includes(query)) : labels;
+		const groups = new Map<string, string[]>();
+
+		for (const item of FEEDBACK_REASONS) {
+			if (query && !`${item.label} ${item.group} ${item.area}`.toLowerCase().includes(query)) {
+				continue;
+			}
+			const key = `${this.areaLabels[this.areaValues.indexOf(item.area)]} · ${item.group}`;
+			const values = groups.get(key) ?? [];
+			values.push(item.label);
+			groups.set(key, values);
+		}
+
+		return {
+			labels: [...groups.keys()],
+			items: [...groups.values()],
+		};
 	});
+
 	readonly title = signal('');
 	readonly description = signal('');
 	readonly descriptionControl = new FormControl('', { nonNullable: true });
@@ -60,6 +73,7 @@ export default class FeedbackPage {
 		if (index >= 0) {
 			this.area.set(this.areaValues[index] as FeedbackReport['area']);
 			this.reason.set('');
+			this.reasons.set([]);
 			this.reasonQuery.set('');
 		}
 	}
@@ -71,17 +85,32 @@ export default class FeedbackPage {
 		}
 	}
 
-	setReason(label: string): void {
-		const item = this.reasonsForArea().find(
+	addReason(label: string): void {
+		const item = FEEDBACK_REASONS.find(
 			(candidate) =>
-				`${this.areaLabels[this.areaValues.indexOf(candidate.area)]} · ${candidate.group} · ${candidate.label}` === label,
+				candidate.label === label &&
+				`${this.areaLabels[this.areaValues.indexOf(candidate.area)]} · ${candidate.group}` ===
+					[...this.filteredGroups().labels].find((group) => group.endsWith(` · ${candidate.group}`)) &&
+				!this.reasons().includes(candidate.label),
 		);
 		if (item) {
 			this.area.set(item.area);
-			this.reason.set(item.value);
-			this.reasonQuery.set(label);
+			this.reasons.update((items) => [...items, item.label]);
 		}
 	}
+
+	addCustomReason(): void {
+		const value = this.customReason().trim();
+		if (value && !this.reasons().includes(value)) {
+			this.reasons.update((items) => [...items, value]);
+			this.customReason.set('');
+		}
+	}
+
+	removeReason(value: string): void {
+		this.reasons.update((items) => items.filter((item) => item !== value));
+	}
+
 
 	constructor() {
 		this.descriptionControl.valueChanges.subscribe((value) => this.description.set(value));
@@ -98,7 +127,8 @@ export default class FeedbackPage {
 		this.feedback
 			.submit({
 				area: this.area(),
-				reason: this.reason(),
+				reason: this.reasons()[0] ?? '',
+				reasons: this.reasons(),
 				kind: this.kind(),
 				title: this.title(),
 				description: this.description(),
@@ -120,7 +150,8 @@ export default class FeedbackPage {
 						result.issueUrl || `${result.prefix}-${String(result.number).padStart(3, '0')}`,
 					);
 					this.title.set('');
-					this.description.set('');
+					this.reasons.set([]);
+				this.description.set('');
 				this.descriptionControl.setValue('');
 					this.steps.set('');
 					this.expected.set('');

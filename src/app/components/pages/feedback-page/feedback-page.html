@@ -43,11 +43,32 @@
 				/>
 				<tui-data-list-wrapper
 					*tuiDropdown
-					[items]="filteredReasons()"
-					(itemClick)="setReason($event)"
+					[items]="filteredGroups().items"
+					[labels]="filteredGroups().labels"
+					(itemClick)="addReason($event)"
 				></tui-data-list-wrapper>
 			</tui-textfield>
 		</label>
+		<div class="feedback-reasons">
+			@for (reason of reasons(); track reason) {
+				<span class="feedback-reason-chip">
+					{{ reason }}
+					<button type="button" appearance="flat" size="xs" tuiButton (click)="removeReason(reason)">×</button>
+				</span>
+			}
+			<div class="feedback-custom-reason">
+				<tui-textfield>
+					<input
+						tuiInput
+						[value]="customReason()"
+						(input)="customReason.set($any($event.target).value)"
+						placeholder="Своя причина…"
+						(keydown.enter)="addCustomReason()"
+					/>
+				</tui-textfield>
+				<button type="button" appearance="flat" tuiButton (click)="addCustomReason()">Добавить</button>
+			</div>
+		</div>
 		<label>
 			<span class="jk-label">Заголовок</span>
 			<tui-textfield

@@ -52,3 +52,34 @@
 	background: var(--surface-elevated-1);
 	color: var(--text-primary);
 }
+
+.tg-toggle {
+	position: relative;
+	inline-size: 48px;
+	block-size: 26px;
+	padding: 0;
+	border: 0;
+	border-radius: 999px;
+	background: var(--tui-background-neutral-2);
+	cursor: pointer;
+	transition: background 0.18s ease;
+}
+
+.tg-toggle span {
+	position: absolute;
+	top: 3px;
+	left: 3px;
+	inline-size: 20px;
+	block-size: 20px;
+	border-radius: 50%;
+	background: var(--tui-background-base);
+	transition: transform 0.18s ease;
+}
+
+.tg-toggle-on {
+	background: var(--accent-primary);
+}
+
+.tg-toggle-on span {
+	transform: translateX(22px);
+}
