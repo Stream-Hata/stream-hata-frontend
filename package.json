@@ -1,6 +1,6 @@
 {
   "name": "nameless-streamhata",
-  "version": "0.9.1-pre-alpha",
+  "version": "0.9.2-pre-alpha",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -48,6 +48,7 @@
     "@taiga-ui/addon-table": "^5.24.0",
     "@taiga-ui/cdk": "^5.24.0",
     "@taiga-ui/core": "^5.24.0",
+    "@taiga-ui/editor": "5.7.1",
     "@taiga-ui/icons": "^5.24.0",
     "@taiga-ui/kit": "^5.24.0",
     "@taiga-ui/layout": "^5.24.0",

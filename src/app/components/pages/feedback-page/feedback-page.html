@@ -56,14 +56,7 @@
 		</label>
 		<label>
 			<span class="jk-label">Описание</span>
-			<tui-textfield>
-				<textarea
-					rows="5"
-					tuiTextarea
-					[value]="description()"
-					(input)="description.set($any($event.target).value)"
-				></textarea>
-			</tui-textfield>
+			<tui-editor [formControl]="descriptionControl" />
 		</label>
 		<label>
 			<span class="jk-label">Шаги воспроизведения</span>

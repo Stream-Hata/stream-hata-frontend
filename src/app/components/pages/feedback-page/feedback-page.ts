@@ -1,14 +1,15 @@
 import type { FeedbackReport } from '@shared/services/feedback.service';
 import { Component, computed, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FeedbackService } from '@shared/services/feedback.service';
 import { FEEDBACK_REASONS } from '@shared/config/feedback-reasons';
 import { TwitchService } from '@shared/services/twitch.service';
 import { TuiButton, TuiDropdown, TuiInput, TuiSelectLike, TuiTextfield } from '@taiga-ui/core';
 import { TuiChevron, TuiDataListWrapper, TuiTextarea } from '@taiga-ui/kit';
+import { TuiEditor } from '@taiga-ui/editor';
 
 @Component({
-	imports: [FormsModule, TuiButton, TuiChevron, TuiDataListWrapper, TuiDropdown, TuiInput, TuiSelectLike, TuiTextarea, TuiTextfield],
+	imports: [FormsModule, ReactiveFormsModule, TuiButton, TuiChevron, TuiDataListWrapper, TuiDropdown, TuiEditor, TuiInput, TuiSelectLike, TuiTextarea, TuiTextfield],
 	selector: 'app-feedback-page',
 	styleUrl: './feedback-page.scss',
 	templateUrl: './feedback-page.html',
@@ -27,9 +28,9 @@ export default class FeedbackPage {
 	readonly areaLabels = ['Frontend', 'Backend', 'Desktop'];
 	readonly kindValues = ['bug', 'suggestion', 'feedback'];
 	readonly kindLabels = ['Баг', 'Предложение', 'Фидбек'];
-	readonly reasonsForArea = computed(() => FEEDBACK_REASONS.filter((item) => item.area === this.area()));
+	readonly reasonsForArea = computed(() => FEEDBACK_REASONS);
 	readonly reasonLabels = computed(() =>
-		this.reasonsForArea().map((item) => `${item.group} · ${item.label}`),
+		this.reasonsForArea().map((item) => `${this.areaLabels[this.areaValues.indexOf(item.area)]} · ${item.group} · ${item.label}`),
 	);
 	readonly filteredReasons = computed(() => {
 		const query = this.reasonQuery().trim().toLowerCase();
@@ -38,6 +39,7 @@ export default class FeedbackPage {
 	});
 	readonly title = signal('');
 	readonly description = signal('');
+	readonly descriptionControl = new FormControl('', { nonNullable: true });
 	readonly steps = signal('');
 	readonly expected = signal('');
 	readonly actual = signal('');
@@ -70,15 +72,19 @@ export default class FeedbackPage {
 
 	setReason(label: string): void {
 		const item = this.reasonsForArea().find(
-			(candidate) => `${candidate.group} · ${candidate.label}` === label,
+			(candidate) =>
+				`${this.areaLabels[this.areaValues.indexOf(candidate.area)]} · ${candidate.group} · ${candidate.label}` === label,
 		);
 		if (item) {
+			this.area.set(item.area);
 			this.reason.set(item.value);
 			this.reasonQuery.set(label);
 		}
 	}
 
 	constructor() {
+		this.descriptionControl.valueChanges.subscribe((value) => this.description.set(value));
+
 		this.twitch.login().subscribe((profile) => {
 			this.author.set(profile?.user?.username ?? '');
 		});
@@ -114,6 +120,7 @@ export default class FeedbackPage {
 					);
 					this.title.set('');
 					this.description.set('');
+				this.descriptionControl.setValue('');
 					this.steps.set('');
 					this.expected.set('');
 					this.actual.set('');
