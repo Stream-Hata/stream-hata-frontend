@@ -1,5 +1,22 @@
 [
   {
+    "version": "0.9.5-pre-alpha",
+    "date": "2026-10-29",
+    "sections": [
+      {
+        "title": "Исправлено",
+        "items": [
+          {
+            "text": "Feedback: добавлен provideTuiEditor, устранён NG0201."
+          },
+          {
+            "text": "Feedback открывается по публичному /feedback."
+          }
+        ]
+      }
+    ]
+  },
+  {
     "version": "0.9.4-pre-alpha",
     "date": "2026-10-29",
     "sections": [

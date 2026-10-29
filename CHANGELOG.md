@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.9.5-pre-alpha] - 2026-10-29
+
+### Исправлено
+- Feedback: добавлен provideTuiEditor, устранён NG0201.
+- Feedback открывается по публичному /feedback.
+
 ## [0.9.4-pre-alpha] - 2026-10-29
 
 ### Изменено

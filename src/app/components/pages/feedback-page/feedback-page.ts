@@ -6,11 +6,12 @@ import { FEEDBACK_REASONS } from '@shared/config/feedback-reasons';
 import { TwitchService } from '@shared/services/twitch.service';
 import { TuiButton, TuiDropdown, TuiInput, TuiSelectLike, TuiTextfield } from '@taiga-ui/core';
 import { TuiChevron, TuiDataListWrapper, TuiTextarea } from '@taiga-ui/kit';
-import { TuiEditor } from '@taiga-ui/editor';
+import { TuiEditor, provideTuiEditor } from '@taiga-ui/editor';
 
 @Component({
 	imports: [FormsModule, ReactiveFormsModule, TuiButton, TuiChevron, TuiDataListWrapper, TuiDropdown, TuiEditor, TuiInput, TuiSelectLike, TuiTextarea, TuiTextfield],
 	selector: 'app-feedback-page',
+	providers: [provideTuiEditor()],
 	styleUrl: './feedback-page.scss',
 	templateUrl: './feedback-page.html',
 })
