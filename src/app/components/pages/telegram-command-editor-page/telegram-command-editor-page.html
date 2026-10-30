@@ -62,14 +62,12 @@
 		</tui-textfield>
 
 		<span class="jk-label">Удалять команду</span>
-		<button
-			type="button"
-			class="tg-toggle"
-			[class.tg-toggle-on]="deleteCommand()"
-			(click)="deleteCommand.set(!deleteCommand())"
-		>
-			<span></span>
-		</button>
+		<div class="switch">
+			<span class="switch-hit">
+				<input type="checkbox" class="accent-switch" tuiSwitch [checked]="deleteCommand()" />
+				<span class="switch-hit-area" (click)="deleteCommand.set(!deleteCommand()); $event.preventDefault()"></span>
+			</span>
+		</div>
 
 		<span class="jk-label">Ответ</span>
 		<tui-textfield>
@@ -136,22 +134,20 @@
 		</tui-textfield>
 
 		<span class="jk-label">Без превью ссылок</span>
-		<input
-			type="checkbox"
-			tuiSwitch
-			[checked]="disablePreview()"
-			(change)="disablePreview.set($any($event.target).checked)"
-		/>
+		<div class="switch">
+			<span class="switch-hit">
+				<input type="checkbox" class="accent-switch" tuiSwitch [checked]="disablePreview()" />
+				<span class="switch-hit-area" (click)="disablePreview.set(!disablePreview()); $event.preventDefault()"></span>
+			</span>
+		</div>
 
 		<span class="jk-label">Включена</span>
-		<button
-			type="button"
-			class="tg-toggle"
-			[class.tg-toggle-on]="enabled()"
-			(click)="enabled.set(!enabled())"
-		>
-			<span></span>
-		</button>
+		<div class="switch">
+			<span class="switch-hit">
+				<input type="checkbox" class="accent-switch" tuiSwitch [checked]="enabled()" />
+				<span class="switch-hit-area" (click)="enabled.set(!enabled()); $event.preventDefault()"></span>
+			</span>
+		</div>
 
 		<span class="jk-label">Кнопки</span>
 		<div class="telegram-buttons">
