@@ -15,6 +15,7 @@ import { saveTextFile } from '@shared/helpers/save-file';
 import { AppSettingsService } from '@shared/services/app-settings.service';
 import { CommandsService } from '@shared/services/commands.service';
 import { I18nService } from '@shared/services/i18n.service';
+import { TranslatePipe } from '@shared/pipes/translate.pipe';
 import { TriggersService } from '@shared/services/ops.services';
 import {
 	TuiTable,
@@ -131,6 +132,7 @@ const LEVEL_LABELS: Record<string, string> = {
 @Component({
 	imports: [
 		RouterLink,
+		TranslatePipe,
 		TuiBadge,
 		TuiButton,
 		TuiChevron,

@@ -82,7 +82,7 @@
 					tuiInputFiles
 					[formControl]="commandValueFile"
 				/>
-				<span>{{ fileName(commandValueFile) || 'Загрузить текст в значение' }}</span>
+				<span>{{ (commandValueFile.value | fileName) || 'Загрузить текст в значение' }}</span>
 			</label>
 			@if (actionHint()) {
 				<span class="jk-caption">{{ actionHint() }}</span>
@@ -137,7 +137,7 @@
 					tuiInputFiles
 					[formControl]="commandReplyFile"
 				/>
-				<span>{{ fileName(commandReplyFile) || 'Загрузить текст в ответ' }}</span>
+				<span>{{ (commandReplyFile.value | fileName) || 'Загрузить текст в ответ' }}</span>
 			</label>
 			<div class="switch">
 				<span class="switch-hit">
@@ -338,7 +338,7 @@
 				(drop)="onFileDrop($event, variableFile)"
 			>
 				<input accept=".txt,text/plain" type="file" tuiInputFiles [formControl]="variableFile" />
-				<span>{{ fileName(variableFile) || 'Загрузить текст в значение' }}</span>
+				<span>{{ (variableFile.value | fileName) || 'Загрузить текст в значение' }}</span>
 			</label>
 			<span class="jk-label">Действие</span>
 			<tui-textfield tuiChevron>

@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import type { TelegramButton, TelegramCommand } from '@shared/types/automation';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommandsService } from '@shared/services/commands.service';
 import { TuiButton, TuiDropdown, TuiInput, TuiSelectLike, TuiTextfield } from '@taiga-ui/core';
@@ -26,7 +26,7 @@ export default class TelegramCommandEditorPage {
 	readonly action = signal('reply');
 	readonly actionValues = TELEGRAM_ACTIONS;
 	readonly actionLabels = TELEGRAM_ACTIONS.map((action) => TELEGRAM_ACTION_LABELS[action] ?? action);
-	readonly actionLabel = () => TELEGRAM_ACTION_LABELS[this.action()] ?? this.action();
+	readonly actionLabel = computed(() => TELEGRAM_ACTION_LABELS[this.action()] ?? this.action());
 	readonly deleteCommand = signal(false);
 	readonly response = signal('');
 	readonly responsePrivate = signal('');

@@ -1,5 +1,22 @@
 [
   {
+    "version": "1.0.4-pre-alpha",
+    "date": "2026-10-30",
+    "sections": [
+      {
+        "title": "Изменено",
+        "items": [
+          {
+            "text": "Первые шаблонные пайпы: translate и fileName."
+          },
+          {
+            "text": "Свитчи Telegram-редактора на общем switch-hit."
+          }
+        ]
+      }
+    ]
+  },
+  {
     "version": "1.0.3-pre-alpha",
     "date": "2026-10-30",
     "sections": [

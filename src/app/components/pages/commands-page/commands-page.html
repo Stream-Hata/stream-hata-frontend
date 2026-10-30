@@ -1,13 +1,13 @@
 <div class="jk-page">
 	<header class="jk-page-header">
 		<div class="jk-page-header-text">
-			<h1 class="jk-h1">{{ i18n.t('commands.title') }}</h1>
-			<p class="jk-caption">{{ i18n.t('commands.subtitle') }}</p>
+			<h1 class="jk-h1">{{ ('commands.title' | translate) }}</h1>
+			<p class="jk-caption">{{ ('commands.subtitle' | translate) }}</p>
 		</div>
 
 		<div class="jk-page-actions">
 			<a routerLink="/app/commands/editor" appearance="primary" tuiButton>{{
-				i18n.t('commands.editor')
+				('commands.editor' | translate)
 			}}</a>
 			<button type="button" appearance="flat" (click)="exportCommands()" tuiButton>
 				Выгрузить команды
@@ -19,7 +19,7 @@
 				appearance="jkit-tint"
 				tuiButton
 			>
-				{{ i18n.t('commands.commands') }}
+				{{ ('commands.commands' | translate) }}
 			</button>
 			<button
 				type="button"
@@ -28,7 +28,7 @@
 				appearance="jkit-tint-cyan"
 				tuiButton
 			>
-				{{ i18n.t('commands.timers') }}
+				{{ ('commands.timers' | translate) }}
 			</button>
 			<button
 				type="button"
@@ -37,7 +37,7 @@
 				appearance="jkit-tint"
 				tuiButton
 			>
-				{{ i18n.t('commands.triggers') }}
+				{{ ('commands.triggers' | translate) }}
 			</button>
 			<button
 				type="button"
@@ -46,7 +46,7 @@
 				appearance="jkit-tint-cyan"
 				tuiButton
 			>
-				{{ i18n.t('commands.rewards') }}
+				{{ ('commands.rewards' | translate) }}
 			</button>
 			<button
 				type="button"
@@ -55,7 +55,7 @@
 				appearance="jkit-tint"
 				tuiButton
 			>
-				{{ i18n.t('commands.variables') }}
+				{{ ('commands.variables' | translate) }}
 			</button>
 			<button
 				type="button"
@@ -72,20 +72,20 @@
 	@if (tab() === 'commands') {
 		<div class="automation-grid single-column">
 			<section class="automation-main">
-				<h2 class="jk-h4">{{ i18n.t('commands.commands') }}</h2>
+				<h2 class="jk-h4">{{ ('commands.commands' | translate) }}</h2>
 
 				@if (commands().commands.length) {
 					<div class="table-wrap">
 						<table tuiTable>
 							<thead tuiThead>
 								<tr>
-									<th tuiTh>{{ i18n.t('commands.rewardCommand') }}</th>
-									<th tuiTh>{{ i18n.t('commands.tableResponse') }}</th>
-									<th tuiTh>{{ i18n.t('commands.tableCooldown') }}</th>
-									<th tuiTh>{{ i18n.t('commands.tableAccess') }}</th>
-									<th tuiTh>{{ i18n.t('commands.tableEnabled') }}</th>
+									<th tuiTh>{{ ('commands.rewardCommand' | translate) }}</th>
+									<th tuiTh>{{ ('commands.tableResponse' | translate) }}</th>
+									<th tuiTh>{{ ('commands.tableCooldown' | translate) }}</th>
+									<th tuiTh>{{ ('commands.tableAccess' | translate) }}</th>
+									<th tuiTh>{{ ('commands.tableEnabled' | translate) }}</th>
 									<th tuiTh class="col-actions">
-										<span class="sr-only">{{ i18n.t('commands.actions') }}</span>
+										<span class="sr-only">{{ ('commands.actions' | translate) }}</span>
 									</th>
 								</tr>
 							</thead>
@@ -100,7 +100,7 @@
 										</td>
 										<td tuiTd class="response-cell">{{ command.response }}</td>
 										<td tuiTd>
-											{{ command.cooldownSeconds }}{{ i18n.t('commands.secondsShort') }}
+											{{ command.cooldownSeconds }}{{ ('commands.secondsShort' | translate) }}
 										</td>
 										<td tuiTd>
 											<span appearance="neutral" tuiBadge>{{ levelLabel(command.userLevel) }}</span>
@@ -125,7 +125,7 @@
 											<button
 												size="s"
 												type="button"
-												[attr.aria-label]="i18n.t('commands.test')"
+												[attr.aria-label]="('commands.test' | translate)"
 												(click)="testCommand(command.id)"
 												appearance="flat"
 												iconStart="@tui.play"
@@ -133,7 +133,7 @@
 											></button>
 											<a
 												size="s"
-												[attr.aria-label]="i18n.t('commands.edit')"
+												[attr.aria-label]="('commands.edit' | translate)"
 												[routerLink]="['/app/commands/editor']"
 												[queryParams]="{ type: 'command', id: command.id }"
 												appearance="flat"
@@ -144,7 +144,7 @@
 												class="danger-action"
 												size="s"
 												type="button"
-												[attr.aria-label]="i18n.t('commands.delete')"
+												[attr.aria-label]="('commands.delete' | translate)"
 												(click)="removeCommand(command.id)"
 												appearance="flat"
 												iconStart="@tui.trash-2"
@@ -159,7 +159,7 @@
 										<td tuiTd>{{ trigger.description }}</td>
 										<td tuiTd class="response-cell">{{ trigger.aliases.join(', ') }}</td>
 										<td tuiTd>
-											{{ trigger.enabled ? i18n.t('commands.yes') : i18n.t('commands.no') }}
+											{{ trigger.enabled ? ('commands.yes' | translate) : ('commands.no' | translate) }}
 										</td>
 										<td tuiTd>
 											<div class="switch-hit">
@@ -180,7 +180,7 @@
 										<td tuiTd class="col-actions">
 											<a
 												size="s"
-												[attr.aria-label]="i18n.t('commands.configure')"
+												[attr.aria-label]="('commands.configure' | translate)"
 												[routerLink]="['/app/commands/editor']"
 												[queryParams]="{ type: 'trigger', id: trigger.action }"
 												appearance="flat"
@@ -196,8 +196,8 @@
 				} @else {
 					<div class="jk-card jk-empty">
 						<span class="jk-empty-icon"><tui-icon icon="@tui.terminal" /></span>
-						<span class="jk-h4">{{ i18n.t('commands.empty') }}</span>
-						<span class="jk-body-sm jk-muted">{{ i18n.t('commands.emptyHint') }}</span>
+						<span class="jk-h4">{{ ('commands.empty' | translate) }}</span>
+						<span class="jk-body-sm jk-muted">{{ ('commands.emptyHint' | translate) }}</span>
 					</div>
 				}
 			</section>
@@ -205,17 +205,17 @@
 	} @else if (tab() === 'rewards') {
 		<div class="automation-grid">
 			<section class="automation-main">
-				<h2 class="jk-h4">{{ i18n.t('commands.rewardsTitle') }}</h2>
+				<h2 class="jk-h4">{{ ('commands.rewardsTitle' | translate) }}</h2>
 				<div class="table-wrap">
 					<table tuiTable>
 						<thead tuiThead>
 							<tr>
-								<th tuiTh>{{ i18n.t('commands.rewardName') }}</th>
-								<th tuiTh>{{ i18n.t('commands.rewardPrice') }}</th>
-								<th tuiTh>{{ i18n.t('commands.variableAction') }}</th>
-								<th tuiTh>{{ i18n.t('commands.rewardCommand') }}</th>
+								<th tuiTh>{{ ('commands.rewardName' | translate) }}</th>
+								<th tuiTh>{{ ('commands.rewardPrice' | translate) }}</th>
+								<th tuiTh>{{ ('commands.variableAction' | translate) }}</th>
+								<th tuiTh>{{ ('commands.rewardCommand' | translate) }}</th>
 								<th tuiTh class="col-actions">
-									<span class="sr-only">{{ i18n.t('commands.actions') }}</span>
+									<span class="sr-only">{{ ('commands.actions' | translate) }}</span>
 								</th>
 							</tr>
 						</thead>
@@ -237,7 +237,7 @@
 										<button
 											size="s"
 											type="button"
-											[attr.aria-label]="i18n.t('commands.edit')"
+											[attr.aria-label]="('commands.edit' | translate)"
 											(click)="editReward(reward)"
 											appearance="flat"
 											iconStart="@tui.pencil"
@@ -247,7 +247,7 @@
 											class="danger-action"
 											size="s"
 											type="button"
-											[attr.aria-label]="i18n.t('commands.delete')"
+											[attr.aria-label]="('commands.delete' | translate)"
 											(click)="removeReward(reward.id)"
 											appearance="flat"
 											iconStart="@tui.trash-2"
@@ -263,41 +263,41 @@
 
 			<aside class="jk-card editor">
 				<h2 class="jk-h4">
-					{{ rewardEditingId() ? i18n.t('commands.rewardEdit') : i18n.t('commands.rewardNew') }}
+					{{ rewardEditingId() ? ('commands.rewardEdit' | translate) : ('commands.rewardNew' | translate) }}
 				</h2>
-				<span class="jk-label">{{ i18n.t('commands.rewardName') }}</span>
+				<span class="jk-label">{{ ('commands.rewardName' | translate) }}</span>
 				<tui-textfield
 					><input
-						[attr.aria-label]="i18n.t('commands.rewardName')"
+						[attr.aria-label]="('commands.rewardName' | translate)"
 						tuiInput
 						type="text"
 						[value]="rewardTitle()"
 						(input)="rewardTitle.set(value($event))"
 				/></tui-textfield>
-				<span class="jk-label">{{ i18n.t('commands.rewardCost') }}</span>
+				<span class="jk-label">{{ ('commands.rewardCost' | translate) }}</span>
 				<tui-textfield
 					><input
-						[attr.aria-label]="i18n.t('commands.rewardCost')"
+						[attr.aria-label]="('commands.rewardCost' | translate)"
 						type="number"
 						min="1"
 						tuiInput
 						[value]="rewardCost()"
 						(input)="rewardCost.set(+value($event))"
 				/></tui-textfield>
-				<span class="jk-label">{{ i18n.t('commands.rewardPrompt') }}</span>
+				<span class="jk-label">{{ ('commands.rewardPrompt' | translate) }}</span>
 				<tui-textfield>
 					<textarea
-						[attr.aria-label]="i18n.t('commands.rewardPrompt')"
+						[attr.aria-label]="('commands.rewardPrompt' | translate)"
 						rows="2"
 						tuiTextarea
 						[value]="rewardPrompt()"
 						(input)="rewardPrompt.set(value($event))"
 					></textarea>
 				</tui-textfield>
-				<span class="jk-label">{{ i18n.t('commands.action') }}</span>
+				<span class="jk-label">{{ ('commands.action' | translate) }}</span>
 				<tui-textfield tuiChevron>
 					<input
-						[attr.aria-label]="i18n.t('commands.rewardAction')"
+						[attr.aria-label]="('commands.rewardAction' | translate)"
 						[readonly]="true"
 						[value]="rewardActionLabels[rewardActionValues.indexOf(rewardAction())]"
 						[style.color]="accent()"
@@ -312,10 +312,10 @@
 					></tui-data-list-wrapper>
 				</tui-textfield>
 				@if (rewardAction() === 'command') {
-					<span class="jk-label">{{ i18n.t('commands.rewardCommand') }}</span>
+					<span class="jk-label">{{ ('commands.rewardCommand' | translate) }}</span>
 					<tui-textfield tuiChevron>
 						<input
-							[attr.aria-label]="i18n.t('commands.rewardCommand')"
+							[attr.aria-label]="('commands.rewardCommand' | translate)"
 							[readonly]="true"
 							[value]="rewardCommandLabel()"
 							[style.color]="accent()"
@@ -330,10 +330,10 @@
 						></tui-data-list-wrapper>
 					</tui-textfield>
 				} @else {
-					<span class="jk-label">{{ i18n.t('commands.rewardPayload') }}</span>
+					<span class="jk-label">{{ ('commands.rewardPayload' | translate) }}</span>
 					<tui-textfield
 						><input
-							[attr.aria-label]="i18n.t('commands.rewardPayload')"
+							[attr.aria-label]="('commands.rewardPayload' | translate)"
 							tuiInput
 							type="text"
 							[value]="rewardPayload()"
@@ -341,7 +341,7 @@
 					/></tui-textfield>
 				}
 				<div class="editor-switch">
-					<span class="jk-label">{{ i18n.t('commands.rewardEnabled') }}</span>
+					<span class="jk-label">{{ ('commands.rewardEnabled' | translate) }}</span>
 					<div class="switch-hit">
 						<input type="checkbox" class="accent-switch" [checked]="rewardEnabled()" tuiSwitch />
 						<span
@@ -356,12 +356,12 @@
 				<div class="editor-actions">
 					<button type="button" (click)="saveReward()" appearance="primary" tuiButton>
 						{{
-							rewardEditingId() ? i18n.t('commands.rewardSave') : i18n.t('commands.rewardCreate')
+							rewardEditingId() ? ('commands.rewardSave' | translate) : ('commands.rewardCreate' | translate)
 						}}
 					</button>
 					@if (rewardEditingId()) {
 						<button appearance="flat" tuiButton type="button" (click)="resetRewardForm()">
-							{{ i18n.t('commands.rewardCancel') }}
+							{{ ('commands.rewardCancel' | translate) }}
 						</button>
 					}
 				</div>
@@ -370,14 +370,14 @@
 	} @else if (tab() === 'variables') {
 		<div class="automation-grid">
 			<section class="automation-main">
-				<h2 class="jk-h4">{{ i18n.t('commands.variablesTitle') }}</h2>
+				<h2 class="jk-h4">{{ ('commands.variablesTitle' | translate) }}</h2>
 				<div class="table-wrap">
 					<table tuiTable>
 						<thead tuiThead>
 							<tr>
-								<th tuiTh>{{ i18n.t('commands.variableName') }}</th>
-								<th tuiTh>{{ i18n.t('commands.variableValue') }}</th>
-								<th tuiTh>{{ i18n.t('commands.variableAction') }}</th>
+								<th tuiTh>{{ ('commands.variableName' | translate) }}</th>
+								<th tuiTh>{{ ('commands.variableValue' | translate) }}</th>
+								<th tuiTh>{{ ('commands.variableAction' | translate) }}</th>
 								<th tuiTh class="col-actions"></th>
 							</tr>
 						</thead>
@@ -390,7 +390,7 @@
 									<td tuiTd class="col-actions">
 										<a
 											size="s"
-											[attr.aria-label]="i18n.t('commands.edit')"
+											[attr.aria-label]="('commands.edit' | translate)"
 											[routerLink]="['/app/commands/editor']"
 											[queryParams]="{ type: 'variable', id: variable.id }"
 											appearance="flat"
@@ -401,7 +401,7 @@
 											class="danger-action"
 											size="s"
 											type="button"
-											[attr.aria-label]="i18n.t('commands.delete')"
+											[attr.aria-label]="('commands.delete' | translate)"
 											(click)="removeVariable(variable.id)"
 											appearance="flat"
 											iconStart="@tui.trash-2"
@@ -417,32 +417,32 @@
 			<aside class="jk-card editor">
 				<h2 class="jk-h4">
 					{{
-						variableEditingId() ? i18n.t('commands.variableEdit') : i18n.t('commands.variableNew')
+						variableEditingId() ? ('commands.variableEdit' | translate) : ('commands.variableNew' | translate)
 					}}
 				</h2>
-				<span class="jk-label">{{ i18n.t('commands.name') }}</span>
+				<span class="jk-label">{{ ('commands.name' | translate) }}</span>
 				<tui-textfield
 					><input
-						[attr.aria-label]="i18n.t('commands.variableName')"
+						[attr.aria-label]="('commands.variableName' | translate)"
 						tuiInput
 						type="text"
 						[value]="variableName()"
 						(input)="variableName.set(value($event))"
 				/></tui-textfield>
-				<span class="jk-label">{{ i18n.t('commands.variableValue') }}</span>
+				<span class="jk-label">{{ ('commands.variableValue' | translate) }}</span>
 				<tui-textfield>
 					<textarea
-						[attr.aria-label]="i18n.t('commands.variableValue')"
+						[attr.aria-label]="('commands.variableValue' | translate)"
 						rows="6"
 						tuiTextarea
 						[value]="variableValue()"
 						(input)="variableValue.set(value($event))"
 					></textarea>
 				</tui-textfield>
-				<span class="jk-label">{{ i18n.t('commands.action') }}</span>
+				<span class="jk-label">{{ ('commands.action' | translate) }}</span>
 				<tui-textfield tuiChevron>
 					<input
-						[attr.aria-label]="i18n.t('commands.variableAction')"
+						[attr.aria-label]="('commands.variableAction' | translate)"
 						[readonly]="true"
 						[value]="
 							variableActionLabels[variableActionValues.indexOf(variableActionControl.value)]
@@ -465,13 +465,13 @@
 					<button type="button" (click)="saveVariable()" appearance="primary" tuiButton>
 						{{
 							variableEditingId()
-								? i18n.t('commands.variableSave')
-								: i18n.t('commands.rewardCreate')
+								? ('commands.variableSave' | translate)
+								: ('commands.rewardCreate' | translate)
 						}}
 					</button>
 					@if (variableEditingId()) {
 						<button type="button" appearance="flat" tuiButton (click)="resetVariableForm()">
-							{{ i18n.t('commands.rewardCancel') }}
+							{{ ('commands.rewardCancel' | translate) }}
 						</button>
 					}
 				</div>
@@ -480,11 +480,11 @@
 	} @else if (tab() === 'triggers') {
 		<section class="automation-main">
 			<div class="triggers-head">
-				<h2 class="jk-h4">{{ i18n.t('commands.triggersTitle') }}</h2>
+				<h2 class="jk-h4">{{ ('commands.triggersTitle' | translate) }}</h2>
 				<div class="triggers-actions">
 					<tui-textfield tuiChevron>
 						<input
-							[attr.aria-label]="i18n.t('commands.triggerAction')"
+							[attr.aria-label]="('commands.triggerAction' | translate)"
 							[readonly]="true"
 							[value]="triggerActionLabels[triggerActionValues.indexOf(triggerActionControl.value)]"
 							[style.color]="accent()"
@@ -499,10 +499,10 @@
 						></tui-data-list-wrapper>
 					</tui-textfield>
 					<button appearance="flat" tuiButton type="button" (click)="addTrigger()">
-						{{ i18n.t('commands.triggerAdd') }}
+						{{ ('commands.triggerAdd' | translate) }}
 					</button>
 					<button appearance="primary" tuiButton type="button" (click)="saveTriggers()">
-						{{ triggersSaved() ? i18n.t('commands.triggerSaved') : i18n.t('commands.triggerSave') }}
+						{{ triggersSaved() ? ('commands.triggerSaved' | translate) : ('commands.triggerSave' | translate) }}
 					</button>
 				</div>
 			</div>
@@ -511,12 +511,12 @@
 				<table tuiTable>
 					<thead tuiThead>
 						<tr>
-							<th tuiTh>{{ i18n.t('commands.variableAction') }}</th>
-							<th tuiTh>{{ i18n.t('commands.rewardCommand') }}</th>
-							<th tuiTh>{{ i18n.t('commands.triggerAliases') }}</th>
-							<th tuiTh>{{ i18n.t('commands.tableEnabled') }}</th>
+							<th tuiTh>{{ ('commands.variableAction' | translate) }}</th>
+							<th tuiTh>{{ ('commands.rewardCommand' | translate) }}</th>
+							<th tuiTh>{{ ('commands.triggerAliases' | translate) }}</th>
+							<th tuiTh>{{ ('commands.tableEnabled' | translate) }}</th>
 							<th tuiTh class="col-actions">
-								<span class="sr-only">{{ i18n.t('commands.actions') }}</span>
+								<span class="sr-only">{{ ('commands.actions' | translate) }}</span>
 							</th>
 						</tr>
 					</thead>
@@ -532,8 +532,8 @@
 								<td tuiTd>
 									<tui-textfield
 										><input
-											[attr.aria-label]="i18n.t('commands.triggerCommand')"
-											[attr.placeholder]="i18n.t('commands.triggerCommandPlaceholder')"
+											[attr.aria-label]="('commands.triggerCommand' | translate)"
+											[attr.placeholder]="('commands.triggerCommandPlaceholder' | translate)"
 											tuiInput
 											type="text"
 											[value]="trigger.command"
@@ -543,8 +543,8 @@
 								<td tuiTd>
 									<tui-textfield
 										><input
-											[attr.aria-label]="i18n.t('commands.triggerAliases')"
-											[attr.placeholder]="i18n.t('commands.triggerAliasesPlaceholder')"
+											[attr.aria-label]="('commands.triggerAliases' | translate)"
+											[attr.placeholder]="('commands.triggerAliasesPlaceholder' | translate)"
 											tuiInput
 											type="text"
 											[value]="trigger.aliases.join(', ')"
@@ -570,7 +570,7 @@
 										class="danger-action"
 										size="s"
 										type="button"
-										[attr.aria-label]="i18n.t('commands.triggerDelete')"
+										[attr.aria-label]="('commands.triggerDelete' | translate)"
 										(click)="removeTrigger(index)"
 										appearance="flat"
 										iconStart="@tui.trash-2"

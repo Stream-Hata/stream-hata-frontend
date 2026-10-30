@@ -3,6 +3,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AppSettingsService } from '@shared/services/app-settings.service';
+import { FileNamePipe } from '@shared/pipes/file-name.pipe';
 import { CommandsService } from '@shared/services/commands.service';
 import { TriggersService } from '@shared/services/ops.services';
 import { TuiButton, TuiDropdown, TuiInput, TuiSelectLike, TuiTextfield } from '@taiga-ui/core';
@@ -393,6 +394,7 @@ const VARIABLE_ACTION_LABELS = [
 	imports: [
 		ReactiveFormsModule,
 		RouterLink,
+		FileNamePipe,
 		TuiButton,
 		TuiChevron,
 		TuiDataListWrapper,
