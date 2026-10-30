@@ -1,8 +1,8 @@
 {
-  "version": "1.0.4-pre-alpha",
-  "build": "2026-10-30T05:27:11.206Z",
+  "version": "1.0.5-pre-alpha",
+  "build": "2026-10-30T05:31:05.829Z",
   "notes": [
-    "Первые шаблонные пайпы: translate и fileName.",
-    "Свитчи Telegram-редактора на общем switch-hit."
+    "Now Playing восстанавливает текущий трек с backend и не запускает очередь с начала.",
+    "Текущий трек сохраняется в app_setting и переживает рестарт backend."
   ]
 }

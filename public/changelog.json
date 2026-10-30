@@ -1,5 +1,22 @@
 [
   {
+    "version": "1.0.5-pre-alpha",
+    "date": "2026-10-30",
+    "sections": [
+      {
+        "title": "Исправлено",
+        "items": [
+          {
+            "text": "Now Playing восстанавливает текущий трек с backend и не запускает очередь с начала."
+          },
+          {
+            "text": "Текущий трек сохраняется в app_setting и переживает рестарт backend."
+          }
+        ]
+      }
+    ]
+  },
+  {
     "version": "1.0.4-pre-alpha",
     "date": "2026-10-30",
     "sections": [

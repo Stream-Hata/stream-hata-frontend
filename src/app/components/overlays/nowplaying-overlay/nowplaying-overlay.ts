@@ -65,6 +65,8 @@ export class NowPlayingOverlay {
 	});
 
 	readonly currentId = signal<string | null>(this.storedCurrentId());
+	readonly serverCurrent = signal<Track | null>(null);
+	private serverCurrentApplied = false;
 	readonly reloadKey = signal(0);
 	readonly finished = signal(false);
 	readonly current = computed<Track | null>(
@@ -127,6 +129,24 @@ export class NowPlayingOverlay {
 	});
 
 	constructor() {
+		this.music.current().subscribe({
+			next: ({ track }) => {
+				this.serverCurrent.set(track);
+			},
+			error: () => undefined,
+		});
+
+		effect(() => {
+			const track = this.serverCurrent();
+			const ids = this.playlist().map((item) => item.videoId);
+
+			if (!this.serverCurrentApplied && track && ids.includes(track.videoId)) {
+				this.serverCurrentApplied = true;
+				this.finished.set(false);
+				this.currentId.set(track.videoId);
+			}
+		});
+
 		effect(() => {
 			const playlist = this.playlist();
 			const ids = playlist.map((track) => track.videoId);
@@ -164,8 +184,6 @@ export class NowPlayingOverlay {
 				if (added.length) {
 					this.finished.set(false);
 					this.currentId.set(added[added.length - 1]);
-				} else if (!this.finished() && this.queue.length) {
-					this.currentId.set(this.queue[0]);
 				}
 			}
 		});
