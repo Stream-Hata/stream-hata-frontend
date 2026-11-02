@@ -224,3 +224,26 @@ function toBase64(bytes: Uint8Array): string {
 function fromBase64(value: string): Uint8Array {
 	return Uint8Array.from(atob(value), (char) => char.charCodeAt(0));
 }
+
+export interface MessageNotification {
+	title: string;
+	body: string;
+}
+
+/** Notification text is built only from locally decrypted plaintext. */
+export function buildMessageNotification(sender: string, plaintext: string): MessageNotification {
+	const text = plaintext.replace(/\s+/g, ' ').trim();
+
+	return {
+		title: sender ? `Сообщение от ${sender}` : 'Новое сообщение',
+		body: text ? text.slice(0, 180) : 'Откройте StreamHata, чтобы прочитать сообщение.',
+	};
+}
+
+/** Safe fallback when decryption is unavailable; never exposes ciphertext or key ids. */
+export function buildLockedMessageNotification(sender?: string): MessageNotification {
+	return {
+		title: sender ? `Новое сообщение от ${sender}` : 'Новое зашифрованное сообщение',
+		body: 'Откройте StreamHata, чтобы прочитать сообщение.',
+	};
+}

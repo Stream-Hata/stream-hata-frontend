@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { decryptMessage, encryptMessage, generateIdentity } from './secure-messaging';
+import {
+	buildMessageNotification,
+	decryptMessage,
+	encryptMessage,
+	generateIdentity,
+} from './secure-messaging';
 
 describe('secure messaging', () => {
 	it('round-trips an encrypted message', async () => {
@@ -19,5 +24,20 @@ describe('secure messaging', () => {
 		const tampered = { ...envelope, ciphertext: `${envelope.ciphertext.slice(0, -4)}AAAA` };
 		const bobOnly = await generateIdentity();
 		await expect(decryptMessage(bobOnly, alice.bundle, tampered)).rejects.toThrow();
+	});
+});
+
+describe('message notifications', () => {
+	it('uses decrypted plaintext, not a hash or ciphertext', async () => {
+		const alice = await generateIdentity();
+		const bob = await generateIdentity();
+		const envelope = await encryptMessage(alice, 'alice', 'bob', bob.bundle, 'Привет, как дела?');
+		const plaintext = await decryptMessage(bob, alice.bundle, envelope);
+		const notification = buildMessageNotification('alice', plaintext);
+
+		expect(notification.title).toBe('Сообщение от alice');
+		expect(notification.body).toBe('Привет, как дела?');
+		expect(notification.body).not.toContain(envelope.ciphertext);
+		expect(notification.body).not.toContain(envelope.keyId);
 	});
 });
