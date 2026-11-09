@@ -82,7 +82,15 @@ jobs:
           install -m 700 -d ~/.ssh
           printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy
           chmod 600 ~/.ssh/deploy
-          ssh-keyscan -p "$port" "$PRIMARY_HOST" >> ~/.ssh/known_hosts
+          if ! ssh-keyscan -p "$port" "$PRIMARY_HOST" >> ~/.ssh/known_hosts 2>/tmp/keyscan.err; then
+            echo "::error title=SSH config::ssh-keyscan failed for host '$PRIMARY_HOST' port '$port'"
+            cat /tmp/keyscan.err
+            exit 1
+          fi
+          if ! grep -q "BEGIN .*PRIVATE KEY" ~/.ssh/deploy; then
+            echo "::error title=SSH config::STREAMHATA_SSH_KEY is not a private key"
+            exit 1
+          fi
 
       - name: Deploy primary
         run: |
