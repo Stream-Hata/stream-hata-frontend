@@ -87,10 +87,19 @@ jobs:
         run: |
           set -euo pipefail
           port="${SSH_PORT:-22}"
-          rsync -az --delete -e "ssh -p $port -i ~/.ssh/deploy -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" \
-            dist/nameless-streamhata/browser/ "$SSH_USER@$PRIMARY_HOST:/var/www/streamhata/browser/"
-          ssh -p "$port" -i ~/.ssh/deploy -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$SSH_USER@$PRIMARY_HOST" \
-            'sudo -n nginx -t && sudo -n systemctl reload nginx'
+          deploy() {
+            rsync -az --delete -e "ssh -p $port -i ~/.ssh/deploy -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" \
+              dist/nameless-streamhata/browser/ "$SSH_USER@$1:/var/www/streamhata/browser/"
+            ssh -p "$port" -i ~/.ssh/deploy -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$SSH_USER@$1" \
+              'sudo -n nginx -t && sudo -n systemctl reload nginx'
+          }
+
+          if ! deploy "$PRIMARY_HOST"; then
+            echo "::warning title=Deploy::primary host failed, falling back to streamhata.rdpctd.dev"
+            PRIMARY_HOST=streamhata.rdpctd.dev
+            echo "PRIMARY_HOST=$PRIMARY_HOST" >> "$GITHUB_ENV"
+            deploy "$PRIMARY_HOST"
+          fi
 
       - name: Deploy secondary
         if: ${{ env.SECONDARY_HOST != '' }}
