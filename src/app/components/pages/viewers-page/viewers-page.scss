@@ -69,12 +69,14 @@
 }
 
 .role-select {
-	padding: 4px 6px;
+	min-width: 116px;
+	padding: 6px 24px 6px 8px;
 	border: 1px solid var(--border-normal);
 	border-radius: var(--radius-sm);
 	background: var(--surface-elevated-1);
 	color: var(--text-primary);
 	font: var(--font-caption);
+	cursor: pointer;
 }
 
 .jk-page-actions tui-textfield {
