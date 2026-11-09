@@ -57,6 +57,14 @@ jobs:
           fi
           exit "$status"
 
+      - name: Upload build log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-build-log
+          path: build.log
+          if-no-files-found: ignore
+
       - name: Install SSH key
         run: |
           set -euo pipefail
