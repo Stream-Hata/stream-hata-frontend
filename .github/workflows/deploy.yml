@@ -66,13 +66,21 @@ jobs:
           if-no-files-found: ignore
 
       - name: Install SSH key
+        env:
+          SSH_KEY: ${{ secrets.STREAMHATA_SSH_KEY }}
         run: |
           set -euo pipefail
-          : "${PRIMARY_HOST:?STREAMHATA_PRIMARY_HOST is required}"
-          : "${SSH_USER:?STREAMHATA_SSH_USER is required}"
+          if [ -z "${PRIMARY_HOST:-}" ]; then
+            echo "::error title=Deploy config::STREAMHATA_PRIMARY_HOST / STREAMHATA_SSH_HOST is empty"
+            exit 1
+          fi
+          if [ -z "${SSH_KEY:-}" ]; then
+            echo "::error title=Deploy config::STREAMHATA_SSH_KEY is empty"
+            exit 1
+          fi
           port="${SSH_PORT:-22}"
           install -m 700 -d ~/.ssh
-          printf '%s\n' "${{ secrets.STREAMHATA_SSH_KEY }}" > ~/.ssh/deploy
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy
           chmod 600 ~/.ssh/deploy
           ssh-keyscan -p "$port" "$PRIMARY_HOST" >> ~/.ssh/known_hosts
 
