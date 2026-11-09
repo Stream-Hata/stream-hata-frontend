@@ -17,19 +17,30 @@
         донаты, Steam и решение типичных проблем.
       </p>
 
-      <tui-textfield class="faq-search">
-        <tui-icon icon="@tui.search" />
-        <input
-          type="search"
-          aria-label="Поиск по FAQ"
-          placeholder="Найти ответ: OBS, Steam, рулетка, донаты…"
-          #searchInput
-          [value]="query()"
-          (input)="query.set($any($event.target).value)"
-          tuiInput
-          />
-        </tui-textfield>
-        <span class="jk-caption">Клавиши Ctrl+F или Alt+K — быстрый поиск по справке</span>
+      <div class="faq-search-row">
+        <tui-textfield class="faq-search">
+          <tui-icon icon="@tui.search" />
+          <input
+            type="search"
+            aria-label="Поиск по FAQ"
+            placeholder="Найти ответ: OBS, Steam, рулетка, донаты…"
+            #searchInput
+            [value]="query()"
+            (input)="query.set($any($event.target).value)"
+            tuiInput
+            />
+          </tui-textfield>
+          <button type="button" appearance="secondary" tuiButton (click)="startVoice($event)">
+            <tui-icon icon="@tui.mic" />
+            Голосом
+          </button>
+        </div>
+        <span
+          class="jk-caption"
+        >Ctrl+F / Alt+K — поиск · «Голосом» — спросите: «Как установить desktop?»</span>
+        @if (voiceError()) {
+          <span class="error-text">{{ voiceError() }}</span>
+        }
       </section>
 
       <div class="faq-layout">

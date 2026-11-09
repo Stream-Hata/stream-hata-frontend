@@ -1,0 +1,75 @@
+<div class="jk-page blog-page">
+  <header class="jk-page-header blog-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">{{ i18n.t('blog.title') }}</h1>
+      <p class="jk-caption">{{ i18n.t('blog.subtitle') }}</p>
+    </div>
+    <div class="blog-header-actions">
+      <tui-textfield class="blog-search">
+        <tui-icon icon="@tui.search" />
+        <input
+          aria-label="{{ i18n.t('blog.search') }}"
+          [formControl]="search"
+          [placeholder]="i18n.t('blog.search')"
+          tuiInput
+          />
+        </tui-textfield>
+        @if (role.isAdmin()) {
+          <a appearance="secondary" routerLink="/app/blog" tuiButton>{{
+            i18n.t('blog.adminTitle')
+          }}</a>
+      }
+    </div>
+  </header>
+
+  @if (loading()) {
+    <section class="jk-card blog-state">
+      <tui-icon icon="@tui.loader" />
+      <span>{{ i18n.t('blog.loading') }}</span>
+    </section>
+  } @else if (error()) {
+    <section class="jk-card blog-state blog-error" role="alert">
+      <p>{{ error() }}</p>
+      <button appearance="secondary" tuiButton type="button" (click)="load()">
+        {{ i18n.t('common.retry') }}
+      </button>
+    </section>
+  } @else if (items().length === 0) {
+    <section class="jk-card blog-state">
+      <p>{{ search.value ? i18n.t('blog.empty') : i18n.t('blog.empty') }}</p>
+    </section>
+  } @else {
+    <div class="blog-grid" role="feed" aria-busy="false">
+      @for (article of cards(); track article.id) {
+        <article class="jk-card blog-card">
+          <a class="blog-cover" [routerLink]="['/blog', article.slug]">
+            @if (article.coverSrc) {
+              <img alt="{{ article.title }}" [src]="article.coverSrc" loading="lazy" />
+            } @else {
+              <span class="blog-cover-fallback" aria-hidden="true">{{
+                article.title.slice(0, 1)
+              }}</span>
+          }
+        </a>
+        <div class="blog-card-body">
+          <div class="blog-meta">
+            <span>{{ article.publishedAt || article.createdAt | date: 'dd.MM.yyyy' }}</span>
+            <span aria-hidden="true">·</span>
+            <span>{{ article.reading }} {{ i18n.t('blog.reading') }}</span>
+          </div>
+          <h2 class="jk-h3">
+            <a [routerLink]="['/blog', article.slug]">{{ article.title }}</a>
+          </h2>
+          @if (article.excerpt) {
+            <p class="jk-body-sm jk-muted">{{ article.excerpt }}</p>
+          }
+          <a appearance="flat" [routerLink]="['/blog', article.slug]" tuiButton>
+            {{ i18n.t('blog.readMore') }}
+          </a>
+        </div>
+      </article>
+    }
+  </div>
+  <p class="jk-caption blog-total">{{ total() }} {{ i18n.t('blog.published') }}</p>
+}
+</div>

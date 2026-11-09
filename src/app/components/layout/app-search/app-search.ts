@@ -1,11 +1,12 @@
 import type { Subscription } from 'rxjs';
 import { Component, computed, DestroyRef, effect, inject, input, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { VoiceSearchService } from '@shared/services/voice-search.service';
 import { TuiAutoFocus } from '@taiga-ui/cdk';
-import { TuiIcon, TuiInput, TuiTextfield } from '@taiga-ui/core';
+import { TuiButton, TuiIcon, TuiInput, TuiTextfield } from '@taiga-ui/core';
 import { timer } from 'rxjs';
 
-export type SearchGroup = 'games' | 'pages' | 'settings' | 'widgets';
+export type SearchGroup = 'games' | 'faq' | 'pages' | 'settings' | 'widgets';
 
 export interface SearchItem {
 	id: string;
@@ -18,10 +19,10 @@ export interface SearchItem {
 	thumbnail?: string;
 }
 
-const GROUP_ORDER: SearchGroup[] = ['games', 'pages', 'settings', 'widgets'];
+const GROUP_ORDER: SearchGroup[] = ['games', 'faq', 'pages', 'settings', 'widgets'];
 
 @Component({
-	imports: [TuiAutoFocus, TuiIcon, TuiInput, TuiTextfield],
+	imports: [TuiAutoFocus, TuiButton, TuiIcon, TuiInput, TuiTextfield],
 	selector: 'app-search',
 	styleUrl: './app-search.scss',
 	templateUrl: './app-search.html',
@@ -32,6 +33,7 @@ export class AppSearch {
 	readonly gameResults = input<SearchItem[]>([]);
 	readonly groupLabels = input<Record<SearchGroup, string>>({
 		games: 'Игры',
+		faq: 'FAQ',
 		pages: 'Страницы',
 		settings: 'Настройки',
 		widgets: 'Виджеты',
@@ -44,7 +46,9 @@ export class AppSearch {
 	readonly navigate = output<string>();
 	readonly queryChange = output<string>();
 
+	private readonly voice = inject(VoiceSearchService);
 	readonly query = signal('');
+	readonly voiceError = signal('');
 	readonly active = signal(0);
 	readonly visible = signal(false);
 	readonly closing = signal(false);
@@ -103,6 +107,20 @@ export class AppSearch {
 					this.closing.set(false);
 					this.visible.set(false);
 				});
+		});
+	}
+
+	startVoice(event: MouseEvent): void {
+		event.preventDefault();
+		event.stopPropagation();
+		this.voiceError.set('');
+		this.voice.start().subscribe({
+			next: (text) => {
+				this.query.set(text);
+				this.active.set(0);
+				this.queryChange.emit(text);
+			},
+			error: (error) => this.voiceError.set(error instanceof Error ? error.message : String(error)),
 		});
 	}
 

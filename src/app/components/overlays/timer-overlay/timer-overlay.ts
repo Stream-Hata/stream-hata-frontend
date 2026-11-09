@@ -12,8 +12,6 @@ interface OverlayTimerState {
 	};
 }
 
-const pad = (value: number) => String(value).padStart(2, '0');
-
 @Component({
 	selector: 'app-timer-overlay',
 	styleUrl: './timer-overlay.scss',
@@ -48,14 +46,17 @@ export class TimerOverlay {
 	readonly label = computed(
 		() => this.config().timerLabel ?? (this.countdown() ? 'До старта события' : 'Прошло времени'),
 	);
+
 	readonly showLabel = computed(() => this.config().timerShowLabel !== false);
-	readonly showProgress = computed(
-		() => this.config().timerShowProgress ?? this.countdown(),
-	);
+	readonly showProgress = computed(() => this.config().timerShowProgress ?? this.countdown());
+
 	readonly progressColor = computed(() => this.config().timerProgressColor ?? '#22e0ff');
 	readonly fontFamily = computed(() =>
-		this.config().timerFontUrl ? 'NSH Custom Timer Font' : this.config().timerFontFamily ?? 'JetBrains Mono',
+		this.config().timerFontUrl
+			? 'NSH Custom Timer Font'
+			: (this.config().timerFontFamily ?? 'JetBrains Mono'),
 	);
+
 	readonly textColor = computed(() => this.config().textColor ?? '#F5EAFF');
 	readonly alignItems = computed(() =>
 		this.config().timerAlign === 'right'
@@ -64,6 +65,7 @@ export class TimerOverlay {
 				? 'center'
 				: 'flex-start',
 	);
+
 	readonly justifyItems = computed(() =>
 		this.config().timerAlign === 'right'
 			? 'flex-end'
@@ -71,6 +73,7 @@ export class TimerOverlay {
 				? 'center'
 				: 'flex-start',
 	);
+
 	readonly verticalItems = computed(() =>
 		this.config().timerVerticalAlign === 'top'
 			? 'flex-start'
@@ -78,6 +81,7 @@ export class TimerOverlay {
 				? 'flex-end'
 				: 'center',
 	);
+
 	readonly textAlign = computed(() => this.config().timerAlign ?? 'left');
 
 	readonly elapsed = computed(() => {
@@ -86,11 +90,9 @@ export class TimerOverlay {
 			? Math.max(0, Math.floor((this.now() - this.syncedAt()) / 1000))
 			: 0;
 
-		return (value?.hours ?? 0) * 3600 +
-			(value?.minutes ?? 0) * 60 +
-			(value?.seconds ?? 0) +
-			local;
+		return (value?.hours ?? 0) * 3600 + (value?.minutes ?? 0) * 60 + (value?.seconds ?? 0) + local;
 	});
+
 	readonly time = computed(() => {
 		const total = this.countdown()
 			? Math.max(0, this.duration() - this.elapsed())
@@ -101,6 +103,7 @@ export class TimerOverlay {
 
 		return `${hours}:${minutes}:${seconds}`;
 	});
+
 	readonly progress = computed(() => {
 		if (!this.countdown()) {
 			const from = this.countFrom();
@@ -127,14 +130,12 @@ export class TimerOverlay {
 	});
 
 	constructor() {
-		timer(0, 500).subscribe(() => this.now.set(Date.now()));
+		timer(0, 500)
+			.pipe(takeUntilDestroyed())
+			.subscribe(() => this.now.set(Date.now()));
 		timer(0, 1000)
 			.pipe(
-				switchMap(() =>
-					this.widgetConfig
-						.get('timer')
-						.pipe(catchError(() => of(null))),
-				),
+				switchMap(() => this.widgetConfig.get('timer').pipe(catchError(() => of(null)))),
 				takeUntilDestroyed(),
 			)
 			.subscribe();
@@ -149,7 +150,11 @@ export class TimerOverlay {
 				const style = existing ?? document.createElement('style');
 
 				style.id = id;
-				style.textContent = `@font-face{font-family:'NSH Custom Timer Font';src:url('${url}');font-display:swap;}`;
+				const fontFace =
+					'@font-face{font-family:\'NSH Custom Timer Font\';' +
+					`src:url('${url}');font-display:swap;}`;
+
+				style.textContent = fontFace;
 
 				if (!existing) {
 					document.head.append(style);

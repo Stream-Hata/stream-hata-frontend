@@ -7,12 +7,12 @@
   </div>
 
   <div class="auth-form">
-    @if (loggedIn()) {
+    @if (loggedIn() && (!force || switching())) {
       <p class="jk-body-sm">{{ status() }}</p>
     } @else {
       <p class="jk-body-sm jk-muted">{{ status() }}</p>
       <button appearance="primary" size="l" tuiButton type="button" (click)="connect()">
-        Войти через Twitch
+        {{ loggedIn() ? 'Войти другим аккаунтом' : 'Войти через Twitch' }}
       </button>
     }
     @if (error()) {

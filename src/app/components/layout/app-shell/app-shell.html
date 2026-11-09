@@ -1,6 +1,10 @@
 <div class="shell" [class.shell-sidebar-collapsed]="sidebarCollapsed()">
   @if (onboarding.virusMode() || onboarding.virusClosing()) {
-    <aside class="virus-banner" [class.virus-banner-closing]="onboarding.virusClosing()" role="alert">
+    <aside
+      class="virus-banner"
+      role="alert"
+      [class.virus-banner-closing]="onboarding.virusClosing()"
+    >
       <strong>Это приложение является вирусом</strong>
       <span>Вы решили, что это приложение является вирусом, и используете его на свой страх и риск.</span>
     </aside>
@@ -15,10 +19,10 @@
         <button
           class="sidebar-collapse sidebar-collapse-head"
           type="button"
-          appearance="flat"
           size="xs"
-          tuiButton
           (click)="toggleSidebar()"
+          appearance="flat"
+          tuiButton
         >
           {{ sidebarCollapsed() ? '»' : '«' }}
         </button>
@@ -27,10 +31,10 @@
       <button
         class="sidebar-collapse sidebar-collapse-floating"
         type="button"
-        appearance="flat"
         size="xs"
-        tuiButton
         (click)="toggleSidebar()"
+        appearance="flat"
+        tuiButton
       >
         {{ sidebarCollapsed() ? '»' : '«' }}
       </button>
@@ -41,9 +45,23 @@
 
       @for (item of mainNav(); track item.link) {
         @if (item.external) {
-          <a class="nav-item" [href]="item.link" target="_blank" rel="noopener" (click)="menuOpen.set(false)">
+          <a
+            class="nav-item"
+            target="_blank"
+            rel="noopener"
+            [href]="item.link"
+            (click)="menuOpen.set(false)"
+          >
             <tui-icon [icon]="item.icon" />
             <span>{{ item.label }}</span>
+            @if (item.link === '/app/messages' && messagingNotifications.unreadCount() > 0) {
+              <span
+                class="nav-badge"
+              >{{ formatUnread(messagingNotifications.unreadCount()) }}</span>
+            }
+            @if (item.link === '/app/notifications' && unreadCount() > 0) {
+              <span class="nav-badge">{{ formatUnread(unreadCount()) }}</span>
+            }
           </a>
         } @else {
           <a
@@ -59,6 +77,16 @@
       }
 
       <span class="nav-group">{{ labels().system }}</span>
+
+      <a
+        class="nav-item"
+        (click)="menuOpen.set(false)"
+        routerLink="/app/system"
+        routerLinkActive="nav-item-active"
+      >
+        <tui-icon icon="@tui.activity" />
+        <span>Мониторинг ПК</span>
+      </a>
 
       <a
         class="nav-item"
@@ -81,11 +109,16 @@
         <span>{{ i18n.t('nav.whatsNew') }}</span>
       </a>
 
-      <a class="nav-item" [href]="faqUrl" target="_blank" rel="noopener" (click)="menuOpen.set(false)">
+      <a
+        class="nav-item"
+        target="_blank"
+        rel="noopener"
+        [href]="faqUrl"
+        (click)="menuOpen.set(false)"
+      >
         <tui-icon icon="@tui.circle-help" />
         <span>FAQ и справка</span>
       </a>
-
 
     </nav>
 
@@ -127,13 +160,13 @@
         <div class="topbar-right">
           <tui-textfield
             class="search"
-            tuiTextfieldSize="m"
             (click)="openSearch()"
+            tuiTextfieldSize="m"
           >
             <tui-icon icon="@tui.search" />
             <input
-              [readonly]="true"
               type="search"
+              [readonly]="true"
               [attr.aria-label]="labels().searchLabel"
               [placeholder]="labels().search"
               (focus)="openSearch()"
@@ -157,125 +190,193 @@
             <a
               class="profile-link"
               [attr.aria-label]="labels().profile"
-              routerLink="/app/profile"
               (mouseenter)="preloadProfile()"
               (focus)="preloadProfile()"
+              routerLink="/app/profile"
             >
               @if (twitch()?.user?.avatar) {
-                <img class="jk-avatar jk-avatar-purple" [alt]="initials()" [src]="twitch()?.user?.avatar" />
+                <img
+                  class="jk-avatar jk-avatar-purple"
+                  [alt]="initials()"
+                  [src]="twitch()?.user?.avatar" />
+                } @else {
+                  <span class="jk-avatar jk-avatar-purple">{{ initials() }}</span>
+                }
+              </a>
+            </div>
+          </header>
+        }
+
+        <div class="main-scroll">
+          <main class="page">
+            <router-outlet />
+          </main>
+        </div>
+      </div>
+    </div>
+
+    @if (desktop) {
+      <div class="desktop-dock" [class.desktop-dock-open]="dockOpen()">
+        <div
+          class="dock-actions"
+          [attr.inert]="dockOpen() ? null : ''"
+          [attr.aria-hidden]="!dockOpen()"
+        >
+          <button
+            class="dock-action"
+            type="button"
+            [attr.aria-label]="labels().searchLabel"
+            (click)="openSearch(); dockOpen.set(false)"
+          >
+            <tui-icon icon="@tui.search" />
+            <span>{{ labels().search }}</span>
+          </button>
+
+          <a
+            class="dock-profile"
+            [attr.aria-label]="labels().profile"
+            (click)="dockOpen.set(false)"
+            (mouseenter)="preloadProfile()"
+            (focus)="preloadProfile()"
+            routerLink="/app/profile"
+          >
+            @if (twitch()?.user?.avatar) {
+              <img
+                class="jk-avatar jk-avatar-purple"
+                [alt]="initials()"
+                [src]="twitch()?.user?.avatar" />
               } @else {
                 <span class="jk-avatar jk-avatar-purple">{{ initials() }}</span>
               }
             </a>
+
+            @if (steamMe()?.player; as player) {
+              <a
+                class="dock-profile dock-steam"
+                [attr.aria-label]="'Steam: ' + player.personaName"
+                (click)="dockOpen.set(false)"
+                (mouseenter)="preloadProfile()"
+                (focus)="preloadProfile()"
+                routerLink="/app/profile"
+              >
+                <img
+                  class="dock-steam-avatar"
+                  loading="lazy"
+                  [alt]="player.personaName"
+                  [src]="player.avatarFull || player.avatar"
+                  />
+                </a>
+              }
+            </div>
+
+            <button
+              class="dock-toggle"
+              type="button"
+              [attr.aria-label]="dockOpen() ? 'Закрыть меню' : 'Открыть меню'"
+              [attr.aria-expanded]="dockOpen()"
+              (click)="dockOpen.set(!dockOpen())"
+            >
+              <tui-icon [icon]="dockOpen() ? '@tui.x' : '@tui.user-round'" />
+            </button>
           </div>
-  </header>
-    }
-
-      <div class="main-scroll">
-        <main class="page">
-          <router-outlet />
-        </main>
-      </div>
-    </div>
-  </div>
-
-  @if (desktop) {
-    <div class="desktop-dock" [class.desktop-dock-open]="dockOpen()">
-      <div class="dock-actions" [attr.inert]="dockOpen() ? null : ''" [attr.aria-hidden]="!dockOpen()">
-        <button
-          class="dock-action"
-          type="button"
-          [attr.aria-label]="labels().searchLabel"
-          (click)="openSearch(); dockOpen.set(false)"
-        >
-          <tui-icon icon="@tui.search" />
-          <span>{{ labels().search }}</span>
-        </button>
-
-        <a
-          class="dock-profile"
-          [attr.aria-label]="labels().profile"
-          routerLink="/app/profile"
-          (click)="dockOpen.set(false)"
-          (mouseenter)="preloadProfile()"
-          (focus)="preloadProfile()"
-        >
-          @if (twitch()?.user?.avatar) {
-            <img class="jk-avatar jk-avatar-purple" [alt]="initials()" [src]="twitch()?.user?.avatar" />
-          } @else {
-            <span class="jk-avatar jk-avatar-purple">{{ initials() }}</span>
-          }
-        </a>
-
-        @if (steamMe()?.player; as player) {
-          <a
-            class="dock-profile dock-steam"
-            [attr.aria-label]="'Steam: ' + player.personaName"
-            routerLink="/app/profile"
-            (click)="dockOpen.set(false)"
-            (mouseenter)="preloadProfile()"
-            (focus)="preloadProfile()"
-          >
-            <img
-              class="dock-steam-avatar"
-              [alt]="player.personaName"
-              [src]="player.avatarFull || player.avatar"
-              loading="lazy"
-            />
-          </a>
         }
-      </div>
 
-      <button
-        class="dock-toggle"
-        type="button"
-        [attr.aria-label]="dockOpen() ? 'Закрыть меню' : 'Открыть меню'"
-        [attr.aria-expanded]="dockOpen()"
-        (click)="dockOpen.set(!dockOpen())"
-      >
-        <tui-icon [icon]="dockOpen() ? '@tui.x' : '@tui.user-round'" />
-      </button>
-    </div>
-  }
+        @if (desktop && catVisible()) {
+          <aside
+            class="idle-cat"
+            role="status"
+            [class.idle-cat-talking]="catTalking()"
+            (click)="$event.stopPropagation()"
+          >
+            <div class="idle-cat-speech">
+              <span>{{ catPhrase() }}</span>
+              <div class="idle-cat-actions">
+                <a routerLink="/app/stream" tuiLink (click)="hideCat()">Запустить стрим</a>
+                <button type="button" (click)="hideCat()">Позже</button>
+              </div>
+            </div>
+            @if (idleCharacter() === 'cat') {
+              <app-idle-cat class="idle-cat-emoji" [stage]="catStage()" [talking]="catTalking()" />
+            } @else if (idleCharacter() === 'custom' && customCharacter()) {
+              <img class="idle-cat-emoji idle-custom-character" [src]="customCharacter()" alt="" />
+            } @else {
+              <app-idle-warrant
+                class="idle-cat-emoji"
+                [stage]="catStage()"
+                [talking]="catTalking()" />
+              }
+            </aside>
+          }
 
-  @if (desktop && catVisible()) {
-    <aside class="idle-cat" [class.idle-cat-talking]="catTalking()" role="status" (click)="$event.stopPropagation()">
-      <div class="idle-cat-speech">
-        <span>{{ catPhrase() }}</span>
-        <div class="idle-cat-actions">
-          <a routerLink="/app/stream" tuiLink (click)="hideCat()">Запустить стрим</a>
-          <button type="button" (click)="hideCat()">Позже</button>
-        </div>
-      </div>
-      @if (idleCharacter() === 'cat') {
-        <app-idle-cat class="idle-cat-emoji" [stage]="catStage()" [talking]="catTalking()" />
-      } @else if (idleCharacter() === 'custom' && customCharacter()) {
-        <img class="idle-cat-emoji idle-custom-character" [src]="customCharacter()" alt="" />
-      } @else {
-        <app-idle-warrant class="idle-cat-emoji" [stage]="catStage()" [talking]="catTalking()" />
-      }
-    </aside>
-  }
+          <app-update-notice />
+          <app-desktop-update-notice />
 
-  <app-update-notice />
-  <app-desktop-update-notice />
+          @for (notice of messagingNotifications.notices(); track notice.id) {
+            <button
+              type="button"
+              class="message-toast"
+              (click)="messagingNotifications.dismiss(notice.id)"
+            >
+              @if (notice.avatar) {
+                <img class="message-toast-avatar" [src]="imageUrl(notice.avatar)" alt="" />
+              } @else {
+                <span
+                  class="message-toast-avatar message-toast-initials"
+                >{{ notice.author.slice(0, 2).toUpperCase() }}</span>
+              }
+              <span class="message-toast-copy">
+                <strong>{{ notice.author }}</strong>
+                <span>{{ notice.text }}</span>
+              </span>
+            </button>
+          }
 
-  @if (toast(); as item) {
-    <div class="app-toast" role="status">
-      <strong class="app-toast-title">{{ item.title }}</strong>
-      <span class="app-toast-text">{{ item.text }}</span>
-    </div>
-  }
+          @if (toast(); as item) {
+            <div class="app-toast" role="status">
+              <strong class="app-toast-title">{{ item.title }}</strong>
+              <span class="app-toast-text">{{ item.text }}</span>
 
-  <app-search
-    [open]="searchOpen()"
-    [items]="searchItems()"
-    [gameResults]="gameResults()"
-    [title]="labels().searchTitle"
-    [placeholder]="labels().searchPlaceholder"
-    [groupLabels]="{ games: labels().searchGames, pages: labels().searchPages, settings: labels().searchSettings, widgets: labels().searchWidgets }"
-    (queryChange)="search($event)"
-    [hint]="labels().searchHint"
-    (closed)="closeSearch()"
-    (navigate)="navigateSearch($event)"
-  />
+              @if (appLock.locked()) {
+                <div class="app-lock">
+                  <section class="app-lock-card">
+                    <span class="app-lock-icon"><tui-icon icon="@tui.lock" /></span>
+                    <h2 class="jk-h2">Приложение заблокировано</h2>
+                    <p class="jk-caption">Введите PIN, чтобы продолжить.</p>
+                    <tui-textfield>
+                      <input
+                        type="password"
+                        inputmode="numeric"
+                        placeholder="PIN"
+                        [value]="unlockPin()"
+                        (input)="unlockPin.set($any($event.target).value)"
+                        (keydown.enter)="unlock()"
+                        tuiInput
+                        />
+                      </tui-textfield>
+                      @if (unlockError()) {
+                        <span class="error-text">{{ unlockError() }}</span>
+                      }
+                      <button
+                        type="button"
+                        (click)="unlock()"
+                        appearance="primary"
+                        tuiButton
+                      >Разблокировать</button>
+                    </section>
+                  </div>
+                }
+              </div>
+            }
+
+            <app-search
+              [open]="searchOpen()"
+              [items]="searchItems()"
+              [gameResults]="gameResults()"
+              [title]="labels().searchTitle"
+              [placeholder]="labels().searchPlaceholder"
+              [groupLabels]="{ games: labels().searchGames, pages: labels().searchPages, settings: labels().searchSettings, widgets: labels().searchWidgets, faq: labels().searchFaq }"
+              (queryChange)="search($event)"
+              [hint]="labels().searchHint"
+              (closed)="closeSearch()"
+              (navigate)="navigateSearch($event)"
+              />

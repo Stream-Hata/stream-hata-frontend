@@ -214,3 +214,21 @@ html.reduce-motion .search-overlay-closing,
 html.reduce-motion .search-overlay-closing .search-panel {
 	animation-duration: 140ms !important;
 }
+
+.search-field-row {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	padding: var(--space-sm);
+}
+
+.search-field-row .search-field {
+	flex: 1 1 auto;
+	margin: 0;
+}
+
+.search-voice-error {
+	padding: 0 var(--space-sm) var(--space-sm);
+	color: var(--tui-text-negative);
+	font: var(--font-caption);
+}

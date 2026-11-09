@@ -654,7 +654,7 @@ export default class AutomationEditorPage {
 			case 'ban':
 				return 'Формат: логин причина.';
 			default:
-				return '';
+				return 'В ответе можно использовать выражения: {{ 1 + 2 * 3 }}, {{ user }}, {{ args }}, {{ upper(args) }}, {{ counter }}.';
 		}
 	}
 

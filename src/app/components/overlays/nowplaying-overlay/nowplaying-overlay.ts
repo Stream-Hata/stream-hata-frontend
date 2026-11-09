@@ -13,14 +13,16 @@ import {
 	untracked,
 	ViewChild,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MusicService } from '@shared/services/music.service';
 import { WidgetConfigService } from '@shared/services/widgets.service';
+import { TuiMedia } from '@taiga-ui/cdk';
 import { catchError, of, switchMap, timer } from 'rxjs';
 
 @Component({
 	selector: 'app-nowplaying-overlay',
+	imports: [TuiMedia],
 	styleUrl: './nowplaying-overlay.scss',
 	templateUrl: './nowplaying-overlay.html',
 })
@@ -77,13 +79,16 @@ export class NowPlayingOverlay {
 	readonly thumbnailFailed = signal(false);
 	readonly playbackStarted = signal(false);
 	readonly needsGesture = signal(false);
-	readonly paused = signal(true);
+	readonly paused = signal(false);
+	readonly mediaCurrentTime = signal(0);
 	readonly mediaDuration = signal(0);
 	readonly videoError = signal(false);
 	readonly thumbnailUrl = computed(() => {
 		const videoId = this.currentId();
 
-		return videoId ? `rgg-sync/music/thumbnail?id=${encodeURIComponent(videoId)}` : '';
+		return videoId && this.currentKind() === 'youtube'
+			? `rgg-sync/music/thumbnail?id=${encodeURIComponent(videoId)}`
+			: '';
 	});
 
 	readonly showVideo = computed(() => this.config().config.showVideo !== false);
@@ -129,12 +134,15 @@ export class NowPlayingOverlay {
 	});
 
 	constructor() {
-		this.music.current().subscribe({
-			next: ({ track }) => {
-				this.serverCurrent.set(track);
-			},
-			error: () => undefined,
-		});
+		this.music
+			.current()
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe({
+				next: ({ track }) => {
+					this.serverCurrent.set(track);
+				},
+				error: () => undefined,
+			});
 
 		effect(() => {
 			const track = this.serverCurrent();
@@ -195,6 +203,7 @@ export class NowPlayingOverlay {
 			this.music.setCurrent(videoId).subscribe({ error: () => undefined });
 			this.thumbnailFailed.set(false);
 			this.playbackStarted.set(false);
+			this.mediaCurrentTime.set(0);
 			this.needsGesture.set(false);
 			this.clearEndTimer();
 			this.clearGestureTimer();
@@ -373,11 +382,21 @@ export class NowPlayingOverlay {
 		}, 1000);
 	}
 
-	readonly duration = computed(() => {
-		const seconds = this.current()?.durationSeconds ?? 0;
+	onMediaTime(value: number): void {
+		this.mediaCurrentTime.set(Number.isFinite(value) ? value : 0);
+	}
 
-		return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
-	});
+	readonly elapsed = computed(() => this.formatTime(this.mediaCurrentTime()));
+
+	readonly duration = computed(() => this.formatTime(this.current()?.durationSeconds ?? 0));
+
+	private formatTime(seconds: number): string {
+		const safe = Math.max(0, Math.floor(seconds));
+		const minutes = Math.floor(safe / 60);
+		const rest = safe % 60;
+
+		return `${minutes}:${String(rest).padStart(2, '0')}`;
+	}
 
 	private scheduleEnd(seconds = this.current()?.durationSeconds ?? 0): void {
 		this.clearEndTimer();

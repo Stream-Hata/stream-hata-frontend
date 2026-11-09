@@ -4,8 +4,9 @@ import { inject } from '@angular/core';
 import { GamesCatalogService } from '@shared/services/games-catalog.service';
 import { catchError, of } from 'rxjs';
 
-export const gamesResolver: ResolveFn<GameListResponse> = () => {
+export const gamesResolver: ResolveFn<GameListResponse> = (route) => {
 	const catalog = inject(GamesCatalogService);
+	const page = Math.max(1, Number(route.queryParamMap.get('page') ?? 1) || 1);
 
 	return catalog
 		.list({
@@ -14,7 +15,7 @@ export const gamesResolver: ResolveFn<GameListResponse> = () => {
 			tier: '',
 			age: '',
 			emulator: null,
-			page: 1,
+			page,
 			pageSize: 24,
 			sort: 'title',
 			order: 'asc',

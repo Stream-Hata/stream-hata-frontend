@@ -1,15 +1,30 @@
-import type { FeedbackReport } from '@shared/services/feedback.service';
+import type { FeedbackReport, FeedbackReportSummary } from '@shared/services/feedback.service';
+import { DatePipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FeedbackService } from '@shared/services/feedback.service';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { FEEDBACK_REASONS } from '@shared/config/feedback-reasons';
+import { FeedbackService } from '@shared/services/feedback.service';
 import { TwitchService } from '@shared/services/twitch.service';
-import { TuiButton, TuiDropdown, TuiInput, TuiSelectLike, TuiTextfield } from '@taiga-ui/core';
-import { TuiChevron, TuiDataListWrapper, TuiTextarea } from '@taiga-ui/kit';
-import { TuiEditor, provideTuiEditor } from '@taiga-ui/editor';
+import { TuiButton, TuiCheckbox, TuiDropdown, TuiInput, TuiSelectLike, TuiTextfield } from '@taiga-ui/core';
+import { provideTuiEditor, TuiEditor } from '@taiga-ui/editor';
+import { TuiChevron, TuiDataListWrapper, TuiSwitch, TuiTextarea } from '@taiga-ui/kit';
 
 @Component({
-	imports: [FormsModule, ReactiveFormsModule, TuiButton, TuiChevron, TuiDataListWrapper, TuiDropdown, TuiEditor, TuiInput, TuiSelectLike, TuiTextarea, TuiTextfield],
+	imports: [
+		DatePipe,
+		ReactiveFormsModule,
+		TuiButton,
+		TuiCheckbox,
+		TuiChevron,
+		TuiDataListWrapper,
+		TuiDropdown,
+		TuiEditor,
+		TuiInput,
+		TuiSelectLike,
+		TuiSwitch,
+		TuiTextarea,
+		TuiTextfield,
+	],
 	selector: 'app-feedback-page',
 	providers: [provideTuiEditor()],
 	styleUrl: './feedback-page.scss',
@@ -32,6 +47,7 @@ export default class FeedbackPage {
 					? 'FE'
 					: 'DT',
 	);
+
 	readonly platform = signal('');
 	readonly platformOptions = ['Linux', 'Windows', 'macOS', 'Android', 'iOS', 'Другое'];
 	readonly platformLabel = computed(() => this.platform() || 'Не выбрано');
@@ -96,16 +112,47 @@ export default class FeedbackPage {
 		'0.8.5-pre-alpha',
 		'Не знаю',
 	];
+
 	readonly versionLabel = computed(() => this.version() || 'Не выбрано');
 	readonly severity = signal('medium');
 	readonly severityValues = ['low', 'medium', 'high', 'critical'];
 	readonly severityLabels = ['Низкая', 'Средняя', 'Высокая', 'Критичная'];
-	readonly severityLabel = computed(() => this.severityLabels[this.severityValues.indexOf(this.severity())] ?? 'Средняя');
+	readonly severityLabel = computed(
+		() => this.severityLabels[this.severityValues.indexOf(this.severity())] ?? 'Средняя',
+	);
+
 	readonly pageUrl = signal('');
 	readonly environment = signal('');
 	readonly contact = signal('');
 	readonly website = signal('');
 	readonly author = signal('');
+	readonly authenticated = signal(false);
+	readonly authLoading = signal(true);
+	readonly mineVisible = signal(false);
+	readonly mineLoading = signal(false);
+	readonly mineItems = signal<FeedbackReportSummary[]>([]);
+	readonly similarQuery = signal('');
+	readonly similarLoading = signal(false);
+	readonly similarItems = signal<FeedbackReportSummary[]>([]);
+	readonly telegramMessage = signal('');
+	readonly diagnosticsEnabled = signal(true);
+	readonly logPeriod = signal('1h');
+	readonly logPeriodValues = ['15m', '1h', '6h', '24h'];
+	readonly logPeriodLabels = ['15 минут', '1 час', '6 часов', '24 часа'];
+	readonly logPeriodLabel = computed(
+		() => this.logPeriodLabels[this.logPeriodValues.indexOf(this.logPeriod())] ?? '1 час',
+	);
+
+	readonly logSources = signal<string[]>(['backend', 'nginx', 'database', 'postgres', 'openbao', 'metrics']);
+	readonly logSourceOptions = [
+		{ value: 'backend', label: 'Backend' },
+		{ value: 'nginx', label: 'Nginx' },
+		{ value: 'database', label: 'Сервер БД' },
+		{ value: 'postgres', label: 'PostgreSQL' },
+		{ value: 'openbao', label: 'OpenBao' },
+		{ value: 'metrics', label: 'Метрики Prometheus' },
+	];
+
 	readonly sending = signal(false);
 	readonly result = signal<string | null>(null);
 	readonly error = signal('');
@@ -177,7 +224,7 @@ export default class FeedbackPage {
 			(candidate) =>
 				candidate.label === label &&
 				`${this.areaLabels[this.areaValues.indexOf(candidate.area)]} · ${candidate.group}` ===
-					[...this.filteredGroups().labels].find((group) => group.endsWith(` · ${candidate.group}`)) &&
+				[...this.filteredGroups().labels].find((group) => group.endsWith(` · ${candidate.group}`)) &&
 				!this.reasons().includes(candidate.label),
 		);
 		if (item) {
@@ -198,16 +245,120 @@ export default class FeedbackPage {
 		this.reasons.update((items) => items.filter((item) => item !== value));
 	}
 
-
 	constructor() {
 		this.descriptionControl.valueChanges.subscribe((value) => this.description.set(value));
 
-		this.twitch.login().subscribe((profile) => {
-			this.author.set(profile?.user?.username ?? '');
+		this.twitch.login().subscribe({
+			next: (profile) => {
+				this.author.set(profile?.user?.username ?? '');
+				this.authenticated.set(Boolean(profile?.valid));
+				this.authLoading.set(false);
+			},
+			error: () => {
+				this.authenticated.set(false);
+				this.authLoading.set(false);
+			},
 		});
 	}
 
+	login(): void {
+		this.twitch.connect(location.protocol === 'https:' ? `${location.origin}/feedback` : undefined);
+	}
+
+	connectTelegram(): void {
+		this.feedback.telegramLink().subscribe({
+			next: ({ url }) => {
+				this.telegramMessage.set('Открой бота и нажми Start — после этого уведомления придут в Telegram.');
+				window.open(url, '_blank', 'noopener');
+			},
+			error: () => {
+				this.telegramMessage.set('Не удалось создать ссылку для Telegram.');
+			},
+		});
+	}
+
+	toggleMine(): void {
+		const next = !this.mineVisible();
+		this.mineVisible.set(next);
+		if (next) {
+			this.loadMine();
+		}
+	}
+
+	loadMine(): void {
+		this.mineLoading.set(true);
+		this.feedback.mine().subscribe({
+			next: (response) => {
+				this.mineItems.set(response.items);
+				this.mineLoading.set(false);
+			},
+			error: () => {
+				this.mineItems.set([]);
+				this.mineLoading.set(false);
+			},
+		});
+	}
+
+	searchSimilar(): void {
+		const query = (this.similarQuery().trim() || this.title().trim()).trim();
+		if (query.length < 3) {
+			this.similarItems.set([]);
+
+			return;
+		}
+		this.similarLoading.set(true);
+		this.feedback.similar(query).subscribe({
+			next: (response) => {
+				this.similarItems.set(response.items);
+				this.similarLoading.set(false);
+			},
+			error: () => {
+				this.similarItems.set([]);
+				this.similarLoading.set(false);
+			},
+		});
+	}
+
+	statusLabel(status: string): string {
+		return {
+			created: 'Создано',
+			feedback: 'Фидбек',
+			open: 'Открыто',
+			closed: 'Закрыто',
+		}[status] ?? status;
+	}
+
+	setLogPeriod(label: string): void {
+		const index = this.logPeriodLabels.indexOf(label);
+		if (index >= 0) {
+			this.logPeriod.set(this.logPeriodValues[index] ?? '1h');
+		}
+	}
+
+	toggleLogSource(value: string): void {
+		this.logSources.update((items) =>
+			items.includes(value) ? items.filter((item) => item !== value) : [...items, value],
+		);
+	}
+
+	private diagnosticsRequest(): FeedbackReport['diagnostics'] {
+		if (this.kind() !== 'bug') {
+			return { enabled: false, period: '1h', sources: [] };
+		}
+
+		return {
+			enabled: this.diagnosticsEnabled(),
+			period: this.logPeriod(),
+			sources: this.logSources(),
+		};
+	}
+
 	submit(): void {
+		if (!this.authenticated()) {
+			this.error.set('Войдите через Twitch, чтобы отправить обращение');
+
+			return;
+		}
 		this.sending.set(true);
 		this.error.set('');
 		this.result.set(null);
@@ -231,6 +382,7 @@ export default class FeedbackPage {
 				contact: this.contact(),
 				author: this.author(),
 				website: this.website(),
+				diagnostics: this.diagnosticsRequest(),
 			})
 			.subscribe({
 				next: (result) => {
@@ -240,8 +392,8 @@ export default class FeedbackPage {
 					);
 					this.title.set('');
 					this.reasons.set([]);
-				this.description.set('');
-				this.descriptionControl.setValue('');
+					this.description.set('');
+					this.descriptionControl.setValue('');
 					this.steps.set('');
 					this.expected.set('');
 					this.actual.set('');

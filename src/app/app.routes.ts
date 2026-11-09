@@ -1,11 +1,25 @@
 import type { Routes } from '@angular/router';
-import { gameResolver } from './components/pages/game-details-page/game-resolver';
-import { gamesResolver } from './components/pages/games-page/games-resolver';
 import { profileResolver } from './components/pages/profile-page/profile-resolver';
 import { rouletteResolver } from './components/pages/roulette-page/roulette-resolver';
-import { desktopGuard, landingGuard } from './guards/desktop.guard';
+import { adminGuard } from './guards/admin.guard';
+import { landingGuard } from './guards/desktop.guard';
 
 export const routes: Routes = [
+	{
+		path: 'status',
+		loadComponent: () => import('./components/pages/status-page/status-page'),
+		title: 'Статус · StreamHata',
+	},
+	{
+		path: 'blog',
+		loadComponent: () => import('./components/pages/blog-page/blog-page'),
+		title: 'Блог · StreamHata',
+	},
+	{
+		path: 'blog/:slug',
+		loadComponent: () => import('./components/pages/blog-article-page/blog-article-page'),
+		title: 'Статья · StreamHata',
+	},
 	{
 		path: 'feedback',
 		loadComponent: () => import('./components/pages/feedback-page/feedback-page'),
@@ -24,7 +38,6 @@ export const routes: Routes = [
 	},
 	{
 		path: 'app',
-		canActivate: [desktopGuard],
 		loadComponent: () => import('./components/layout/app-shell/app-shell'),
 		children: [
 			{ path: '', pathMatch: 'full', redirectTo: 'dashboard' },
@@ -36,8 +49,13 @@ export const routes: Routes = [
 			{
 				path: 'games',
 				loadComponent: () => import('./components/pages/games-page/games-page'),
-				resolve: { games: gamesResolver },
 				title: 'Игры · Nameless StreamHata',
+			},
+			{
+				path: 'blog',
+				canActivate: [adminGuard],
+				loadComponent: () => import('./components/pages/blog-admin-page/blog-admin-page'),
+				title: 'Блог · админка · Nameless StreamHata',
 			},
 			{
 				path: 'widgets/system/config',
@@ -54,7 +72,6 @@ export const routes: Routes = [
 			{
 				path: 'games/:slug',
 				loadComponent: () => import('./components/pages/game-details-page/game-details-page'),
-				resolve: { game: gameResolver },
 				title: 'Игра · Nameless StreamHata',
 			},
 			{
@@ -97,6 +114,16 @@ export const routes: Routes = [
 				path: 'chat',
 				loadComponent: () => import('./components/pages/chat-page/chat-page'),
 				title: 'Чат · Nameless StreamHata',
+			},
+			{
+				path: 'messages',
+				loadComponent: () => import('./components/pages/messages-page/messages-page'),
+				title: 'Сообщения · Nameless StreamHata',
+			},
+			{
+				path: 'journal',
+				loadComponent: () => import('./components/pages/journal-page/journal-page'),
+				title: 'Журнал стрима · Nameless StreamHata',
 			},
 			{
 				path: 'stream',

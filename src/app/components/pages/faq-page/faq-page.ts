@@ -1,9 +1,20 @@
 import type { ElementRef } from '@angular/core';
-import { Component, computed, HostListener, signal, viewChild } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import type { FaqImage } from './faq.data';
+import {
+	Component,
+	computed,
+	DestroyRef,
+	HostListener,
+	inject,
+	signal,
+	viewChild,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { VoiceSearchService } from '@shared/services/voice-search.service';
 import { TuiButton, TuiIcon, TuiInput, TuiLink, TuiTextfield } from '@taiga-ui/core';
 import { Logo } from '../../ui/logo/logo';
-import { FAQ_CATEGORIES, FAQ_ITEMS, type FaqImage } from './faq.data';
+import { FAQ_CATEGORIES, FAQ_ITEMS } from './faq.data';
 
 @Component({
 	imports: [RouterLink, TuiButton, TuiIcon, TuiInput, TuiLink, TuiTextfield, Logo],
@@ -101,7 +112,12 @@ export default class FaqPage {
 			caption: 'Данные и безопасность аккаунта.',
 		},
 	};
+
+	private readonly voice = inject(VoiceSearchService);
 	readonly query = signal('');
+	readonly voiceError = signal('');
+	private readonly route = inject(ActivatedRoute);
+	private readonly destroyRef = inject(DestroyRef);
 	readonly category = signal('all');
 	readonly searchInput = viewChild<ElementRef<HTMLInputElement>>('searchInput');
 
@@ -119,7 +135,7 @@ export default class FaqPage {
 			}
 
 			const haystack = normalize(
-				[item.question, ...item.paragraphs, ...(item.steps ?? [])].join(' '),
+				[item.question, item.keywords ?? '', ...item.paragraphs, ...(item.steps ?? [])].join(' '),
 			);
 
 			return haystack.includes(query);
@@ -136,6 +152,20 @@ export default class FaqPage {
 		return counts;
 	});
 
+	constructor() {
+		this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+			const query = params.get('q');
+			const category = params.get('category');
+
+			if (query) {
+				this.query.set(query);
+			}
+			if (category) {
+				this.category.set(category);
+			}
+		});
+	}
+
 	@HostListener('document:keydown', ['$event'])
 	onKeydown(event: KeyboardEvent): void {
 		const hotkey =
@@ -148,6 +178,20 @@ export default class FaqPage {
 
 		event.preventDefault();
 		this.searchInput()?.nativeElement.focus();
+	}
+
+	startVoice(event: MouseEvent): void {
+		event.preventDefault();
+		this.voiceError.set('');
+		this.voice.start().subscribe({
+			next: (text) => {
+				this.query.set(text);
+				if (normalize(text).includes('десктоп') || normalize(text).includes('приложен')) {
+					this.category.set('desktop');
+				}
+			},
+			error: (error) => this.voiceError.set(error instanceof Error ? error.message : String(error)),
+		});
 	}
 
 	setCategory(id: string): void {

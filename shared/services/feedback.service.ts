@@ -20,6 +20,23 @@ export interface FeedbackReport {
 	contact: string;
 	author: string;
 	website: string;
+	diagnostics: FeedbackDiagnostics;
+}
+
+export interface FeedbackDiagnostics {
+	enabled: boolean;
+	period: string;
+	sources: string[];
+}
+
+export interface FeedbackReportSummary {
+	prefix: string;
+	number: number;
+	title: string;
+	status: string;
+	issueUrl: string;
+	createdAt: string;
+	source: string;
 }
 
 export interface FeedbackResult {
@@ -35,6 +52,20 @@ export class FeedbackService {
 
 	submit(report: FeedbackReport) {
 		return this.http.post<FeedbackResult>('rgg-sync/feedback', report);
+	}
+
+	mine() {
+		return this.http.get<{ items: FeedbackReportSummary[] }>('rgg-sync/feedback/mine');
+	}
+
+	telegramLink() {
+		return this.http.post<{ url: string }>('rgg-sync/feedback/telegram-link', {});
+	}
+
+	similar(query: string) {
+		return this.http.get<{ items: FeedbackReportSummary[] }>('rgg-sync/feedback/similar', {
+			params: { q: query },
+		});
 	}
 }
 

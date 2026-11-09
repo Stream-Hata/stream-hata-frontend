@@ -1,0 +1,607 @@
+<div class="jk-page messages-page">
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">{{ i18n.t('messenger.title') }}</h1>
+      <p class="jk-caption">{{ i18n.t('messenger.subtitle') }}</p>
+    </div>
+    <div class="jk-page-actions">
+      <button type="button" appearance="flat" tuiButton (click)="openGraph()">
+        <tui-icon icon="@tui.network" />
+        Граф отношений
+      </button>
+    </div>
+  </header>
+
+  <div class="messenger-tabs">
+    <button
+      type="button"
+      class="messenger-tab"
+      [class.messenger-tab-active]="tab() === 'streamhata'"
+      (click)="tab.set('streamhata')"
+    >
+      {{ i18n.t('messenger.streamhata') }}
+    </button>
+    <button
+      type="button"
+      class="messenger-tab"
+      [class.messenger-tab-active]="tab() === 'twitch'"
+      (click)="tab.set('twitch')"
+    >
+      {{ i18n.t('messenger.twitch') }}
+    </button>
+  </div>
+
+  @if (tab() === 'twitch') {
+    <section class="jk-card twitch-panel">
+      <div class="twitch-head">
+        <tui-textfield class="twitch-channel">
+          <input
+            placeholder="Логин Twitch-канала"
+            [value]="twitchChannel()"
+            (input)="twitchChannel.set($any($event.target).value)"
+            (keydown.enter)="connectTwitch()"
+            tuiInput
+            />
+          </tui-textfield>
+          <button type="button" appearance="primary" size="s" tuiButton (click)="connectTwitch()">
+            {{ twitchSocket.connected() ? 'Переподключить' : 'Подключить' }}
+          </button>
+          <span class="jk-caption">
+            {{ twitchSocket.connected() ? 'подключено: #' + twitchSocket.channel() : 'чтение без авторизации' }}
+          </span>
+        </div>
+        <div class="twitch-messages">
+          @for (message of twitchSocket.messages(); track message.id) {
+            <div class="twitch-message">
+              <strong [style.color]="message.color || null">{{ message.user }}</strong>
+              <span>{{ message.text }}</span>
+            </div>
+          } @empty {
+          <p class="jk-caption">Введите канал и подключитесь, чтобы читать Twitch-чат.</p>
+        }
+      </div>
+      <div class="twitch-composer">
+        <tui-textfield class="twitch-channel">
+          <input
+            placeholder="Сообщение в Twitch-чат…"
+            [value]="twitchDraft()"
+            (input)="twitchDraft.set($any($event.target).value)"
+            (keydown.enter)="sendTwitch()"
+            tuiInput
+            />
+          </tui-textfield>
+          <button
+            type="button"
+            size="s"
+            (click)="sendTwitch()"
+            appearance="primary"
+            tuiButton
+          >Отправить</button>
+        </div>
+      </section>
+    }
+
+    @if (error()) {
+      <p class="error-text">{{ error() }}</p>
+    }
+
+    @if (loading()) {
+      <div class="jk-card jk-empty">Загружаем контакты…</div>
+    } @else {
+      <div class="messenger-layout" [hidden]="tab() === 'twitch'">
+        <aside class="jk-card contacts-panel">
+          <tui-textfield class="contacts-search">
+            <tui-icon icon="@tui.search" />
+            <input
+              type="search"
+              [placeholder]="i18n.t('messenger.search')"
+              [value]="search()"
+              (input)="onContactSearch($event)"
+              tuiInput
+              />
+            </tui-textfield>
+            <button
+              type="button"
+              size="s"
+              class="test-peer-button"
+              [disabled]="creatingTest()"
+              (click)="createTestPeer()"
+              appearance="flat"
+              tuiButton
+            >
+              <tui-icon icon="@tui.bot" />
+              Тестовый собеседник
+            </button>
+            <div class="contacts-list">
+              @for (contact of filteredContacts(); track contact.login) {
+                <button
+                  type="button"
+                  class="contact-row"
+                  [class.contact-row-active]="selected()?.login === contact.login"
+                  (click)="select(contact)"
+                  (contextmenu)="openDialogMenu($event, contact)"
+                >
+                  <span
+                    class="contact-avatar"
+                  >{{ contact.displayName.slice(0, 2).toUpperCase() }}</span>
+                  <span class="contact-copy">
+                    <strong>{{ contact.displayName }}</strong>
+                    <span class="jk-caption">
+                      <i class="presence-dot" [class.presence-online]="contact.online"></i>
+                      @{{ contact.login }}
+                    </span>
+                  </span>
+                  @if (contact.isTest) {
+                    <span appearance="warning" tuiBadge>test</span>
+                  }
+                </button>
+              } @empty {
+              @if (searching()) {
+                <p class="jk-caption">Ищем стримера…</p>
+              } @else {
+                <p class="jk-caption">{{ i18n.t('messenger.empty') }}</p>
+                @if (search().trim()) {
+                  <button
+                    type="button"
+                    size="s"
+                    (click)="openTwitchChat()"
+                    appearance="secondary"
+                    tuiButton
+                  >
+                    Написать в Twitch-чат @{{ search().trim().replace('@', '') }}
+                  </button>
+                }
+              }
+            }
+            @if (archivedContacts().length) {
+              <span class="archive-title">{{ i18n.t('messenger.archive') }}</span>
+              @for (contact of archivedContacts(); track contact.login) {
+                <button
+                  type="button"
+                  class="contact-row archived-row"
+                  (click)="select(contact)"
+                  (contextmenu)="openDialogMenu($event, contact)"
+                >
+                  <span
+                    class="contact-avatar"
+                  >{{ contact.displayName.slice(0, 2).toUpperCase() }}</span>
+                  <span class="contact-copy">
+                    <strong>{{ contact.displayName }}</strong>
+                    <span class="jk-caption">@{{ contact.login }}</span>
+                  </span>
+                </button>
+              }
+            }
+          </div>
+        </aside>
+
+        <section class="jk-card conversation">
+          @if (selected(); as contact) {
+            <header class="conversation-head">
+              <div>
+                <h2 class="jk-h4">{{ contact.displayName }}</h2>
+                <span class="jk-caption">
+                  <i class="presence-dot" [class.presence-online]="presence().online"></i>
+                  @{{ contact.login }} · {{ presenceLabel() }}
+                </span>
+              </div>
+              <tui-textfield class="message-search">
+                <tui-icon icon="@tui.search" />
+                <input
+                  type="search"
+                  placeholder="Поиск по сообщениям…"
+                  [value]="messageQuery()"
+                  (input)="messageQuery.set($any($event.target).value)"
+                  tuiInput
+                  />
+                </tui-textfield>
+                <div class="conversation-tools">
+                  <button
+                    type="button"
+                    size="s"
+                    [attr.aria-label]="relationship()?.blocked ? 'Разблокировать' : 'Заблокировать'"
+                    (click)="toggleBlock()"
+                    appearance="flat"
+                    tuiButton
+                  >
+                    <tui-icon [icon]="relationship()?.blocked ? '@tui.lock-open' : '@tui.ban'" />
+                  </button>
+                  <button
+                    type="button"
+                    size="s"
+                    title="Очистить диалог"
+                    aria-label="Очистить диалог"
+                    (click)="clearConversation()"
+                    appearance="flat"
+                    tuiButton
+                  >
+                    <tui-icon icon="@tui.trash" />
+                  </button>
+                  @if (relationship(); as rel) {
+                    <button type="button" class="relationship-chip" (click)="openGraph()">
+                      <span>{{ rel.label }}</span>
+                      <span class="relationship-bar"><span [style.width.%]="strengthWidth(rel.strength)"></span></span>
+                    </button>
+                  }
+                  <label class="encrypt-toggle">
+                    <input
+                      type="checkbox"
+                      [checked]="encryptEnabled()"
+                      (change)="encryptEnabled.set($any($event.target).checked)"
+                      tuiSwitch
+                      />
+                      Шифрование
+                    </label>
+                  </div>
+                </header>
+
+                @if (!encryptEnabled()) {
+                  <p
+                    class="plain-warning"
+                  >Шифрование выключено: сообщения будут храниться на сервере в открытом виде.</p>
+                }
+
+                <div #messagesScroll class="messages-scroll">
+                  @for (message of visibleMessages(); track message.id) {
+                    <article
+                      class="message-bubble"
+                      [class.message-mine]="message.mine"
+                      (contextmenu)="openMessageMenu($event, message)"
+                    >
+                      @if (message.error) {
+                        <span class="message-error">{{ message.error }}</span>
+                      } @else {
+                        <div class="message-content">
+                          @for (span of message.spans; track $index) {
+                            @switch (span.kind) {
+                              @case ('bold') { <strong>{{ span.text }}</strong> }
+                              @case ('italic') { <em>{{ span.text }}</em> }
+                              @case ('code') { <code>{{ span.text }}</code> }
+                              @case ('codeblock') {
+                              <pre class="codeblock"><code>{{ span.text }}</code></pre>
+                            }
+                            @case ('spoiler') { <span class="spoiler">{{ span.text }}</span> }
+                            @case ('link') {
+                            <a [href]="span.url" target="_blank" rel="noopener">{{ span.text }}</a>
+                          }
+                          @case ('mention') { <span class="mention">{{ span.text }}</span> }
+                          @case ('color') { <span [style.color]="span.color">{{ span.text }}</span> }
+                          @default { <span>{{ span.text }}</span> }
+                        }
+                      }
+                    </div>
+                    @for (media of message.media; track media.url) {
+                      <div class="message-media">
+                        @switch (media.kind) {
+                          @case ('image') {
+                          <img [src]="media.url" alt="Изображение" loading="lazy" />
+                        }
+                        @case ('audio') {
+                        <audio controls [src]="media.url"></audio>
+                      }
+                      @case ('video') {
+                      <video controls [src]="media.url"></video>
+                    }
+                    @default {
+                    <a [href]="media.url" target="_blank" rel="noopener">Открыть ссылку</a>
+                  }
+                }
+              </div>
+            }
+          }
+          @if (message.reactions.length) {
+            <div class="message-reactions">
+              @for (reaction of message.reactions; track reaction.emoji) {
+                <button
+                  type="button"
+                  class="reaction-chip"
+                  [class.reaction-mine]="reaction.mine"
+                  (click)="react(message, reaction.emoji)"
+                >
+                  {{ reaction.emoji }} {{ reaction.count }}
+                </button>
+              }
+            </div>
+          }
+          <span class="message-meta">
+            {{ formatTime(message.createdAt) }}
+            @if (message.editedAt) { · изм. }
+            @if (message.mine && message.readAt) { · прочитано }
+            @if (message.encrypted) { · e2ee }
+          </span>
+        </article>
+      } @empty {
+      <p class="jk-caption">Сообщений пока нет. Напишите первым.</p>
+    }
+  </div>
+
+  @if (codeIssue(); as issue) {
+    <div class="code-issue" role="alert" aria-live="assertive">
+      <span>
+        Синтаксическая ошибка: строка {{ issue.line }}, колонка {{ issue.column }} — {{ issue.message }}
+      </span>
+      <button
+        type="button"
+        size="xs"
+        (click)="codeIssue.set(null)"
+        appearance="flat"
+        tuiButton
+      >Закрыть</button>
+    </div>
+  }
+  @if (replyTo(); as quoted) {
+    <div class="reply-preview">
+      <span>Ответ на: {{ quoted.text.slice(0, 120) }}</span>
+      <button
+        type="button"
+        size="xs"
+        (click)="cancelReply()"
+        appearance="flat"
+        tuiButton
+      >Отмена</button>
+    </div>
+  }
+  @if (editing(); as edited) {
+    <div class="reply-preview editing-preview">
+      <span>Редактирование: {{ edited.text.slice(0, 120) }}</span>
+      <button
+        type="button"
+        size="xs"
+        (click)="cancelEdit()"
+        appearance="flat"
+        tuiButton
+      >Отмена</button>
+    </div>
+  }
+  <div class="composer">
+    <tui-textfield class="composer-field">
+      <textarea
+        maxlength="8192"
+        placeholder="Сообщение…" title="Enter — отправить · Shift+Enter — новая строка · Ctrl+Shift+Enter — отправить кодом"
+        #composerInput
+        [value]="draft()"
+        [disabled]="relationship()?.blocked ?? false"
+        (input)="onDraftInput($event)"
+        (keydown)="onComposerKeydown($event)"
+        (contextmenu)="openFormatMenu($event)"
+        tuiTextarea
+      ></textarea>
+    </tui-textfield>
+    <button
+      type="button"
+      size="s"
+      (click)="sendAsCode()"
+      appearance="flat"
+      tuiButton
+    >Код + Enter</button>
+    <input
+      accept="image/avif,image/bmp,image/gif,image/jpeg,image/png,image/webp,audio/*,video/mp4,video/webm,application/pdf,text/plain,application/zip"
+      hidden
+      type="file"
+      #attachmentInput
+      (change)="uploadAttachment($event)"
+      />
+      <button
+        aria-label="Прикрепить файл"
+        type="button"
+        size="s"
+        [disabled]="uploadingAttachment() || (relationship()?.blocked ?? false)"
+        (click)="attachmentInput.click()"
+        appearance="flat"
+        tuiButton
+      >
+        <tui-icon icon="@tui.paperclip" />
+      </button>
+      <button
+        type="button"
+        size="s"
+        (click)="formatDraftCode()"
+        appearance="flat"
+        tuiButton
+      >Формат</button>
+      <button type="button" appearance="primary" tuiButton [disabled]="sending()" (click)="send()">
+        <tui-icon icon="@tui.send" />
+        {{ editing() ? 'Сохранить' : 'Отправить' }}
+      </button>
+    </div>
+  } @else {
+    <div class="jk-empty">
+      <tui-icon icon="@tui.messages-square" />
+      <span class="jk-h4">Выберите стримера</span>
+      <span class="jk-caption">Слева список стримеров с настроенным мессенджером.</span>
+    </div>
+  }
+</section>
+</div>
+}
+
+@if (contextMenu(); as menu) {
+  <div
+    class="context-backdrop"
+    (click)="closeMenu()"
+    (contextmenu)="$event.preventDefault(); closeMenu()"
+  >
+    <div
+      class="context-menu"
+      role="menu"
+      #contextMenu
+      [style.left.px]="menu.x"
+      [style.top.px]="menu.y"
+      (click)="$event.stopPropagation()"
+    >
+      @if (menu.kind === 'dialog') {
+        <span class="context-title">{{ menu.contact.displayName }}</span>
+        <button
+          type="button"
+          (click)="toggleDialog(menu.contact, 'pinned')"
+        >{{ menu.contact.pinned ? 'Открепить' : 'Закрепить' }}</button>
+        <button
+          type="button"
+          (click)="toggleDialog(menu.contact, 'archived')"
+        >{{ menu.contact.archived ? 'Из архива' : 'В архив' }}</button>
+        <button
+          type="button"
+          (click)="deleteDialog(menu.contact, 'me'); closeMenu()"
+        >Удалить у себя</button>
+        <button
+          type="button"
+          class="context-danger"
+          (click)="deleteDialog(menu.contact, 'all')"
+        >Удалить для всех</button>
+      } @else if (menu.kind === 'format') {
+        <span class="context-title">Форматирование</span>
+        <button
+          type="button"
+          role="menuitem"
+          (click)="formatDraftCode(); closeMenu()"
+        >Форматировать код</button>
+        <button
+          type="button"
+          role="menuitem"
+          (click)="closeMenu(); sendAsCode()"
+        >Отправить как код</button>
+        <button type="button" role="menuitem" (click)="applyFormat('bold')"><strong>Жирный</strong></button>
+        <button type="button" role="menuitem" (click)="applyFormat('italic')"><em>Курсив</em></button>
+        <button type="button" role="menuitem" (click)="applyFormat('code')"><code>Код</code></button>
+        <button type="button" role="menuitem" (click)="applyFormat('spoiler')">Спойлер</button>
+        <button type="button" role="menuitem" (click)="applyFormat('codeblock')">Блок кода</button>
+        <span class="context-title">Цвет</span>
+        <div class="color-row">
+          @for (color of ['#ff2ea6', '#ff5c5c', '#ff9f1a', '#39ff88', '#22e0ff', '#b388ff']; track color) {
+            <button
+              type="button"
+              role="menuitem"
+              class="color-swatch"
+              [style.background]="color"
+              [attr.aria-label]="color"
+              (click)="applyFormat('bold', color)"
+            ></button>
+          }
+        </div>
+      } @else {
+        <span class="context-title">Сообщение</span>
+        <div class="reaction-picker">
+          @for (emoji of ['👍', '❤️', '😂', '😮', '😢']; track emoji) {
+            <button
+              type="button"
+              [attr.aria-label]="emoji"
+              (click)="react(menu.message, emoji); closeMenu()"
+            >{{ emoji }}</button>
+          }
+        </div>
+        <button
+          type="button"
+          role="menuitem"
+          (click)="copyMessage(menu.message)"
+        >Копировать</button>
+        <button type="button" role="menuitem" (click)="reply(menu.message)">Ответить</button>
+        <button type="button" role="menuitem" (click)="openForward(menu.message)">Переслать</button>
+        @if (menu.message.mine) {
+          <button
+            type="button"
+            role="menuitem"
+            (click)="startEdit(menu.message)"
+          >Редактировать</button>
+          <button
+            type="button"
+            role="menuitem"
+            class="context-danger"
+            (click)="deleteMessage(menu.message)"
+          >Удалить</button>
+        }
+      }
+    </div>
+  </div>
+}
+
+<ng-template
+  [tuiDialog]="deleteOpen()"
+  (tuiDialogChange)="deleteOpen.set($event)"
+  [tuiDialogOptions]="{ label: 'Удалить диалог', size: 's' }"
+>
+  <div class="delete-dialog">
+    <p>Удалить всю переписку с {{ deleteTarget()?.displayName }}? Сообщения исчезнут у обоих участников.</p>
+    <div class="delete-actions">
+      <button
+        type="button"
+        (click)="deleteOpen.set(false)"
+        appearance="flat"
+        tuiButton
+      >Отмена</button>
+      <button
+        type="button"
+        (click)="confirmClearConversation()"
+        appearance="primary"
+        tuiButton
+      >Удалить</button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template
+  [tuiDialog]="forwardOpen()"
+  (tuiDialogChange)="forwardOpen.set($event)"
+  [tuiDialogOptions]="{ label: 'Переслать сообщение', size: 'm' }"
+>
+  <div class="forward-list">
+    @for (contact of contacts(); track contact.login) {
+      <button type="button" class="forward-row" (click)="forwardTo(contact)">
+        <span class="contact-avatar">{{ contact.displayName.slice(0, 2).toUpperCase() }}</span>
+        <span class="contact-copy">
+          <strong>{{ contact.displayName }}</strong>
+          <span class="jk-caption">@{{ contact.login }}</span>
+        </span>
+      </button>
+    } @empty {
+    <p class="jk-caption">Нет доступных собеседников.</p>
+  }
+</div>
+</ng-template>
+
+<ng-template
+  [tuiDialog]="graphOpen()"
+  (tuiDialogChange)="graphOpen.set($event)"
+  [tuiDialogOptions]="{ label: 'Граф отношений', size: 'l' }"
+>
+  <div class="graph-card">
+    <span class="jk-caption">Толщина связи зависит от интенсивности общения.</span>
+    <svg class="graph-svg" viewBox="0 0 320 320" role="img" aria-label="Граф отношений стримеров">
+      @for (node of graphNodes(); track node.login) {
+        <line
+          [attr.x2]="node.x"
+          [attr.y2]="node.y"
+          [attr.stroke-width]="strokeWidth(node.strength)"
+          [attr.stroke]="node.label === 'Друг' ? '#39ff88' : node.label === 'Незнакомец' ? '#5a4a6d' : '#ff2ea6'"
+          x1="160"
+          y1="160"
+          />
+          <circle
+            [attr.cx]="node.x"
+            [attr.cy]="node.y"
+            [attr.fill]="node.label === 'Друг' ? '#39ff88' : node.label === 'Незнакомец' ? '#5a4a6d' : '#ff2ea6'"
+            (click)="pickGraphNode(node.login)"
+            r="13"
+            />
+            <text
+              [attr.x]="node.x"
+              [attr.y]="node.y + 28"
+              text-anchor="middle"
+            >{{ node.displayName }}</text>
+          }
+          <circle cx="160" cy="160" r="18" fill="#22e0ff" />
+          <text
+            class="graph-center"
+            x="160"
+            y="160"
+            text-anchor="middle"
+            dominant-baseline="middle"
+          >Я</text>
+        </svg>
+        <div class="graph-legend">
+          <span><i class="legend-friend"></i> Друг</span>
+          <span><i class="legend-known"></i> Знакомый</span>
+          <span><i class="legend-stranger"></i> Незнакомец</span>
+        </div>
+      </div>
+    </ng-template>
+  </div>

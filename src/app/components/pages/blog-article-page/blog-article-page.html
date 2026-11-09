@@ -1,0 +1,58 @@
+<div class="jk-page blog-article-page">
+  <a class="blog-back" appearance="flat" routerLink="/blog" tuiButton>{{ i18n.t('blog.back') }}</a>
+
+  @if (loading()) {
+    <section class="jk-card blog-state">
+      <tui-icon icon="@tui.loader" />
+      <span>{{ i18n.t('blog.loading') }}</span>
+    </section>
+  } @else if (error()) {
+    <section class="jk-card blog-state" role="alert">
+      <p>{{ error() }}</p>
+      <a appearance="secondary" routerLink="/blog" tuiButton>{{ i18n.t('blog.back') }}</a>
+    </section>
+  } @else if (article(); as item) {
+    <div class="blog-article-layout">
+      <article class="jk-card blog-article">
+        <header class="blog-article-head">
+          <div class="blog-meta">
+            <span>{{ item.publishedAt || item.createdAt | date: 'dd.MM.yyyy' }}</span>
+            <span aria-hidden="true">·</span>
+            <span>{{ reading() }} {{ i18n.t('blog.reading') }}</span>
+            @if (item.authorName) {
+              <span aria-hidden="true">·</span>
+              <span>{{ i18n.t('blog.by') }}: {{ item.authorName }}</span>
+            }
+          </div>
+          <h1 class="jk-h1">{{ item.title }}</h1>
+          @if (item.excerpt) {
+            <p class="blog-lead">{{ item.excerpt }}</p>
+          }
+        </header>
+
+        @if (coverSrc()) {
+          <img class="blog-article-cover" alt="{{ item.title }}" [src]="coverSrc()" />
+        }
+
+        <div #articleContent class="blog-content" [innerHTML]="safeContent()"></div>
+      </article>
+
+      @if (toc().length) {
+        <aside class="blog-toc" [attr.aria-label]="i18n.t('blog.contents')">
+          <span class="jk-label">{{ i18n.t('blog.contents') }}</span>
+          <nav>
+            @for (item of toc(); track item.id) {
+              <a
+                [attr.aria-current]="activeHeading() === item.id ? 'location' : null"
+                [class.blog-toc-active]="activeHeading() === item.id"
+                [class.blog-toc-sub]="item.level === 3"
+                [href]="'#' + item.id"
+                (click)="activeHeading.set(item.id)"
+              >{{ item.text }}</a>
+            }
+          </nav>
+        </aside>
+      }
+    </div>
+  }
+</div>

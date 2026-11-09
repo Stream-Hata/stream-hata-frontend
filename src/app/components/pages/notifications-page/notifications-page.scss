@@ -87,3 +87,17 @@
 	border-radius: var(--radius-full);
 	background: var(--accent-primary);
 }
+
+
+.system-notice-list {
+	gap: 0;
+}
+
+.system-notice-head {
+	display: flex;
+	justify-content: space-between;
+	gap: 12px;
+	align-items: baseline;
+	padding: 8px 0;
+	border-bottom: 1px solid var(--border-divider);
+}

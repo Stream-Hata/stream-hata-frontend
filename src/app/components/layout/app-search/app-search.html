@@ -1,26 +1,34 @@
 @if (visible()) {
   <div
     class="search-overlay"
-    [class.search-overlay-closing]="closing()"
     role="dialog"
     aria-modal="true"
+    [class.search-overlay-closing]="closing()"
     [attr.aria-label]="title()"
     (click)="closed.emit()"
   >
     <div class="search-panel" (click)="$event.stopPropagation()">
-      <tui-textfield class="search-field">
-        <tui-icon icon="@tui.search" />
-        <input
-          type="search"
-          [attr.aria-label]="title()"
-          [placeholder]="placeholder()"
-          [value]="query()"
-          (input)="onInput($event)"
-          (keydown)="onKeydown($event)"
-          tuiAutoFocus
-          tuiInput
-          />
-        </tui-textfield>
+      <div class="search-field-row">
+        <tui-textfield class="search-field">
+          <tui-icon icon="@tui.search" />
+          <input
+            type="search"
+            [attr.aria-label]="title()"
+            [placeholder]="placeholder()"
+            [value]="query()"
+            (input)="onInput($event)"
+            (keydown)="onKeydown($event)"
+            tuiAutoFocus
+            tuiInput
+            />
+          </tui-textfield>
+          <button type="button" appearance="secondary" tuiButton (click)="startVoice($event)">
+            <tui-icon icon="@tui.mic" />
+          </button>
+        </div>
+        @if (voiceError()) {
+          <span class="search-voice-error">{{ voiceError() }}</span>
+        }
 
         <div class="search-results">
           @for (section of groups(); track section.group) {

@@ -1,4 +1,8 @@
 {
   "eslint.format.enable": true,
-  "eslint.lintTask.enable": true
+  "eslint.lintTask.enable": true,
+  "eslint.validate": ["typescript", "html"],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  }
 }

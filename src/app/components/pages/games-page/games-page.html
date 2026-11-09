@@ -241,9 +241,14 @@
 
 
                             @if (loading()) {
-                              <div class="games-state jk-card">
-                                <tui-icon icon="@tui.loader" />
-                                <span>Загружаем игры…</span>
+                              <div class="games-loaders">
+                                <div class="games-loader-decor" aria-hidden="true">
+                                  <span></span><span></span><span></span>
+                                </div>
+                                <div class="games-state jk-card">
+                                  <tui-icon icon="@tui.loader" />
+                                  <span>Загружаем игры…</span>
+                                </div>
                               </div>
                             } @else if (response().items.length) {
                               <div class="games-grid">

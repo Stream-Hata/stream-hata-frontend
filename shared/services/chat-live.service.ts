@@ -19,4 +19,8 @@ export class ChatLiveService {
 	badges() {
 		return this.http.get<{ badges: Record<string, string> }>('rgg-sync/chat/badges');
 	}
+
+	send(text: string, channel = '') {
+		return this.http.post<{ ok: boolean }>('rgg-sync/chat/send', { text, channel });
+	}
 }

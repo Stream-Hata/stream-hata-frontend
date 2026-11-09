@@ -25,6 +25,9 @@ export class DesktopUpdateService {
 	readonly total = signal(0);
 	readonly step = signal('');
 	readonly error = signal('');
+	readonly autoCheck = signal(false);
+	readonly rollbackVersion = signal<string | null>(null);
+	readonly rollbackBusy = signal(false);
 	private readonly tauri = this.isTauri();
 
 	constructor() {
@@ -33,11 +36,13 @@ export class DesktopUpdateService {
 		}
 
 		void this.loadVersion();
+		void this.loadPreferences();
 		void this.check();
 		this.listenForUpdates();
 		this.listenForProgress();
 		void this.syncState();
-		setInterval(() => void this.check(), 30 * 60_000);
+		setInterval(() => void this.check(), 5 * 60_000);
+		window.addEventListener('focus', () => void this.check());
 	}
 
 	private applyState(state: {
@@ -95,6 +100,35 @@ export class DesktopUpdateService {
 
 		if (state) {
 			this.applyState(state);
+		}
+	}
+
+	private async loadPreferences(): Promise<void> {
+		const auto = await this.invoke<boolean>('auto_update_enabled');
+		const rollback = await this.invoke<{ version: string } | null>('rollback_info');
+
+		if (typeof auto === 'boolean') {
+			this.autoCheck.set(auto);
+		}
+		this.rollbackVersion.set(rollback?.version ?? null);
+	}
+
+	async setAutoCheck(enabled: boolean): Promise<void> {
+		this.autoCheck.set(enabled);
+		await this.invokeWithArgs('set_auto_update', { enabled });
+	}
+
+	async rollback(): Promise<void> {
+		const version = this.rollbackVersion();
+
+		if (!version || this.rollbackBusy() || !window.confirm(`Откатить StreamHata до ${version}?`)) {
+			return;
+		}
+		this.rollbackBusy.set(true);
+		const result = await this.invokeWithArgs('rollback_update', {});
+
+		if (result === null) {
+			this.rollbackBusy.set(false);
 		}
 	}
 
@@ -210,6 +244,31 @@ export class DesktopUpdateService {
 			typeof window !== 'undefined' &&
 			('__TAURI_INTERNALS__' in window || navigator.userAgent.includes('NamelessStreamHataDesktop'))
 		);
+	}
+
+	private async invokeWithArgs<T = unknown>(
+		command: string,
+		args: Record<string, unknown>,
+	): Promise<T | null> {
+		const internals = (window as unknown as Record<string, unknown>)['__TAURI_INTERNALS__'] as
+			| { invoke?: (command: string, args?: Record<string, unknown>) => Promise<T> }
+			| undefined;
+		const globalTauri = (window as unknown as Record<string, unknown>)['__TAURI__'] as
+			| { core?: { invoke?: (command: string, args?: Record<string, unknown>) => Promise<T> } }
+			| undefined;
+		const invoke = internals?.invoke ?? globalTauri?.core?.invoke;
+
+		if (!invoke) {
+			return null;
+		}
+
+		try {
+			return await invoke(command, args);
+		} catch (error) {
+			this.error.set(String(error));
+
+			return null;
+		}
 	}
 
 	private async invoke<T = unknown>(command: string, silent = false): Promise<T | null> {

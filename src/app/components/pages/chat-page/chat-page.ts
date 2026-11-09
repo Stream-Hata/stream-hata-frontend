@@ -1,14 +1,16 @@
 import type { ElementRef } from '@angular/core';
 import type { EmotesResponse, LiveChatMessage } from '@shared/types/chat';
 import type { ChatUserProfile } from '../../chat/user-profile-dialog/user-profile-dialog';
-import { Component, computed, effect, inject, viewChild } from '@angular/core';
+import { Component, computed, effect, inject, signal, viewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { buildChatSegments } from '@shared/helpers/chat-emotes';
 import { ChatLiveService } from '@shared/services/chat-live.service';
 import { PointsService } from '@shared/services/engagement.services';
 import { ModerationService } from '@shared/services/moderation.service';
 import { TwitchService } from '@shared/services/twitch.service';
-import { TuiDialogService, TuiIcon } from '@taiga-ui/core';
+import { I18nService } from '@shared/services/i18n.service';
+import { TuiButton, TuiDialogService, TuiIcon, TuiInput, TuiTextfield } from '@taiga-ui/core';
 import { catchError, firstValueFrom, map, of, scan, switchMap, timer } from 'rxjs';
 import { UserProfileDialog } from '../../chat/user-profile-dialog/user-profile-dialog';
 
@@ -33,7 +35,7 @@ const BADGE_LABELS: Record<string, string> = {
 };
 
 @Component({
-	imports: [TuiIcon],
+	imports: [TuiButton, TuiIcon, TuiInput, TuiTextfield],
 	selector: 'app-chat-page',
 	styleUrl: './chat-page.scss',
 	templateUrl: './chat-page.html',
@@ -42,8 +44,15 @@ export default class ChatPage {
 	private readonly service = inject(ChatLiveService);
 	private readonly dialogs = inject(TuiDialogService);
 	private readonly twitch = inject(TwitchService);
+	readonly i18n = inject(I18nService);
 	private readonly points = inject(PointsService);
 	private readonly moderation = inject(ModerationService);
+	private readonly route = inject(ActivatedRoute);
+
+	readonly draft = signal('');
+	readonly target = signal(this.route.snapshot.queryParamMap.get('target') ?? '');
+	readonly sending = signal(false);
+	readonly sendError = signal('');
 
 	readonly messages = toSignal(
 		timer(0, 2000).pipe(
@@ -89,6 +98,26 @@ export default class ChatPage {
 			queueMicrotask(() => {
 				element.scrollTop = element.scrollHeight;
 			});
+		});
+	}
+
+	send(): void {
+		const text = this.draft().trim();
+
+		if (!text || this.sending()) {
+			return;
+		}
+		this.sending.set(true);
+		this.sendError.set('');
+		this.service.send(text, this.target().trim()).subscribe({
+			next: () => {
+				this.draft.set('');
+				this.sending.set(false);
+			},
+			error: (error) => {
+				this.sendError.set(error?.error ?? 'Не удалось отправить сообщение в Twitch-чат');
+				this.sending.set(false);
+			},
 		});
 	}
 

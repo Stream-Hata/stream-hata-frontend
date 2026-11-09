@@ -1,8 +1,8 @@
 <div class="jk-page">
   <header class="jk-page-header">
     <div class="jk-page-header-text">
-      <h1 class="jk-h1">Зрители</h1>
-      <p class="jk-caption">Watch streak, баллы за просмотр и активность в чате.</p>
+      <h1 class="jk-h1">{{ i18n.t('viewers.title') }}</h1>
+      <p class="jk-caption">{{ i18n.t('viewers.subtitle') }}</p>
     </div>
 
     <div class="jk-page-actions">
@@ -10,7 +10,7 @@
         <tui-icon icon="@tui.search" />
         <input
           aria-label="Поиск зрителя"
-          placeholder="Поиск..."
+          [placeholder]="i18n.t('viewers.search')"
           type="search"
           [formControl]="searchControl"
           tuiInput
@@ -20,7 +20,7 @@
 
     <section class="jk-card access-card">
       <div class="cfg-text">
-        <span class="cfg-label">Владельцы канала</span>
+        <span class="cfg-label">{{ i18n.t('viewers.owners') }}</span>
         <span class="jk-caption">Смена ника Twitch не снимает доступ — просто добавь новый логин.</span>
       </div>
 
@@ -61,11 +61,11 @@
 
     <section class="viewer-stats">
       <div class="jk-card viewer-stat">
-        <span class="jk-caption">Всего зрителей</span>
+        <span class="jk-caption">{{ i18n.t('viewers.total') }}</span>
         <strong>{{ total() }}</strong>
       </div>
       <div class="jk-card viewer-stat">
-        <span class="jk-caption">Максимальный стрик</span>
+        <span class="jk-caption">{{ i18n.t('viewers.maxStreak') }}</span>
         <strong>{{ maxStreak() }}</strong>
       </div>
     </section>
@@ -76,12 +76,12 @@
           <thead tuiThead>
             <tr>
               <th tuiTh>#</th>
-              <th tuiTh>Зритель</th>
-              <th tuiTh>Watch streak</th>
-              <th tuiTh>Баллы за просмотр</th>
-              <th tuiTh>Первый раз</th>
-              <th tuiTh>Последний раз</th>
-              <th tuiTh>Роль</th>
+              <th tuiTh>{{ i18n.t('viewers.viewer') }}</th>
+              <th tuiTh>{{ i18n.t('viewers.role') }}</th>
+              <th tuiTh>{{ i18n.t('viewers.streak') }}</th>
+              <th tuiTh>{{ i18n.t('viewers.points') }}</th>
+              <th tuiTh>{{ i18n.t('viewers.first') }}</th>
+              <th tuiTh>{{ i18n.t('viewers.last') }}</th>
             </tr>
           </thead>
           <tbody tuiTbody>
@@ -99,13 +99,7 @@
                     }
                   </span>
                 </td>
-                <td tuiTd>
-                  <span class="streak-cell">🔥 {{ row.watchStreak }}</span>
-                </td>
-                <td tuiTd class="numeric-cell">{{ row.channelPointsAwarded }}</td>
-                <td tuiTd class="jk-caption">{{ row.firstSeenLabel }}</td>
-                <td tuiTd class="jk-caption">{{ row.lastSeenLabel }}</td>
-                <td tuiTd>
+                <td tuiTd class="role-cell">
                   <tui-textfield class="role-select" tuiChevron>
                     <input
                       aria-label="Роль зрителя"
@@ -116,11 +110,17 @@
                     />
                     <tui-data-list-wrapper
                       *tuiDropdown
-                      [items]="roleLabels"
+                      [items]="roleLabels()"
                       (itemClick)="setRole(row.login, $event)"
                     ></tui-data-list-wrapper>
                   </tui-textfield>
                 </td>
+                <td tuiTd>
+                  <span class="streak-cell">🔥 {{ row.watchStreak }}</span>
+                </td>
+                <td tuiTd class="numeric-cell">{{ row.channelPointsAwarded }}</td>
+                <td tuiTd class="jk-caption">{{ row.firstSeenLabel }}</td>
+                <td tuiTd class="jk-caption">{{ row.lastSeenLabel }}</td>
               </tr>
             }
           </tbody>

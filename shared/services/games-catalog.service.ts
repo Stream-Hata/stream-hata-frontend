@@ -22,6 +22,27 @@ export interface SearchAlias {
 	updatedAt: string;
 }
 
+export interface GameDiscussionNotification {
+	id: number;
+	messageId?: number;
+	gameSlug: string;
+	kind: string;
+	read: boolean;
+	createdAt: string;
+}
+
+export interface GameDiscussionMessage {
+	id: number;
+	userId: number;
+	username: string;
+	displayName: string;
+	message: string;
+	parentId?: number;
+	likes: number;
+	liked: boolean;
+	createdAt: string;
+}
+
 export interface ImportStatus {
 	total: number;
 	sources: string;
@@ -114,6 +135,53 @@ export class GamesCatalogService {
 		return this.http.delete<{ ok: boolean }>('rgg-sync/catalog/search-aliases', {
 			params: gameSlug ? { term, gameSlug } : { term },
 		});
+	}
+
+	discussion(slug: string): Observable<{ items: GameDiscussionMessage[] }> {
+		return this.http.get<{ items: GameDiscussionMessage[] }>(
+			`rgg-sync/games/${encodeURIComponent(slug)}/discussion`,
+		);
+	}
+
+	postDiscussion(slug: string, message: string, parentId?: number): Observable<GameDiscussionMessage> {
+		return this.http.post<GameDiscussionMessage>(
+			`rgg-sync/games/${encodeURIComponent(slug)}/discussion`,
+			{ message, parentId },
+		);
+	}
+
+	likeDiscussion(slug: string, id: number): Observable<{ liked: boolean; likes: number }> {
+		return this.http.post<{ liked: boolean; likes: number }>(
+			`rgg-sync/games/${encodeURIComponent(slug)}/discussion/${id}/like`,
+			{},
+		);
+	}
+
+	deleteDiscussion(slug: string, id: number): Observable<{ ok: boolean }> {
+		return this.http.delete<{ ok: boolean }>(
+			`rgg-sync/games/${encodeURIComponent(slug)}/discussion/${id}`,
+		);
+	}
+
+	updateDiscussion(slug: string, id: number, message: string): Observable<{ ok: boolean; message: string }> {
+		return this.http.patch<{ ok: boolean; message: string }>(
+			`rgg-sync/games/${encodeURIComponent(slug)}/discussion/${id}`,
+			{ message },
+		);
+	}
+
+	discussionNotifications(): Observable<{
+		items: GameDiscussionNotification[];
+		unread: number;
+	}> {
+		return this.http.get<{
+			items: GameDiscussionNotification[];
+			unread: number;
+		}>('rgg-sync/games/notifications');
+	}
+
+	markDiscussionNotificationsRead(): Observable<{ ok: boolean }> {
+		return this.http.post<{ ok: boolean }>('rgg-sync/games/notifications', {});
 	}
 
 	refreshCatalog(): Observable<{ updated: number; total: number }> {

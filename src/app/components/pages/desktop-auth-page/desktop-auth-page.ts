@@ -16,6 +16,9 @@ export default class DesktopAuthPage {
 	private readonly twitch = inject(TwitchService);
 	private readonly http = inject(HttpClient);
 	private readonly port = new URLSearchParams(location.search).get('port');
+	private readonly scheme = new URLSearchParams(location.search).get('scheme') ?? 'streamhata';
+	private readonly force = new URLSearchParams(location.search).get('force') === '1';
+	readonly switching = signal(false);
 	readonly status = signal('Проверяем сессию…');
 	readonly error = signal('');
 	readonly profile = toSignal(
@@ -27,11 +30,17 @@ export default class DesktopAuthPage {
 	readonly loggedIn = computed(() => Boolean(this.profile()?.valid));
 
 	constructor() {
+		if (sessionStorage.getItem('nsh.desktop-auth.switching') === '1') {
+			sessionStorage.removeItem('nsh.desktop-auth.switching');
+			this.switching.set(true);
+		}
 		effect(() => {
 			const profile = this.profile();
 
-			if (profile?.valid) {
+			if (profile?.valid && (!this.force || this.switching())) {
 				this.issueCode();
+			} else if (profile?.valid) {
+				this.status.set('Вы уже вошли. Нажмите кнопку, чтобы выбрать другой Twitch-аккаунт.');
 			} else if (profile) {
 				this.status.set('Войдите через Twitch, чтобы открыть приложение.');
 			}
@@ -39,8 +48,18 @@ export default class DesktopAuthPage {
 	}
 
 	connect(): void {
-		const returnTo = `${location.origin}/desktop-auth${this.port ? `?port=${this.port}` : ''}`;
-		this.twitch.connect(returnTo);
+		const params = new URLSearchParams({ port: this.port ?? '' });
+
+		if (this.force) {
+			params.set('force', '1');
+			sessionStorage.setItem('nsh.desktop-auth.switching', '1');
+		}
+		if (this.scheme !== 'streamhata') {
+			params.set('scheme', this.scheme);
+		}
+		const query = params.toString().replace(/^port=&?/, '');
+		const returnTo = `${location.origin}/desktop-auth${query ? `?${query}` : ''}`;
+		this.twitch.connect(returnTo, this.force);
 	}
 
 	private issueCode(): void {
@@ -54,7 +73,7 @@ export default class DesktopAuthPage {
 			next: ({ code }) => {
 				const target = this.port
 					? `http://127.0.0.1:${this.port}/callback?code=${encodeURIComponent(code)}`
-					: `streamhata://auth?code=${encodeURIComponent(code)}`;
+					: `${this.scheme}://auth?code=${encodeURIComponent(code)}`;
 				location.assign(target);
 			},
 			error: () => {

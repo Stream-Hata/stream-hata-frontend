@@ -6,6 +6,7 @@ import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { AlertsService } from '@shared/services/alerts.service';
+import { I18nService } from '@shared/services/i18n.service';
 import { ChatJuryService } from '@shared/services/chat-jury.service';
 import { AnalyticsService } from '@shared/services/stream.services';
 import { TwitchService } from '@shared/services/twitch.service';
@@ -47,6 +48,7 @@ export default class DashboardPage {
 	private readonly twitchService = inject(TwitchService);
 	private readonly analytics = inject(AnalyticsService);
 	private readonly alertsService = inject(AlertsService);
+	readonly i18n = inject(I18nService);
 
 	readonly todayLabel = computed(() =>
 		new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' }),
@@ -112,6 +114,35 @@ export default class DashboardPage {
 		),
 		{ initialValue: null as TwitchResponse | null },
 	);
+
+	readonly timeline = computed(() => {
+		const entries = (this.alerts()?.events ?? []).slice(0, 20).map((event) => ({
+			id: event.id,
+			time: event.createdAt,
+			title: `${event.type} · ${event.username}`,
+			detail: event.message,
+		}));
+		const current = this.session().current;
+
+		if (current?.startedAt) {
+			entries.push({
+				id: 'session-start',
+				time: current.startedAt,
+				title: 'Старт стрима',
+				detail: 'Сессия началась',
+			});
+		}
+
+		return entries.sort((left, right) => Date.parse(right.time) - Date.parse(left.time));
+	});
+
+	formatTimelineTime(value: string): string {
+		const date = new Date(value);
+
+		return Number.isNaN(date.getTime())
+			? '—'
+			: date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+	}
 
 	readonly online = computed(() => Boolean(this.twitch()?.valid && this.twitch()?.steam?.online));
 	readonly channel = computed(() => this.twitch()?.user?.displayName ?? 'не подключён');

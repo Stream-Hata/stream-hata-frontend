@@ -7,6 +7,9 @@
 
     <div class="jk-page-actions">
       <a routerLink="/app/notifications/settings" appearance="flat" tuiButton>Настроить уведомления</a>
+      <button type="button" appearance="flat" tuiButton (click)="clearSystem()">
+        Очистить системные
+      </button>
       <button
         type="button"
         [disabled]="!hasUnread"
@@ -35,6 +38,30 @@
           <span class="notice-dot" aria-label="Непрочитанное"></span>
         }
       </div>
+    }
+  </section>
+
+  <section class="jk-card notice-list system-notice-list">
+    <div class="system-notice-head">
+      <h2 class="jk-h4">Системные события</h2>
+      <span class="jk-caption">{{ systemNotices().length }} записей</span>
+    </div>
+    @for (notice of systemNotices(); track notice.id) {
+      <div class="notice" [class.notice-unread]="!notice.read">
+        <span class="notice-icon purple">
+          <tui-icon icon="@tui.activity" />
+        </span>
+        <div class="notice-text">
+          <span class="notice-title">{{ notice.title }}</span>
+          <span class="jk-caption">{{ notice.body }}</span>
+          <span class="jk-caption">{{ formatNoticeTime(notice.createdAt) }}</span>
+        </div>
+        @if (!notice.read) {
+          <span class="notice-dot" aria-label="Непрочитанное"></span>
+        }
+      </div>
+    } @empty {
+      <p class="jk-caption">Системных событий пока нет.</p>
     }
   </section>
 </div>

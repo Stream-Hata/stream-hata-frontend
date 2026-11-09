@@ -694,6 +694,57 @@
 							/>
 						</div>
 
+						<div class="cfg-row cfg-row-column">
+							<span class="cfg-label">Фильтры центра уведомлений</span>
+							<div class="notification-filters">
+								@for (kind of notificationKinds; track kind.id) {
+									<label class="notification-filter">
+										<input
+											type="checkbox"
+											tuiSwitch
+											[checked]="notificationCenter.isEnabled(kind.id)"
+											(change)="notificationCenter.setEnabled(kind.id, $any($event.target).checked)"
+										/>
+										{{ kind.label }}
+									</label>
+								}
+							</div>
+						</div>
+						<div class="cfg-row">
+							<div class="cfg-text">
+								<span class="cfg-label">Тихие часы</span>
+								<span class="jk-caption">Не показывать системные уведомления о сообщениях в это время.</span>
+							</div>
+							<input
+								aria-label="Тихие часы"
+								type="checkbox"
+								tuiSwitch
+								[checked]="quietHours.enabled()"
+								(change)="quietHours.setEnabled($any($event.target).checked)"
+							/>
+						</div>
+						@if (quietHours.enabled()) {
+							<div class="cfg-row">
+								<span class="cfg-label">С</span>
+								<tui-textfield>
+									<input
+										tuiInput
+										type="time"
+										[value]="quietHours.start()"
+										(input)="quietHours.setStart($any($event.target).value)"
+									/>
+								</tui-textfield>
+								<span class="cfg-label">До</span>
+								<tui-textfield>
+									<input
+										tuiInput
+										type="time"
+										[value]="quietHours.end()"
+										(input)="quietHours.setEnd($any($event.target).value)"
+									/>
+								</tui-textfield>
+							</div>
+						}
 						<div class="cfg-row">
 							<div class="cfg-text">
 								<span class="cfg-label">{{ i18n.t('settings.digest') }}</span>
@@ -1062,6 +1113,246 @@
 					</section>
 				}
 
+				@case ('systemAlerts') {
+					<section class="cfg-section">
+						<header class="cfg-head">
+							<h2 class="cfg-title">{{ i18n.t('settings.systemAlerts') }}</h2>
+							<p class="jk-caption">{{ i18n.t('settings.systemAlertsHint') }}</p>
+						</header>
+
+						<div class="cfg-row">
+							<div class="cfg-text">
+								<span class="cfg-label">Системные уведомления мониторинга</span>
+								<span class="jk-caption">Показывать события ПК независимо от открытой страницы</span>
+							</div>
+							<input
+								aria-label="Системные уведомления мониторинга"
+								type="checkbox"
+								tuiSwitch
+								[checked]="systemAlerts.enabled()"
+								(change)="systemAlerts.enabled.set($any($event.target).checked)"
+							/>
+						</div>
+
+						@for (rule of systemAlerts.rules(); track rule.id) {
+							<div class="system-alert-rule">
+								<div class="system-alert-rule-head">
+									<input
+										type="checkbox"
+										tuiSwitch
+										[checked]="rule.enabled"
+										(change)="systemAlerts.update(rule.id, { enabled: $any($event.target).checked })"
+									/>
+									<strong>{{ rule.label }}</strong>
+									<tui-textfield class="system-alert-threshold">
+										<input
+											tuiInput
+											type="number"
+											[value]="rule.threshold"
+											(input)="updateAlertThreshold(rule, $event)"
+										/>
+									</tui-textfield>
+									<span class="jk-caption">{{ rule.unit }}</span>
+								</div>
+								<tui-textfield class="system-alert-message">
+									<input
+										tuiInput
+										[value]="rule.message"
+										(input)="updateAlertMessage(rule, $event)"
+									/>
+								</tui-textfield>
+							</div>
+						}
+
+						<div class="cfg-row">
+							<span class="cfg-label">Сбросить правила</span>
+							<button tuiButton appearance="secondary" size="s" type="button" (click)="systemAlerts.reset()">Сбросить</button>
+						</div>
+
+						<div class="cfg-row cfg-row-column">
+							<div class="cfg-head-inline">
+								<div class="cfg-text">
+									<span class="cfg-label">Авто-клипы</span>
+									<span class="jk-caption">Создавать клип по событиям канала</span>
+								</div>
+								<input
+									type="checkbox"
+									tuiSwitch
+									[checked]="autoClips.enabled()"
+									(change)="autoClips.enabled.set($any($event.target).checked)"
+								/>
+							</div>
+							<div class="auto-clip-types">
+								@for (type of autoClipTypes; track type.id) {
+									<label>
+										<input
+											type="checkbox"
+											[checked]="autoClips.types().includes(type.id)"
+											(change)="autoClips.toggleType(type.id)"
+										/>
+										{{ type.label }}
+									</label>
+								}
+							</div>
+							<tui-textfield class="auto-clip-cooldown">
+								<input
+									tuiInput
+									type="number"
+									[value]="autoClips.cooldownSeconds()"
+									(input)="autoClips.cooldownSeconds.set(+$any($event.target).value || 0)"
+								/>
+							</tui-textfield>
+							<span class="jk-caption">Кулдаун между клипами, секунд</span>
+						</div>
+
+						<div class="cfg-row">
+							<div class="cfg-text">
+								<span class="cfg-label">Резервная копия настроек</span>
+								<span class="jk-caption">Экспорт и импорт локальных настроек приложения</span>
+							</div>
+							<div class="cfg-actions">
+								<button tuiButton appearance="secondary" size="s" type="button" (click)="exportSettings()">Экспорт</button>
+								<label class="import-button">
+									<input type="file" accept="application/json" (change)="importSettings($event)" />
+									Импорт
+								</label>
+							</div>
+						</div>
+
+						@if (role.isAdmin()) {
+							<div class="cfg-row">
+								<div class="cfg-text">
+									<span class="cfg-label">Проверка уведомлений</span>
+									<span class="jk-caption">{{ alertTestStatus() || 'Доступно администраторам и владельцам канала' }}</span>
+								</div>
+								<button tuiButton appearance="primary" size="s" type="button" (click)="testSystemNotification()">
+									Проверить уведомление
+								</button>
+							</div>
+						}
+					</section>
+				}
+
+				@case ('accounts') {
+					<section class="cfg-section">
+						<header class="cfg-head">
+							<h2 class="cfg-title">{{ i18n.t('settings.accounts') }}</h2>
+							<p class="jk-caption">Twitch-аккаунты, сохранённые в keychain этого устройства.</p>
+						</header>
+
+						@for (account of accounts(); track account.login) {
+							<div class="cfg-row">
+								<div class="cfg-text">
+									<span class="cfg-label">{{ account.displayName }} @{{ account.login }}</span>
+									<span class="jk-caption">{{ account.active ? 'Активный аккаунт' : 'Сохранённый аккаунт' }}</span>
+								</div>
+								<div class="cfg-actions">
+									@if (!account.active) {
+										<button tuiButton appearance="secondary" size="s" type="button" (click)="switchAccount(account.login)">Переключить</button>
+									}
+									<button tuiButton appearance="secondary-destructive" size="s" type="button" (click)="removeAccount(account.login)">Удалить</button>
+								</div>
+							</div>
+						} @empty {
+							<p class="jk-caption">Сохранённых аккаунтов пока нет.</p>
+						}
+
+						<div class="cfg-row">
+							<div class="cfg-text">
+								<span class="cfg-label">Добавить аккаунт</span>
+								<span class="jk-caption">Войти через Twitch и сохранить сессию в keychain</span>
+							</div>
+							<button tuiButton appearance="primary" size="s" type="button" (click)="addAccount()">Добавить</button>
+						</div>
+						@if (accountStatus()) {
+							<p class="jk-caption">{{ accountStatus() }}</p>
+						}
+					</section>
+				}
+
+				@case ('security') {
+					<section class="cfg-section">
+						<header class="cfg-head">
+							<h2 class="cfg-title">{{ i18n.t('settings.security') }}</h2>
+							<p class="jk-caption">PIN-блокировка приложения и автоблокировка по бездействию.</p>
+						</header>
+
+						<div class="cfg-row">
+							<div class="cfg-text">
+								<span class="cfg-label">PIN-код</span>
+								<span class="jk-caption">{{ appLock.enabled() ? 'Включён' : 'Не настроен' }}</span>
+							</div>
+							<tui-textfield class="cfg-control">
+								<input
+									tuiInput
+									type="password"
+									inputmode="numeric"
+									placeholder="Минимум 4 символа"
+									[value]="lockPin()"
+									(input)="lockPin.set($any($event.target).value)"
+								/>
+							</tui-textfield>
+						</div>
+						<div class="cfg-row">
+							<span class="cfg-label">{{ appLock.enabled() ? 'Изменить PIN' : 'Установить PIN' }}</span>
+							<button tuiButton appearance="primary" size="s" type="button" (click)="setLockPin()">Сохранить PIN</button>
+						</div>
+						@if (appLock.enabled()) {
+							<div class="cfg-row">
+								<span class="cfg-label">Автоблокировка</span>
+								<tui-textfield class="cfg-control">
+									<input
+										tuiInput
+										type="number"
+										[value]="appLock.timeoutMinutes()"
+										(input)="appLock.setTimeoutMinutes(+$any($event.target).value)"
+									/>
+								</tui-textfield>
+								<span class="jk-caption">минут бездействия</span>
+							</div>
+							<div class="cfg-row">
+								<span class="cfg-label">Блокировать сейчас</span>
+								<button tuiButton appearance="secondary" size="s" type="button" (click)="lockNow()">Заблокировать</button>
+							</div>
+							<div class="cfg-row">
+								<span class="cfg-label">Отключить PIN</span>
+								<button tuiButton appearance="secondary-destructive" size="s" type="button" (click)="disableLock()">Отключить</button>
+							</div>
+						}
+						@if (lockStatus()) {
+							<p class="jk-caption">{{ lockStatus() }}</p>
+						}
+
+						<header class="cfg-head recovery-head">
+							<h2 class="cfg-title">Ключи мессенджера</h2>
+							<p class="jk-caption">Зашифрованная резервная копия identity в БД. Пароль не покидает устройство.</p>
+						</header>
+						<div class="cfg-row">
+							<span class="cfg-label">Пароль резервной копии</span>
+							<tui-textfield class="cfg-control">
+								<input
+									tuiInput
+									type="password"
+									placeholder="Минимум 8 символов"
+									[value]="recoveryPassword()"
+									(input)="recoveryPassword.set($any($event.target).value)"
+								/>
+							</tui-textfield>
+						</div>
+						<div class="cfg-actions recovery-actions">
+							<button tuiButton appearance="primary" size="s" type="button" [disabled]="recoveryBusy()" (click)="saveRecovery()">
+								Сохранить копию
+							</button>
+							<button tuiButton appearance="secondary" size="s" type="button" [disabled]="recoveryBusy()" (click)="restoreRecovery()">
+								Восстановить
+							</button>
+						</div>
+						@if (recoveryStatus()) {
+							<p class="jk-caption">{{ recoveryStatus() }}</p>
+						}
+					</section>
+				}
+
 				@case ('about') {
 					<section class="cfg-section">
 						<header class="cfg-head">
@@ -1074,6 +1365,34 @@
 							<span class="jk-caption">{{ desktopUpdate.currentVersion() || '—' }}</span>
 						</div>
 
+						<div class="cfg-row">
+							<span class="cfg-label">Режим обновлений</span>
+							<tui-segmented
+								[activeItemIndex]="desktopUpdate.autoCheck() ? 0 : 1"
+								(activeItemIndexChange)="desktopUpdate.setAutoCheck($event === 0)"
+							>
+								<button type="button" (click)="desktopUpdate.setAutoCheck(true)">Автоматически</button>
+								<button type="button" (click)="desktopUpdate.setAutoCheck(false)">Вручную</button>
+							</tui-segmented>
+						</div>
+						@if (desktopUpdate.rollbackVersion(); as rollbackVersion) {
+							<div class="cfg-row">
+								<div class="cfg-text">
+									<span class="cfg-label">Откат обновления</span>
+									<span class="jk-caption">Вернуться к версии {{ rollbackVersion }}. Приложение перезапустится.</span>
+								</div>
+								<button
+									tuiButton
+									appearance="secondary-destructive"
+									size="s"
+									type="button"
+									[disabled]="desktopUpdate.rollbackBusy()"
+									(click)="desktopUpdate.rollback()"
+								>
+									Откатить
+								</button>
+							</div>
+						}
 						<div class="cfg-row">
 							<div class="cfg-text">
 								<span class="cfg-label">{{ i18n.t('settings.updates') }}</span>

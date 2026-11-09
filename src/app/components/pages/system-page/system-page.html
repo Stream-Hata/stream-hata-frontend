@@ -1,0 +1,776 @@
+<div class="jk-page system-monitor">
+	<header class="jk-page-header">
+		<div class="jk-page-header-text">
+			<h1 class="jk-h1">Мониторинг системы</h1>
+			<p class="jk-caption">Полная локальная диагностика ПК. Данные не уходят на сервер.</p>
+		</div>
+		<div class="jk-page-actions system-actions">
+			<span class="jk-chip">{{ streamOnline() ? 'Стрим идёт' : 'Стрим офлайн' }}</span>
+			<tui-textfield tuiChevron class="system-mode">
+				<input [readonly]="true" tuiInput tuiSelectLike [value]="recordModeLabel()" />
+				<tui-data-list-wrapper
+					*tuiDropdown
+					[items]="recordModeOptions"
+					(itemClick)="setRecordMode($event)"
+				></tui-data-list-wrapper>
+			</tui-textfield>
+			<button
+				type="button"
+				tuiButton
+				[appearance]="peaksOnly() ? 'primary' : 'secondary'"
+				(click)="peaksOnly.set(!peaksOnly())"
+			>
+				{{ peaksOnly() ? 'Только пики' : 'Все точки' }}
+			</button>
+
+			<button type="button" tuiButton appearance="secondary" (click)="resetComparison()">
+				Сброс сравнения
+			</button>
+			@if (updatedAt(); as updated) {
+				<span class="jk-caption">{{ updated | date: 'HH:mm:ss' }}</span>
+			}
+			<button type="button" appearance="secondary" tuiButton (click)="refresh()">
+				<tui-icon icon="@tui.refresh-cw" />
+				Обновить
+			</button>
+		</div>
+	</header>
+
+	@if (error(); as message) {
+		<div class="jk-card system-error">{{ message }}</div>
+	} @else if (metrics(); as data) {
+		<div class="system-chips">
+			<span class="jk-chip">{{ data.host }}</span>
+			<span class="jk-chip">{{ data.os }} · {{ data.arch }} · {{ data.bitness }}-bit</span>
+			<span class="jk-chip">ядро {{ data.kernel }}</span>
+			<span class="jk-chip">{{ data.cpu_brand }}</span>
+			<span class="jk-chip"
+				>{{ data.physical_cores }} физ. / {{ data.logical_cores }} лог. ядер</span
+			>
+			@if (data.cpu_frequency) {
+				<span class="jk-chip">{{ data.cpu_frequency }} MHz</span>
+			}
+			@if (data.gpu_name) {
+				<span class="jk-chip">{{ data.gpu_name }}</span>
+			}
+			@if (data.gpu_memory_total) {
+				<span class="jk-chip">VRAM {{ data.gpu_memory_total | formatBytes }}</span>
+			}
+		</div>
+
+		<section class="system-summary">
+			<article class="jk-card system-stat">
+				<span class="jk-label">CPU</span>
+				<strong class="system-value">{{ data.cpu | formatPercent }}</strong>
+				<div class="system-bar"><span [style.width.%]="data.cpu"></span></div>
+			</article>
+			<article class="jk-card system-stat">
+				<span class="jk-label">GPU</span>
+				<strong class="system-value">{{
+					data.gpu == null ? '—' : (data.gpu | formatPercent)
+				}}</strong>
+				<div class="system-bar"><span [style.width.%]="data.gpu ?? 0"></span></div>
+			</article>
+			<article class="jk-card system-stat">
+				<span class="jk-label">VRAM</span>
+				<strong class="system-value">{{
+					data.gpu_memory_total ? (vramPercent() | formatPercent) : '—'
+				}}</strong>
+				<div class="system-bar"><span [style.width.%]="vramPercent()"></span></div>
+				<span class="jk-caption"
+					>{{ data.gpu_memory_used | formatBytes }} /
+					{{ data.gpu_memory_total | formatBytes }}</span
+				>
+			</article>
+			<article class="jk-card system-stat">
+				<span class="jk-label">RAM</span>
+				<strong class="system-value">{{ ramPercent() | formatPercent }}</strong>
+				<div class="system-bar"><span [style.width.%]="ramPercent()"></span></div>
+				<span class="jk-caption"
+					>{{ data.memory_used | formatBytes }} / {{ data.memory_total | formatBytes }}</span
+				>
+			</article>
+			<article class="jk-card system-stat">
+				<span class="jk-label">Swap</span>
+				<strong class="system-value">{{ data.swap_used | formatBytes }}</strong>
+				<div class="system-bar">
+					<span
+						[style.width.%]="data.swap_total ? (data.swap_used / data.swap_total) * 100 : 0"
+					></span>
+				</div>
+				<span class="jk-caption"
+					>{{ data.swap_used | formatBytes }} / {{ data.swap_total | formatBytes }}</span
+				>
+			</article>
+			<article class="jk-card system-stat">
+				<span class="jk-label">CPU temp</span>
+				<strong class="system-value">{{
+					data.cpu_temperature == null ? '—' : data.cpu_temperature.toFixed(0) + '°C'
+				}}</strong>
+				<span class="jk-caption">сенсоры</span>
+			</article>
+			<article class="jk-card system-stat">
+				<span class="jk-label">GPU temp</span>
+				<strong class="system-value">{{
+					data.gpu_temperature == null ? '—' : data.gpu_temperature + '°C'
+				}}</strong>
+				<span class="jk-caption">NVML</span>
+			</article>
+			<article class="jk-card system-stat">
+				<span class="jk-label">Процессы</span>
+				<strong class="system-value">{{ data.processes }}</strong>
+				<span class="jk-caption">аптайм {{ data.uptime | formatUptime }}</span>
+			</article>
+			<article class="jk-card system-stat">
+				<span class="jk-label">Load average</span>
+				<strong class="system-value system-value-small"
+					>{{ data.load_one.toFixed(2) }} / {{ data.load_five.toFixed(2) }} /
+					{{ data.load_fifteen.toFixed(2) }}</strong
+				>
+				<span class="jk-caption">1 / 5 / 15 мин</span>
+			</article>
+		</section>
+
+		<section class="jk-card system-compare">
+			<div class="system-section-head">
+				<div>
+					<h2 class="jk-h4">Сравнение: до / во время / после стрима</h2>
+					<span class="jk-caption">Среднее / пик. Режим записи: {{ recordModeLabel() }}</span>
+				</div>
+				<span class="jk-caption">Авторежим ориентируется на статус Twitch</span>
+			</div>
+			<div class="system-compare-cards">
+				@for (period of comparePeriods; track period.key) {
+					<article class="system-period-card">
+						<span class="jk-label">{{ period.label }}</span>
+						<strong>{{ periods()[period.key].samples }}</strong>
+						<span class="jk-caption">замеров</span>
+					</article>
+				}
+			</div>
+			<div class="system-table-wrap">
+				<table tuiTable>
+					<thead tuiThead>
+						<tr>
+							<th tuiTh>Метрика</th>
+							<th tuiTh>До</th>
+							<th tuiTh>Во время</th>
+							<th tuiTh>После</th>
+						</tr>
+					</thead>
+					<tbody tuiTbody>
+						@for (row of compareRows(); track row.label) {
+							<tr>
+								<td tuiTd>{{ row.label }}</td>
+								<td tuiTd>{{ row.before }}</td>
+								<td tuiTd>{{ row.live }}</td>
+								<td tuiTd>{{ row.after }}</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</section>
+
+		<section class="system-charts">
+			<article class="jk-card system-chart" (wheel)="onChartWheel($event, 'load')">
+				<header class="system-chart-head">
+					<h2 class="jk-h4">CPU / GPU / RAM / VRAM</h2>
+				<span class="jk-caption">{{ chartZooms().load }}×</span>
+					<span class="jk-caption">{{ peaksOnly() ? 'пики' : '60 точек' }}</span>
+				</header>
+				<tui-axes [axisYLabels]="axisYLabels" [horizontalLines]="4" [tuiLineChartHint]="chartHintLoad">
+					<tui-line-chart class="system-chart-line line-cpu"
+						[x]="chartX"
+						[y]="chartY"
+						[width]="chartWidth"
+						[height]="chartHeight"
+						[value]="cpuChart()"
+						[filled]="true"
+						[dots]="true"
+					/>
+					<tui-line-chart class="system-chart-line line-gpu"
+						[x]="chartX"
+						[y]="chartY"
+						[width]="chartWidth"
+						[height]="chartHeight"
+						[value]="gpuChart()"
+						[dots]="true"
+					/>
+					<tui-line-chart class="system-chart-line line-ram"
+						[x]="chartX"
+						[y]="chartY"
+						[width]="chartWidth"
+						[height]="chartHeight"
+						[value]="memoryChart()"
+						[dots]="true"
+					/>
+					<tui-line-chart class="system-chart-line line-vram"
+						[x]="chartX"
+						[y]="chartY"
+						[width]="chartWidth"
+						[height]="chartHeight"
+						[value]="vramChart()"
+						[dots]="true"
+					/>
+				</tui-axes>
+				<div class="system-legend">
+					<span>CPU</span><span>GPU</span><span>RAM</span><span>VRAM</span>
+				</div>
+			</article>
+
+			<article class="jk-card system-chart" (wheel)="onChartWheel($event, 'network')">
+				<header class="system-chart-head">
+					<h2 class="jk-h4">Сеть</h2>
+				<span class="jk-caption">{{ chartZooms().network }}×</span>
+					<span class="jk-caption">↓ / ↑, MB/s</span>
+				</header>
+				<tui-axes [axisYLabels]="axisYLabels" [horizontalLines]="4" [tuiLineChartHint]="chartHintNetwork">
+					<tui-line-chart class="system-chart-line line-net-down"
+						[x]="chartX"
+						[y]="chartY"
+						[width]="chartWidth"
+						[height]="chartHeight"
+						[value]="networkChart()"
+						[filled]="true"
+						[dots]="true"
+					/>
+					<tui-line-chart class="system-chart-line line-net-up"
+						[x]="chartX"
+						[y]="chartY"
+						[width]="chartWidth"
+						[height]="chartHeight"
+						[value]="networkUpChart()"
+						[dots]="true"
+					/>
+				</tui-axes>
+			</article>
+
+			<article class="jk-card system-chart" (wheel)="onChartWheel($event, 'disk')">
+				<header class="system-chart-head">
+					<h2 class="jk-h4">Диски</h2>
+				<span class="jk-caption">{{ chartZooms().disk }}×</span>
+					<span class="jk-caption">чтение / запись, MB/s</span>
+				</header>
+				<tui-axes [axisYLabels]="axisYLabels" [horizontalLines]="4" [tuiLineChartHint]="chartHintDisk">
+					<tui-line-chart class="system-chart-line line-disk-read"
+						[x]="chartX"
+						[y]="chartY"
+						[width]="chartWidth"
+						[height]="chartHeight"
+						[value]="diskReadChart()"
+						[filled]="true"
+						[dots]="true"
+					/>
+					<tui-line-chart class="system-chart-line line-disk-write"
+						[x]="chartX"
+						[y]="chartY"
+						[width]="chartWidth"
+						[height]="chartHeight"
+						[value]="diskWriteChart()"
+						[dots]="true"
+					/>
+				</tui-axes>
+			</article>
+
+			<article class="jk-card system-chart" (wheel)="onChartWheel($event, 'loadproc')">
+				<header class="system-chart-head">
+					<h2 class="jk-h4">Load / процессы</h2>
+				<span class="jk-caption">{{ chartZooms().loadproc }}×</span>
+					<span class="jk-caption">нормализовано</span>
+				</header>
+				<tui-axes [axisYLabels]="axisYLabels" [horizontalLines]="4" [tuiLineChartHint]="chartHintLoadProc">
+					<tui-line-chart class="system-chart-line line-load"
+						[x]="chartX"
+						[y]="chartY"
+						[width]="chartWidth"
+						[height]="chartHeight"
+						[value]="loadChart()"
+						[filled]="true"
+						[dots]="true"
+					/>
+					<tui-line-chart class="system-chart-line line-process"
+						[x]="chartX"
+						[y]="chartY"
+						[width]="chartWidth"
+						[height]="chartHeight"
+						[value]="processChart()"
+						[dots]="true"
+					/>
+				</tui-axes>
+			</article>
+
+			<article class="jk-card system-chart" (wheel)="onChartWheel($event, 'cores')">
+				<header class="system-chart-head">
+					<h2 class="jk-h4">Загрузка ядер CPU</h2>
+				<span class="jk-caption">{{ chartZooms().cores }}×</span>
+					<span class="jk-caption">{{ peaksOnly() ? 'пики' : '60 точек' }}</span>
+				</header>
+				<tui-axes
+					[axisYLabels]="axisYLabels"
+					[horizontalLines]="4"
+					[tuiLineChartHint]="coreHint"
+				>
+					@for (core of coreCharts(); track $index) {
+						<tui-line-chart
+							class="system-chart-line"
+							[style.color]="coreColor($index)"
+							[x]="chartX"
+							[y]="chartY"
+							[width]="chartWidth"
+							[height]="chartHeight"
+							[value]="core"
+							[dots]="true"
+						/>
+					}
+				</tui-axes>
+				<div class="system-legend">
+					@for (core of coreCharts(); track $index) {
+						<span [style.--core-color]="coreColor($index)">Core {{ $index + 1 }}</span>
+					}
+				</div>
+			</article>
+
+			<article class="jk-card system-chart system-bar-chart-card">
+				<header class="system-chart-head">
+					<h2 class="jk-h4">Топ процессов по CPU</h2>
+					<span class="jk-caption">%</span>
+				</header>
+				<tui-bar-chart [value]="processCpuBars()" size="m" />
+			</article>
+		</section>
+
+		<section class="system-rings">
+			<article class="jk-card system-ring-card">
+				<tui-ring-chart [value]="cpuRing()" size="l">
+					<span class="system-ring-title">CPU</span>
+					<span class="jk-caption">{{ data.cpu | formatPercent }}</span>
+				</tui-ring-chart>
+			</article>
+			<article class="jk-card system-ring-card">
+				<tui-ring-chart [value]="gpuRing()" size="l">
+					<span class="system-ring-title">GPU</span>
+					<span class="jk-caption">{{ data.gpu == null ? '—' : (data.gpu | formatPercent) }}</span>
+				</tui-ring-chart>
+			</article>
+			<article class="jk-card system-ring-card">
+				<tui-ring-chart [value]="vramRing()" size="l">
+					<span class="system-ring-title">VRAM</span>
+					<span class="jk-caption"
+						>{{ data.gpu_memory_used | formatBytes }} /
+						{{ data.gpu_memory_total | formatBytes }}</span
+					>
+				</tui-ring-chart>
+			</article>
+			<article class="jk-card system-ring-card">
+				<tui-ring-chart [value]="ramRing()" size="l">
+					<span class="system-ring-title">RAM</span>
+					<span class="jk-caption"
+						>{{ data.memory_used | formatBytes }} / {{ data.memory_total | formatBytes }}</span
+					>
+				</tui-ring-chart>
+			</article>
+			<article class="jk-card system-ring-card">
+				<tui-ring-chart [value]="swapRing()" size="l">
+					<span class="system-ring-title">Swap</span>
+					<span class="jk-caption"
+						>{{ data.swap_used | formatBytes }} / {{ data.swap_total | formatBytes }}</span
+					>
+				</tui-ring-chart>
+			</article>
+			@for (ring of diskRings(); track ring.disk.name) {
+				<article class="jk-card system-ring-card">
+					<tui-ring-chart [value]="ring.value" size="l">
+						<span class="system-ring-title">{{ ring.disk.mount || ring.disk.name }}</span>
+						<span class="jk-caption"
+							>{{ ring.disk.total - ring.disk.available | formatBytes }} /
+							{{ ring.disk.total | formatBytes }}</span
+						>
+					</tui-ring-chart>
+				</article>
+			}
+		</section>
+
+		<section class="jk-card">
+			<div class="system-section-head">
+				<div>
+					<h2 class="jk-h4">Датчики и охлаждение</h2>
+					<span class="jk-caption">Температуры, вентиляторы, напряжения и питание</span>
+				</div>
+				<span class="jk-caption">{{ data.sensors.length }} датчиков</span>
+			</div>
+			@if (data.sensors.length) {
+				<div class="system-sensors">
+					@for (sensor of data.sensors; track sensor.name) {
+						<div class="system-sensor">
+							<span>{{ sensor.name }}</span>
+							<strong>{{ sensor.value.toFixed(1) }} {{ sensor.unit }}</strong>
+							<span class="jk-caption">{{ sensor.kind }}</span>
+						</div>
+					}
+				</div>
+			} @else {
+				<span class="jk-caption"
+					>Датчики не найдены. Нужны hwmon/lm-sensors или права доступа.</span
+				>
+			}
+		</section>
+
+		<section class="jk-card">
+			<h2 class="jk-h4">Ядра CPU</h2>
+			<div class="system-cores">
+				@for (core of data.cpu_cores; track $index) {
+					<div class="system-core">
+						<span>Core {{ $index + 1 }}</span>
+						<strong>{{ core.usage | formatPercent }}</strong>
+						<div class="system-bar"><span [style.width.%]="core.usage"></span></div>
+						<span class="jk-caption">{{ core.frequency }} MHz</span>
+					</div>
+				}
+			</div>
+		</section>
+
+		<section class="system-grid">
+			<article class="jk-card">
+				<h2 class="jk-h4">Память · SPD</h2>
+				@if (detailsLoading()) {
+					<span class="jk-caption">Загружаем SPD…</span>
+				} @else if (details()?.memory?.length) {
+					<div class="system-table-wrap">
+						<table tuiTable>
+							<thead tuiThead>
+								<tr>
+									<th tuiTh>Слот</th>
+									<th tuiTh>Тип</th>
+									<th tuiTh>Объём</th>
+									<th tuiTh>Частота</th>
+									<th tuiTh>Производитель</th>
+									<th tuiTh>Part</th>
+								</tr>
+							</thead>
+							<tbody tuiTbody>
+								@for (module of details()?.memory ?? []; track module.locator + module.bank) {
+									<tr>
+										<td tuiTd>{{ module.locator || module.bank || '—' }}</td>
+										<td tuiTd>{{ module.kind || '—' }}</td>
+										<td tuiTd>{{ module.size }}</td>
+										<td tuiTd>{{ module.speed || '—' }}</td>
+										<td tuiTd>{{ module.manufacturer || '—' }}</td>
+										<td tuiTd>{{ module.part_number || '—' }}</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				} @else {
+					<span class="jk-caption">SPD недоступен: нужен dmidecode/root.</span>
+				}
+			</article>
+
+			<article class="jk-card">
+				<h2 class="jk-h4">Батареи, периферия и Bluetooth</h2>
+				<div class="system-list">
+					@for (battery of data.batteries; track battery.name) {
+						<div class="system-list-item">
+							<strong>{{ battery.name }}</strong>
+							<span
+								>{{ battery.percent == null ? '—' : (battery.percent | formatPercent) }} ·
+								{{ battery.status }}</span
+							>
+						</div>
+					} @empty {
+						<span class="jk-caption">Батарей не найдено.</span>
+					}
+					@for (item of data.peripherals; track item.name + item.detail) {
+						<div class="system-list-item">
+							<strong>{{ item.name }}</strong>
+							<span>{{ item.kind }} · {{ item.detail || '—' }}</span>
+						</div>
+					}
+				</div>
+			</article>
+		</section>
+
+		<section class="jk-card">
+			<h2 class="jk-h4">Тома и накопители</h2>
+			<div class="system-table-wrap">
+				<table tuiTable>
+					<thead tuiThead>
+						<tr>
+							<th tuiTh>Устройство</th>
+							<th tuiTh>Тип</th>
+							<th tuiTh>Объём</th>
+							<th tuiTh>ФС</th>
+							<th tuiTh>Точка</th>
+							<th tuiTh>Модель</th>
+							<th tuiTh>Здоровье</th>
+						</tr>
+					</thead>
+					<tbody tuiTbody>
+						@for (volume of details()?.volumes ?? []; track volume.path + volume.mount) {
+							<tr>
+								<td tuiTd>{{ volume.path || volume.name }}</td>
+								<td tuiTd>
+									{{
+										healthByDevice().get(volume.path)?.type_label || volume.transport || volume.kind
+									}}
+								</td>
+								<td tuiTd>{{ volume.size | formatBytes }}</td>
+								<td tuiTd>{{ volume.file_system || '—' }}</td>
+								<td tuiTd>{{ volume.mount || '—' }}</td>
+								<td tuiTd>{{ volume.model || '—' }}</td>
+								<td tuiTd>
+									@if (healthByDevice().get(volume.path); as health) {
+										<span [class]="'system-health system-health-' + health.health.toLowerCase()">{{
+											health.health
+										}}</span>
+									} @else {
+										<span class="jk-caption">—</span>
+									}
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</section>
+
+		<section class="jk-card">
+			<h2 class="jk-h4">Здоровье накопителей · SMART</h2>
+			@if (details()?.disks?.length) {
+				<div class="system-disks">
+					@for (disk of details()?.disks ?? []; track disk.device) {
+						<article class="system-disk">
+							<header>
+								<strong>{{ disk.device }} · {{ disk.model }}</strong>
+								<span [class]="'system-health system-health-' + disk.health.toLowerCase()">{{
+									disk.health
+								}}</span>
+							</header>
+							<div class="system-disk-meta">
+								<span>{{ disk.type_label }}</span>
+								<span>{{ disk.transport || '—' }}</span>
+								<span>serial {{ disk.serial || '—' }}</span>
+								<span>fw {{ disk.firmware || '—' }}</span>
+								@if (disk.temperature_c != null) {
+									<span>{{ disk.temperature_c }}°C</span>
+								}
+								@if (disk.power_on_hours != null) {
+									<span>{{ disk.power_on_hours }} ч</span>
+								}
+								@if (disk.wear_percent != null) {
+									<span>износ {{ disk.wear_percent }}%</span>
+								}
+								@if (disk.reallocated_sectors != null) {
+									<span>realloc {{ disk.reallocated_sectors }}</span>
+								}
+								@if (disk.pending_sectors != null) {
+									<span>pending {{ disk.pending_sectors }}</span>
+								}
+								@if (disk.uncorrectable_sectors != null) {
+									<span>uncorrectable {{ disk.uncorrectable_sectors }}</span>
+								}
+								@if (disk.data_written_bytes != null) {
+									<span>записано {{ disk.data_written_bytes | formatBytes }}</span>
+								}
+								@if (disk.data_read_bytes != null) {
+									<span>прочитано {{ disk.data_read_bytes | formatBytes }}</span>
+								}
+								@if (disk.media_errors != null) {
+									<span>media errors {{ disk.media_errors }}</span>
+								}
+							</div>
+							@if (disk.attributes.length) {
+								<details class="system-smart">
+									<summary>SMART-атрибуты ({{ disk.attributes.length }})</summary>
+									<div class="system-table-wrap">
+										<table tuiTable>
+											<thead tuiThead>
+												<tr>
+													<th tuiTh>ID</th>
+													<th tuiTh>Атрибут</th>
+													<th tuiTh>Value</th>
+													<th tuiTh>Worst</th>
+													<th tuiTh>Thresh</th>
+													<th tuiTh>Raw</th>
+												</tr>
+											</thead>
+											<tbody tuiTbody>
+												@for (attribute of disk.attributes; track attribute.id) {
+													<tr>
+														<td tuiTd>{{ attribute.id }}</td>
+														<td tuiTd>{{ attribute.name }}</td>
+														<td tuiTd>{{ attribute.value }}</td>
+														<td tuiTd>{{ attribute.worst }}</td>
+														<td tuiTd>{{ attribute.threshold }}</td>
+														<td tuiTd>{{ attribute.raw }}</td>
+													</tr>
+												}
+											</tbody>
+										</table>
+									</div>
+								</details>
+							}
+						</article>
+					}
+				</div>
+			} @else {
+				<span class="jk-caption"
+					>SMART недоступен. Установите smartmontools и проверьте права.</span
+				>
+			}
+		</section>
+
+		<section class="jk-card">
+			<div class="system-section-head">
+				<div>
+					<h2 class="jk-h4">Процессы</h2>
+					<span class="jk-caption"
+						>Показаны топ-{{ data.process_list.length }} из {{ data.processes }}. Двойное нажатие на
+						«Завершить» подтверждает действие.</span
+					>
+				</div>
+				<span class="jk-caption">CPU / RAM</span>
+			</div>
+			@if (actionError()) {
+				<p class="error-text">{{ actionError() }}</p>
+			}
+			<div class="system-table-wrap system-process-wrap">
+				<table tuiTable class="system-process-table">
+					<thead tuiThead>
+						<tr>
+							<th tuiTh>PID</th>
+							<th tuiTh>Процесс</th>
+							<th tuiTh>Пользователь</th>
+							<th tuiTh>CPU</th>
+							<th tuiTh>RAM</th>
+							<th tuiTh>Статус</th>
+							<th tuiTh></th>
+						</tr>
+					</thead>
+					<tbody tuiTbody>
+						@for (process of data.process_list; track process.pid) {
+							<tr>
+								<td tuiTd>{{ process.pid }}</td>
+								<td tuiTd>
+									<strong>{{ process.name }}</strong>
+									<span class="system-process-path" [title]="process.exe || process.cmd">{{
+										process.exe || process.cmd || 'путь неизвестен'
+									}}</span>
+								</td>
+								<td tuiTd>{{ process.user || '—' }}</td>
+								<td tuiTd>{{ process.cpu.toFixed(1) }}%</td>
+								<td tuiTd>{{ process.memory | formatBytes }}</td>
+								<td tuiTd>{{ process.status }}</td>
+								<td tuiTd>
+									<button
+										type="button"
+										size="xs"
+										tuiButton
+										[appearance]="pendingKillPid() === process.pid ? 'primary' : 'flat'"
+										[disabled]="killingPid() === process.pid"
+										(click)="killProcess(process)"
+									>
+										{{ pendingKillPid() === process.pid ? 'Подтвердить' : 'Завершить' }}
+									</button>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</section>
+
+		<section class="jk-card">
+			<h2 class="jk-h4">Сеть и беспроводные интерфейсы</h2>
+			<div class="system-table-wrap">
+				<table tuiTable>
+					<thead tuiThead>
+						<tr>
+							<th tuiTh>Интерфейс</th>
+							<th tuiTh>Тип</th>
+							<th tuiTh>SSID</th>
+							<th tuiTh>Сигнал</th>
+							<th tuiTh>Скорость</th>
+							<th tuiTh>Получено</th>
+							<th tuiTh>Отправлено</th>
+							<th tuiTh>Ошибки</th>
+						</tr>
+					</thead>
+					<tbody tuiTbody>
+						@for (network of data.networks; track network.name) {
+							<tr>
+								<td tuiTd>{{ network.name }}</td>
+								<td tuiTd>{{ networkKind(network.kind) }}</td>
+								<td tuiTd>{{ network.ssid || '—' }}</td>
+								<td tuiTd>{{ network.signal == null ? '—' : network.signal + ' dBm' }}</td>
+								<td tuiTd>
+									{{
+										network.link_speed
+											? network.link_speed + ' Mbps'
+											: network.bitrate
+												? network.bitrate + ' Mbps'
+												: '—'
+									}}
+								</td>
+								<td tuiTd>{{ network.received | formatBytes }}</td>
+								<td tuiTd>{{ network.transmitted | formatBytes }}</td>
+								<td tuiTd>{{ network.errors_received }} / {{ network.errors_transmitted }}</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</section>
+
+		<section class="jk-card">
+			<h2 class="jk-h4">Железо</h2>
+			<div class="system-chips">
+				@for (item of hardware(); track item.label) {
+					<span class="jk-chip">{{ item.label }}: {{ item.value || '—' }}</span>
+				}
+			</div>
+		</section>
+
+			<ng-template #chartHintLoad let-points>
+				<div class="system-chart-hint">
+					<span>CPU {{ points[0]?.[1] ?? 0 | formatPercent }}</span>
+					<span>GPU {{ points[1]?.[1] ?? 0 | formatPercent }}</span>
+					<span>RAM {{ points[2]?.[1] ?? 0 | formatPercent }}</span>
+					<span>VRAM {{ points[3]?.[1] ?? 0 | formatPercent }}</span>
+				</div>
+			</ng-template>
+
+			<ng-template #chartHintNetwork let-points>
+				<div class="system-chart-hint">
+					<span>↓ {{ points[0]?.[1] ?? 0 | formatPercent }}</span>
+					<span>↑ {{ points[1]?.[1] ?? 0 | formatPercent }}</span>
+				</div>
+			</ng-template>
+
+			<ng-template #chartHintDisk let-points>
+				<div class="system-chart-hint">
+					<span>чтение {{ points[0]?.[1] ?? 0 | formatPercent }}</span>
+					<span>запись {{ points[1]?.[1] ?? 0 | formatPercent }}</span>
+				</div>
+			</ng-template>
+
+			<ng-template #chartHintLoadProc let-points>
+				<div class="system-chart-hint">
+					<span>load {{ points[0]?.[1] ?? 0 | formatPercent }}</span>
+					<span>процессы {{ points[1]?.[1] ?? 0 | formatPercent }}</span>
+				</div>
+			</ng-template>
+
+			<ng-template #coreHint let-points let-index="index">
+				<div class="system-chart-hint system-chart-hint-cores">
+					<span class="system-chart-hint-title">Core {{ index + 1 }}</span>
+					@for (point of points; track $index) {
+						<span [style.color]="coreColor($index)">Core {{ $index + 1 }}: {{ point[1] | formatPercent }}</span>
+					}
+				</div>
+			</ng-template>
+	} @else {
+		<div class="jk-card system-loading">Загружаем метрики…</div>
+	}
+</div>

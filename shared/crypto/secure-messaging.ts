@@ -15,12 +15,13 @@ export interface Identity {
 
 export interface SecureEnvelope {
 	version: 1;
-	algorithm: 'ECDH-P256+HKDF-SHA256+AES-256-GCM';
+	algorithm: 'ECDH-P256+HKDF-SHA256+AES-256-GCM' | 'PLAINTEXT';
 	sender: string;
 	recipient: string;
 	keyId: string;
-	nonce: string;
-	ciphertext: string;
+	nonce?: string;
+	ciphertext?: string;
+	body?: string;
 	signature: string;
 }
 
@@ -59,7 +60,21 @@ export async function encryptMessage(
 	recipientLogin: string,
 	recipient: PublicKeyBundle,
 	text: string,
+	encrypted = true,
 ): Promise<SecureEnvelope> {
+	if (!encrypted) {
+		const plain = {
+			version: 1 as const,
+			algorithm: 'PLAINTEXT' as const,
+			sender: senderLogin,
+			recipient: recipientLogin,
+			keyId: sender.bundle.keyId,
+			body: text,
+		};
+		const signature = await signPayload(sender, plain);
+
+		return { ...plain, signature };
+	}
 	const privateKey = await crypto.subtle.importKey(
 		'jwk',
 		sender.encryptionPrivateKey,
@@ -104,10 +119,14 @@ export async function decryptMessage(
 	identity: Identity,
 	sender: PublicKeyBundle,
 	envelope: SecureEnvelope,
+	recipient?: PublicKeyBundle,
 ): Promise<string> {
 	const valid = await verifyPayload(sender, envelope);
 	if (!valid) {
 		throw new Error('Подпись сообщения недействительна');
+	}
+	if (envelope.algorithm === 'PLAINTEXT') {
+		return envelope.body ?? '';
 	}
 	const privateKey = await crypto.subtle.importKey(
 		'jwk',
@@ -118,7 +137,7 @@ export async function decryptMessage(
 	);
 	const publicKey = await crypto.subtle.importKey(
 		'jwk',
-		sender.encryptionKey,
+		(recipient ?? sender).encryptionKey,
 		{ name: 'ECDH', namedCurve: 'P-256' },
 		false,
 		[],
@@ -130,9 +149,9 @@ export async function decryptMessage(
 	);
 	const aesKey = await deriveAesKey(shared, envelope.sender, envelope.recipient);
 	const plain = await crypto.subtle.decrypt(
-		{ name: 'AES-GCM', iv: fromBase64(envelope.nonce) },
+		{ name: 'AES-GCM', iv: fromBase64(envelope.nonce ?? '') as BufferSource },
 		aesKey,
-		fromBase64(envelope.ciphertext),
+		fromBase64(envelope.ciphertext ?? '') as BufferSource,
 	);
 
 	return new TextDecoder().decode(plain);
@@ -190,7 +209,7 @@ async function verifyPayload(bundle: PublicKeyBundle, envelope: SecureEnvelope):
 	return crypto.subtle.verify(
 		{ name: 'ECDSA', hash: 'SHA-256' },
 		key,
-		fromBase64(signature),
+		fromBase64(signature) as BufferSource,
 		new TextEncoder().encode(stableJson(payload)),
 	);
 }

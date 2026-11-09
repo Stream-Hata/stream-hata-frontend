@@ -555,3 +555,50 @@
 		width: 100%;
 	}
 }
+
+
+.session-timeline {
+	display: grid;
+	gap: 14px;
+}
+
+.timeline-list {
+	display: grid;
+	gap: 0;
+}
+
+.timeline-row {
+	display: grid;
+	grid-template-columns: 48px 14px minmax(0, 1fr);
+	gap: 10px;
+	align-items: start;
+	padding: 8px 0;
+}
+
+.timeline-time {
+	color: var(--text-tertiary);
+	font: 11px/1.4 var(--font-mono, monospace);
+	text-align: end;
+}
+
+.timeline-dot {
+	width: 8px;
+	height: 8px;
+	margin-top: 4px;
+	border-radius: 50%;
+	background: var(--accent-primary);
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-primary) 18%, transparent);
+}
+
+.timeline-content {
+	display: grid;
+	gap: 2px;
+	min-width: 0;
+}
+
+.timeline-content strong {
+	overflow: hidden;
+	font: var(--font-body-sm);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}

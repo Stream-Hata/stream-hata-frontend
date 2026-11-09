@@ -3,11 +3,20 @@
     <div class="game-top-actions">
       <a appearance="flat" routerLink="/app/games" tuiButton>
         <tui-icon icon="@tui.arrow-left" />
-        Назад к играм
+        {{ i18n.t('gameDetails.back') }}
+      </a>
+      <a
+        href="#game-discussion"
+        (click)="scrollToSection($event, 'game-discussion')"
+        appearance="flat"
+        tuiButton
+      >
+        <tui-icon icon="@tui.message-square" />
+        Обсуждение
       </a>
       <button appearance="flat" type="button" tuiButton [disabled]="loading()" (click)="refresh()">
         <tui-icon icon="@tui.refresh-cw" />
-        {{ loading() ? 'Обновляем…' : 'Обновить данные' }}
+        {{ loading() ? i18n.t('gameDetails.refreshing') : i18n.t('gameDetails.refresh') }}
       </button>
     </div>
 
@@ -16,7 +25,7 @@
         <span class="game-cover-fallback">{{ initials(item.title) }}</span>
 
         @if (item.cover) {
-          <img [alt]="item.title" [src]="imageUrl(item.cover)" (error)="hideBroken($event)" />
+          <img alt="{{ item.title }}" [src]="imageUrl(item.cover)" (error)="hideBroken($event)" />
         }
 
         @if (item.tier !== 'none') {
@@ -26,11 +35,10 @@
         }
       </div>
 
-
       <div class="game-hero-body">
         <div class="game-hero-head">
           <h1 class="jk-h1">{{ item.title }}</h1>
-          <span class="game-year">{{ item.year || 'Год неизвестен' }}</span>
+          <span class="game-year">{{ item.year || i18n.t('gameDetails.yearUnknown') }}</span>
         </div>
 
         @if (item.titleRu && item.titleRu !== item.title) {
@@ -38,7 +46,9 @@
         }
 
         @if (item.originalTitle) {
-          <p class="jk-caption">Оригинальное название: {{ item.originalTitle }}</p>
+          <p
+            class="jk-caption"
+          >{{ i18n.t('gameDetails.originalTitle') }}: {{ item.originalTitle }}</p>
         }
 
         <div class="game-badges">
@@ -56,24 +66,38 @@
 
         <p class="game-source-note jk-caption">
           @if (serviceSources().length) {
-            Информация об игре взята из сервисов:
+            {{ i18n.t('gameDetails.sourceServices') }}
             @for (source of serviceSources(); track source.id + source.url) {
               <a target="_blank" rel="noopener" [href]="source.url">{{ source.name }}</a>
             }
           } @else {
-            Информация взята из каталога RGG.
+            {{ i18n.t('gameDetails.sourceCatalog') }}
           }
         </p>
 
         <div class="game-actions">
           @if (item.website) {
-            <a appearance="primary" tuiButton target="_blank" rel="noopener" [href]="item.website" (click)="openExternal($event, item.website)">
+            <a
+              target="_blank"
+              rel="noopener"
+              [href]="item.website"
+              (click)="openExternal($event, item.website)"
+              appearance="primary"
+              tuiButton
+            >
               <tui-icon icon="@tui.external-link" />
-              Сайт игры
+              {{ i18n.t('gameDetails.website') }}
             </a>
           }
           @for (source of item.sources; track source.id) {
-            <a appearance="flat" tuiButton target="_blank" rel="noopener" [href]="source.url" (click)="openExternal($event, source.url)">
+            <a
+              target="_blank"
+              rel="noopener"
+              [href]="source.url"
+              (click)="openExternal($event, source.url)"
+              appearance="flat"
+              tuiButton
+            >
               {{ source.name }}
             </a>
           }
@@ -81,78 +105,117 @@
       </div>
     </header>
 
-    <section class="jk-card game-section game-shots">
-      <h2 class="jk-h4">Скриншоты</h2>
+    <nav class="game-toc" aria-label="Разделы игры">
+      @for (section of sections; track section.id) {
+        <a
+          [href]="'#' + section.id"
+          [class.active]="activeSection() === section.id"
+          (click)="scrollToSection($event, section.id)"
+        >{{ section.label }}</a>
+      }
+    </nav>
+
+    <section
+      id="game-shots"
+      class="jk-card game-section game-shots"
+      [class.game-section-active]="activeSection() === 'game-shots'"
+    >
+      <h2 class="jk-h4">{{ i18n.t('gameDetails.screenshots') }}</h2>
       @if (item.screenshots?.length) {
         <div class="shots-grid">
           @for (shot of item.screenshots ?? []; track shot) {
-            <img [alt]="item.title" [src]="imageUrl(shot)" loading="lazy" />
+            <img alt="{{ item.title }}" [src]="imageUrl(shot)" loading="lazy" />
           }
         </div>
       } @else if (item.cover) {
         <div class="shots-fallback">
           <img alt="" [attr.src]="imageUrl(item.cover)" />
-          <span class="jk-caption">Скриншоты не найдены — показана обложка игры.</span>
+          <span class="jk-caption">{{ i18n.t('gameDetails.screenshotFallback') }}</span>
         </div>
       } @else {
         <p
           class="jk-body-sm jk-muted"
-        >Скриншоты пока не найдены. Они подтянутся из источников или модерации.</p>
+        >{{ i18n.t('gameDetails.noScreenshots') }}</p>
       }
     </section>
 
     <div class="game-grid">
-      <section class="jk-card game-section">
-        <h2 class="jk-h4">Эмуляторы</h2>
+      <section
+        id="game-emulators"
+        class="jk-card game-section"
+        [class.game-section-active]="activeSection() === 'game-emulators'"
+      >
+        <h2 class="jk-h4">{{ i18n.t('gameDetails.emulators') }}</h2>
         @if (item.emulatorsRequired) {
           <p
             class="jk-caption"
-          >Для запуска нужен эмулятор. Ссылки ведут на официальные сайты проектов.</p>
+          >{{ i18n.t('gameDetails.emulatorRequired') }}</p>
           <div class="emulator-list">
             @for (emulator of item.emulators; track emulator.name) {
-              <a class="emulator-row" target="_blank" rel="noopener" [href]="emulator.url" (click)="openExternal($event, emulator.url)">
+              <a
+                class="emulator-row"
+                target="_blank"
+                rel="noopener"
+                [href]="emulator.url"
+                (click)="openExternal($event, emulator.url)"
+              >
                 <span class="emulator-name">{{ emulator.name }}</span>
                 <span class="jk-caption">{{ emulator.os.join(' · ') }}</span>
-                <span appearance="info" tuiBadge>{{ emulator.free ? 'Бесплатно' : 'Платно' }}</span>
+                <span
+                  appearance="info"
+                  tuiBadge
+                >{{ emulator.free ? i18n.t('gameDetails.free') : i18n.t('gameDetails.paid') }}</span>
               </a>
             }
           </div>
         } @else {
-          <p class="jk-body-sm jk-muted">Эмулятор не требуется.</p>
+          <p class="jk-body-sm jk-muted">{{ i18n.t('gameDetails.noEmulator') }}</p>
         }
       </section>
 
-      <section class="jk-card game-section">
-        <h2 class="jk-h4">Информация</h2>
+      <section
+        id="game-info"
+        class="jk-card game-section"
+        [class.game-section-active]="activeSection() === 'game-info'"
+      >
+        <h2 class="jk-h4">{{ i18n.t('gameDetails.info') }}</h2>
         <dl class="game-meta">
-          <dt>Год</dt><dd>{{ item.year || 'Нет данных' }}</dd>
-          <dt>Дата выхода</dt><dd>{{ item.releaseDate || 'Нет данных' }}</dd>
-          <dt>Платформы</dt><dd>{{ platformsLabel() }}</dd>
-          <dt>Жанры</dt><dd>{{ list(genres()) }}</dd>
-          <dt>Режимы</dt><dd>{{ list(item.modes) }}</dd>
-          <dt>Перспективы</dt><dd>{{ list(item.perspectives) }}</dd>
-          <dt>Темы</dt><dd>{{ list(item.themes) }}</dd>
-          <dt>Разработчики</dt><dd>{{ list(item.developers) }}</dd>
-          <dt>Издатели</dt><dd>{{ list(item.publishers) }}</dd>
-          <dt>Рейтинг</dt><dd>{{ number(item.rating) }}</dd>
-          <dt>Агрегированный рейтинг</dt><dd>{{ number(item.aggregatedRating) }}</dd>
-          <dt>Эпоха</dt><dd>{{ item.age }}</dd>
-          <dt>Возрастная категория</dt><dd>{{ item.ageRating || '—' }}</dd>
-          <dt>Статус каталога</dt><dd>{{ item.status }}</dd>
+          <dt>{{ i18n.t('gameDetails.year') }}</dt><dd>{{ item.year || i18n.t('gameDetails.noData') }}</dd>
+          <dt>{{ i18n.t('gameDetails.releaseDate') }}</dt><dd>{{ item.releaseDate || i18n.t('gameDetails.noData') }}</dd>
+          <dt>{{ i18n.t('gameDetails.platforms') }}</dt><dd>{{ platformsLabel() }}</dd>
+          <dt>{{ i18n.t('gameDetails.genres') }}</dt><dd>{{ list(genres()) }}</dd>
+          <dt>{{ i18n.t('gameDetails.modes') }}</dt><dd>{{ list(item.modes) }}</dd>
+          <dt>{{ i18n.t('gameDetails.perspectives') }}</dt><dd>{{ list(item.perspectives) }}</dd>
+          <dt>{{ i18n.t('gameDetails.themes') }}</dt><dd>{{ list(item.themes) }}</dd>
+          <dt>{{ i18n.t('gameDetails.developers') }}</dt><dd>{{ list(item.developers) }}</dd>
+          <dt>{{ i18n.t('gameDetails.publishers') }}</dt><dd>{{ list(item.publishers) }}</dd>
+          <dt>{{ i18n.t('gameDetails.rating') }}</dt><dd>{{ number(item.rating) }}</dd>
+          <dt>{{ i18n.t('gameDetails.aggregatedRating') }}</dt><dd>{{ number(item.aggregatedRating) }}</dd>
+          <dt>{{ i18n.t('gameDetails.age') }}</dt><dd>{{ item.age }}</dd>
+          <dt>{{ i18n.t('gameDetails.ageRating') }}</dt><dd>{{ item.ageRating || '—' }}</dd>
+          <dt>{{ i18n.t('gameDetails.catalogStatus') }}</dt><dd>{{ item.status }}</dd>
         </dl>
       </section>
 
-      <section class="jk-card game-section">
-        <h2 class="jk-h4">Прохождение</h2>
+      <section
+        id="game-completion"
+        class="jk-card game-section"
+        [class.game-section-active]="activeSection() === 'game-completion'"
+      >
+        <h2 class="jk-h4">{{ i18n.t('gameDetails.completion') }}</h2>
         <dl class="game-meta">
-          <dt>Быстро</dt><dd>{{ number(item.completion?.hastilyHours) }} ч</dd>
-          <dt>Обычно</dt><dd>{{ number(item.completion?.normallyHours) }} ч</dd>
-          <dt>Полностью</dt><dd>{{ number(item.completion?.completelyHours) }} ч</dd>
+          <dt>{{ i18n.t('gameDetails.hastily') }}</dt><dd>{{ number(item.completion?.hastilyHours) }} {{ i18n.t('gameDetails.hours') }}</dd>
+          <dt>{{ i18n.t('gameDetails.normally') }}</dt><dd>{{ number(item.completion?.normallyHours) }} {{ i18n.t('gameDetails.hours') }}</dd>
+          <dt>{{ i18n.t('gameDetails.completely') }}</dt><dd>{{ number(item.completion?.completelyHours) }} {{ i18n.t('gameDetails.hours') }}</dd>
         </dl>
       </section>
 
-      <section class="jk-card game-section">
-        <h2 class="jk-h4">Скачать игру</h2>
+      <section
+        id="game-downloads"
+        class="jk-card game-section"
+        [class.game-section-active]="activeSection() === 'game-downloads'"
+      >
+        <h2 class="jk-h4">{{ i18n.t('gameDetails.download') }}</h2>
         @if (item.downloads?.length) {
           <div class="download-list">
             @for (download of item.downloads ?? []; track download.url) {
@@ -161,17 +224,23 @@
                 @if (download.language) {
                   <span appearance="info" tuiBadge>{{ download.language }}</span>
                 }
-                <span class="jk-caption download-note">{{ download.note || 'Перейти' }}</span>
+                <span
+                  class="jk-caption download-note"
+                >{{ download.note || i18n.t('gameDetails.go') }}</span>
               </a>
             }
           </div>
         } @else {
-          <p class="jk-body-sm jk-muted">Ссылки на скачивание не найдены.</p>
+          <p class="jk-body-sm jk-muted">{{ i18n.t('gameDetails.noDownloads') }}</p>
         }
       </section>
 
-      <section class="jk-card game-section game-extra">
-        <h2 class="jk-h4">Дополнительно</h2>
+      <section
+        id="game-extra"
+        class="jk-card game-section game-extra"
+        [class.game-section-active]="activeSection() === 'game-extra'"
+      >
+        <h2 class="jk-h4">{{ i18n.t('gameDetails.extra') }}</h2>
         <div class="game-extra-grid">
           <div class="game-extra-block">
             <h3 class="jk-caption">DLC</h3>
@@ -182,11 +251,11 @@
                 }
               </ul>
             } @else {
-              <p class="jk-body-sm jk-muted">Нет данных</p>
+              <p class="jk-body-sm jk-muted">{{ i18n.t('gameDetails.noData') }}</p>
             }
           </div>
           <div class="game-extra-block">
-            <h3 class="jk-caption">Издания</h3>
+            <h3 class="jk-caption">{{ i18n.t('gameDetails.editions') }}</h3>
             @if (item.editions?.length) {
               <ul class="game-extra-list">
                 @for (entry of item.editions ?? []; track entry) {
@@ -194,11 +263,11 @@
                 }
               </ul>
             } @else {
-              <p class="jk-body-sm jk-muted">Нет данных</p>
+              <p class="jk-body-sm jk-muted">{{ i18n.t('gameDetails.noData') }}</p>
             }
           </div>
           <div class="game-extra-block">
-            <h3 class="jk-caption">Моды</h3>
+            <h3 class="jk-caption">{{ i18n.t('gameDetails.mods') }}</h3>
             @if (item.mods?.length) {
               <ul class="game-extra-list">
                 @for (entry of item.mods ?? []; track entry) {
@@ -206,7 +275,7 @@
                 }
               </ul>
             } @else {
-              <p class="jk-body-sm jk-muted">Нет данных</p>
+              <p class="jk-body-sm jk-muted">{{ i18n.t('gameDetails.noData') }}</p>
             }
           </div>
         </div>
@@ -215,8 +284,12 @@
     </div>
 
     @if (item.popularMods?.length || item.popularCollections?.length) {
-      <section class="jk-card game-section game-mods">
-        <h2 class="jk-h4">Популярные моды и сборки</h2>
+      <section
+        id="game-mods"
+        class="jk-card game-section game-mods"
+        [class.game-section-active]="activeSection() === 'game-mods'"
+      >
+        <h2 class="jk-h4">{{ i18n.t('gameDetails.popularMods') }}</h2>
 
         @if (item.popularMods?.length) {
           <div class="mods-grid">
@@ -228,13 +301,15 @@
                 <div class="mod-body">
                   <span class="mod-name">{{ mod.name }}</span>
                   @if (mod.author) {
-                    <span class="jk-caption">Автор: {{ mod.author }}</span>
+                    <span
+                      class="jk-caption"
+                    >{{ i18n.t('gameDetails.author') }}: {{ mod.author }}</span>
                   }
                   @if (mod.summary) {
                     <span class="jk-body-sm jk-muted">{{ mod.summary }}</span>
                   }
                   <span class="jk-caption">
-                    {{ number(mod.downloads) }} загрузок · {{ number(mod.endorsements) }} рекомендаций
+                    {{ number(mod.downloads) }} {{ i18n.t('gameDetails.downloadsCount') }} · {{ number(mod.endorsements) }} {{ i18n.t('gameDetails.endorsements') }}
                   </span>
                 </div>
               </a>
@@ -243,7 +318,7 @@
         }
 
         @if (item.popularCollections?.length) {
-          <h3 class="jk-caption">Сборки</h3>
+          <h3 class="jk-caption">{{ i18n.t('gameDetails.collections') }}</h3>
           <div class="mods-grid">
             @for (collection of item.popularCollections ?? []; track collection.url) {
               <a class="mod-card" target="_blank" rel="noopener" [href]="collection.url">
@@ -256,7 +331,9 @@
                     <span class="jk-body-sm jk-muted">{{ collection.summary }}</span>
                   }
                   @if (collection.mods) {
-                    <span class="jk-caption">{{ collection.mods }} модов</span>
+                    <span
+                      class="jk-caption"
+                    >{{ collection.mods }} {{ i18n.t('gameDetails.modsCount') }}</span>
                   }
                 </div>
               </a>
@@ -266,10 +343,157 @@
       </section>
     }
 
-  } @else {
-    <div class="jk-card games-state">
-      <tui-icon icon="@tui.loader" />
-      <span>Загружаем игру…</span>
-    </div>
-  }
-</div>
+    <section
+      id="game-discussion"
+      class="jk-card game-section game-discussion"
+      [class.game-section-active]="activeSection() === 'game-discussion'"
+    >
+      <div class="game-section-head">
+        <div>
+          <h2 class="jk-h4">{{ i18n.t('discussion.title') }}</h2>
+          @if (discussion().length > 1) {
+            <span
+              class="jk-caption"
+            >{{ i18n.t('discussion.viewed') }} {{ discussionViewed() }} {{ i18n.t('discussion.of') }} {{ discussion().length }}</span>
+          }
+        </div>
+        <div class="discussion-tools">
+          <span
+            class="jk-caption"
+          >{{ discussion().length }} {{ i18n.t('discussion.messages') }}</span>
+          <select
+            aria-label="Сортировка обсуждения"
+            [value]="discussionSort()"
+            (change)="setDiscussionSort($any($event.target).value)"
+          >
+            <option value="threads">{{ i18n.t('discussion.sortThreads') }}</option>
+            <option value="new">{{ i18n.t('discussion.sortNew') }}</option>
+            <option value="old">{{ i18n.t('discussion.sortOld') }}</option>
+          </select>
+          <select
+            aria-label="Настройки редактора"
+            [value]="editorMode()"
+            (change)="setEditorMode($any($event.target).value)"
+          >
+            <option
+              value="max"
+            >{{ i18n.t('discussion.editor') }}: {{ i18n.t('discussion.editorMax') }}</option>
+            <option
+              value="standard"
+            >{{ i18n.t('discussion.editor') }}: {{ i18n.t('discussion.editorStandard') }}</option>
+            <option
+              value="minimal"
+            >{{ i18n.t('discussion.editor') }}: {{ i18n.t('discussion.editorMinimal') }}</option>
+          </select>
+        </div>
+      </div>
+
+      @if (discussion().length > 1) {
+        <div
+          class="discussion-progress"
+          role="progressbar"
+          aria-label="Прогресс просмотра обсуждения"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          [attr.aria-valuenow]="discussionProgress()"
+        >
+          <span [style.width.%]="discussionProgress()"></span>
+        </div>
+      }
+
+      @if (discussionLoading()) {
+        <div class="discussion-loading">
+          <tui-icon icon="@tui.loader" />
+          <span>{{ i18n.t('discussion.loading') }}</span>
+        </div>
+      } @else if (discussion().length) {
+        <div
+          class="discussion-list"
+          role="feed"
+          aria-busy="false"
+          (scroll)="onDiscussionScroll($event)"
+        >
+          @for (message of threadedDiscussion(); track message.id) {
+            <article
+              class="discussion-message"
+              role="article"
+              [attr.aria-label]="message.displayName || message.username"
+              [style.margin-left.px]="message.depth * 18"
+            >
+              <div class="discussion-message-head">
+                <strong>{{ message.displayName || message.username }}</strong>
+                <span class="jk-caption">{{ message.createdAt | date: 'dd.MM.yyyy HH:mm' }}</span>
+              </div>
+              <p class="discussion-body" [innerHTML]="message.message"></p>
+              <div class="discussion-message-actions">
+                <button
+                  class="discussion-reply"
+                  type="button"
+                  (click)="likeMessage(message)"
+                  [attr.aria-pressed]="message.liked"
+                  [attr.aria-label]="'Лайк: ' + message.likes"
+                >♥ {{ message.likes }}</button>
+                <button
+                  class="discussion-reply"
+                  type="button"
+                  (click)="replyTo(message)"
+                >{{ i18n.t('discussion.reply') }}</button>
+                <button
+                  class="discussion-reply discussion-delete"
+                  type="button"
+                  (click)="deleteMessage(message)"
+                >{{ i18n.t('discussion.delete') }}</button>
+              </div>
+            </article>
+          }
+        </div>
+      } @else {
+        <p class="jk-body-sm jk-muted">{{ i18n.t('discussion.empty') }}</p>
+      }
+
+      <form class="discussion-form" (submit)="submitDiscussion($event)">
+        @if (replyingTo(); as parent) {
+          <div class="discussion-replying">
+            <span>Ответ на {{ parent.displayName || parent.username }}</span>
+            <button type="button" (click)="cancelReply()">{{ i18n.t('discussion.cancel') }}</button>
+          </div>
+        }
+        <tui-editor
+          id="game-discussion-input"
+          class="discussion-editor"
+          [formControl]="discussionControl"
+          [placeholder]="i18n.t('discussion.placeholder')"
+          [tools]="editorTools()"
+          />
+          <div class="discussion-form-foot">
+            <span class="jk-caption">{{ discussionText().length }} / 4000</span>
+            <button
+              type="submit"
+              [disabled]="discussionSending() || !discussionText().trim()"
+              appearance="primary"
+              tuiButton
+            >
+              {{ discussionSending() ? i18n.t('discussion.sending') : i18n.t('discussion.send') }}
+            </button>
+          </div>
+          @if (discussionError()) { <p class="discussion-error" role="alert" aria-live="polite">{{ discussionError() }}</p> }
+        </form>
+      </section>
+
+    } @else if (loading()) {
+      <div class="game-loaders">
+        <div class="game-loader-decor" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="jk-card games-state">
+          <tui-icon icon="@tui.loader" />
+          <span>{{ i18n.t('gameDetails.loading') }}</span>
+        </div>
+      </div>
+    } @else {
+      <div class="jk-card games-state">
+        <tui-icon icon="@tui.search-x" />
+        <span>Игра не найдена.</span>
+      </div>
+    }
+  </div>

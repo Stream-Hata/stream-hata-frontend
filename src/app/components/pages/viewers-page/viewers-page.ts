@@ -4,6 +4,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { signalControl } from '@shared/helpers/form-control';
 import { TwitchService } from '@shared/services/twitch.service';
+import { I18nService } from '@shared/services/i18n.service';
 import { AccessService, type AccessRole, type AccessRoles } from '@shared/services/access.service';
 import {
 	TuiTable,
@@ -38,6 +39,7 @@ interface ViewerRow extends Viewer {
 })
 export default class ViewersPage {
 	private readonly twitch = inject(TwitchService);
+	readonly i18n = inject(I18nService);
 	private readonly destroyRef = inject(DestroyRef);
 	private readonly access = inject(AccessService);
 	private readonly injector = inject(Injector);
@@ -45,7 +47,7 @@ export default class ViewersPage {
 	readonly roles = signal<AccessRoles>({ owners: [], admins: [], moderators: [], vips: [] });
 	readonly ownerDraft = signal('');
 	readonly roleValues: AccessRole[] = ['viewer', 'vip', 'moderator', 'admin', 'owner'];
-	readonly roleLabels = ['Зритель', 'VIP', 'Модератор', 'Админ', 'Владелец'];
+	readonly roleLabels = computed(() => [this.i18n.t('viewers.roleViewer'), this.i18n.t('viewers.roleVip'), this.i18n.t('viewers.roleModerator'), this.i18n.t('viewers.roleAdmin'), this.i18n.t('viewers.roleOwner')]);
 	readonly search = signal('');
 	readonly searchControl = signalControl(this.search, this.injector);
 	readonly data = toSignal(
@@ -71,21 +73,23 @@ export default class ViewersPage {
 
 	roleFor(login: string): AccessRole {
 		const roles = this.roles();
-		const value = login.toLowerCase();
+		const value = (login ?? '').toLowerCase();
+		const has = (items: string[] | null | undefined) =>
+			Array.isArray(items) && items.some((item) => String(item).toLowerCase() === value);
 
-		if (roles.owners.includes(value)) {
+		if (!value) {
+			return 'viewer';
+		}
+		if (has(roles.owners)) {
 			return 'owner';
 		}
-
-		if (roles.admins.includes(value)) {
+		if (has(roles.admins)) {
 			return 'admin';
 		}
-
-		if (roles.moderators.includes(value)) {
+		if (has(roles.moderators)) {
 			return 'moderator';
 		}
-
-		if (roles.vips.includes(value)) {
+		if (has(roles.vips)) {
 			return 'vip';
 		}
 
@@ -93,11 +97,14 @@ export default class ViewersPage {
 	}
 
 	roleLabel(login: string): string {
-		return this.roleLabels[this.roleValues.indexOf(this.roleFor(login))] ?? 'Зритель';
+		const role = this.roleFor(login);
+		const index = this.roleValues.indexOf(role);
+
+		return this.roleLabels()[index] ?? this.i18n.t('viewers.roleViewer');
 	}
 
 	setRole(login: string, label: string): void {
-		const index = this.roleLabels.indexOf(label);
+		const index = this.roleLabels().indexOf(label);
 		const role = this.roleValues[index] ?? 'viewer';
 
 		this.access

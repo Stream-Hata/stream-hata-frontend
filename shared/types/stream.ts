@@ -10,6 +10,50 @@ export interface ObsStatus {
 	error?: string;
 }
 
+export interface ObsTransform {
+	positionX?: number;
+	positionY?: number;
+	width?: number;
+	height?: number;
+	sourceWidth?: number;
+	sourceHeight?: number;
+	rotation?: number;
+	alignment?: number;
+	scaleX?: number;
+	scaleY?: number;
+	boundsType?: string;
+	boundsAlignment?: number;
+	boundsWidth?: number;
+	boundsHeight?: number;
+	cropToBounds?: boolean;
+	cropLeft?: number;
+	cropRight?: number;
+	cropTop?: number;
+	cropBottom?: number;
+}
+
+export interface ObsSceneItem {
+	id: number;
+	sourceName: string;
+	index: number;
+	enabled: boolean;
+	locked: boolean;
+	transform: ObsTransform;
+}
+
+export interface ObsVideoSettings {
+	baseWidth: number;
+	baseHeight: number;
+	outputWidth: number;
+	outputHeight: number;
+}
+
+export interface ObsSceneSnapshot {
+	scene: string;
+	video: ObsVideoSettings;
+	items: ObsSceneItem[];
+}
+
 export interface StreamInfo {
 	title: string;
 	gameName: string;
@@ -59,4 +103,17 @@ export interface AnalyticsState {
 	current: StreamSession | null;
 	history: StreamSession[];
 	messages: number;
+}
+
+
+export interface ObsStats {
+	activeFps: number;
+	averageFrameRenderTime: number;
+	cpuUsage: number;
+	memoryUsage: number;
+	renderSkippedFrames: number;
+	renderTotalFrames: number;
+	outputSkippedFrames: number;
+	outputTotalFrames: number;
+	availableDiskSpace: number;
 }

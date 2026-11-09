@@ -1,0 +1,247 @@
+<div class="jk-page blog-admin-page">
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">{{ i18n.t('blog.adminTitle') }}</h1>
+      <p class="jk-caption">{{ i18n.t('blog.adminSubtitle') }}</p>
+    </div>
+    <div class="blog-admin-head-actions">
+      <a appearance="flat" routerLink="/blog" tuiButton>{{ i18n.t('blog.title') }}</a>
+      @if (role.isAdmin()) {
+        <button appearance="primary" type="button" tuiButton (click)="newArticle()">
+          {{ i18n.t('blog.new') }}
+        </button>
+      }
+    </div>
+  </header>
+
+  @if (!role.isAdmin()) {
+    <section class="jk-card blog-state">
+      <p>{{ i18n.t('blog.restricted') }}</p>
+    </section>
+  } @else {
+    @if (saved()) {
+      <p class="blog-admin-success" role="status">{{ saved() }}</p>
+    }
+    @if (error()) {
+      <p class="blog-admin-error" role="alert">{{ error() }}</p>
+    }
+    @if (pendingDelete(); as pending) {
+      <section class="jk-card blog-delete-confirm" role="alertdialog" aria-modal="true">
+        <p>{{ i18n.t('blog.deleteConfirm') }}</p>
+        <strong>{{ pending.title }}</strong>
+        <div class="blog-editor-actions">
+          <button appearance="primary" type="button" tuiButton (click)="confirmDelete()">
+            {{ i18n.t('blog.delete') }}
+          </button>
+          <button appearance="flat" type="button" tuiButton (click)="pendingDelete.set(null)">
+            {{ i18n.t('common.cancel') }}
+          </button>
+        </div>
+      </section>
+    }
+
+    @if (creating() || editing()) {
+      <section class="jk-card blog-editor" aria-labelledby="blog-editor-title">
+        <div class="blog-editor-head">
+          <h2 class="jk-h2" id="blog-editor-title">
+            {{ editing() ? editing()?.title : i18n.t('blog.new') }}
+          </h2>
+          <span class="blog-editor-status">{{ statusLabels()[draftStatus()] }}</span>
+        </div>
+
+        <div class="blog-editor-fields">
+          <label class="blog-field">
+            <span class="jk-label">{{ i18n.t('blog.titleField') }}</span>
+            <tui-textfield>
+              <input [formControl]="titleControl" tuiInput />
+            </tui-textfield>
+          </label>
+          <label class="blog-field">
+            <span class="jk-label">{{ i18n.t('blog.slug') }}</span>
+            <tui-textfield>
+              <input [formControl]="slugControl" tuiInput />
+            </tui-textfield>
+            <span class="jk-caption">{{ i18n.t('blog.slugHint') }}</span>
+          </label>
+          <label class="blog-field">
+            <span class="jk-label">{{ i18n.t('blog.cover') }}</span>
+            <tui-textfield>
+              <input [formControl]="coverControl" placeholder="https://…" tuiInput />
+            </tui-textfield>
+            <div class="blog-field-actions">
+              <input
+                accept="image/avif,image/bmp,image/gif,image/jpeg,image/png,image/webp"
+                hidden
+                type="file"
+                aria-label="{{ i18n.t('blog.upload') }}"
+                #coverInput
+                (change)="uploadCover($event)"
+                />
+                <button
+                  size="s"
+                  type="button"
+                  [disabled]="uploading()"
+                  (click)="coverInput.click()"
+                  appearance="flat"
+                  tuiButton
+                >
+                  {{ uploading() ? i18n.t('common.loading') : i18n.t('blog.upload') }}
+                </button>
+              </div>
+              <span class="jk-caption">{{ i18n.t('blog.coverHint') }}</span>
+              @if (coverPreview()) {
+                <img
+                  class="blog-cover-preview"
+                  alt="{{ i18n.t('blog.cover') }}"
+                  [src]="coverPreview()"
+                  />
+                }
+              </label>
+              <label class="blog-field blog-field-wide">
+                <span class="jk-label">{{ i18n.t('blog.excerpt') }}</span>
+                <tui-textfield>
+                  <input [formControl]="excerptControl" tuiInput />
+                </tui-textfield>
+                <span class="jk-caption">{{ i18n.t('blog.excerptHint') }}</span>
+              </label>
+            </div>
+
+            <div class="blog-field">
+              <div class="blog-field-head">
+                <span class="jk-label">{{ i18n.t('blog.content') }}</span>
+                <div class="blog-field-actions">
+                  <input
+                    accept="image/avif,image/bmp,image/gif,image/jpeg,image/png,image/webp"
+                    hidden
+                    type="file"
+                    #imageInput
+                    (change)="insertImage($event)"
+                    />
+                    <button
+                      size="s"
+                      type="button"
+                      [disabled]="uploading()"
+                      (click)="imageInput.click()"
+                      appearance="flat"
+                      tuiButton
+                    >
+                      {{ i18n.t('blog.insertImage') }}
+                    </button>
+                  </div>
+                </div>
+                <tui-editor
+                  class="blog-editor-input"
+                  [formControl]="contentControl"
+                  [tools]="tools"
+                  />
+                </div>
+
+                <div class="blog-editor-actions">
+                  <button
+                    type="button"
+                    [disabled]="saving()"
+                    (click)="save('draft')"
+                    appearance="secondary"
+                    tuiButton
+                  >
+                    {{ i18n.t('blog.saveDraft') }}
+                  </button>
+                  <button
+                    type="button"
+                    [disabled]="saving()"
+                    (click)="save('published')"
+                    appearance="primary"
+                    tuiButton
+                  >
+                    {{ draftStatus() === 'published' ? i18n.t('blog.saveDraft') : i18n.t('blog.publish') }}
+                  </button>
+                  <button type="button" (click)="cancel()" appearance="flat" tuiButton>
+                    {{ i18n.t('common.cancel') }}
+                  </button>
+                </div>
+              </section>
+            }
+
+            <section class="jk-card blog-admin-list">
+              <div class="blog-admin-list-head">
+                <h2 class="jk-h2">{{ i18n.t('blog.adminTitle') }}</h2>
+                <div
+                  class="blog-admin-filters"
+                  role="group"
+                  [attr.aria-label]="i18n.t('blog.status')"
+                >
+                  <button
+                    type="button"
+                    [class.blog-filter-active]="statusFilter() === ''"
+                    (click)="filter('')"
+                    appearance="flat"
+                    tuiButton
+                  >
+                    {{ i18n.t('blog.all') }}
+                  </button>
+                  <button
+                    type="button"
+                    [class.blog-filter-active]="statusFilter() === 'draft'"
+                    (click)="filter('draft')"
+                    appearance="flat"
+                    tuiButton
+                  >
+                    {{ i18n.t('blog.draft') }}
+                  </button>
+                  <button
+                    type="button"
+                    [class.blog-filter-active]="statusFilter() === 'published'"
+                    (click)="filter('published')"
+                    appearance="flat"
+                    tuiButton
+                  >
+                    {{ i18n.t('blog.published') }}
+                  </button>
+                </div>
+              </div>
+
+              @if (loading()) {
+                <p class="jk-caption">{{ i18n.t('blog.loading') }}</p>
+              } @else if (items().length === 0) {
+                <p class="jk-caption">{{ i18n.t('blog.noArticles') }}</p>
+              } @else {
+                <div class="blog-admin-rows">
+                  @for (article of items(); track article.id) {
+                    <article class="blog-admin-row">
+                      <div class="blog-admin-row-main">
+                        <div class="blog-admin-row-title">
+                          <strong>{{ article.title }}</strong>
+                          <span class="blog-admin-state">{{ statusLabels()[article.status] }}</span>
+                        </div>
+                        <p class="jk-caption">
+                          {{ article.publishedAt || article.createdAt | date: 'dd.MM.yyyy HH:mm' }}
+                          · /blog/{{ article.slug }}
+                        </p>
+                      </div>
+                      <div class="blog-admin-row-actions">
+                        <button
+                          size="s"
+                          type="button"
+                          (click)="edit(article)"
+                          appearance="flat"
+                          tuiButton
+                        >
+                          {{ i18n.t('blog.edit') }}
+                        </button>
+                        <button
+                          size="s"
+                          type="button"
+                          (click)="remove(article)"
+                          appearance="flat"
+                          tuiButton
+                        >
+                          {{ i18n.t('blog.delete') }}
+                        </button>
+                      </div>
+                    </article>
+                  }
+                </div>
+              }
+            </section>
+          }
+        </div>

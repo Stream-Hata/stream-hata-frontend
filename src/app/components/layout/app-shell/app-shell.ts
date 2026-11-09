@@ -9,13 +9,25 @@ import { DesktopUpdateNotice } from '@shared/components/desktop-update-notice/de
 import { UpdateNotice } from '@shared/components/update-notice/update-notice';
 import { TWITCH_CHANNEL_URL } from '@shared/config';
 import { imageUrl } from '@shared/helpers/proxy-image';
+import { AccountsService } from '@shared/services/accounts.service';
 import { AlertsService } from '@shared/services/alerts.service';
+import { AppLockService } from '@shared/services/app-lock.service';
 import { AppSettingsService } from '@shared/services/app-settings.service';
+import { AutoClipsService } from '@shared/services/auto-clips.service';
+import { DesktopHotkeysService } from '@shared/services/desktop-hotkeys.service';
+import { DiscussionNotificationsService } from '@shared/services/discussion-notifications.service';
 import { GamesCatalogService } from '@shared/services/games-catalog.service';
 import { I18nService } from '@shared/services/i18n.service';
+import { MessagingNotificationsService } from '@shared/services/messaging-notifications.service';
+import { MessagingPresenceService } from '@shared/services/messaging-presence.service';
+import { ObsAutoSceneService } from '@shared/services/obs-auto-scene.service';
 import { OnboardingService } from '@shared/services/onboarding.service';
 import { ProfileDataService } from '@shared/services/profile-data.service';
+import { RoleService } from '@shared/services/role.service';
 import { SteamService } from '@shared/services/steam.service';
+import { StreamReportService } from '@shared/services/stream-report.service';
+import { SuggestionNotificationsService } from '@shared/services/suggestion-notifications.service';
+import { SystemAlertsService } from '@shared/services/system-alerts.service';
 import { TwitchService } from '@shared/services/twitch.service';
 import { TuiButton, TuiIcon, TuiInput, TuiTextfield } from '@taiga-ui/core';
 import {
@@ -30,6 +42,7 @@ import {
 	switchMap,
 	timer,
 } from 'rxjs';
+import { FAQ_ITEMS } from '../../pages/faq-page/faq.data';
 import { IdleCat } from '../../ui/idle-cat/idle-cat';
 import { IdleWarrant } from '../../ui/idle-warrant/idle-warrant';
 import { Logo } from '../../ui/logo/logo';
@@ -47,12 +60,15 @@ const MAIN_NAV: NavItem[] = [
 	{ labelKey: 'nav.events', link: '/app/events', icon: '@tui.calendar-days' },
 	{ labelKey: 'nav.games', link: '/app/games', icon: '@tui.gamepad-2' },
 	{ labelKey: 'nav.chat', link: '/app/chat', icon: '@tui.message-circle' },
+	{ labelKey: 'nav.messages', link: '/app/messages', icon: '@tui.send' },
+	{ labelKey: 'nav.notifications', link: '/app/notifications', icon: '@tui.bell' },
 	{ labelKey: 'nav.viewers', link: '/app/viewers', icon: '@tui.users' },
 	{ labelKey: 'nav.chatJury', link: '/app/chat-jury', icon: '@tui.messages-square' },
 	{ labelKey: 'nav.points', link: '/app/points', icon: '@tui.coins' },
 	{ labelKey: 'nav.polls', link: '/app/polls', icon: '@tui.bar-chart-3' },
 	{ labelKey: 'nav.roulette', link: '/app/roulette', icon: '@tui.dices' },
 	{ labelKey: 'nav.wheel', link: '/app/wheel', icon: '@tui.circle-dashed' },
+	{ labelKey: 'nav.journal', link: '/app/journal', icon: '@tui.notebook-pen' },
 	{ labelKey: 'nav.stream', link: '/app/stream', icon: '@tui.monitor' },
 	{ labelKey: 'nav.commands', link: '/app/commands', icon: '@tui.terminal' },
 	{ labelKey: 'nav.telegram', link: '/app/telegram', icon: '@tui.send' },
@@ -64,15 +80,16 @@ const MAIN_NAV: NavItem[] = [
 ];
 
 const TITLES: Record<string, string> = {
-	dashboard: 'Дашборд',
-	events: 'События',
-	chat: 'Чат',
+	'dashboard': 'Дашборд',
+	'events': 'События',
+	'chat': 'Чат',
+	'messages': 'Сообщения',
 	'chat-jury': 'Чат-жюри',
-	widgets: 'Виджеты',
-	twitch: 'Twitch',
-	settings: 'Настройки',
-	profile: 'Профиль',
-	notifications: 'Уведомления',
+	'widgets': 'Виджеты',
+	'twitch': 'Twitch',
+	'settings': 'Настройки',
+	'profile': 'Профиль',
+	'notifications': 'Уведомления',
 };
 
 function resolveTitle(url: string): string {
@@ -145,6 +162,7 @@ export default class AppShell {
 	readonly onboarding = inject(OnboardingService);
 	readonly twitchUrl = TWITCH_CHANNEL_URL;
 	private readonly router = inject(Router);
+	private readonly roles = inject(RoleService);
 	private readonly twitchService = inject(TwitchService);
 	private readonly destroyRef = inject(DestroyRef);
 	private lastStreakKey = '';
@@ -154,6 +172,23 @@ export default class AppShell {
 	private readonly appSettings = inject(AppSettingsService);
 	private readonly searchQuery = new Subject<string>();
 	private readonly alerts = inject(AlertsService);
+	readonly systemAlerts = inject(SystemAlertsService);
+	readonly suggestionNotifications = inject(SuggestionNotificationsService);
+	readonly autoClips = inject(AutoClipsService);
+	readonly appLock = inject(AppLockService);
+	readonly obsAutoScene = inject(ObsAutoSceneService);
+	readonly messagingPresence = inject(MessagingPresenceService);
+	readonly streamReports = inject(StreamReportService);
+	readonly hotkeys = inject(DesktopHotkeysService);
+	private readonly accounts = inject(AccountsService);
+	private savedAccount = '';
+	readonly messagingNotifications = inject(MessagingNotificationsService);
+	readonly formatUnread = (count: number): string =>
+		count > 9999 ? '9999+' : count > 99 ? '99+' : String(count);
+
+	protected readonly imageUrl = imageUrl;
+	readonly unlockPin = signal('');
+	readonly unlockError = signal('');
 
 	private readonly url = toSignal(
 		this.router.events.pipe(
@@ -168,6 +203,19 @@ export default class AppShell {
 		navigator.userAgent.includes('NamelessStreamHataDesktop') || '__TAURI_INTERNALS__' in window;
 
 	readonly faqUrl = 'https://streamhata.rdpctd.dev/faq';
+	unlock(): void {
+		const pin = this.unlockPin();
+
+		this.unlockError.set('');
+		void this.appLock.unlock(pin).then((valid) => {
+			if (valid) {
+				this.unlockPin.set('');
+			} else {
+				this.unlockError.set('Неверный PIN');
+			}
+		});
+	}
+
 	openSystem(event: MouseEvent): void {
 		event.preventDefault();
 		const internals = (window as unknown as Record<string, unknown>)['__TAURI_INTERNALS__'] as
@@ -220,9 +268,15 @@ export default class AppShell {
 	}
 
 	readonly gameResults = signal<SearchItem[]>([]);
-	readonly mainNav = computed(() =>
-		MAIN_NAV.map((item) => ({ ...item, label: this.i18n.t(item.labelKey) })),
-	);
+	readonly mainNav = computed(() => {
+		const items = MAIN_NAV.map((item) => ({ ...item, label: this.i18n.t(item.labelKey) }));
+
+		if (this.roles.isAdmin()) {
+			items.push({ labelKey: 'nav.blog', link: '/app/blog', icon: '@tui.newspaper', label: this.i18n.t('nav.blog') });
+		}
+
+		return items;
+	});
 
 	readonly twitch = toSignal(
 		timer(0, 30000).pipe(
@@ -431,6 +485,15 @@ export default class AppShell {
 			link: '/suggest-game',
 			keywords: 'предложить игру заявка каталог',
 		},
+		...FAQ_ITEMS.map((item) => ({
+			id: `faq-${item.id}`,
+			group: 'faq' as const,
+			title: item.question,
+			subtitle: `FAQ · ${item.category}`,
+			icon: '@tui.circle-help',
+			link: `/faq?q=${encodeURIComponent(item.question)}`,
+			keywords: `${item.question} ${item.keywords ?? ''} ${item.paragraphs.join(' ')} ${item.steps?.join(' ') ?? ''}`,
+		})),
 		...MAIN_NAV.map((item) => ({
 			id: `page-${item.link}`,
 			group: 'pages' as const,
@@ -491,10 +554,33 @@ export default class AppShell {
 		searchSettings: this.i18n.t('search.settingsGroup'),
 		searchWidgets: this.i18n.t('search.widgets'),
 		searchGames: this.i18n.t('search.games'),
+		searchFaq: this.i18n.t('search.faq'),
 		searchHint: this.i18n.t('search.hint'),
 	}));
 
+	private readonly discussionNotifications = inject(DiscussionNotificationsService);
+
 	constructor() {
+		void this.systemAlerts;
+		void this.suggestionNotifications;
+		void this.autoClips;
+		void this.messagingNotifications;
+		void this.discussionNotifications;
+		void this.obsAutoScene;
+		this.messagingPresence.start();
+		this.streamReports.start();
+		this.hotkeys.start();
+		setInterval(() => this.appLock.checkIdle(), 15_000);
+		window.addEventListener('pointerdown', () => this.appLock.touch(), { passive: true });
+		window.addEventListener('keydown', () => this.appLock.touch());
+		effect(() => {
+			const user = this.twitch()?.user;
+			if (!this.desktop || !user?.username || this.savedAccount === user.username) {
+				return;
+			}
+			this.savedAccount = user.username;
+			void this.accounts.saveCurrent(user.username, user.displayName || user.username);
+		});
 		if (this.desktop) {
 			this.setupIdleCat();
 			this.listenCatSummon();

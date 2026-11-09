@@ -1,0 +1,78 @@
+name: Deploy frontend
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'src/**'
+      - 'shared/**'
+      - 'public/**'
+      - 'angular.json'
+      - 'index.html'
+      - 'tsconfig*.json'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-frontend
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      PRIMARY_HOST: ${{ secrets.STREAMHATA_PRIMARY_HOST || secrets.STREAMHATA_SSH_HOST }}
+      SECONDARY_HOST: ${{ secrets.STREAMHATA_SECONDARY_HOST || secrets.STREAMHATA_SSH_HOST_SECONDARY }}
+      SSH_PORT: ${{ secrets.STREAMHATA_SSH_PORT }}
+      SSH_USER: deploy
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.5.2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      - name: Install SSH key
+        run: |
+          set -euo pipefail
+          : "${PRIMARY_HOST:?STREAMHATA_PRIMARY_HOST is required}"
+          : "${SSH_USER:?STREAMHATA_SSH_USER is required}"
+          port="${SSH_PORT:-22}"
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "${{ secrets.STREAMHATA_SSH_KEY }}" > ~/.ssh/deploy
+          chmod 600 ~/.ssh/deploy
+          ssh-keyscan -p "$port" "$PRIMARY_HOST" >> ~/.ssh/known_hosts
+
+      - name: Deploy primary
+        run: |
+          set -euo pipefail
+          port="${SSH_PORT:-22}"
+          rsync -az --delete -e "ssh -p $port -i ~/.ssh/deploy" \
+            dist/nameless-streamhata/browser/ "$SSH_USER@$PRIMARY_HOST:/var/www/streamhata/browser/"
+          ssh -p "$port" -i ~/.ssh/deploy "$SSH_USER@$PRIMARY_HOST" \
+            'sudo -n nginx -t && sudo -n systemctl reload nginx'
+
+      - name: Deploy secondary
+        if: ${{ env.SECONDARY_HOST != '' }}
+        run: |
+          set -euo pipefail
+          port="${SSH_PORT:-22}"
+          proxy="ssh -p $port -i ~/.ssh/deploy -o BatchMode=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o IdentitiesOnly=yes -W %h:%p $SSH_USER@$PRIMARY_HOST"
+          rsync -az --delete -e "ssh -p $port -i ~/.ssh/deploy -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ProxyCommand=\"$proxy\"" \
+            dist/nameless-streamhata/browser/ "$SSH_USER@$SECONDARY_HOST:/var/www/streamhata/browser/"
+          ssh -p "$port" -i ~/.ssh/deploy -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ProxyCommand="$proxy" "$SSH_USER@$SECONDARY_HOST" \
+            'sudo -n nginx -t && sudo -n systemctl reload nginx'

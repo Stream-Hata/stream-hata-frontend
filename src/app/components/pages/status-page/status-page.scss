@@ -1,0 +1,103 @@
+.status-page .jk-page-header {
+	align-items: center;
+}
+
+.status-overall {
+	display: flex;
+	justify-content: space-between;
+	gap: 16px;
+	align-items: center;
+	border-left: 4px solid var(--border-normal);
+}
+
+.status-overall.status-operational {
+	border-left-color: #2e9d57;
+}
+
+.status-overall.status-degraded {
+	border-left-color: #d99a00;
+}
+
+.status-overall.status-down {
+	border-left-color: #d33;
+}
+
+.status-services,
+.status-incidents {
+	display: grid;
+	gap: 10px;
+	margin-top: 14px;
+}
+
+.status-services {
+	grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+
+.status-service,
+.status-incident {
+	padding: 12px;
+	border: 1px solid var(--border-normal);
+	border-radius: 12px;
+	background: var(--surface-elevated-1);
+}
+
+.status-service-head,
+.status-incident-head,
+.status-incident-names,
+.status-incident-meta {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.status-service-head,
+.status-incident-head {
+	justify-content: space-between;
+}
+
+.status-incident-names {
+	gap: 6px;
+}
+
+.status-code {
+	padding: 2px 6px;
+	border-radius: 6px;
+	background: var(--surface-elevated-2);
+	font-family: monospace;
+	font-size: 0.8em;
+}
+
+.status-pill {
+	padding: 3px 8px;
+	border-radius: 999px;
+	background: var(--surface-elevated-2);
+	font-size: 0.85em;
+}
+
+.status-operational .status-pill {
+	color: #2e9d57;
+}
+
+.status-degraded .status-pill {
+	color: #d99a00;
+}
+
+.status-down .status-pill,
+.status-investigating .status-pill,
+.status-critical .status-pill {
+	color: #d33;
+}
+
+.status-incident-meta {
+	gap: 14px;
+	margin-top: 10px;
+	font-size: 0.85em;
+	color: var(--text-secondary);
+}
+
+.status-error {
+	display: grid;
+	gap: 12px;
+	justify-items: start;
+}

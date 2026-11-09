@@ -45,24 +45,27 @@ export class TwitchService {
 		return this.http.get<TwitchResponse>('rgg-sync/twitch');
 	}
 
-	connect(returnTo?: string) {
+	connect(returnTo?: string, forceVerify = false) {
 		const internals = (window as unknown as Record<string, unknown>)['__TAURI_INTERNALS__'] as
-			| { invoke?: (command: string) => Promise<unknown> }
+			| { invoke?: (command: string, args?: Record<string, unknown>) => Promise<unknown> }
 			| undefined;
 
 		if (internals?.invoke) {
-			void internals.invoke('start_desktop_login');
+			void internals.invoke('start_desktop_login', { force: forceVerify });
 
 			return;
 		}
+		const force = forceVerify ? '&force_verify=1' : '';
 
 		if (!returnTo) {
-			location.assign('/rgg-sync/twitch/authorize');
+			location.assign(`/rgg-sync/twitch/authorize${force ? `?${force.slice(1)}` : ''}`);
 
 			return;
 		}
 
-		location.assign(`/rgg-sync/twitch/authorize?return=${encodeURIComponent(returnTo)}`);
+		location.assign(
+			`/rgg-sync/twitch/authorize?return=${encodeURIComponent(returnTo)}${force}`,
+		);
 	}
 
 	disconnect() {

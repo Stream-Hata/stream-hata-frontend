@@ -346,3 +346,40 @@ html[data-tauri] .games-sticky {
 		animation: none;
 	}
 }
+
+.games-loaders {
+	display: grid;
+	gap: var(--space-sm);
+}
+
+.games-loader-decor {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	justify-content: center;
+	padding: var(--space-lg);
+	border: 1px solid var(--border-normal);
+	border-radius: var(--radius-lg);
+	background: var(--surface-elevated-1);
+}
+
+.games-loader-decor span {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background: var(--accent-primary);
+	animation: games-loader-pulse 1.2s ease-in-out infinite;
+}
+
+.games-loader-decor span:nth-child(2) {
+	animation-delay: 0.15s;
+}
+
+.games-loader-decor span:nth-child(3) {
+	animation-delay: 0.3s;
+}
+
+@keyframes games-loader-pulse {
+	0%, 100% { opacity: 0.25; transform: translateY(0); }
+	50% { opacity: 1; transform: translateY(-5px); }
+}

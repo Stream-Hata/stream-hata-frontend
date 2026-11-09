@@ -8,6 +8,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { RoleService } from '@shared/services/role.service';
+import { I18nService } from '@shared/services/i18n.service';
 import { SteamService } from '@shared/services/steam.service';
 import { ProfileDataService } from '@shared/services/profile-data.service';
 import { TwitchService } from '@shared/services/twitch.service';
@@ -44,6 +45,7 @@ import { catchError, map, of, switchMap, timer } from 'rxjs';
 	templateUrl: './profile-page.html',
 })
 export default class ProfilePage {
+	readonly i18n = inject(I18nService);
 	private readonly twitchService = inject(TwitchService);
 	private readonly rolesService = inject(RoleService);
 	private readonly steamService = inject(SteamService);

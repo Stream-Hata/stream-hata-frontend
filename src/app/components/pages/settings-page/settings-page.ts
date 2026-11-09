@@ -16,6 +16,18 @@ import { OnboardingService } from '@shared/services/onboarding.service';
 import { MetricsService, NetworkService } from '@shared/services/ops.services';
 import { NotifyService } from '@shared/services/stream.services';
 import { TwitchService } from '@shared/services/twitch.service';
+import { RoleService } from '@shared/services/role.service';
+import { SystemAlertsService } from '@shared/services/system-alerts.service';
+import { SettingsTransferService } from '@shared/services/settings-transfer.service';
+import { AutoClipsService } from '@shared/services/auto-clips.service';
+import { AppLockService } from '@shared/services/app-lock.service';
+import { AccountsService, type AccountInfo } from '@shared/services/accounts.service';
+import { MessagingIdentityService } from '@shared/services/messaging-identity.service';
+import { MessagingService } from '@shared/services/messaging.service';
+import { QuietHoursService } from '@shared/services/quiet-hours.service';
+import { NotificationCenterService, type NotificationKind } from '@shared/services/notification-center.service';
+import { decryptRecovery, encryptRecovery, type RecoveryBlob } from '@shared/crypto/recovery';
+import { SystemAlertSettingsService, type SystemAlertRule } from '@shared/services/system-alert-settings.service';
 import { WelcomeService } from '@shared/services/welcome.service';
 import {
 	TuiButton,
@@ -39,7 +51,7 @@ import {
 	TuiTabs,
 	TuiTextarea,
 } from '@taiga-ui/kit';
-import { catchError, map, of, switchMap, timer } from 'rxjs';
+import { catchError, firstValueFrom, map, of, switchMap, timer } from 'rxjs';
 
 type Section =
 	| 'about'
@@ -50,6 +62,9 @@ type Section =
 	| 'widgets'
 	| 'telegram'
 	| 'notifications'
+	| 'systemAlerts'
+	| 'accounts'
+	| 'security'
 	| 'accessibility'
 	| 'integrations'
 	| 'network';
@@ -76,6 +91,9 @@ const SECTION_DEFS: { id: Section; labelKey: TranslationKey; icon: string }[] = 
 	{ id: 'widgets', labelKey: 'settings.widgets', icon: '@tui.blocks' },
 	{ id: 'telegram', labelKey: 'settings.telegram', icon: '@tui.send' },
 	{ id: 'notifications', labelKey: 'settings.notifications', icon: '@tui.bell' },
+	{ id: 'systemAlerts', labelKey: 'settings.systemAlerts', icon: '@tui.activity' },
+	{ id: 'accounts', labelKey: 'settings.accounts', icon: '@tui.users' },
+	{ id: 'security', labelKey: 'settings.security', icon: '@tui.lock' },
 	{ id: 'integrations', labelKey: 'settings.integrations', icon: '@tui.plug' },
 	{ id: 'accessibility', labelKey: 'settings.accessibility', icon: '@tui.accessibility' },
 	{ id: 'network', labelKey: 'settings.network', icon: '@tui.wifi' },
@@ -170,6 +188,38 @@ export default class SettingsPage {
 	readonly autoOpenControl = signalControl(this.autoOpen, this.injector);
 
 	readonly appSettings = inject(AppSettingsService);
+	readonly systemAlerts = inject(SystemAlertSettingsService);
+	private readonly settingsTransfer = inject(SettingsTransferService);
+	readonly autoClips = inject(AutoClipsService);
+	readonly appLock = inject(AppLockService);
+	readonly quietHours = inject(QuietHoursService);
+	readonly notificationCenter = inject(NotificationCenterService);
+	readonly notificationKinds: { id: NotificationKind; label: string }[] = [
+		{ id: 'message', label: 'Сообщения' },
+		{ id: 'monitor', label: 'Мониторинг' },
+		{ id: 'clip', label: 'Клипы' },
+		{ id: 'suggestion', label: 'Заявки на игры' },
+		{ id: 'system', label: 'Системные' },
+	];
+	private readonly accountsService = inject(AccountsService);
+	private readonly messagingIdentity = inject(MessagingIdentityService);
+	private readonly messaging = inject(MessagingService);
+	readonly recoveryPassword = signal('');
+	readonly recoveryStatus = signal('');
+	readonly recoveryBusy = signal(false);
+	readonly accounts = signal<AccountInfo[]>([]);
+	readonly accountStatus = signal('');
+	readonly lockPin = signal('');
+	readonly lockStatus = signal('');
+	readonly autoClipTypes = [
+		{ id: 'raid', label: 'Рейды' },
+		{ id: 'subscribe', label: 'Подписки' },
+		{ id: 'donation', label: 'Донаты' },
+		{ id: 'cheer', label: 'Bits / Cheer' },
+	];
+	readonly role = inject(RoleService);
+	private readonly systemAlertsRuntime = inject(SystemAlertsService);
+	readonly alertTestStatus = signal('');
 	readonly saved = signal(false);
 	readonly backgroundImage = this.appSettings.backgroundImage;
 	readonly backgroundFileControl = new FormControl<File | null>(null);
@@ -706,6 +756,134 @@ export default class SettingsPage {
 
 	value(event: Event): string {
 		return (event.target as HTMLSelectElement).value;
+	}
+
+	updateAlertThreshold(rule: SystemAlertRule, event: Event): void {
+		const value = Number((event.target as HTMLInputElement).value);
+
+		if (Number.isFinite(value)) {
+			this.systemAlerts.update(rule.id, { threshold: value });
+		}
+	}
+
+	async reloadAccounts(): Promise<void> {
+		this.accounts.set(await this.accountsService.list());
+	}
+
+	addAccount(): void {
+		this.twitchService.connect(location.origin + '/app/settings', true);
+	}
+
+	async switchAccount(login: string): Promise<void> {
+		this.accountStatus.set('Переключаем аккаунт…');
+		await this.accountsService.switch(login);
+	}
+
+	async removeAccount(login: string): Promise<void> {
+		await this.accountsService.remove(login);
+		await this.reloadAccounts();
+		this.accountStatus.set('Аккаунт удалён.');
+	}
+
+	async saveRecovery(): Promise<void> {
+		const password = this.recoveryPassword();
+
+		if (password.length < 8) {
+			this.recoveryStatus.set('Пароль должен быть минимум 8 символов.');
+			return;
+		}
+		this.recoveryBusy.set(true);
+		try {
+			const identity = await this.messagingIdentity.ensure();
+
+			if (!identity) {
+				this.recoveryStatus.set('Ключи мессенджера доступны только в desktop.');
+				return;
+			}
+			await firstValueFrom(
+				this.messaging.saveRecovery(await encryptRecovery(identity, password)),
+			);
+			this.recoveryStatus.set('Зашифрованная резервная копия сохранена на сервере.');
+		} catch {
+			this.recoveryStatus.set('Не удалось сохранить резервную копию.');
+		} finally {
+			this.recoveryBusy.set(false);
+		}
+	}
+
+	async restoreRecovery(): Promise<void> {
+		const password = this.recoveryPassword();
+
+		if (!password) {
+			this.recoveryStatus.set('Введите пароль резервной копии.');
+			return;
+		}
+		this.recoveryBusy.set(true);
+		try {
+			const blob = await firstValueFrom(
+				this.messaging.recovery(),
+			) as unknown as RecoveryBlob;
+			const identity = await decryptRecovery(blob, password);
+
+			await this.messagingIdentity.save(identity);
+			this.recoveryStatus.set('Ключи восстановлены. Перезапустите приложение.');
+		} catch {
+			this.recoveryStatus.set('Не удалось восстановить: неверный пароль или копия повреждена.');
+		} finally {
+			this.recoveryBusy.set(false);
+		}
+	}
+
+	setLockPin(): void {
+		void this.appLock.setPin(this.lockPin()).then((ok) => {
+			this.lockStatus.set(ok ? 'PIN установлен.' : 'PIN должен содержать минимум 4 символа.');
+			if (ok) {
+				this.lockPin.set('');
+			}
+		});
+	}
+
+	disableLock(): void {
+		this.appLock.disable();
+		this.lockStatus.set('PIN отключён.');
+	}
+
+	lockNow(): void {
+		this.appLock.lockNow();
+	}
+
+	exportSettings(): void {
+		this.settingsTransfer.export();
+	}
+
+	importSettings(event: Event): void {
+		const file = (event.target as HTMLInputElement).files?.[0];
+
+		if (file) {
+			void this.settingsTransfer.import(file).catch(() => undefined);
+		}
+	}
+
+	testSystemNotification(): void {
+		this.alertTestStatus.set('Отправляем…');
+		void this.systemAlertsRuntime
+			.testNotification()
+			.then((ok) =>
+				this.alertTestStatus.set(
+					ok ? 'Уведомление отправлено. Проверьте системный центр.' : 'Системные уведомления доступны только в desktop-приложении.',
+				),
+			)
+			.catch((error) =>
+				this.alertTestStatus.set(
+					`Не удалось отправить: ${error instanceof Error ? error.message : String(error)}`,
+				),
+			);
+	}
+
+	updateAlertMessage(rule: SystemAlertRule, event: Event): void {
+		this.systemAlerts.update(rule.id, {
+			message: (event.target as HTMLInputElement).value,
+		});
 	}
 
 	selectSection(index: number): void {

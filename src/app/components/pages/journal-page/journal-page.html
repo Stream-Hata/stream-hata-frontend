@@ -1,0 +1,88 @@
+<div class="jk-page journal-page">
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">{{ i18n.t('journal.title') }}</h1>
+      <p class="jk-caption">{{ i18n.t('journal.subtitle') }}</p>
+    </div>
+    <div class="jk-page-actions">
+      <button type="button" appearance="secondary" size="s" tuiButton (click)="downloadReport()">
+        <tui-icon icon="@tui.download" />
+        {{ i18n.t('journal.download') }}
+      </button>
+      <button type="button" appearance="primary" size="s" tuiButton (click)="copyReport()">
+        <tui-icon icon="@tui.copy" />
+        {{ i18n.t('journal.copy') }}
+      </button>
+    </div>
+  </header>
+
+  <section class="jk-card journal-compose">
+    <tui-textfield class="journal-input">
+      <input
+        tuiInput
+        placeholder="{{ i18n.t('journal.placeholder') }}"
+        [value]="draft()"
+        (input)="draft.set($any($event.target).value)"
+        (keydown.enter)="addNote()"
+      />
+    </tui-textfield>
+    <button type="button" appearance="primary" size="s" tuiButton (click)="addNote()">{{ i18n.t('journal.add') }}</button>
+    <button type="button" appearance="secondary" size="s" tuiButton (click)="journal.add('Маркер момента', 'marker')">{{ i18n.t('journal.marker') }}</button>
+  </section>
+
+  <div class="journal-grid">
+    <section class="jk-card journal-list">
+      <div class="journal-list-head">
+        <h2 class="jk-h4">{{ i18n.t('journal.entries') }}</h2>
+        @if (journal.entries().length) {
+          <button type="button" appearance="flat" size="xs" tuiButton (click)="journal.clear()">{{ i18n.t('journal.clear') }}</button>
+        }
+      </div>
+      @for (entry of journal.entries().slice().reverse(); track entry.id) {
+        <article class="journal-entry" [class.journal-marker]="entry.kind === 'marker'">
+          <span class="journal-time">{{ time(entry.at) }}</span>
+          <span class="journal-kind">{{ entry.kind === 'marker' ? 'Маркер' : 'Заметка' }}</span>
+          <span class="journal-text">{{ entry.text }}</span>
+          <button type="button" appearance="flat" size="xs" tuiButton (click)="journal.remove(entry.id)">×</button>
+        </article>
+      } @empty {
+        <p class="jk-caption">{{ i18n.t('journal.empty') }}</p>
+      }
+    </section>
+
+    <section class="jk-card journal-report">
+      <div class="journal-list-head">
+        <h2 class="jk-h4">{{ i18n.t('journal.report') }}</h2>
+        @if (status()) {
+          <span class="jk-caption">{{ status() }}</span>
+        }
+      </div>
+      @if (state().current ?? state().history[0]; as session) {
+        <div class="journal-stats">
+          <div><span>{{ i18n.t('journal.peak') }}</span><strong>{{ session.peakViewers }}</strong></div>
+          <div><span>{{ i18n.t('journal.average') }}</span><strong>{{ session.avgViewers.toFixed(0) }}</strong></div>
+          <div><span>{{ i18n.t('journal.chatters') }}</span><strong>{{ session.chatters }}</strong></div>
+          <div><span>{{ i18n.t('journal.messages') }}</span><strong>{{ session.messages }}</strong></div>
+        </div>
+      } @else {
+        <p class="jk-caption">{{ i18n.t('journal.noSession') }}</p>
+      }
+      <pre class="journal-preview">{{ report() }}</pre>
+    </section>
+  </div>
+
+  <section class="jk-card journal-saved">
+    <h2 class="jk-h4">{{ i18n.t('journal.saved') }}</h2>
+    @for (report of reportService.reports(); track report.id) {
+      <div class="journal-entry">
+        <span class="journal-time">{{ report.session.startedAt.slice(0, 10) }}</span>
+        <span class="journal-kind">Отчёт</span>
+        <span class="journal-text">Пик {{ report.session.peakViewers }} · сообщений {{ report.session.messages }}</span>
+        <button type="button" appearance="flat" size="xs" tuiButton (click)="downloadSaved(report)">Скачать</button>
+        <button type="button" appearance="flat" size="xs" tuiButton (click)="reportService.remove(report.id)">×</button>
+      </div>
+    } @empty {
+      <p class="jk-caption">{{ i18n.t('journal.noSaved') }}</p>
+    }
+  </section>
+</div>

@@ -2,6 +2,7 @@ import { Component, computed, inject } from '@angular/core';
 import { AlertsService } from '@shared/services/alerts.service';
 import { TuiButton, TuiIcon } from '@taiga-ui/core';
 import { RouterLink } from '@angular/router';
+import { NotificationCenterService } from '@shared/services/notification-center.service';
 
 interface Notice {
 	id: string;
@@ -49,6 +50,7 @@ function formatTime(value: string): string {
 })
 export default class NotificationsPage {
 	private readonly alertsService = inject(AlertsService);
+	private readonly center = inject(NotificationCenterService);
 	private readonly alerts = this.alertsService.state;
 
 	readonly notices = computed<Notice[]>(() =>
@@ -70,9 +72,21 @@ export default class NotificationsPage {
 		}),
 	);
 
-	readonly hasUnread = computed(() => this.alertsService.unreadCount() > 0);
+	readonly systemNotices = computed(() => this.center.items());
+	readonly hasUnread = computed(
+		() => this.alertsService.unreadCount() > 0 || this.center.unread() > 0,
+	);
 
 	markAllRead(): void {
 		this.alertsService.markAllRead();
+		this.center.markAllRead();
+	}
+
+	clearSystem(): void {
+		this.center.clear();
+	}
+
+	formatNoticeTime(value: string): string {
+		return formatTime(value);
 	}
 }

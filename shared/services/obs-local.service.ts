@@ -1,6 +1,6 @@
-import type { ObsStatus } from '@shared/types/stream';
+import type { ObsSceneSnapshot, ObsStats, ObsStatus, ObsTransform } from '@shared/types/stream';
 import { Injectable } from '@angular/core';
-import { Observable, from, of, throwError } from 'rxjs';
+import { from, Observable, of, throwError } from 'rxjs';
 
 interface ObsMessage {
 	op: number;
@@ -13,20 +13,42 @@ interface ObsResponse {
 	responseData?: Record<string, unknown>;
 }
 
+type TauriInvoke = (command: string, args?: Record<string, unknown>) => Promise<unknown>;
+
 @Injectable({ providedIn: 'root' })
 export class ObsLocalService {
 	private readonly tauriInvoke = (() => {
-		const internals = (window as unknown as { __TAURI_INTERNALS__?: { invoke?: (command: string, args?: Record<string, unknown>) => Promise<unknown> } }).__TAURI_INTERNALS__;
-		const global = (window as unknown as { __TAURI__?: { invoke?: (command: string, args?: Record<string, unknown>) => Promise<unknown>; core?: { invoke?: (command: string, args?: Record<string, unknown>) => Promise<unknown> } } }).__TAURI__;
+		const internals = (
+			window as unknown as { __TAURI_INTERNALS__?: { invoke?: TauriInvoke } }
+		).__TAURI_INTERNALS__;
+		const global = (
+			window as unknown as {
+				__TAURI__?: {
+					invoke?: TauriInvoke;
+					core?: { invoke?: TauriInvoke };
+				};
+			}
+		).__TAURI__;
 
 		return internals?.invoke ?? global?.core?.invoke ?? global?.invoke;
 	})();
+
+	get desktop(): boolean {
+		return Boolean(this.tauriInvoke);
+	}
+
 	private socket: WebSocket | null = null;
 	private identified = false;
 	private url = 'ws://127.0.0.1:4455';
 	private password = '';
 	private requestId = 0;
-	private pending = new Map<string, { resolve: (value: Record<string, unknown>) => void; reject: (error: Error) => void }>();
+	private pending = new Map<
+		string,
+		{
+			resolve: (value: Record<string, unknown>) => void;
+			reject: (error: Error) => void;
+		}
+	>();
 
 	connect(url: string, password: string): Observable<ObsStatus> {
 		if (this.tauriInvoke) {
@@ -73,6 +95,18 @@ export class ObsLocalService {
 				clearInterval(timer);
 			};
 		});
+	}
+
+	autoConnect(): Observable<ObsStatus> {
+		if (this.tauriInvoke) {
+			return from(this.tauriInvoke('obs_auto_connect').then((status) => status as ObsStatus));
+		}
+
+		return throwError(() => new Error('Автоподключение OBS доступно только в desktop-приложении'));
+	}
+
+	stats(): Observable<ObsStats> {
+		return from(this.invokeDesktop('obs_stats', {}) as Observable<ObsStats>);
 	}
 
 	status(): Observable<ObsStatus> {
@@ -128,11 +162,83 @@ export class ObsLocalService {
 
 		return from(
 			this.request('GetInputMute', { inputName: input }).then((data) => {
-				const muted = !Boolean(data['inputMuted']);
+				const muted = !data['inputMuted'];
 
 				return this.request('SetInputMute', { inputName: input, inputMuted: muted }).then(() => ({ muted }));
 			}),
 		);
+	}
+
+	sceneItems(scene: string): Observable<ObsSceneSnapshot> {
+		if (!this.tauriInvoke) {
+			return throwError(() => new Error('Визуальный редактор доступен только в desktop-приложении'));
+		}
+
+		return from(this.tauriInvoke('obs_scene_items', { scene }).then((value) => value as ObsSceneSnapshot));
+	}
+
+	sceneScreenshot(scene: string): Observable<string> {
+		if (!this.tauriInvoke) {
+			return throwError(() => new Error('Визуальный редактор доступен только в desktop-приложении'));
+		}
+
+		return from(this.tauriInvoke('obs_scene_screenshot', { scene }).then((value) => String(value)));
+	}
+
+	updateSceneItemTransform(scene: string, id: number, transform: ObsTransform): Observable<unknown> {
+		if (!this.tauriInvoke) {
+			return throwError(() => new Error('Визуальный редактор доступен только в desktop-приложении'));
+		}
+
+		return from(this.tauriInvoke('obs_scene_item_transform', { scene, id, transform }));
+	}
+
+	setSceneItemEnabled(scene: string, id: number, enabled: boolean): Observable<unknown> {
+		return this.invokeDesktop('obs_scene_item_enabled', { scene, id, enabled });
+	}
+
+	setSceneItemLocked(scene: string, id: number, locked: boolean): Observable<unknown> {
+		return this.invokeDesktop('obs_scene_item_locked', { scene, id, locked });
+	}
+
+	setSceneItemIndex(scene: string, id: number, index: number): Observable<unknown> {
+		return this.invokeDesktop('obs_scene_item_index', { scene, id, index });
+	}
+
+	removeSceneItem(scene: string, id: number): Observable<unknown> {
+		return this.invokeDesktop('obs_scene_item_remove', { scene, id });
+	}
+
+	createSceneItem(scene: string, source: string): Observable<unknown> {
+		return this.invokeDesktop('obs_scene_item_create', { scene, source });
+	}
+
+	openInputProperties(input: string): Observable<unknown> {
+		return this.invokeDesktop('obs_open_input_properties', { input });
+	}
+
+	inputSettings(input: string): Observable<Record<string, unknown>> {
+		return this.invokeDesktop('obs_input_settings', { input }) as Observable<Record<string, unknown>>;
+	}
+
+	setInputSettings(input: string, settings: Record<string, unknown>): Observable<unknown> {
+		return this.invokeDesktop('obs_set_input_settings', { input, settings });
+	}
+
+	deleteScene(scene: string): Observable<unknown> {
+		return this.invokeDesktop('obs_scene_delete', { scene });
+	}
+
+	renameScene(scene: string, name: string): Observable<unknown> {
+		return this.invokeDesktop('obs_scene_rename', { scene, name });
+	}
+
+	private invokeDesktop(command: string, args: Record<string, unknown>): Observable<unknown> {
+		if (!this.tauriInvoke) {
+			return throwError(() => new Error('OBS доступен только в desktop-приложении'));
+		}
+
+		return from(this.tauriInvoke(command, args));
 	}
 
 	output(output: string, action: string): Observable<unknown> {

@@ -1,8 +1,8 @@
 <div class="jk-page profile-page">
 	<header class="jk-page-header">
 		<div class="jk-page-header-text">
-			<h1 class="jk-h1">Профиль</h1>
-			<p class="jk-caption">Twitch, Steam и библиотека игр.</p>
+			<h1 class="jk-h1">{{ i18n.t('profile.title') }}</h1>
+			<p class="jk-caption">{{ i18n.t('profile.subtitle') }}</p>
 		</div>
 
 		<div class="jk-page-actions">
@@ -29,14 +29,14 @@
 				<span class="jk-caption">twitch.tv/{{ login() }}</span>
 				<div class="profile-badges">
 					@if (connected()) {
-						<span appearance="positive" tuiBadge>Twitch подключён</span>
+						<span appearance="positive" tuiBadge>{{ i18n.t('profile.twitchConnected') }}</span>
 					} @else {
-						<span appearance="warning" tuiBadge>Twitch не подключён</span>
+						<span appearance="warning" tuiBadge>{{ i18n.t('profile.twitchOffline') }}</span>
 					}
 					@if (online()) {
 						<span appearance="info" tuiBadge>В эфире · {{ viewers() }} зрителей</span>
 					} @else {
-						<span appearance="neutral" tuiBadge>Не в эфире</span>
+						<span appearance="neutral" tuiBadge>{{ i18n.t('profile.offline') }}</span>
 					}
 				</div>
 			</div>
@@ -53,7 +53,7 @@
 					<span class="profile-name">{{ player.personaName }}</span>
 					<span class="jk-caption">Steam ID {{ player.steamId }}</span>
 					<div class="profile-badges">
-						<span appearance="positive" tuiBadge>Steam подключён</span>
+						<span appearance="positive" tuiBadge>{{ i18n.t('profile.steamConnected') }}</span>
 						<span appearance="info" tuiBadge>{{ steamGameCountLabel() }}</span>
 					</div>
 				</div>
@@ -73,7 +73,7 @@
 				<div class="profile-info">
 					<span class="profile-name">Steam</span>
 					<span class="jk-caption"
-						>Подключите аккаунт, чтобы подтянуть профиль и библиотеку игр.</span
+						>{{ i18n.t('profile.connectHint') }}</span
 					>
 				</div>
 				<button appearance="primary" size="s" tuiButton type="button" (click)="linkSteam()">
@@ -88,8 +88,8 @@
 		[activeItemIndex]="section() === 'info' ? 0 : 1"
 		(activeItemIndexChange)="section.set($event === 0 ? 'info' : 'games')"
 	>
-		<button type="button">Основная информация</button>
-		<button type="button">Игры и инвентарь</button>
+		<button type="button">{{ i18n.t('profile.mainInfo') }}</button>
+		<button type="button">{{ i18n.t('profile.games') }}</button>
 	</tui-segmented>
 
 	@if (section() === 'info') {
@@ -97,18 +97,18 @@
 			<section class="jk-card info-card">
 				<h2 class="jk-h4">Twitch</h2>
 				<div class="info-row">
-					<span class="jk-label">Фолловеры</span><span class="info-value">{{ followers() }}</span>
+					<span class="jk-label">{{ i18n.t('profile.followers') }}</span><span class="info-value">{{ followers() }}</span>
 				</div>
 				<div class="info-row">
-					<span class="jk-label">Подписчики</span
+					<span class="jk-label">{{ i18n.t('profile.subscribers') }}</span
 					><span class="info-value">{{ subscribers() }}</span>
 				</div>
 				<div class="info-row">
-					<span class="jk-label">Зрителей в чате</span
+					<span class="jk-label">{{ i18n.t('profile.chatters') }}</span
 					><span class="info-value">{{ chatters() }}</span>
 				</div>
 				<div class="info-row">
-					<span class="jk-label">Роль в панели</span><span class="info-value">{{ role() }}</span>
+					<span class="jk-label">{{ i18n.t('profile.panelRole') }}</span><span class="info-value">{{ role() }}</span>
 				</div>
 				<div class="info-row">
 					<span class="jk-label">Twitch ID</span><span class="info-value">{{ twitchId() }}</span>
@@ -116,25 +116,25 @@
 			</section>
 
 			<section class="jk-card info-card">
-				<h2 class="jk-h4">Стрим</h2>
+				<h2 class="jk-h4">{{ i18n.t('profile.stream') }}</h2>
 				<div class="info-row">
-					<span class="jk-label">Статус</span
-					><span class="info-value">{{ online() ? 'В эфире' : 'Не в эфире' }}</span>
+					<span class="jk-label">{{ i18n.t('profile.status') }}</span
+					><span class="info-value">{{ online() ? 'В эфире' : i18n.t('profile.offline') }}</span>
 				</div>
 				<div class="info-row">
-					<span class="jk-label">Название</span><span class="info-value">{{ streamTitle() }}</span>
+					<span class="jk-label">{{ i18n.t('profile.streamTitle') }}</span><span class="info-value">{{ streamTitle() }}</span>
 				</div>
 				<div class="info-row">
-					<span class="jk-label">Игра</span><span class="info-value">{{ streamGame() }}</span>
+					<span class="jk-label">{{ i18n.t('profile.game') }}</span><span class="info-value">{{ streamGame() }}</span>
 				</div>
 				<div class="info-row">
-					<span class="jk-label">Начало</span><span class="info-value">{{ streamStarted() }}</span>
+					<span class="jk-label">{{ i18n.t('profile.start') }}</span><span class="info-value">{{ streamStarted() }}</span>
 				</div>
 				<div class="info-row">
-					<span class="jk-label">Язык</span><span class="info-value">{{ streamLanguage() }}</span>
+					<span class="jk-label">{{ i18n.t('profile.language') }}</span><span class="info-value">{{ streamLanguage() }}</span>
 				</div>
 				<div class="info-row">
-					<span class="jk-label">Теги</span
+					<span class="jk-label">{{ i18n.t('profile.tags') }}</span
 					><span class="info-value">{{ streamTags() || '—' }}</span>
 				</div>
 			</section>
@@ -143,7 +143,7 @@
 				<h2 class="jk-h4">Steam</h2>
 				@if (steam()?.player; as player) {
 					<div class="info-row">
-						<span class="jk-label">Аккаунт</span
+						<span class="jk-label">{{ i18n.t('profile.account') }}</span
 						><span class="info-value">{{ player.personaName }}</span>
 					</div>
 					<div class="info-row">
@@ -151,18 +151,18 @@
 						><span class="info-value">{{ player.steamId }}</span>
 					</div>
 					<div class="info-row">
-						<span class="jk-label">Страна</span
+						<span class="jk-label">{{ i18n.t('profile.country') }}</span
 						><span class="info-value">{{ player.country || '—' }}</span>
 					</div>
 					<div class="info-row">
-						<span class="jk-label">Игр в библиотеке</span
+						<span class="jk-label">{{ i18n.t('profile.gamesCount') }}</span
 						><span class="info-value">{{ steamGameCount() }}</span>
 					</div>
 					<a [href]="player.profileUrl" target="_blank" rel="noopener" tuiLink
-						>Открыть профиль Steam</a
+						>{{ i18n.t('profile.openSteam') }}</a
 					>
 				} @else {
-					<p class="jk-body-sm jk-muted">Steam ещё не подключён.</p>
+					<p class="jk-body-sm jk-muted">{{ i18n.t('profile.noSteam') }}</p>
 					<button appearance="primary" size="s" tuiButton type="button" (click)="linkSteam()">
 						Подключить Steam
 					</button>
@@ -256,21 +256,21 @@
 				} @else if (steamLibraryLoading()) {
 					<div class="jk-empty">
 						<tui-icon icon="@tui.loader" />
-						<span class="jk-h4">Загружаем библиотеку Steam</span>
-						<span class="jk-caption">Это может занять несколько секунд.</span>
+						<span class="jk-h4">{{ i18n.t('profile.loadingSteam') }}</span>
+						<span class="jk-caption">{{ i18n.t('profile.loadingHint') }}</span>
 					</div>
 				} @else {
 					<div class="jk-empty">
 						<tui-icon icon="@tui.gamepad-2" />
-						<span class="jk-h4">Игры не найдены</span>
-						<span class="jk-caption">Подключите Steam или измените запрос.</span>
+						<span class="jk-h4">{{ i18n.t('profile.noGames') }}</span>
+						<span class="jk-caption">{{ i18n.t('profile.noGamesHint') }}</span>
 					</div>
 				}
 			</section>
 		} @else if (tab() === 'inventory') {
 			<section class="jk-card">
 				<div class="profile-toolbar">
-					<span class="jk-label">Сортировка</span>
+					<span class="jk-label">{{ i18n.t('profile.sort') }}</span>
 					<tui-segmented
 						[activeItemIndex]="
 							inventorySort() === 'name' ? 0 : inventorySort() === 'amount' ? 1 : 2
@@ -279,7 +279,7 @@
 							inventorySort.set($event === 1 ? 'amount' : $event === 2 ? 'type' : 'name')
 						"
 					>
-						<button type="button">Название</button>
+						<button type="button">{{ i18n.t('profile.streamTitle') }}</button>
 						<button type="button">Количество</button>
 						<button type="button">Тип</button>
 					</tui-segmented>

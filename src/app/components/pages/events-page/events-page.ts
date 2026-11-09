@@ -4,6 +4,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { signalControl } from '@shared/helpers/form-control';
 import { StreamEventsService } from '@shared/services/events.service';
+import { I18nService } from '@shared/services/i18n.service';
 import {
 	TuiTable,
 	TuiTableTbody,
@@ -86,6 +87,7 @@ const STATUS_BADGES: Record<string, string> = {
 	templateUrl: './events-page.html',
 })
 export default class EventsPage {
+	readonly i18n = inject(I18nService);
 	private readonly service = inject(StreamEventsService);
 	private readonly destroyRef = inject(DestroyRef);
 	private readonly injector = inject(Injector);

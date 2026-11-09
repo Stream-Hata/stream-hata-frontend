@@ -315,3 +315,15 @@
 		gap: 2px;
 	}
 }
+
+.faq-search-row {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.faq-search-row .faq-search {
+	flex: 1 1 320px;
+	margin-top: 0;
+}

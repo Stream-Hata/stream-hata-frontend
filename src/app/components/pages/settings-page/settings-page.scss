@@ -319,3 +319,93 @@ html[data-tauri] .settings-nav {
 	inset: -8px;
 	z-index: 3;
 }
+
+
+.system-alert-rule {
+	display: grid;
+	gap: 8px;
+	padding: 10px 0;
+	border-bottom: 1px solid var(--border-divider);
+}
+
+.system-alert-rule-head {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
+
+.system-alert-threshold {
+	width: 120px;
+	margin-left: auto;
+}
+
+.system-alert-message {
+	width: 100%;
+}
+
+
+.import-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 32px;
+	padding: 0 12px;
+	border: 1px solid var(--border-normal);
+	border-radius: var(--radius-sm);
+	color: var(--text-primary);
+	cursor: pointer;
+	font: var(--font-caption);
+}
+
+.import-button input {
+	display: none;
+}
+
+.cfg-head-inline {
+	display: flex;
+	justify-content: space-between;
+	gap: 12px;
+	align-items: center;
+}
+
+.auto-clip-types {
+	display: flex;
+	gap: 12px;
+	flex-wrap: wrap;
+	font: var(--font-caption);
+}
+
+.auto-clip-types label {
+	display: flex;
+	gap: 5px;
+	align-items: center;
+}
+
+.auto-clip-cooldown {
+	width: 140px;
+}
+
+
+.recovery-head {
+	margin-top: 18px;
+}
+
+.recovery-actions {
+	display: flex;
+	gap: 8px;
+}
+
+
+.notification-filters {
+	display: flex;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.notification-filter {
+	display: flex;
+	gap: 6px;
+	align-items: center;
+	color: var(--text-secondary);
+	font: var(--font-caption);
+}

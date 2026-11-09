@@ -1,7 +1,7 @@
 import type { GameSuggestion } from '@shared/services/suggestions.service';
 import type { TwitchResponse } from '@shared/services/twitch.service';
-import { Component, computed, effect, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { SuggestionsService } from '@shared/services/suggestions.service';
@@ -53,6 +53,8 @@ const PLATFORMS = ['PC', 'PlayStation', 'Xbox', 'Nintendo', 'Ретро-конс
 export default class SuggestGamePage {
 	private readonly suggestions = inject(SuggestionsService);
 	private readonly twitchService = inject(TwitchService);
+	private readonly destroyRef = inject(DestroyRef);
+	private readonly notifiedKey = 'nsh.suggestion-notified';
 
 	readonly platforms = PLATFORMS;
 	readonly services = ['RGG / cat.txt', 'Steam', 'IGDB', 'RAWG', 'MobyGames'];
@@ -113,6 +115,12 @@ export default class SuggestGamePage {
 
 	constructor() {
 		this.autoSearchControl.valueChanges.subscribe((enabled) => this.setAutoSearch(enabled));
+
+		setInterval(() => {
+			if (this.loggedIn()) {
+				this.loadMine();
+			}
+		}, 30000);
 
 		effect(() => {
 			if (this.loggedIn() && !this.mineRequested) {
@@ -216,9 +224,50 @@ export default class SuggestGamePage {
 
 	private loadMine(): void {
 		this.mineRequested = true;
-		this.suggestions.mine().subscribe({
-			next: (response) => this.mine.set(response.items),
-			error: () => this.mine.set([]),
-		});
+		this.suggestions
+			.mine()
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe({
+				next: (response) => {
+					this.mine.set(response.items);
+					this.notifyApproved(response.items);
+				},
+				error: () => this.mine.set([]),
+			});
+	}
+
+	private notifyApproved(items: GameSuggestion[]): void {
+		let notified: Record<string, boolean> = {};
+
+		try {
+			notified = JSON.parse(localStorage.getItem(this.notifiedKey) ?? '{}') as Record<string, boolean>;
+		} catch {
+			notified = {};
+		}
+
+		const fresh = items.filter((item) => item.status === 'approved' && !notified[String(item.id)]);
+
+		if (!fresh.length) {
+			return;
+		}
+		for (const item of fresh) {
+			notified[String(item.id)] = true;
+		}
+		try {
+			localStorage.setItem(this.notifiedKey, JSON.stringify(notified));
+		} catch {
+			// storage unavailable
+		}
+
+		const internals = (window as unknown as { __TAURI_INTERNALS__?: { invoke?: (command: string, args?: Record<string, unknown>) => Promise<unknown> } }).__TAURI_INTERNALS__;
+		if (!internals?.invoke) {
+			return;
+		}
+		for (const item of fresh) {
+			void internals.invoke('system_alert', {
+				title: 'StreamHata · Заявка на игру одобрена',
+				body: `«${item.title}» принята администрацией и добавлена в каталог.`,
+			});
+		}
 	}
 }

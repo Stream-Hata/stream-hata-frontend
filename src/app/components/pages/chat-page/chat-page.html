@@ -1,14 +1,14 @@
 <div class="jk-page">
   <header class="jk-page-header">
     <div class="jk-page-header-text">
-      <h1 class="jk-h1">Чат</h1>
-      <p class="jk-caption">Живой чат Twitch с эмотами · 7TV: {{ emoteCount() }} эмотов</p>
+      <h1 class="jk-h1">{{ i18n.t('chat.title') }}</h1>
+      <p class="jk-caption">{{ i18n.t('chat.subtitle') }} · 7TV: {{ emoteCount() }}</p>
     </div>
 
     <div class="jk-page-actions">
       <span class="live-chip">
         <span class="jk-dot jk-dot-live"></span>
-        Live-подключение
+        {{ i18n.t('chat.live') }}
       </span>
     </div>
   </header>
@@ -68,18 +68,47 @@
       } @else {
         <div class="jk-empty chat-empty">
           <span class="jk-empty-icon"><tui-icon icon="@tui.message-circle" /></span>
-          <span class="jk-h4">Чат пуст</span>
+          <span class="jk-h4">{{ i18n.t('chat.empty') }}</span>
           <span class="jk-body-sm jk-muted">
-            Сообщения появятся, как только стример авторизует Twitch и начнёт эфир.
+            {{ i18n.t('chat.emptyHint') }}
           </span>
         </div>
+      }
+      <div class="chat-composer">
+        <tui-textfield class="chat-target">
+          <input
+            tuiInput
+            type="text"
+            [placeholder]="i18n.t('chat.target')"
+            [value]="target()"
+            (input)="target.set($any($event.target).value)"
+          />
+        </tui-textfield>
+        <tui-textfield class="chat-message">
+          <input
+            tuiInput
+            type="text"
+            maxlength="500"
+            [placeholder]="i18n.t('chat.placeholder')"
+            [value]="draft()"
+            (input)="draft.set($any($event.target).value)"
+            (keydown.enter)="send()"
+          />
+        </tui-textfield>
+        <button type="button" appearance="primary" tuiButton [disabled]="sending()" (click)="send()">
+          <tui-icon icon="@tui.send" />
+          {{ i18n.t('chat.send') }}
+        </button>
+      </div>
+      @if (sendError()) {
+        <p class="error-text">{{ sendError() }}</p>
       }
     </section>
 
     <aside class="jk-card emotes-card">
       <div class="emotes-head">
-        <h2 class="jk-h4">7TV эмоты</h2>
-        <span class="jk-caption">канал + глобальные</span>
+        <h2 class="jk-h4">{{ i18n.t('chat.emotes') }}</h2>
+        <span class="jk-caption">{{ i18n.t('chat.emotesHint') }}</span>
       </div>
 
       @if (emoteStrip().length) {

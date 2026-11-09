@@ -1,8 +1,8 @@
 <div class="jk-page">
   <header class="jk-page-header">
     <div class="jk-page-header-text">
-      <h1 class="jk-h1">События</h1>
-      <p class="jk-caption">План эфиров, голосования, таймеры и достижения канала.</p>
+      <h1 class="jk-h1">{{ i18n.t('events.title') }}</h1>
+      <p class="jk-caption">{{ i18n.t('events.subtitle') }}</p>
     </div>
 
     <div class="jk-page-actions">
@@ -15,7 +15,7 @@
 
   @if (formOpen()) {
     <section class="jk-card event-form" [formGroup]="eventForm">
-      <h2 class="jk-h4">Новое событие</h2>
+      <h2 class="jk-h4">{{ i18n.t('events.create') }}</h2>
 
       <tui-textfield>
         <input
@@ -108,11 +108,11 @@
             <table tuiTable>
               <thead tuiThead>
                 <tr>
-                  <th tuiTh>Событие</th>
-                  <th tuiTh>Тип</th>
-                  <th tuiTh>Дата</th>
-                  <th tuiTh>Статус</th>
-                  <th tuiTh>Действия</th>
+                  <th tuiTh>{{ i18n.t('events.event') }}</th>
+                  <th tuiTh>{{ i18n.t('events.type') }}</th>
+                  <th tuiTh>{{ i18n.t('events.date') }}</th>
+                  <th tuiTh>{{ i18n.t('events.status') }}</th>
+                  <th tuiTh>{{ i18n.t('events.actions') }}</th>
                 </tr>
               </thead>
 
@@ -163,10 +163,10 @@
         } @else {
           <div class="jk-card jk-empty">
             <span class="jk-empty-icon"><tui-icon icon="@tui.calendar-days" /></span>
-            <span class="jk-h4">Событий пока нет</span>
+            <span class="jk-h4">{{ i18n.t('events.empty') }}</span>
             <span
               class="jk-body-sm jk-muted"
-            >Создайте первое событие — оно появится здесь и на дашборде.</span
+            >{{ i18n.t('events.emptyHint') }}</span
           >
         </div>
       }

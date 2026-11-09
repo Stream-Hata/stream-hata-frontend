@@ -1,0 +1,84 @@
+<div class="jk-page status-page">
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">Статус StreamHata</h1>
+      <p class="jk-caption">
+        Состояние сервисов и история инцидентов.
+      </p>
+    </div>
+    <button type="button" appearance="flat" tuiButton [disabled]="loading()" (click)="load()">
+      Обновить
+    </button>
+  </header>
+
+  @if (error()) {
+    <section class="jk-card status-error">
+      <p class="error-text">{{ error() }}</p>
+      <button type="button" appearance="secondary" tuiButton (click)="load()">Повторить</button>
+    </section>
+  } @else if (data(); as data) {
+    <section class="jk-card status-overall" [class]="'status-' + data.status">
+      <div>
+        <span class="jk-label">Общий статус</span>
+        <h2 class="jk-h2">{{ statusLabel(data.status) }}</h2>
+      </div>
+      <span class="jk-caption">Проверено {{ data.checkedAt | date: 'dd.MM.yyyy HH:mm:ss' }}</span>
+    </section>
+
+    <section class="jk-card">
+      <h2 class="jk-h2">Сервисы</h2>
+      <div class="status-services">
+        @for (service of data.services; track service.key) {
+          <article class="status-service" [class]="'status-' + service.state">
+            <div class="status-service-head">
+              <strong>{{ service.name }}</strong>
+              <span class="status-pill">{{ statusLabel(service.state) }}</span>
+            </div>
+            <p class="jk-caption">
+              {{ service.detail }}
+              @if (service.latencyMs > 0) {
+                · {{ service.latencyMs }} ms
+              }
+            </p>
+          </article>
+        }
+      </div>
+    </section>
+
+    <section class="jk-card">
+      <h2 class="jk-h2">Инциденты</h2>
+      @if (data.incidents.length === 0) {
+        <p class="jk-caption">Активных и недавних инцидентов нет.</p>
+      } @else {
+        <div class="status-incidents">
+          @for (incident of data.incidents; track incident.id) {
+            <article class="status-incident" [class]="'status-' + incident.status">
+              <div class="status-incident-head">
+                <div class="status-incident-names">
+                  <strong>{{ incidentTitle(incident) }}</strong>
+                  <span class="status-code">{{ incident.code }}</span>
+                </div>
+                <span class="status-pill">{{ incidentStatusLabel(incident.status) }}</span>
+              </div>
+              <h3 class="jk-h3">{{ incident.title }}</h3>
+              @if (incident.description) {
+                <p class="jk-caption">{{ incident.description }}</p>
+              }
+              <div class="status-incident-meta">
+                <span>Критичность: {{ severityLabel(incident.severity) }}</span>
+                <span>Начало: {{ incident.startedAt | date: 'dd.MM.yyyy HH:mm' }}</span>
+                @if (incident.resolvedAt) {
+                  <span>Решено: {{ incident.resolvedAt | date: 'dd.MM.yyyy HH:mm' }}</span>
+                }
+              </div>
+            </article>
+          }
+        </div>
+      }
+    </section>
+  } @else {
+    <section class="jk-card">
+      <p class="jk-caption">Загружаем статус…</p>
+    </section>
+  }
+</div>

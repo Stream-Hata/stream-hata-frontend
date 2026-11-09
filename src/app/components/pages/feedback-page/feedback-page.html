@@ -1,195 +1,379 @@
 <div class="jk-page feedback-page">
-	<header class="jk-page-header">
-		<div class="jk-page-header-text">
-			<h1 class="jk-h1">Обратная связь</h1>
-			<p class="jk-caption">
-				Баг, предложение или отзыв. Баги и предложения создают issue в GitHub.
-			</p>
-		</div>
-	</header>
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">Обратная связь</h1>
+      <p class="jk-caption">
+        Баг, предложение или отзыв. Баги и предложения создают issue в GitHub.
+      </p>
+    </div>
+  </header>
 
-	<section class="jk-card feedback-form">
-		<label>
-			<span class="jk-label">Что сломалось / где проблема</span>
-			<tui-textfield tuiChevron>
-				<input [readonly]="true" tuiInput tuiSelectLike [value]="areaLabel()" />
-				<tui-data-list-wrapper
-					*tuiDropdown
-					[items]="areaLabels"
-					(itemClick)="setArea($event)"
-				></tui-data-list-wrapper>
-			</tui-textfield>
-		</label>
-		<label>
-			<span class="jk-label">Тип обращения</span>
-			<tui-textfield tuiChevron>
-				<input [readonly]="true" tuiInput tuiSelectLike [value]="kindLabel()" />
-				<tui-data-list-wrapper
-					*tuiDropdown
-					[items]="kindLabels"
-					(itemClick)="setKind($event)"
-				></tui-data-list-wrapper>
-			</tui-textfield>
-		</label>
-		@if (kind() !== 'feedback') {
-			<label>
-				<span class="jk-label">Критичность</span>
-				<tui-textfield tuiChevron>
-					<input [readonly]="true" tuiInput tuiSelectLike [value]="severityLabel()" />
-					<tui-data-list-wrapper
-						*tuiDropdown
-						[items]="severityLabels"
-						(itemClick)="setSeverity($event)"
-					></tui-data-list-wrapper>
-				</tui-textfield>
-			</label>
-		}
-		<label>
-			<span class="jk-label">Платформа</span>
-			<tui-textfield tuiChevron>
-				<input [readonly]="true" tuiInput tuiSelectLike [value]="platformLabel()" />
-				<tui-data-list-wrapper
-					*tuiDropdown
-					[items]="platformOptions"
-					(itemClick)="setPlatform($event)"
-				></tui-data-list-wrapper>
-			</tui-textfield>
-		</label>
-		<label>
-			<span class="jk-label">Причина</span>
-			<tui-textfield tuiChevron>
-				<input
-					tuiInput
-					tuiSelectLike
-					[value]="reasonQuery()"
-					(input)="reasonQuery.set($any($event.target).value)"
-					placeholder="Начни вводить причину…"
-				/>
-				<tui-data-list-wrapper
-					*tuiDropdown
-					[items]="filteredGroups().items"
-					[labels]="filteredGroups().labels"
-					(itemClick)="addReason($event)"
-				></tui-data-list-wrapper>
-			</tui-textfield>
-		</label>
-		<div class="feedback-reasons">
-			@for (reason of reasons(); track reason) {
-				<span class="feedback-reason-chip">
-					{{ reason }}
-					<button type="button" appearance="flat" size="xs" tuiButton (click)="removeReason(reason)">×</button>
-				</span>
-			}
-			@if (customReasonVisible()) {
-				<div class="feedback-custom-reason">
-				<tui-textfield>
-					<input
-						tuiInput
-						[value]="customReason()"
-						(input)="customReason.set($any($event.target).value)"
-						placeholder="Своя причина…"
-						(keydown.enter)="addCustomReason()"
-					/>
-				</tui-textfield>
-					<button type="button" appearance="flat" tuiButton (click)="addCustomReason()">Добавить</button>
-				</div>
-			}
-		</div>
-		<label>
-			<span class="jk-label">Заголовок · {{ prefixPreview() }}</span>
-			<tui-textfield
-				><input tuiInput [value]="title()" (input)="title.set($any($event.target).value)"
-			/></tui-textfield>
-		</label>
-		<label>
-			<span class="jk-label">Описание</span>
-			<tui-editor [formControl]="descriptionControl" />
-		</label>
-		<label>
-			<span class="jk-label">Дополнения</span>
-			<div class="feedback-attachments">
-				@for (attachment of attachments(); track $index; let index = $index) {
-					<div class="feedback-attachment-row">
-						<tui-textfield>
-							<input tuiInput [value]="attachment.label" (input)="updateAttachment(index, 'label', $event)" placeholder="Название" />
-						</tui-textfield>
-						<tui-textfield>
-							<input tuiInput [value]="attachment.url" (input)="updateAttachment(index, 'url', $event)" placeholder="https://vimeo.com/..." />
-						</tui-textfield>
-						<button type="button" class="tg-toggle" [class.tg-toggle-on]="attachment.enabled" (click)="toggleAttachment(index)"><span></span></button>
-						<button type="button" appearance="flat" size="s" tuiButton (click)="removeAttachment(index)">×</button>
-					</div>
-				}
-				<button type="button" appearance="flat" tuiButton (click)="addAttachment()">Добавить ссылку</button>
-			</div>
-		</label>
-		<label>
-			<span class="jk-label">Шаги воспроизведения</span>
-			<tui-textfield>
-				<textarea
-					rows="4"
-					tuiTextarea
-					[value]="steps()"
-					(input)="steps.set($any($event.target).value)"
-				></textarea>
-			</tui-textfield>
-		</label>
-		<div class="feedback-row">
-			<label>
-				<span class="jk-label">Ожидалось</span>
-				<tui-textfield
-					><input tuiInput [value]="expected()" (input)="expected.set($any($event.target).value)"
-				/></tui-textfield>
-			</label>
-			<label>
-				<span class="jk-label">Фактически</span>
-				<tui-textfield
-					><input tuiInput [value]="actual()" (input)="actual.set($any($event.target).value)"
-				/></tui-textfield>
-			</label>
-		</div>
-		<div class="feedback-row">
-			<label>
-				<span class="jk-label">Версия</span>
-				<tui-textfield tuiChevron>
-					<input [readonly]="true" tuiInput tuiSelectLike [value]="versionLabel()" />
-					<tui-data-list-wrapper
-						*tuiDropdown
-						[items]="versionOptions"
-						(itemClick)="setVersion($event)"
-					></tui-data-list-wrapper>
-				</tui-textfield>
-			</label>
-			<label>
-				<span class="jk-label">Контакт</span>
-				<tui-textfield
-					><input
-						tuiInput
-						[value]="contact()"
-						(input)="contact.set($any($event.target).value)"
-						placeholder="Discord / Telegram"
-				/></tui-textfield>
-			</label>
-		</div>
-		<label class="feedback-honeypot">
-			<span>Website</span>
-			<input
-				[value]="website()"
-				(input)="website.set($any($event.target).value)"
-				tabindex="-1"
-				autocomplete="off"
-			/>
-		</label>
+  @if (authLoading()) {
+    <section class="jk-card feedback-auth">
+      <p class="jk-caption">Проверяем вход через Twitch…</p>
+    </section>
+  } @else if (!authenticated()) {
+    <section class="jk-card feedback-auth">
+      <h2 class="jk-h2">Нужен вход через Twitch</h2>
+      <p class="jk-caption">
+        Отправлять багрепорты и прикреплять логи могут только авторизованные пользователи.
+      </p>
+      <button
+        type="button"
+        (click)="login()"
+        appearance="primary"
+        tuiButton
+      >Войти через Twitch</button>
+    </section>
+  } @else {
+    <section class="jk-card feedback-form">
+      <div class="feedback-author">
+        Отправитель: <strong>{{ author() }}</strong>
+        <span class="jk-caption">Twitch</span>
+        <button type="button" (click)="connectTelegram()" appearance="flat" tuiButton>
+          Уведомления в Telegram
+        </button>
+        @if (telegramMessage()) {
+          <span class="jk-caption">{{ telegramMessage() }}</span>
+        }
+      </div>
+      <div class="feedback-mine">
+        <div class="feedback-mine-head">
+          <strong>Мои обращения</strong>
+          <button type="button" (click)="toggleMine()" appearance="flat" tuiButton>
+            {{ mineVisible() ? 'Скрыть' : 'Показать' }}
+          </button>
+        </div>
+        @if (mineVisible()) {
+          @if (mineLoading()) {
+            <p class="jk-caption">Загружаем…</p>
+          } @else if (mineItems().length === 0) {
+            <p class="jk-caption">Обращений пока нет.</p>
+          } @else {
+            <div class="feedback-mine-list">
+              @for (item of mineItems(); track item.prefix + item.number) {
+                <a
+                  class="feedback-report-link"
+                  target="_blank"
+                  rel="noopener"
+                  [href]="item.issueUrl || '#'"
+                >
+                  <span>{{ item.prefix }}-{{ item.number.toString().padStart(3, '0') }} · {{ item.title }}</span>
+                  <span
+                    class="jk-caption"
+                  >{{ statusLabel(item.status) }} · {{ item.createdAt | date: 'dd.MM.yyyy HH:mm' }}</span>
+                </a>
+              }
+            </div>
+          }
+        }
+      </div>
+      <label>
+        <span class="jk-label">Что сломалось / где проблема</span>
+        <tui-textfield tuiChevron>
+          <input [readonly]="true" tuiInput tuiSelectLike [value]="areaLabel()" />
+          <tui-data-list-wrapper
+            *tuiDropdown
+            [items]="areaLabels"
+            (itemClick)="setArea($event)"
+          ></tui-data-list-wrapper>
+        </tui-textfield>
+      </label>
+      <label>
+        <span class="jk-label">Тип обращения</span>
+        <tui-textfield tuiChevron>
+          <input [readonly]="true" tuiInput tuiSelectLike [value]="kindLabel()" />
+          <tui-data-list-wrapper
+            *tuiDropdown
+            [items]="kindLabels"
+            (itemClick)="setKind($event)"
+          ></tui-data-list-wrapper>
+        </tui-textfield>
+      </label>
+      @if (kind() !== 'feedback') {
+        <label>
+          <span class="jk-label">Критичность</span>
+          <tui-textfield tuiChevron>
+            <input [readonly]="true" tuiInput tuiSelectLike [value]="severityLabel()" />
+            <tui-data-list-wrapper
+              *tuiDropdown
+              [items]="severityLabels"
+              (itemClick)="setSeverity($event)"
+            ></tui-data-list-wrapper>
+          </tui-textfield>
+        </label>
+      }
+      <label>
+        <span class="jk-label">Платформа</span>
+        <tui-textfield tuiChevron>
+          <input [readonly]="true" tuiInput tuiSelectLike [value]="platformLabel()" />
+          <tui-data-list-wrapper
+            *tuiDropdown
+            [items]="platformOptions"
+            (itemClick)="setPlatform($event)"
+          ></tui-data-list-wrapper>
+        </tui-textfield>
+      </label>
+      <label>
+        <span class="jk-label">Причина</span>
+        <tui-textfield tuiChevron>
+          <input
+            placeholder="Начни вводить причину…"
+            [value]="reasonQuery()"
+            (input)="reasonQuery.set($any($event.target).value)"
+            tuiInput
+            tuiSelectLike
+            />
+            <tui-data-list-wrapper
+              *tuiDropdown
+              [items]="filteredGroups().items"
+              [labels]="filteredGroups().labels"
+              (itemClick)="addReason($event)"
+            ></tui-data-list-wrapper>
+          </tui-textfield>
+        </label>
+        <div class="feedback-reasons">
+          @for (reason of reasons(); track reason) {
+            <span class="feedback-reason-chip">
+              {{ reason }}
+              <button
+                type="button"
+                size="xs"
+                (click)="removeReason(reason)"
+                appearance="flat"
+                tuiButton
+              >×</button>
+            </span>
+          }
+          @if (customReasonVisible()) {
+            <div class="feedback-custom-reason">
+              <tui-textfield>
+                <input
+                  placeholder="Своя причина…"
+                  [value]="customReason()"
+                  (input)="customReason.set($any($event.target).value)"
+                  (keydown.enter)="addCustomReason()"
+                  tuiInput
+                  />
+                </tui-textfield>
+                <button
+                  type="button"
+                  (click)="addCustomReason()"
+                  appearance="flat"
+                  tuiButton
+                >Добавить</button>
+              </div>
+            }
+          </div>
+          <div class="feedback-similar">
+            <label>
+              <span class="jk-label">Проверить похожие обращения</span>
+              <div class="feedback-similar-row">
+                <tui-textfield>
+                  <input
+                    placeholder="Опиши проблему или вставь заголовок"
+                    [value]="similarQuery()"
+                    (input)="similarQuery.set($any($event.target).value)"
+                    (keydown.enter)="searchSimilar()"
+                    tuiInput
+                    />
+                  </tui-textfield>
+                  <button type="button" (click)="searchSimilar()" appearance="secondary" tuiButton>
+                    Найти
+                  </button>
+                </div>
+              </label>
+              @if (similarLoading()) {
+                <p class="jk-caption">Ищем совпадения…</p>
+              } @else if (similarItems().length > 0) {
+                <div class="feedback-similar-list">
+                  @for (item of similarItems(); track item.source + item.number + item.title) {
+                    <a
+                      class="feedback-report-link"
+                      target="_blank"
+                      rel="noopener"
+                      [href]="item.issueUrl || '#'"
+                    >
+                      <span>{{ item.title }}</span>
+                      <span class="jk-caption">{{ item.source }} · {{ item.status }}</span>
+                    </a>
+                  }
+                </div>
+              }
+            </div>
+            <label>
+              <span class="jk-label">Заголовок · {{ prefixPreview() }}</span>
+              <tui-textfield
+              ><input tuiInput [value]="title()" (input)="title.set($any($event.target).value)"
+                /></tui-textfield>
+            </label>
+            <label>
+              <span class="jk-label">Описание</span>
+              <tui-editor [formControl]="descriptionControl" />
+            </label>
+            @if (kind() === 'bug') {
+              <div class="feedback-diagnostics">
+                <label class="feedback-diagnostics-toggle">
+                  <input
+                    type="checkbox"
+                    [checked]="diagnosticsEnabled()"
+                    (change)="diagnosticsEnabled.set($any($event.target).checked)"
+                    tuiSwitch
+                    />
+                    <span>Прикрепить логи и метрики</span>
+                  </label>
+                  @if (diagnosticsEnabled()) {
+                    <label>
+                      <span class="jk-label">Период диагностики</span>
+                      <tui-textfield tuiChevron>
+                        <input
+                          [readonly]="true"
+                          [value]="logPeriodLabel()"
+                          tuiInput
+                          tuiSelectLike />
+                          <tui-data-list-wrapper
+                            *tuiDropdown
+                            [items]="logPeriodLabels"
+                            (itemClick)="setLogPeriod($event)"
+                          ></tui-data-list-wrapper>
+                        </tui-textfield>
+                      </label>
+                      <div class="feedback-log-sources">
+                        @for (source of logSourceOptions; track source.value) {
+                          <label class="feedback-log-source">
+                            <input
+                              type="checkbox"
+                              [checked]="logSources().includes(source.value)"
+                              (change)="toggleLogSource(source.value)"
+                              tuiCheckbox
+                              />
+                              <span>{{ source.label }}</span>
+                            </label>
+                          }
+                        </div>
+                        <p class="jk-caption">
+                          Логи берутся из Loki, метрики — из Prometheus. Токены и секреты вырезаются автоматически.
+                        </p>
+                      }
+                    </div>
+                  }
+                  <label>
+                    <span class="jk-label">Дополнения</span>
+                    <div class="feedback-attachments">
+                      @for (attachment of attachments(); track $index; let index = $index) {
+                        <div class="feedback-attachment-row">
+                          <tui-textfield>
+                            <input
+                              placeholder="Название"
+                              [value]="attachment.label"
+                              (input)="updateAttachment(index, 'label', $event)"
+                              tuiInput />
+                              />
+                            </tui-textfield>
+                            <tui-textfield>
+                              <input
+                                placeholder="https://vimeo.com/..."
+                                [value]="attachment.url"
+                                (input)="updateAttachment(index, 'url', $event)"
+                                tuiInput />
+                                />
+                              </tui-textfield>
+                              <button type="button" class="tg-toggle" [class.tg-toggle-on]="attachment.enabled" (click)="toggleAttachment(index)"><span></span></button>
+                              <button
+                                type="button"
+                                size="s"
+                                (click)="removeAttachment(index)"
+                                appearance="flat"
+                                tuiButton
+                              >×</button>
+                            </div>
+                          }
+                          <button
+                            type="button"
+                            (click)="addAttachment()"
+                            appearance="flat"
+                            tuiButton
+                          >Добавить ссылку</button>
+                        </div>
+                      </label>
+                      <label>
+                        <span class="jk-label">Шаги воспроизведения</span>
+                        <tui-textfield>
+                          <textarea
+                            rows="4"
+                            [value]="steps()"
+                            (input)="steps.set($any($event.target).value)"
+                            tuiTextarea
+                          ></textarea>
+                        </tui-textfield>
+                      </label>
+                      <div class="feedback-row">
+                        <label>
+                          <span class="jk-label">Ожидалось</span>
+                          <tui-textfield
+                          ><input tuiInput [value]="expected()" (input)="expected.set($any($event.target).value)"
+                            /></tui-textfield>
+                        </label>
+                        <label>
+                          <span class="jk-label">Фактически</span>
+                          <tui-textfield
+                          ><input tuiInput [value]="actual()" (input)="actual.set($any($event.target).value)"
+                            /></tui-textfield>
+                        </label>
+                      </div>
+                      <div class="feedback-row">
+                        <label>
+                          <span class="jk-label">Версия</span>
+                          <tui-textfield tuiChevron>
+                            <input
+                              [readonly]="true"
+                              [value]="versionLabel()"
+                              tuiInput
+                              tuiSelectLike />
+                              <tui-data-list-wrapper
+                                *tuiDropdown
+                                [items]="versionOptions"
+                                (itemClick)="setVersion($event)"
+                              ></tui-data-list-wrapper>
+                            </tui-textfield>
+                          </label>
+                          <label>
+                            <span class="jk-label">Контакт</span>
+                            <tui-textfield
+                            ><input
+                              tuiInput
+                              [value]="contact()"
+                              (input)="contact.set($any($event.target).value)"
+                              placeholder="Discord / Telegram"
+                              /></tui-textfield>
+                          </label>
+                        </div>
+                        <label class="feedback-honeypot">
+                          <span>Website</span>
+                          <input
+                            tabindex="-1"
+                            autocomplete="off"
+                            [value]="website()"
+                            (input)="website.set($any($event.target).value)"
+                            />
+                          </label>
 
-		@if (error()) {
-			<p class="error-text">{{ error() }}</p>
-		}
-		@if (result()) {
-			<p class="feedback-success">Отправлено: {{ result() }}</p>
-		}
+                          @if (error()) {
+                            <p class="error-text">{{ error() }}</p>
+                          }
+                          @if (result()) {
+                            <p class="feedback-success">Отправлено: {{ result() }}</p>
+                          }
 
-		<button type="button" appearance="primary" tuiButton [disabled]="sending()" (click)="submit()">
-			{{ sending() ? 'Отправка…' : 'Отправить' }}
-		</button>
-	</section>
-</div>
+                          <button
+                            type="button"
+                            [disabled]="sending()"
+                            (click)="submit()"
+                            appearance="primary"
+                            tuiButton
+                          >
+                            {{ sending() ? 'Отправка…' : 'Отправить' }}
+                          </button>
+                        </section>
+                      }
+                    </div>

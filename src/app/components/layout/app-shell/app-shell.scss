@@ -3,6 +3,7 @@
 }
 
 .shell {
+	--layout-header: 56px;
 	display: grid;
 	grid-template-columns: var(--layout-sidebar) minmax(0, 1fr);
 	overflow: hidden;
@@ -200,16 +201,20 @@
 	overflow-y: auto;
 	flex: 1 1 auto;
 	min-height: 0;
+	scrollbar-gutter: stable;
+	overscroll-behavior: contain;
 }
 
 .topbar {
-	position: relative;
-	z-index: 50;
+	position: sticky;
+	top: 0;
+	z-index: 100;
 	display: flex;
-	flex: 0 0 auto;
+	flex: 0 0 var(--layout-header);
 	gap: var(--space-sm);
 	align-items: center;
 	height: var(--layout-header);
+	min-height: var(--layout-header);
 	padding: 0 var(--space-lg);
 	border-bottom: 1px solid var(--border-divider);
 	background: rgb(15, 8, 23, 0.9);
@@ -698,4 +703,114 @@
 	50% {
 		transform: translateY(-4px) rotate(-2deg);
 	}
+}
+
+
+.app-lock {
+	position: fixed;
+	z-index: 5000;
+	display: grid;
+	inset: 0;
+	padding: 24px;
+	background: rgb(8 5 12 / 92%);
+	backdrop-filter: blur(12px);
+	place-items: center;
+}
+
+.app-lock-card {
+	display: grid;
+	gap: 12px;
+	justify-items: center;
+	width: min(380px, 100%);
+	padding: 28px;
+	border: 1px solid var(--border-strong);
+	border-radius: 16px;
+	background: var(--surface-elevated-1);
+	text-align: center;
+}
+
+.app-lock-icon {
+	display: grid;
+	width: 52px;
+	height: 52px;
+	border-radius: 14px;
+	background: color-mix(in srgb, var(--accent-primary) 16%, transparent);
+	color: var(--accent-primary);
+	font-size: 26px;
+	place-items: center;
+}
+
+
+.message-toast {
+	position: fixed;
+	right: 18px;
+	bottom: 82px;
+	z-index: 1600;
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	width: min(360px, calc(100vw - 36px));
+	padding: 10px 12px;
+	border: 1px solid var(--border-strong);
+	border-radius: 10px;
+	background: var(--surface-elevated-1);
+	color: var(--text-primary);
+	box-shadow: 0 16px 44px rgb(0 0 0 / 50%);
+	cursor: pointer;
+	text-align: left;
+	animation: message-toast-in 0.2s ease-out;
+}
+
+.message-toast + .message-toast {
+	bottom: 152px;
+}
+
+.message-toast-avatar {
+	flex: 0 0 auto;
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.message-toast-initials {
+	display: grid;
+	background: color-mix(in srgb, var(--accent-primary) 16%, var(--surface-elevated-2));
+	color: var(--accent-primary);
+	font: 700 10px/1 var(--font-ui);
+	place-items: center;
+}
+
+.message-toast-copy {
+	display: grid;
+	gap: 1px;
+	min-width: 0;
+	font: var(--font-caption);
+}
+
+.message-toast-copy strong,
+.message-toast-copy span {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+@keyframes message-toast-in {
+	from { opacity: 0; transform: translateY(6px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+
+
+.nav-badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 18px;
+	height: 18px;
+	margin-left: auto;
+	padding: 0 5px;
+	border-radius: 999px;
+	background: var(--accent-primary);
+	color: #fff;
+	font: 700 10px/1 var(--font-ui);
 }
