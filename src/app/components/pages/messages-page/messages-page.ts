@@ -8,7 +8,7 @@ import { Component, computed, DestroyRef, inject, signal, viewChild } from '@ang
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { decryptMessage, encryptMessage, generateIdentity } from '@shared/crypto/secure-messaging';
-import { describeCodeError, formatCode, formatFencedCode } from '@shared/messaging/code-format';
+import { describeCodeError, formatCode, formatFencedCode, validateCodeBlock } from '@shared/messaging/code-format';
 import { detectCodeLanguage, parseMessageContent } from '@shared/messaging/message-content';
 import { ChatLiveService } from '@shared/services/chat-live.service';
 import { I18nService } from '@shared/services/i18n.service';
@@ -34,6 +34,7 @@ interface DisplayMessage {
 	editedAt?: string;
 	readAt?: string;
 	reactions: MessageReaction[];
+	codeIssues: CodeIssue[];
 }
 
 type MessageContext =
@@ -659,6 +660,7 @@ export default class MessagesPage {
 							encrypted: this.encryptEnabled(),
 							error: '',
 							reactions: [],
+							codeIssues: [],
 						},
 					]);
 					this.draft.set('');
@@ -968,6 +970,19 @@ export default class MessagesPage {
 				mine ? peer : undefined,
 			);
 			const parsed = parseMessageContent(text);
+			const codeIssues: CodeIssue[] = [];
+
+			for (const span of parsed.spans) {
+				if (span.kind !== 'codeblock') {
+					continue;
+				}
+				const language = span.language || detectCodeLanguage(span.text) || '';
+				const issue = await validateCodeBlock(span.text, language);
+
+				if (issue) {
+					codeIssues.push({ ...issue, message: `${language || 'code'}: ${issue.message}` });
+				}
+			}
 
 			return {
 				id: item.id,
@@ -981,6 +996,7 @@ export default class MessagesPage {
 				editedAt: item.editedAt,
 				readAt: item.readAt,
 				reactions: item.reactions ?? [],
+				codeIssues,
 			};
 		} catch {
 			return {
@@ -993,6 +1009,7 @@ export default class MessagesPage {
 				encrypted: true,
 				error: 'Не удалось расшифровать сообщение',
 				reactions: item.reactions ?? [],
+				codeIssues: [],
 			};
 		}
 	}

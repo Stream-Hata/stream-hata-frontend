@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatCode, formatFencedCode } from './code-format';
+import { formatCode, formatFencedCode, validateCodeBlock } from './code-format';
 
 describe('code formatting', () => {
 	it('formats sql', async () => {
@@ -29,5 +29,18 @@ describe('syntax diagnostics', () => {
 			expect(issue.column).toBeGreaterThan(0);
 			expect(issue.message.length).toBeGreaterThan(0);
 		}
+	});
+});
+
+
+describe('incoming code validation', () => {
+	it('reports broken brackets for a recipient', async () => {
+		const issue = await validateCodeBlock('const x = {', 'js');
+
+		expect(issue?.message.length).toBeGreaterThan(0);
+	});
+
+	it('accepts valid code', async () => {
+		expect(await validateCodeBlock('const x = { a: 1 };', 'js')).toBeNull();
 	});
 });

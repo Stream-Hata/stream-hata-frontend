@@ -270,6 +270,14 @@
                         }
                       }
                     </div>
+                    @if (message.codeIssues.length) {
+                      <div class="message-code-errors" role="alert">
+                        <strong>Ошибки в коде</strong>
+                        @for (issue of message.codeIssues; track $index) {
+                          <span>строка {{ issue.line }}, колонка {{ issue.column }} — {{ issue.message }}</span>
+                        }
+                      </div>
+                    }
                     @for (media of message.media; track media.url) {
                       <div class="message-media">
                         @switch (media.kind) {

@@ -170,6 +170,27 @@ export async function formatCode(code: string, language: string): Promise<string
 	return code;
 }
 
+export async function validateCodeBlock(code: string, language: string): Promise<CodeIssue | null> {
+	const lang = language.trim().toLowerCase();
+	const generic = validateCode(code, lang);
+
+	if (generic) {
+		return generic;
+	}
+
+	if (!PARSERS[lang] && !SQL_DIALECTS[lang]) {
+		return null;
+	}
+
+	try {
+		await formatCode(code, lang);
+
+		return null;
+	} catch (error) {
+		return describeCodeError(error);
+	}
+}
+
 export async function formatFencedCode(text: string, strict = false): Promise<string> {
 	const fences = text.match(/```/g)?.length ?? 0;
 
