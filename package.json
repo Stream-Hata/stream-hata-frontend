@@ -56,6 +56,7 @@
 		"@taiga-ui/icons": "^5.24.0",
 		"@taiga-ui/kit": "^5.24.0",
 		"@taiga-ui/layout": "^5.24.0",
+		"@taiga-ui/polymorpheus": "^5.0.1",
 		"@types/luxon": "^3.7.5",
 		"feather-icons": "^4.29.2",
 		"less": "^4.9.1",
