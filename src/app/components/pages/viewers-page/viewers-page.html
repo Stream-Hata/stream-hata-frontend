@@ -102,35 +102,39 @@
                     </span>
                   </td>
                   <td tuiTd class="role-cell">
-                    <select
-                      class="role-select"
-                      aria-label="Роль зрителя"
-                      [value]="roleFor(row.login)"
-                      (change)="setRole(row.login, $any($event.target).value)"
-                    >
-                      @for (role of roleValues; track role; let index = $index) {
-                        <option [value]="role" [selected]="role === roleFor(row.login)">{{ roleLabels()[index] }}</option>
-                      }
-                    </select>
-                  </td>
-                  <td tuiTd>
-                    <span class="streak-cell">🔥 {{ row.watchStreak }}</span>
-                  </td>
-                  <td tuiTd class="numeric-cell">{{ row.channelPointsAwarded }}</td>
-                  <td tuiTd class="jk-caption">{{ row.firstSeenLabel }}</td>
-                  <td tuiTd class="jk-caption">{{ row.lastSeenLabel }}</td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      } @else {
-        <div class="jk-card jk-empty">
-          <span class="jk-empty-icon"><tui-icon icon="@tui.users" /></span>
-          <span class="jk-h4">Пока нет данных</span>
-          <span
-            class="jk-body-sm jk-muted"
-          >Зрители появятся после подключения Twitch и активности в чате.</span>
-        </div>
-      }
-    </div>
+                    <tui-textfield class="role-select" tuiChevron>
+                      <input
+                        aria-label="Роль зрителя"
+                        [readonly]="true"
+                        [value]="roleLabel(row.login)"
+                        tuiInput
+                        tuiSelectLike
+                        />
+                        <tui-data-list-wrapper
+                          *tuiDropdown
+                          [items]="roleLabels()"
+                          (itemClick)="setRole(row.login, $event)"
+                        ></tui-data-list-wrapper>
+                      </tui-textfield>
+                    </td>
+                    <td tuiTd>
+                      <span class="streak-cell">🔥 {{ row.watchStreak }}</span>
+                    </td>
+                    <td tuiTd class="numeric-cell">{{ row.channelPointsAwarded }}</td>
+                    <td tuiTd class="jk-caption">{{ row.firstSeenLabel }}</td>
+                    <td tuiTd class="jk-caption">{{ row.lastSeenLabel }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="jk-card jk-empty">
+            <span class="jk-empty-icon"><tui-icon icon="@tui.users" /></span>
+            <span class="jk-h4">Пока нет данных</span>
+            <span
+              class="jk-body-sm jk-muted"
+            >Зрители появятся после подключения Twitch и активности в чате.</span>
+          </div>
+        }
+      </div>

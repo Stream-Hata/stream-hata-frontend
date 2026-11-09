@@ -69,14 +69,32 @@
 }
 
 .role-select {
-	min-width: 116px;
-	padding: 6px 24px 6px 8px;
+	display: inline-flex;
+	align-items: center;
+	width: 150px;
+	height: 40px;
+	min-height: 40px;
+	max-height: 40px;
+	box-sizing: border-box;
+	padding: 0 6px;
 	border: 1px solid var(--border-normal);
 	border-radius: var(--radius-sm);
 	background: var(--surface-elevated-1);
 	color: var(--text-primary);
 	font: var(--font-caption);
-	cursor: pointer;
+	vertical-align: middle;
+}
+
+.role-select input {
+	position: absolute !important;
+	inset: 0 !important;
+	width: 100%;
+	height: auto !important;
+	min-height: 0 !important;
+	max-height: none !important;
+	padding: 0 8px;
+	line-height: 40px;
+	z-index: 1;
 }
 
 .jk-page-actions tui-textfield {

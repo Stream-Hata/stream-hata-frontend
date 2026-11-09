@@ -14,8 +14,8 @@ import {
 	TuiTableTh,
 	TuiTableThead,
 } from '@taiga-ui/addon-table';
-import { TuiButton, TuiIcon, TuiInput, TuiTextfield } from '@taiga-ui/core';
-import { TuiBadge } from '@taiga-ui/kit';
+import { TuiButton, TuiIcon, TuiInput, TuiSelectLike, TuiTextfield } from '@taiga-ui/core';
+import { TuiBadge, TuiChevron, TuiDataListWrapper } from '@taiga-ui/kit';
 import { catchError, of, switchMap, timer } from 'rxjs';
 
 const DATE_FORMAT: Intl.DateTimeFormatOptions = {
@@ -33,19 +33,7 @@ interface ViewerRow extends Viewer {
 }
 
 @Component({
-	imports: [
-		ReactiveFormsModule,
-		TuiBadge,
-		TuiButton,
-		TuiIcon,
-		TuiInput,
-		TuiTable,
-		TuiTableTbody,
-		TuiTableTd,
-		TuiTableTh,
-		TuiTableThead,
-		TuiTextfield,
-	],
+	imports: [ReactiveFormsModule, TuiBadge, TuiButton, TuiChevron, TuiDataListWrapper, TuiIcon, TuiInput, TuiSelectLike, TuiTable, TuiTableTbody, TuiTableTd, TuiTableTh, TuiTableThead, TuiTextfield],
 	selector: 'app-viewers-page',
 	styleUrl: './viewers-page.scss',
 	templateUrl: './viewers-page.html',
@@ -60,20 +48,15 @@ export default class ViewersPage {
 	readonly roles = signal<AccessRoles>({ owners: [], admins: [], moderators: [], vips: [] });
 	readonly ownerDraft = signal('');
 	readonly roleValues: AccessRole[] = ['viewer', 'vip', 'moderator', 'admin', 'owner'];
-	readonly roleLabels = computed(() => [
-		this.i18n.t('viewers.roleViewer'),
-		this.i18n.t('viewers.roleVip'),
-		this.i18n.t('viewers.roleModerator'),
-		this.i18n.t('viewers.roleAdmin'),
-		this.i18n.t('viewers.roleOwner'),
-	]);
-
+	readonly roleLabels = computed(() => [this.i18n.t('viewers.roleViewer'), this.i18n.t('viewers.roleVip'), this.i18n.t('viewers.roleModerator'), this.i18n.t('viewers.roleAdmin'), this.i18n.t('viewers.roleOwner')]);
 	readonly search = signal('');
 	readonly searchControl = signalControl(this.search, this.injector);
 	readonly data = toSignal(
 		timer(0, 5000).pipe(
 			switchMap(() =>
-				this.twitch.getViewers().pipe(catchError(() => of({ total: 0, viewers: [] as Viewer[] }))),
+				this.twitch
+					.getViewers()
+					.pipe(catchError(() => of({ total: 0, viewers: [] as Viewer[] }))),
 			),
 		),
 		{ initialValue: { total: 0, viewers: [] as Viewer[] } },
@@ -121,8 +104,9 @@ export default class ViewersPage {
 		return this.roleLabels()[index] ?? this.i18n.t('viewers.roleViewer');
 	}
 
-	setRole(login: string, value: string): void {
-		const role = this.roleValues.includes(value as AccessRole) ? (value as AccessRole) : 'viewer';
+	setRole(login: string, label: string): void {
+		const index = this.roleLabels().indexOf(label);
+		const role = this.roleValues[index] ?? 'viewer';
 
 		this.access
 			.setRole(login, role)
