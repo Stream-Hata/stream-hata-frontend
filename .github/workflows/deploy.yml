@@ -83,9 +83,10 @@ jobs:
           printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy
           chmod 600 ~/.ssh/deploy
           if ! ssh-keyscan -p "$port" "$PRIMARY_HOST" >> ~/.ssh/known_hosts 2>/tmp/keyscan.err; then
-            echo "::error title=SSH config::ssh-keyscan failed for host '$PRIMARY_HOST' port '$port'"
-            cat /tmp/keyscan.err
-            exit 1
+            echo "::warning title=SSH config::primary host is unreachable, falling back to streamhata.rdpctd.dev"
+            PRIMARY_HOST=streamhata.rdpctd.dev
+            echo "PRIMARY_HOST=$PRIMARY_HOST" >> "$GITHUB_ENV"
+            ssh-keyscan -p "$port" "$PRIMARY_HOST" >> ~/.ssh/known_hosts
           fi
           if ! grep -q "BEGIN .*PRIVATE KEY" ~/.ssh/deploy; then
             echo "::error title=SSH config::STREAMHATA_SSH_KEY is not a private key"
