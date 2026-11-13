@@ -1,6 +1,9 @@
-import { inject, Injectable, NgZone } from '@angular/core';
-import { SystemAlertSettingsService, type SystemAlertRule } from './system-alert-settings.service';
+import type { SystemAlertRule } from './system-alert-settings.service';
+import { DestroyRef, inject, Injectable, NgZone } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { timer } from 'rxjs';
 import { NotificationCenterService } from './notification-center.service';
+import { SystemAlertSettingsService } from './system-alert-settings.service';
 
 interface Metrics {
 	cpu_temperature: number | null;
@@ -22,19 +25,21 @@ export class SystemAlertsService {
 	private readonly settings = inject(SystemAlertSettingsService);
 	private readonly center = inject(NotificationCenterService);
 	private readonly zone = inject(NgZone);
-	private readonly invoke = (
-		window as unknown as { __TAURI_INTERNALS__?: { invoke?: Invoke } }
-	).__TAURI_INTERNALS__?.invoke;
+	private readonly destroyRef = inject(DestroyRef);
+	private readonly invoke = (window as unknown as { __TAURI_INTERNALS__?: { invoke?: Invoke } })
+		.__TAURI_INTERNALS__
+		?.invoke;
+
 	private readonly active = new Set<string>();
-	private timer: ReturnType<typeof setInterval> | null = null;
 	private busy = false;
 
 	constructor() {
 		if (!this.invoke) {
 			return;
 		}
-		void this.tick();
-		this.timer = setInterval(() => void this.tick(), 8000);
+		timer(0, 8000)
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe(() => void this.tick());
 	}
 
 	async testNotification(): Promise<boolean> {
@@ -70,11 +75,26 @@ export class SystemAlertsService {
 	}
 
 	private evaluate(metrics: Metrics): void {
-		const fan = Math.max(0, ...metrics.sensors.filter((sensor) => sensor.kind === 'fan').map((sensor) => sensor.value));
-		const voltage = Math.max(0, ...metrics.sensors.filter((sensor) => sensor.kind === 'voltage').map((sensor) => sensor.value));
-		const disk = Math.max(0, ...metrics.disks.map((item) => (item.total ? ((item.total - item.available) / item.total) * 100 : 0)));
+		const fan = Math.max(
+			0,
+			...metrics.sensors.filter((sensor) => sensor.kind === 'fan').map((sensor) => sensor.value),
+		);
+		const voltage = Math.max(
+			0,
+			...metrics.sensors
+				.filter((sensor) => sensor.kind === 'voltage')
+				.map((sensor) => sensor.value),
+		);
+		const disk = Math.max(
+			0,
+			...metrics.disks.map((item) =>
+				item.total ? ((item.total - item.available) / item.total) * 100 : 0,
+			),
+		);
 		const ram = metrics.memory_total ? (metrics.memory_used / metrics.memory_total) * 100 : 0;
-		const vram = metrics.gpu_memory_total ? ((metrics.gpu_memory_used ?? 0) / metrics.gpu_memory_total) * 100 : 0;
+		const vram = metrics.gpu_memory_total
+			? ((metrics.gpu_memory_used ?? 0) / metrics.gpu_memory_total) * 100
+			: 0;
 		const battery = Math.min(100, ...metrics.batteries.map((item) => item.percent ?? 100));
 		const values: Record<string, number | null> = {
 			cpuTemp: metrics.cpu_temperature,
@@ -90,7 +110,10 @@ export class SystemAlertsService {
 
 		for (const rule of this.settings.rules()) {
 			const value = values[rule.id];
-			const bad = rule.enabled && value != null && (rule.compare === 'gte' ? value >= rule.threshold : value <= rule.threshold);
+			const bad =
+				rule.enabled &&
+				value != null &&
+				(rule.compare === 'gte' ? value >= rule.threshold : value <= rule.threshold);
 
 			if (!bad) {
 				this.active.delete(rule.id);
@@ -106,7 +129,10 @@ export class SystemAlertsService {
 
 	private notify(rule: SystemAlertRule, value: number): void {
 		const body = rule.message
-			.replaceAll('{value}', `${value.toFixed(rule.unit === 'RPM' || rule.unit === 'шт.' ? 0 : 1)} ${rule.unit}`.trim())
+			.replaceAll(
+				'{value}',
+				`${value.toFixed(rule.unit === 'RPM' || rule.unit === 'шт.' ? 0 : 1)} ${rule.unit}`.trim(),
+			)
 			.replaceAll('{threshold}', `${rule.threshold} ${rule.unit}`.trim());
 
 		this.center.add(`Системное событие · ${rule.label}`, body, 'monitor');

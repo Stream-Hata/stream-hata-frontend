@@ -231,6 +231,7 @@ export default class MessagesPage {
 	});
 
 	constructor() {
+		this.destroyRef.onDestroy(() => this.removeAttachment());
 		void this.init();
 		this.selectedLogin$
 			.pipe(

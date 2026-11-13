@@ -1,5 +1,6 @@
-import { inject, Injectable, signal } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { DestroyRef, inject, Injectable, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { firstValueFrom, timer } from 'rxjs';
 import { ObsService, StreamService } from './stream.services';
 
 export interface AutoSceneMapping {
@@ -18,9 +19,11 @@ const STORAGE_KEY = 'nsh.obs-auto-scenes';
 export class ObsAutoSceneService {
 	private readonly stream = inject(StreamService);
 	private readonly obs = inject(ObsService);
+	private readonly destroyRef = inject(DestroyRef);
 	private readonly invoke = (
 		window as unknown as { __TAURI_INTERNALS__?: { invoke?: unknown } }
 	).__TAURI_INTERNALS__;
+
 	readonly enabled = signal(false);
 	readonly mappings = signal<AutoSceneMapping[]>([]);
 	private lastGame = '';
@@ -31,8 +34,9 @@ export class ObsAutoSceneService {
 		if (!this.invoke) {
 			return;
 		}
-		setInterval(() => void this.tick(), 30_000);
-		void this.tick();
+		timer(0, 30_000)
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe(() => void this.tick());
 	}
 
 	toggle(enabled: boolean): void {

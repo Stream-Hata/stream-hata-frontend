@@ -1,4 +1,6 @@
-import { Injectable, signal } from '@angular/core';
+import { DestroyRef, inject, Injectable, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { timer } from 'rxjs';
 
 interface UpdateInfo {
 	version: string;
@@ -29,6 +31,7 @@ export class DesktopUpdateService {
 	readonly rollbackVersion = signal<string | null>(null);
 	readonly rollbackBusy = signal(false);
 	private readonly tauri = this.isTauri();
+	private readonly destroyRef = inject(DestroyRef);
 
 	constructor() {
 		if (!this.tauri) {
@@ -41,7 +44,9 @@ export class DesktopUpdateService {
 		this.listenForUpdates();
 		this.listenForProgress();
 		void this.syncState();
-		setInterval(() => void this.check(), 5 * 60_000);
+		timer(0, 5 * 60_000)
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe(() => void this.check());
 		window.addEventListener('focus', () => void this.check());
 	}
 
@@ -121,7 +126,7 @@ export class DesktopUpdateService {
 	async rollback(): Promise<void> {
 		const version = this.rollbackVersion();
 
-		if (!version || this.rollbackBusy() || !window.confirm(`Откатить StreamHata до ${version}?`)) {
+		if (!version || this.rollbackBusy()) {
 			return;
 		}
 		this.rollbackBusy.set(true);
@@ -138,7 +143,7 @@ export class DesktopUpdateService {
 					event?: {
 						listen?: (event: string, handler: (event: { payload: unknown }) => void) => Promise<unknown>;
 					};
-			  }
+			}
 			| undefined;
 
 		void globalTauri?.event?.listen?.('update-progress', (event) => {

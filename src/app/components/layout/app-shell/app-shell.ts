@@ -589,7 +589,9 @@ export default class AppShell {
 		this.messagingPresence.start();
 		this.streamReports.start();
 		this.hotkeys.start();
-		setInterval(() => this.appLock.checkIdle(), 15_000);
+		timer(0, 15_000)
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe(() => this.appLock.checkIdle());
 		window.addEventListener('pointerdown', () => this.appLock.touch(), { passive: true });
 		window.addEventListener('keydown', () => this.appLock.touch());
 		effect(() => {

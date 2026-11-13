@@ -15,14 +15,7 @@ import {
 	TuiSelectLike,
 	TuiTextfield,
 } from '@taiga-ui/core';
-import {
-	TuiBadge,
-	TuiChevron,
-	TuiDataListWrapper,
-	TuiInputNumber,
-	TuiMultiSelect,
-	TuiSwitch,
-} from '@taiga-ui/kit';
+import { TuiBadge, TuiChevron, TuiDataListWrapper, TuiInputNumber, TuiSwitch } from '@taiga-ui/kit';
 import { catchError, of, switchMap, timer } from 'rxjs';
 import { Logo } from '../../ui/logo/logo';
 
@@ -60,11 +53,12 @@ export default class SuggestGamePage {
 	readonly services = ['RGG / cat.txt', 'Steam', 'IGDB', 'RAWG', 'MobyGames'];
 	readonly serviceIds: Record<string, string> = {
 		'RGG / cat.txt': 'rgg',
-		Steam: 'steam',
-		IGDB: 'igdb',
-		RAWG: 'rawg',
-		MobyGames: 'mobygames',
+		'Steam': 'steam',
+		'IGDB': 'igdb',
+		'RAWG': 'rawg',
+		'MobyGames': 'mobygames',
 	};
+
 	readonly autoSearchControl = new FormControl(true, { nonNullable: true });
 	readonly autoSearch = signal(true);
 	readonly selectedServices = signal<string[]>(['RGG / cat.txt']);
@@ -114,13 +108,17 @@ export default class SuggestGamePage {
 	readonly displayName = computed(() => this.profile()?.user?.displayName ?? this.nickname());
 
 	constructor() {
-		this.autoSearchControl.valueChanges.subscribe((enabled) => this.setAutoSearch(enabled));
+		this.autoSearchControl.valueChanges
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe((enabled) => this.setAutoSearch(enabled));
 
-		setInterval(() => {
-			if (this.loggedIn()) {
-				this.loadMine();
-			}
-		}, 30000);
+		timer(0, 30_000)
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe(() => {
+				if (this.loggedIn()) {
+					this.loadMine();
+				}
+			});
 
 		effect(() => {
 			if (this.loggedIn() && !this.mineRequested) {
@@ -240,7 +238,10 @@ export default class SuggestGamePage {
 		let notified: Record<string, boolean> = {};
 
 		try {
-			notified = JSON.parse(localStorage.getItem(this.notifiedKey) ?? '{}') as Record<string, boolean>;
+			notified = JSON.parse(localStorage.getItem(this.notifiedKey) ?? '{}') as Record<
+				string,
+				boolean
+			>;
 		} catch {
 			notified = {};
 		}
@@ -259,7 +260,13 @@ export default class SuggestGamePage {
 			// storage unavailable
 		}
 
-		const internals = (window as unknown as { __TAURI_INTERNALS__?: { invoke?: (command: string, args?: Record<string, unknown>) => Promise<unknown> } }).__TAURI_INTERNALS__;
+		const internals = (
+			window as unknown as {
+				__TAURI_INTERNALS__?: {
+					invoke?: (command: string, args?: Record<string, unknown>) => Promise<unknown>;
+				};
+			}
+		).__TAURI_INTERNALS__;
 		if (!internals?.invoke) {
 			return;
 		}

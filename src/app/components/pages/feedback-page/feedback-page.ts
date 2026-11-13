@@ -1,6 +1,7 @@
 import type { FeedbackReport, FeedbackReportSummary } from '@shared/services/feedback.service';
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { FEEDBACK_REASONS } from '@shared/config/feedback-reasons';
 import { FeedbackService } from '@shared/services/feedback.service';
@@ -33,6 +34,7 @@ import { TuiChevron, TuiDataListWrapper, TuiSwitch, TuiTextarea } from '@taiga-u
 export default class FeedbackPage {
 	private readonly feedback = inject(FeedbackService);
 	private readonly twitch = inject(TwitchService);
+	private readonly destroyRef = inject(DestroyRef);
 
 	readonly area = signal<FeedbackReport['area']>('frontend');
 	readonly areaLabel = computed(() => this.areaLabels[this.areaValues.indexOf(this.area())] ?? 'Frontend');
@@ -246,7 +248,9 @@ export default class FeedbackPage {
 	}
 
 	constructor() {
-		this.descriptionControl.valueChanges.subscribe((value) => this.description.set(value));
+		this.descriptionControl.valueChanges
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe((value) => this.description.set(value));
 
 		this.twitch.login().subscribe({
 			next: (profile) => {

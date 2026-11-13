@@ -1,7 +1,9 @@
 import type { AnalyticsState, StreamSession } from '@shared/types/stream';
-import { inject, Injectable, signal } from '@angular/core';
-import { AnalyticsService } from './stream.services';
+import { DestroyRef, inject, Injectable, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { timer } from 'rxjs';
 import { StreamJournalService } from './stream-journal.service';
+import { AnalyticsService } from './stream.services';
 
 export interface SavedStreamReport {
 	id: string;
@@ -16,9 +18,15 @@ const STORAGE_KEY = 'nsh.stream-reports';
 export class StreamReportService {
 	private readonly analytics = inject(AnalyticsService);
 	private readonly journal = inject(StreamJournalService);
+	private readonly destroyRef = inject(DestroyRef);
 	private readonly invoke = (
-		window as unknown as { __TAURI_INTERNALS__?: { invoke?: (command: string, args?: Record<string, unknown>) => Promise<unknown> } }
+		window as unknown as {
+			__TAURI_INTERNALS__?: {
+				invoke?: (command: string, args?: Record<string, unknown>) => Promise<unknown>;
+			};
+		}
 	).__TAURI_INTERNALS__?.invoke;
+
 	readonly reports = signal<SavedStreamReport[]>([]);
 	private started = false;
 	private currentID = '';
@@ -38,8 +46,9 @@ export class StreamReportService {
 			return;
 		}
 		this.started = true;
-		void this.poll();
-		setInterval(() => void this.poll(), 30_000);
+		timer(0, 30_000)
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe(() => void this.poll());
 	}
 
 	remove(id: string): void {
@@ -94,7 +103,8 @@ export class StreamReportService {
 		const started = new Date(session.startedAt);
 		const ended = session.endedAt ? new Date(session.endedAt) : new Date();
 		const minutes = Math.max(0, Math.round((ended.getTime() - started.getTime()) / 60000));
-		const journal = this.journal.toMarkdown().split('\n').slice(2).join('\n').trim() || 'Записей нет.';
+		const journal =
+			this.journal.toMarkdown().split('\n').slice(2).join('\n').trim() || 'Записей нет.';
 
 		return [
 			'# Итоги стрима',

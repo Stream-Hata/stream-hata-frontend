@@ -1,9 +1,10 @@
 import type { ChatCommand, CommandVariable, Trigger } from '@shared/types/automation';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AppSettingsService } from '@shared/services/app-settings.service';
 import { FileNamePipe } from '@shared/pipes/file-name.pipe';
+import { AppSettingsService } from '@shared/services/app-settings.service';
 import { CommandsService } from '@shared/services/commands.service';
 import { TriggersService } from '@shared/services/ops.services';
 import { TuiButton, TuiDropdown, TuiInput, TuiSelectLike, TuiTextfield } from '@taiga-ui/core';
@@ -253,23 +254,23 @@ const TRIGGER_ACTIONS = [
 	'roulette.last',
 ];
 const TRIGGER_LABELS: Record<string, string> = {
-	say: 'Сообщение в чат',
-	announce: 'Анонс',
-	shoutout: 'Шаут',
-	raid: 'Рейд',
+	'say': 'Сообщение в чат',
+	'announce': 'Анонс',
+	'shoutout': 'Шаут',
+	'raid': 'Рейд',
 	'raid.cancel': 'Отменить рейд',
-	marker: 'Маркер стрима',
-	clip: 'Создать клип',
-	delete: 'Удалить сообщение',
-	ban: 'Бан',
-	unban: 'Разбан',
-	timeout: 'Таймаут',
+	'marker': 'Маркер стрима',
+	'clip': 'Создать клип',
+	'delete': 'Удалить сообщение',
+	'ban': 'Бан',
+	'unban': 'Разбан',
+	'timeout': 'Таймаут',
 	'shield.on': 'Shield Mode вкл',
 	'shield.off': 'Shield Mode выкл',
 	'title.set': 'Сменить заголовок',
 	'game.set': 'Сменить категорию',
-	commercial: 'Реклама',
-	poll: 'Создать опрос',
+	'commercial': 'Реклама',
+	'poll': 'Создать опрос',
 	'poll.end': 'Завершить опрос',
 	'points.add': 'Начислить баллы',
 	'points.remove': 'Снять баллы',
@@ -280,8 +281,8 @@ const TRIGGER_LABELS: Record<string, string> = {
 	'points.redeem': 'Купить награду',
 	'music.add': 'Добавить музыку',
 	'music.current': 'Текущая музыка',
-	lastmusic: 'Ссылка на музыку',
-	wheel: 'Колесо',
+	'lastmusic': 'Ссылка на музыку',
+	'wheel': 'Колесо',
 	'games.slots': 'Слоты',
 	'games.wheel': 'Колесо игры',
 	'games.trivia': 'Викторина',
@@ -289,9 +290,9 @@ const TRIGGER_LABELS: Record<string, string> = {
 	'games.accept': 'Принять дуэль',
 	'quote.add': 'Добавить цитату',
 	'quotes.random': 'Случайная цитата',
-	dice: 'Кубик',
-	coinflip: 'Монетка',
-	random: 'Случайный выбор',
+	'dice': 'Кубик',
+	'coinflip': 'Монетка',
+	'random': 'Случайный выбор',
 	'random.number': 'Случайное число',
 	'variable.set': 'Установить переменную',
 	'variable.inc': 'Увеличить переменную',
@@ -491,6 +492,7 @@ export default class AutomationEditorPage {
 	readonly variableRangeTo = signal(100);
 	readonly error = signal('');
 	readonly saved = signal(false);
+	private readonly destroyRef = inject(DestroyRef);
 
 	constructor() {
 		void this.commands
@@ -500,15 +502,20 @@ export default class AutomationEditorPage {
 				this.customVariables.set(response.variables);
 			});
 
-		this.commandReplyFile.valueChanges.subscribe((file) =>
-			this.loadTextFile(file, this.commandReply, (text) =>
-				this.commandLineBreaks.set(text.includes('\n')),
-			),
-		);
-		this.commandValueFile.valueChanges.subscribe((file) =>
-			this.loadTextFile(file, this.commandValue),
-		);
-		this.variableFile.valueChanges.subscribe((file) => this.loadTextFile(file, this.variableValue));
+		this.commandReplyFile.valueChanges
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe((file) =>
+				this.loadTextFile(file, this.commandReply, (text) =>
+					this.commandLineBreaks.set(text.includes('\n'))),
+			);
+		this.commandValueFile.valueChanges
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe((file) =>
+				this.loadTextFile(file, this.commandValue),
+			);
+		this.variableFile.valueChanges
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe((file) => this.loadTextFile(file, this.variableValue));
 
 		if (this.id) {
 			void this.load();
