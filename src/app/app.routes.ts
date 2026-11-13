@@ -65,6 +65,12 @@ export const routes: Routes = [
 				title: 'Безопасность · админка · Nameless StreamHata',
 			},
 			{
+				path: 'security/trust',
+				canActivate: [securityGuard],
+				loadComponent: () => import('./components/pages/trust-admin-page/trust-admin-page'),
+				title: 'Trust-реестр · Nameless StreamHata',
+			},
+			{
 				path: 'widgets/system/config',
 				loadComponent: () =>
 					import('./components/pages/system-widget-config-page/system-widget-config-page'),

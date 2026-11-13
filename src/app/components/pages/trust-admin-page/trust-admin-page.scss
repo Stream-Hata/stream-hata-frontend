@@ -1,0 +1,88 @@
+.trust-admin-page {
+	max-width: 1180px;
+	margin: 0 auto;
+}
+
+.trust-panel {
+	margin-top: 14px;
+}
+
+.trust-form {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 8px;
+	align-items: center;
+	margin: 12px 0;
+}
+
+.trust-form-release {
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.trust-form input,
+.trust-form select {
+	width: 100%;
+	min-height: 36px;
+	padding: 7px 10px;
+	border: 1px solid var(--border-normal);
+	border-radius: var(--radius-sm, 8px);
+	background: var(--surface-elevated-1, transparent);
+	color: inherit;
+	font: inherit;
+}
+
+.trust-form button {
+	min-height: 36px;
+}
+
+.trust-list {
+	display: flex;
+	flex-direction: column;
+}
+
+.trust-row {
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+	align-items: center;
+	padding: 9px 0;
+	border-top: 1px solid var(--border-normal);
+}
+
+.trust-row strong {
+	min-width: 120px;
+}
+
+.trust-row code {
+	font-size: 0.78rem;
+	overflow-wrap: anywhere;
+}
+
+.trust-badge {
+	padding: 3px 8px;
+	border-radius: 999px;
+	background: var(--surface-elevated-2);
+	font-size: 0.75rem;
+}
+
+.trust-error {
+	color: var(--tui-status-negative);
+}
+
+.trust-message {
+	color: var(--tui-status-positive);
+}
+
+@media (width <= 900px) {
+	.trust-form,
+	.trust-form-release {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media (width <= 560px) {
+	.trust-form,
+	.trust-form-release {
+		grid-template-columns: 1fr;
+	}
+}

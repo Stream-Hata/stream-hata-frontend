@@ -1,0 +1,166 @@
+<div class="jk-page trust-admin-page">
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">Trust-реестр</h1>
+      <p class="jk-caption">
+        Официальные издатели, продукты, источники и подписанные релизы.
+      </p>
+    </div>
+    <div class="jk-page-actions">
+      <a appearance="secondary" tuiButton href="/app/security">К инцидентам</a>
+    </div>
+  </header>
+
+  @if (error()) {
+    <p class="trust-error" role="alert">{{ error() }}</p>
+  }
+  @if (message()) {
+    <p class="trust-message">{{ message() }}</p>
+  }
+  @if (loading()) {
+    <div class="jk-card jk-empty">Загружаем trust-реестр…</div>
+  } @else {
+    <section class="jk-card trust-panel">
+      <h2 class="jk-h2">Издатели</h2>
+      <div class="trust-form">
+        <input placeholder="slug" [value]="publisher().slug" (input)="setPublisher('slug', $event)" />
+        <input placeholder="Название" [value]="publisher().name" (input)="setPublisher('name', $event)" />
+        <select [value]="publisher().trustLevel" (change)="setPublisher('trustLevel', $event)">
+          <option value="official">official</option>
+          <option value="verified">verified</option>
+          <option value="unknown">unknown</option>
+          <option value="untrusted">untrusted</option>
+        </select>
+        <input placeholder="Homepage" [value]="publisher().homepage" (input)="setPublisher('homepage', $event)" />
+        <button type="button" appearance="primary" tuiButton [disabled]="saving() === 'publisher'" (click)="savePublisher()">
+          Сохранить
+        </button>
+      </div>
+      <div class="trust-list">
+        @for (item of publishers(); track item.id) {
+          <div class="trust-row">
+            <strong>{{ item.name }}</strong>
+            <code>{{ item.slug }}</code>
+            <span class="trust-badge">{{ item.trustLevel }}</span>
+            <span class="jk-caption">{{ item.homepage || '—' }}</span>
+            <button type="button" appearance="flat" tuiButton (click)="deletePublisher(item)">Удалить</button>
+          </div>
+        } @empty {
+        <p class="jk-caption">Издателей пока нет.</p>
+      }
+    </div>
+  </section>
+
+  <section class="jk-card trust-panel">
+    <h2 class="jk-h2">Продукты</h2>
+    <div class="trust-form">
+      <select [value]="product().publisherId" (change)="setProduct('publisherId', $event)">
+        <option value="0">Издатель</option>
+        @for (item of publishers(); track item.id) {
+          <option [value]="item.id">{{ item.name }}</option>
+        }
+      </select>
+      <input placeholder="slug" [value]="product().slug" (input)="setProduct('slug', $event)" />
+      <input placeholder="Название" [value]="product().name" (input)="setProduct('name', $event)" />
+      <select [value]="product().platform" (change)="setProduct('platform', $event)">
+        <option value="android">android</option>
+        <option value="windows">windows</option>
+        <option value="linux">linux</option>
+        <option value="macos">macos</option>
+        <option value="web">web</option>
+      </select>
+      <input placeholder="package name" [value]="product().packageName" (input)="setProduct('packageName', $event)" />
+      <input placeholder="kind" [value]="product().kind" (input)="setProduct('kind', $event)" />
+      <button type="button" appearance="primary" tuiButton [disabled]="saving() === 'product'" (click)="saveProduct()">
+        Сохранить
+      </button>
+    </div>
+    <div class="trust-list">
+      @for (item of products(); track item.id) {
+        <div class="trust-row">
+          <strong>{{ item.name }}</strong>
+          <code>{{ item.slug }}</code>
+          <span class="trust-badge">{{ item.platform }}</span>
+          <span class="jk-caption">{{ item.packageName || '—' }}</span>
+          <button type="button" appearance="flat" tuiButton (click)="deleteProduct(item)">Удалить</button>
+        </div>
+      } @empty {
+      <p class="jk-caption">Продуктов пока нет.</p>
+    }
+  </div>
+</section>
+
+<section class="jk-card trust-panel">
+  <h2 class="jk-h2">Источники</h2>
+  <div class="trust-form">
+    <select [value]="source().productId" (change)="setSource('productId', $event)">
+      <option value="0">Продукт</option>
+      @for (item of products(); track item.id) {
+        <option [value]="item.id">{{ item.name }} · {{ item.platform }}</option>
+      }
+    </select>
+    <input placeholder="URL источника" [value]="source().url" (input)="setSource('url', $event)" />
+    <select [value]="source().kind" (change)="setSource('kind', $event)">
+      <option value="official">official</option>
+      <option value="mirror">mirror</option>
+      <option value="store">store</option>
+    </select>
+    <select [value]="source().trustLevel" (change)="setSource('trustLevel', $event)">
+      <option value="official">official</option>
+      <option value="verified">verified</option>
+      <option value="unknown">unknown</option>
+    </select>
+    <button type="button" appearance="primary" tuiButton [disabled]="saving() === 'source'" (click)="saveSource()">
+      Добавить
+    </button>
+  </div>
+  <div class="trust-list">
+    @for (item of sources(); track item.id) {
+      <div class="trust-row">
+        <code>{{ item.url }}</code>
+        <span class="trust-badge">{{ item.kind }}</span>
+        <span class="jk-caption">{{ item.trustLevel }}</span>
+        <button type="button" appearance="flat" tuiButton (click)="deleteSource(item)">Удалить</button>
+      </div>
+    } @empty {
+    <p class="jk-caption">Источников пока нет.</p>
+  }
+</div>
+</section>
+
+<section class="jk-card trust-panel">
+  <h2 class="jk-h2">Релизы</h2>
+  <div class="trust-form trust-form-release">
+    <select [value]="release().product" (change)="setRelease('product', $event)">
+      <option value="">Продукт</option>
+      @for (item of products(); track item.id) {
+        <option [value]="item.slug + '|' + item.platform">{{ item.name }} · {{ item.platform }}</option>
+      }
+    </select>
+    <input placeholder="Версия" [value]="release().version" (input)="setRelease('version', $event)" />
+    <input placeholder="versionCode" type="number" [value]="release().versionCode" (input)="setRelease('versionCode', $event)" />
+    <input placeholder="package name" [value]="release().packageName" (input)="setRelease('packageName', $event)" />
+    <input placeholder="SHA-256" [value]="release().sha256" (input)="setRelease('sha256', $event)" />
+    <input placeholder="Подпись SHA-256" [value]="release().signatureSha256" (input)="setRelease('signatureSha256', $event)" />
+    <input placeholder="Тип подписи" [value]="release().signatureType" (input)="setRelease('signatureType', $event)" />
+    <input placeholder="URL файла" [value]="release().url" (input)="setRelease('url', $event)" />
+    <button type="button" appearance="primary" tuiButton [disabled]="saving() === 'release'" (click)="saveRelease()">
+      Опубликовать
+    </button>
+  </div>
+  <div class="trust-list">
+    @for (item of releases(); track item.id) {
+      <div class="trust-row">
+        <strong>{{ item.productSlug }} · {{ item.version }}</strong>
+        <span class="trust-badge">{{ item.platform }}</span>
+        <span class="jk-caption">{{ item.channel }} · {{ item.url || 'без URL' }}</span>
+        <code>{{ item.sha256.slice(0, 16) }}…</code>
+        <button type="button" appearance="flat" tuiButton (click)="deleteRelease(item)">Удалить</button>
+      </div>
+    } @empty {
+    <p class="jk-caption">Релизов пока нет.</p>
+  }
+</div>
+</section>
+}
+</div>
