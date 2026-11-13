@@ -353,12 +353,16 @@ export default class MessagesPage {
 			URL.revokeObjectURL(previous.previewUrl);
 		}
 		this.error.set('');
+		const isMedia =
+			file.type.startsWith('image/') ||
+			file.type.startsWith('audio/') ||
+			file.type.startsWith('video/');
 		this.pendingAttachment.set({
 			file,
 			name: file.name,
 			size: file.size,
 			previewUrl: file.type.startsWith('image/') ? URL.createObjectURL(file) : null,
-			asDocument: !file.type.startsWith('image/'),
+			asDocument: !isMedia,
 		});
 	}
 
