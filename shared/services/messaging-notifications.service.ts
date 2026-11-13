@@ -1,6 +1,8 @@
 import type { IncomingMessage } from '@shared/types/messaging';
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, DestroyRef, inject, Injectable, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { buildMessageNotification, decryptMessage } from '@shared/crypto/secure-messaging';
+import { timer } from 'rxjs';
 import { MessagingIdentityService } from './messaging-identity.service';
 import { MessagingService } from './messaging.service';
 import { NotificationCenterService } from './notification-center.service';
@@ -19,9 +21,15 @@ export class MessagingNotificationsService {
 	private readonly identity = inject(MessagingIdentityService);
 	private readonly center = inject(NotificationCenterService);
 	private readonly quietHours = inject(QuietHoursService);
+	private readonly destroyRef = inject(DestroyRef);
 	private readonly invoke = (
-		window as unknown as { __TAURI_INTERNALS__?: { invoke?: (command: string, args?: Record<string, unknown>) => Promise<unknown> } }
+		window as unknown as {
+			__TAURI_INTERNALS__?: {
+				invoke?: (command: string, args?: Record<string, unknown>) => Promise<unknown>;
+			};
+		}
 	).__TAURI_INTERNALS__?.invoke;
+
 	private readonly seen = new Set<number>();
 	readonly notices = signal<IncomingNotice[]>([]);
 	readonly unreadCount = signal(0);
@@ -32,8 +40,9 @@ export class MessagingNotificationsService {
 		if (!this.invoke) {
 			return;
 		}
-		void this.poll();
-		setInterval(() => void this.poll(), 10_000);
+		timer(0, 10_000)
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe(() => void this.poll());
 	}
 
 	dismiss(id: number): void {
@@ -68,19 +77,32 @@ export class MessagingNotificationsService {
 		for (const item of fresh) {
 			this.seen.add(item.id);
 			try {
-				const text = await decryptMessage(identity, {
-					algorithm: 'ECDH-P256+ECDSA-P256',
-					keyId: item.keyId,
-					encryptionKey: item.encryptionKey,
-					signingKey: item.signingKey,
-				}, item.envelope);
+				const text = await decryptMessage(
+					identity,
+					{
+						algorithm: 'ECDH-P256+ECDSA-P256',
+						keyId: item.keyId,
+						encryptionKey: item.encryptionKey,
+						signingKey: item.signingKey,
+					},
+					item.envelope,
+				);
 				const notification = buildMessageNotification(item.displayName || item.sender, text);
 
 				this.notices.update((notices) => [
 					...notices.slice(-4),
-					{ id: item.id, author: item.displayName || item.sender, avatar: item.avatar, text: notification.body },
+					{
+						id: item.id,
+						author: item.displayName || item.sender,
+						avatar: item.avatar,
+						text: notification.body,
+					},
 				]);
-				this.center.add(`Сообщение от ${notification.title.replace('Сообщение от ', '')}`, notification.body, 'message');
+				this.center.add(
+					`Сообщение от ${notification.title.replace('Сообщение от ', '')}`,
+					notification.body,
+					'message',
+				);
 				if (document.hasFocus()) {
 					setTimeout(() => this.dismiss(item.id), 8000);
 				} else if (!this.quietHours.isQuiet()) {

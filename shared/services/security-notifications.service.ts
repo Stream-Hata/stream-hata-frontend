@@ -15,7 +15,7 @@ export class SecurityNotificationsService {
 	private readonly seen = new Set<number>();
 
 	constructor() {
-		toObservable(this.roles.isAdmin)
+		toObservable(this.roles.canViewSecurity)
 			.pipe(
 				filter(Boolean),
 				take(1),

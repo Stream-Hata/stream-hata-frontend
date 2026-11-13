@@ -1,9 +1,12 @@
-import { inject, Injectable } from '@angular/core';
+import { DestroyRef, inject, Injectable } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { catchError, of, switchMap, timer } from 'rxjs';
 import { MessagingService } from './messaging.service';
 
 @Injectable({ providedIn: 'root' })
 export class MessagingPresenceService {
 	private readonly messaging = inject(MessagingService);
+	private readonly destroyRef = inject(DestroyRef);
 	private started = false;
 
 	typing(peer: string) {
@@ -15,7 +18,11 @@ export class MessagingPresenceService {
 			return;
 		}
 		this.started = true;
-		this.messaging.heartbeat().subscribe({ error: () => undefined });
-		setInterval(() => this.messaging.heartbeat().subscribe({ error: () => undefined }), 25_000);
+		timer(0, 25_000)
+			.pipe(
+				switchMap(() => this.messaging.heartbeat().pipe(catchError(() => of(null)))),
+				takeUntilDestroyed(this.destroyRef),
+			)
+			.subscribe();
 	}
 }

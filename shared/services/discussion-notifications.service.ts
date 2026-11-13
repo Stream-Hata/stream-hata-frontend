@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { DestroyRef, inject, Injectable } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { timer } from 'rxjs';
 import { NotificationCenterService } from './notification-center.service';
 
 interface DiscussionNotification {
@@ -15,12 +17,14 @@ interface DiscussionNotification {
 export class DiscussionNotificationsService {
 	private readonly http = inject(HttpClient);
 	private readonly center = inject(NotificationCenterService);
+	private readonly destroyRef = inject(DestroyRef);
 	private readonly seen = new Set<number>();
 	private busy = false;
 
 	constructor() {
-		void this.poll();
-		setInterval(() => void this.poll(), 20_000);
+		timer(0, 20_000)
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe(() => void this.poll());
 	}
 
 	private poll(): void {

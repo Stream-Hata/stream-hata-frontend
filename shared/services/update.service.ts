@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { timer } from 'rxjs';
-import { catchError, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { DestroyRef, inject, Injectable, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { catchError, of, timer } from 'rxjs';
 
 interface VersionPayload {
 	version: string;
@@ -14,6 +14,7 @@ interface VersionPayload {
 export class UpdateService {
 	private readonly http = inject(HttpClient);
 	private readonly document = inject(DOCUMENT);
+	private readonly destroyRef = inject(DestroyRef);
 	private current = '';
 	readonly available = signal(false);
 	readonly build = signal('');
@@ -29,15 +30,15 @@ export class UpdateService {
 			}
 		});
 
-		timer(0, 60_000).subscribe(() => this.checkVersion());
+		timer(0, 60_000)
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe(() => this.checkVersion());
 	}
 
 	markChangelogSeen(): void {
 		localStorage.setItem('nsh.whats-new-version-v2', this.version());
 		this.whatsNew.set(false);
 	}
-
-
 
 	reload(): void {
 		const current = this.build() || this.current;

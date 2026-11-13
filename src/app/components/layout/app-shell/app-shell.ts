@@ -482,7 +482,7 @@ export default class AppShell {
 	}
 
 	preloadProfile(): void {
-		this.profileData.load().subscribe();
+		this.profileData.load().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
 	}
 
 	readonly searchItems = computed<SearchItem[]>(() => [
@@ -625,7 +625,10 @@ export default class AppShell {
 
 				document.cookie = 'e-hub-login-event=; Path=/; Domain=.rdpctd.dev; Max-Age=0; SameSite=Lax';
 				this.toast.set({ title: 'Вход выполнен', text: `${name} подключён` });
-				this.alerts.notify('login', name, 'Вход выполнен').subscribe({ error: () => undefined });
+				this.alerts
+					.notify('login', name, 'Вход выполнен')
+					.pipe(takeUntilDestroyed(this.destroyRef))
+					.subscribe({ error: () => undefined });
 				timer(6000)
 					.pipe(takeUntilDestroyed(this.destroyRef))
 					.subscribe(() => this.toast.set(null));
@@ -684,6 +687,7 @@ export default class AppShell {
 				});
 				this.alerts
 					.notify('streak', streak.displayName, `${streak.streakCount}-й стрим подряд`)
+					.pipe(takeUntilDestroyed(this.destroyRef))
 					.subscribe({ error: () => undefined });
 				timer(6000)
 					.pipe(takeUntilDestroyed(this.destroyRef))

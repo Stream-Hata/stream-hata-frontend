@@ -1,6 +1,8 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
 import type { GameSuggestion } from './suggestions.service';
+import { HttpClient } from '@angular/common/http';
+import { DestroyRef, inject, Injectable } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { timer } from 'rxjs';
 import { NotificationCenterService } from './notification-center.service';
 
 interface Invoke {
@@ -11,9 +13,11 @@ interface Invoke {
 export class SuggestionNotificationsService {
 	private readonly http = inject(HttpClient);
 	private readonly center = inject(NotificationCenterService);
+	private readonly destroyRef = inject(DestroyRef);
 	private readonly invoke = (
 		window as unknown as { __TAURI_INTERNALS__?: { invoke?: Invoke } }
 	).__TAURI_INTERNALS__?.invoke;
+
 	private readonly key = 'nsh.suggestion-notified';
 	private busy = false;
 
@@ -21,8 +25,9 @@ export class SuggestionNotificationsService {
 		if (!this.invoke) {
 			return;
 		}
-		void this.poll();
-		setInterval(() => void this.poll(), 60_000);
+		timer(0, 60_000)
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe(() => void this.poll());
 	}
 
 	private async poll(): Promise<void> {

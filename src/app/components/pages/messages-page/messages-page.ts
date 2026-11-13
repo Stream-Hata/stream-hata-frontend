@@ -1,4 +1,3 @@
-import type { HttpErrorResponse } from '@angular/common/http';
 import type { ElementRef } from '@angular/core';
 import type { Identity } from '@shared/crypto/secure-messaging';
 import type { CodeIssue } from '@shared/messaging/code-format';
@@ -13,6 +12,7 @@ import type {
 	SecurityNotice,
 } from '@shared/types/messaging';
 import { JsonPipe } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, DestroyRef, inject, model, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
@@ -34,6 +34,7 @@ import { SecurityService } from '@shared/services/security.service';
 import { TwitchChatSocketService } from '@shared/services/twitch-chat.service';
 import { TwitchService } from '@shared/services/twitch.service';
 import { contactBundle } from '@shared/types/messaging';
+import { TuiMedia } from '@taiga-ui/cdk';
 import { TuiButton, TuiDialog, TuiIcon, TuiInput, TuiTextfield } from '@taiga-ui/core';
 import { TuiBadge, TuiSwitch, TuiTextarea } from '@taiga-ui/kit';
 import {
@@ -50,6 +51,7 @@ import {
 	of,
 	Subject,
 	switchMap,
+	timeout,
 	timer,
 } from 'rxjs';
 
@@ -98,6 +100,7 @@ interface GraphNodeView {
 		TuiDialog,
 		TuiIcon,
 		TuiInput,
+		TuiMedia,
 		TuiSwitch,
 		TuiTextarea,
 		TuiTextfield,
@@ -799,52 +802,45 @@ export default class MessagesPage {
 			return;
 		}
 		this.sending.set(true);
-		if (attachment) {
-			this.uploadingAttachment.set(true);
-			try {
+		this.uploadingAttachment.set(Boolean(attachment));
+		let phase: 'upload' | 'edit' | 'send' = 'send';
+
+		try {
+			if (attachment) {
+				phase = 'upload';
 				const { url } = await firstValueFrom(
 					this.messaging.uploadAttachment(attachment.file, {
 						chatType: 'dm',
 						chatId: contact.login,
 						asDocument: attachment.asDocument,
-					}),
+					}).pipe(timeout(120_000), takeUntilDestroyed(this.destroyRef)),
 				);
 				const link = attachment.asDocument ? `${url}?document=1` : url;
 				text = text ? `${text}\n${link}` : link;
 				this.removeAttachment();
-			} catch (error) {
-				this.attachmentError(error as HttpErrorResponse, contact);
 				this.uploadingAttachment.set(false);
-				this.sending.set(false);
+			}
 
+			const reply = this.replyTo();
+			const source = reply ? `> ${reply.text.slice(0, 200)}\n${text}` : text;
+			let outgoing: string;
+
+			try {
+				if (!source.includes('```')) {
+					const language = detectCodeLanguage(source);
+					const codeLike =
+						/[{}();=<>]|^\s*(?:def|function|const|let|var|class|import|package|func)\b/m.test(source);
+
+					if (language && codeLike) {
+						await formatCode(source, language);
+					}
+				}
+				outgoing = await formatFencedCode(source, true);
+				this.codeIssue.set(null);
+			} catch (error) {
+				this.codeIssue.set(describeCodeError(error));
 				return;
 			}
-			this.uploadingAttachment.set(false);
-		}
-		const reply = this.replyTo();
-		const source = reply ? `> ${reply.text.slice(0, 200)}\n${text}` : text;
-		let outgoing: string;
-
-		try {
-			if (!source.includes('```')) {
-				const language = detectCodeLanguage(source);
-
-				const codeLike =
-					/[{}();=<>]|^\s*(?:def|function|const|let|var|class|import|package|func)\b/m.test(source);
-
-				if (language && codeLike) {
-					await formatCode(source, language);
-				}
-			}
-			outgoing = await formatFencedCode(source, true);
-			this.codeIssue.set(null);
-		} catch (error) {
-			this.codeIssue.set(describeCodeError(error));
-			this.sending.set(false);
-
-			return;
-		}
-		try {
 			const envelope = await encryptMessage(
 				identity,
 				self,
@@ -856,85 +852,83 @@ export default class MessagesPage {
 			const editing = this.editing();
 
 			if (editing) {
-				this.messaging
-					.editMessage(editing.id, envelope)
-					.pipe(takeUntilDestroyed(this.destroyRef))
-					.subscribe({
-						next: () => {
-							const parsed = parseMessageContent(outgoing);
-							this.messages.update((items) =>
-								items.map((item) =>
-									item.id === editing.id
-										? {
-											...item,
-											text: outgoing,
-											spans: parsed.spans,
-											media: parsed.media,
-											editedAt: new Date().toISOString(),
-										}
-										: item,
-								),
-							);
-							this.draft.set('');
-							this.editing.set(null);
-							this.sending.set(false);
-							this.autoResize();
-						},
-						error: () => {
-							this.error.set('Не удалось изменить сообщение.');
-							this.sending.set(false);
-						},
-					});
-				return;
-			}
-			this.messaging
-				.send(contact.login, envelope)
-				.pipe(takeUntilDestroyed(this.destroyRef))
-				.subscribe({
-					next: ({ id }) => {
-						const parsed = parseMessageContent(outgoing);
-
-						this.messages.update((messages) => [
-							...messages,
-							{
-								id,
-								mine: true,
+				phase = 'edit';
+				await firstValueFrom(
+					this.messaging.editMessage(editing.id, envelope).pipe(
+						timeout(30_000),
+						takeUntilDestroyed(this.destroyRef),
+					),
+				);
+				const parsed = parseMessageContent(outgoing);
+				this.messages.update((items) =>
+					items.map((item) =>
+						item.id === editing.id
+							? {
+								...item,
 								text: outgoing,
 								spans: parsed.spans,
 								media: parsed.media,
-								createdAt: new Date().toISOString(),
-								encrypted: this.encryptEnabled(),
-								error: '',
-								reactions: [],
-								codeIssues: [],
-							},
-						]);
-						this.draft.set('');
-						this.replyTo.set(null);
-						this.autoResize();
-						this.sending.set(false);
-						this.scrollToBottom();
-						if (contact.isTest) {
-							setTimeout(() => void this.replyAsTestPeer(contact, text), 600);
-						}
-					},
-					error: (error: HttpErrorResponse) => {
-						if (error.status === 429) {
-							const payload = error.error as {
-								retryAfterSeconds?: number;
-							} | null;
-							this.error.set(
-								`Слишком часто. Повторите через ${payload?.retryAfterSeconds ?? 60} с.`,
-							);
-						} else {
-							this.error.set('Не удалось отправить сообщение.');
-						}
-						this.sending.set(false);
-					},
-				});
-		} catch {
-			this.error.set('Не удалось зашифровать сообщение.');
+								editedAt: new Date().toISOString(),
+							}
+							: item,
+					),
+				);
+				this.draft.set('');
+				this.editing.set(null);
+				this.autoResize();
+				return;
+			}
+
+			phase = 'send';
+			const { id } = await firstValueFrom(
+				this.messaging.send(contact.login, envelope).pipe(
+					timeout(30_000),
+					takeUntilDestroyed(this.destroyRef),
+				),
+			);
+			const parsed = parseMessageContent(outgoing);
+			this.messages.update((messages) => [
+				...messages,
+				{
+					id,
+					mine: true,
+					text: outgoing,
+					spans: parsed.spans,
+					media: parsed.media,
+					createdAt: new Date().toISOString(),
+					encrypted: this.encryptEnabled(),
+					error: '',
+					reactions: [],
+					codeIssues: [],
+				},
+			]);
+			this.draft.set('');
+			this.replyTo.set(null);
+			this.autoResize();
+			this.scrollToBottom();
+			if (contact.isTest) {
+				setTimeout(() => void this.replyAsTestPeer(contact, text), 600);
+			}
+		} catch (error) {
+			if (phase === 'upload') {
+				this.attachmentError(error as HttpErrorResponse, contact);
+			} else if (phase === 'edit') {
+				this.error.set('Не удалось изменить сообщение.');
+			} else if (error instanceof HttpErrorResponse && error.status === 429) {
+				const payload = error.error as { retryAfterSeconds?: number } | null;
+				this.error.set(
+					`Слишком часто. Повторите через ${payload?.retryAfterSeconds ?? 60} с.`,
+				);
+			} else if (error instanceof Error && error.name === 'TimeoutError') {
+				this.error.set('Сервер не ответил. Сообщение не отправлено.');
+			} else if (error instanceof HttpErrorResponse) {
+				this.error.set('Не удалось отправить сообщение.');
+			} else {
+				this.error.set('Не удалось зашифровать сообщение.');
+			}
+		} finally {
 			this.sending.set(false);
+			this.uploadingAttachment.set(false);
 		}
 	}
 
@@ -986,15 +980,12 @@ export default class MessagesPage {
 				`↪ ${source.text}`,
 				this.encryptEnabled(),
 			);
-			await new Promise<void>((resolve, reject) => {
-				this.messaging
-					.send(contact.login, envelope)
-					.pipe(takeUntilDestroyed(this.destroyRef))
-					.subscribe({
-						next: () => resolve(),
-						error: reject,
-					});
-			});
+			await firstValueFrom(
+				this.messaging.send(contact.login, envelope).pipe(
+					timeout(30_000),
+					takeUntilDestroyed(this.destroyRef),
+				),
+			);
 			this.forwardOpen.set(false);
 			this.forwardMessage.set(null);
 		} catch {

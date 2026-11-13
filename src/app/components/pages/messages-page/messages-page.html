@@ -341,10 +341,10 @@
       <img [src]="media.url" alt="Изображение" loading="lazy" />
     }
     @case ('audio') {
-    <audio controls [src]="media.url"></audio>
+    <audio controls preload="metadata" [src]="media.url" tuiMedia></audio>
   }
   @case ('video') {
-  <video controls [src]="media.url"></video>
+  <video controls preload="metadata" [src]="media.url" tuiMedia></video>
 }
 @case ('file') {
 <a class="message-file" [href]="media.url" target="_blank" rel="noopener" download>
