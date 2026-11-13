@@ -103,8 +103,9 @@ export class UpdateService {
 					registration.waiting?.postMessage({ type: 'CHECK_VERSION' });
 				};
 
-				check();
-				setInterval(check, 60_000);
+				timer(0, 60_000)
+					.pipe(takeUntilDestroyed(this.destroyRef))
+					.subscribe(check);
 			})
 			.catch(() => undefined);
 	}

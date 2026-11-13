@@ -354,10 +354,7 @@ export default class MessagesPage {
 			URL.revokeObjectURL(previous.previewUrl);
 		}
 		this.error.set('');
-		const isMedia =
-			file.type.startsWith('image/') ||
-			file.type.startsWith('audio/') ||
-			file.type.startsWith('video/');
+		const isMedia = this.isMediaFile(file);
 		this.pendingAttachment.set({
 			file,
 			name: file.name,
@@ -365,6 +362,16 @@ export default class MessagesPage {
 			previewUrl: file.type.startsWith('image/') ? URL.createObjectURL(file) : null,
 			asDocument: !isMedia,
 		});
+	}
+
+	private isMediaFile(file: File): boolean {
+		if (/^(?:image|audio|video)\//i.test(file.type)) {
+			return true;
+		}
+
+		return /\.(?:avif|bmp|gif|jpe?g|png|svg|webp|aac|flac|m4a|mp3|oga|ogg|opus|wav|m3u8|m4v|mkv|mov|mp4|ogv|webm)$/i.test(
+			file.name,
+		);
 	}
 
 	fileNameFromUrl(url: string): string {
