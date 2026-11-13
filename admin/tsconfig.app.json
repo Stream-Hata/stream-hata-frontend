@@ -9,12 +9,13 @@
 	],
 	"include": [
 		"src/**/*.d.ts",
-		"../shared/**/*.ts"
+		"../shared/**/*.ts",
+		"../src/app/components/pages/security-admin-page/**/*.ts",
+		"../src/app/components/pages/trust-admin-page/**/*.ts"
 	],
 	"exclude": [
 		"src/**/*.spec.ts",
 		"../shared/**/*.spec.ts",
 		"../shared/**/*.test.ts",
-		"../shared/eslint/**"
 	]
 }

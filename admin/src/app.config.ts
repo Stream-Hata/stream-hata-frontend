@@ -2,6 +2,8 @@ import type { ApplicationConfig } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { provideTaiga, TUI_ICON_RESOLVER } from '@taiga-ui/core';
+import SecurityAdminPage from '../../src/app/components/pages/security-admin-page/security-admin-page';
+import TrustAdminPage from '../../src/app/components/pages/trust-admin-page/trust-admin-page';
 import { DashboardPage } from './pages/dashboard';
 import { GameEditPage } from './pages/game-edit';
 import { GamesAdminPage } from './pages/games';
@@ -31,6 +33,8 @@ export const appConfig: ApplicationConfig = {
 			{ path: 'users/:id', component: UserDetailPage },
 			{ path: 'suggestions', component: SuggestionsAdminPage },
 			{ path: 'imports', component: ImportsPage },
+			{ path: 'security', component: SecurityAdminPage },
+			{ path: 'security/trust', component: TrustAdminPage },
 			{ path: '**', redirectTo: '' },
 		]),
 	],
