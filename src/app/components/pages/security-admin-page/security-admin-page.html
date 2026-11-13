@@ -1,0 +1,291 @@
+<div class="jk-page security-admin-page">
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">Безопасность</h1>
+      <p class="jk-caption">Опасные файлы, код, моды и попытки мошенничества.</p>
+    </div>
+    <div class="security-head-actions">
+      @if (alerts() > 0) {
+        <span class="security-alert-count">{{ alerts() }} новых</span>
+      }
+      <button
+        type="button"
+        (click)="securityNotifications.requestPermission()"
+        appearance="flat"
+        tuiButton
+      >
+        Системные уведомления
+      </button>
+      <button appearance="flat" type="button" tuiButton (click)="load()">Обновить</button>
+    </div>
+  </header>
+
+  @if (error()) {
+    <p class="security-error" role="alert">{{ error() }}</p>
+  }
+
+  <section class="security-stats" aria-label="Сводка инцидентов">
+    <article class="jk-card security-stat">
+      <span class="security-stat-label">Всего</span>
+      <strong>{{ stats().total }}</strong>
+    </article>
+    <article class="jk-card security-stat security-stat-warning">
+      <span class="security-stat-label">Ждут проверки</span>
+      <strong>{{ stats().pending }}</strong>
+    </article>
+    <article class="jk-card security-stat security-stat-critical">
+      <span class="security-stat-label">Критические</span>
+      <strong>{{ stats().critical }}</strong>
+    </article>
+    <article class="jk-card security-stat security-stat-banned">
+      <span class="security-stat-label">Баны</span>
+      <strong>{{ stats().banned }}</strong>
+    </article>
+  </section>
+
+  <section class="jk-card security-panel">
+    <div class="security-toolbar">
+      <div class="security-filters" role="group" aria-label="Фильтр инцидентов">
+        @for (item of filters; track item.value) {
+          <button
+            type="button"
+            [class.security-filter-active]="filter() === item.value"
+            (click)="setFilter(item.value)"
+            appearance="flat"
+            tuiButton
+          >
+            {{ item.label }}
+          </button>
+        }
+      </div>
+      <span class="jk-caption">Автобан через 24 часа без решения админа</span>
+    </div>
+
+    @if (loading()) {
+      <div class="jk-empty">Загружаем инциденты…</div>
+    } @else if (filtered().length === 0) {
+      <div class="jk-empty">Инцидентов нет.</div>
+    } @else {
+      <div class="security-list">
+        @for (incident of filtered(); track incident.id) {
+          <article
+            class="security-row"
+            [class.security-row-critical]="incident.severity === 'critical'"
+          >
+            <div class="security-row-head">
+              <span
+                class="security-badge"
+                [class.security-badge-critical]="badgeClass(incident) === 'critical'"
+                [class.security-badge-warning]="badgeClass(incident) === 'warning'"
+                [class.security-badge-info]="badgeClass(incident) === 'info'"
+                [class.security-badge-neutral]="badgeClass(incident) === 'neutral'"
+              >
+                {{ verdictLabel(incident.verdict) }}
+              </span>
+              <strong class="security-row-title">
+                #{{ incident.id }} · {{ kindLabel(incident.kind) }}
+                @if (incident.fileName) {
+                  · {{ incident.fileName }}
+                }
+              </strong>
+              <span class="security-status">{{ statusLabel(incident.status) }}</span>
+              <time class="security-time" [attr.datetime]="incident.createdAt">
+                {{ incident.createdAt | date: 'dd.MM.yyyy HH:mm' }}
+              </time>
+            </div>
+
+            <dl class="security-meta">
+              <div>
+                <dt>Отправитель</dt>
+                <dd>{{ incident.senderLogin || '—' }}</dd>
+              </div>
+              <div>
+                <dt>Чат</dt>
+                <dd>
+                  {{ incident.chatType || '—' }}{{ incident.chatId ? ' · ' + incident.chatId : '' }}
+                </dd>
+              </div>
+              <div>
+                <dt>Причина</dt>
+                <dd>{{ incident.reason || '—' }}</dd>
+              </div>
+              <div>
+                <dt>SHA-256</dt>
+                <dd class="security-hash">{{ incident.fileHash || '—' }}</dd>
+              </div>
+              <div>
+                <dt>Дедлайн</dt>
+                @if (deadline(incident); as due) {
+                  <dd>{{ due | date: 'dd.MM.yyyy HH:mm' }}</dd>
+                } @else {
+                  <dd>—</dd>
+                }
+              </div>
+              <div>
+                <dt>Бан</dt>
+                <dd>{{ incident.banApplied ? 'Применён' : 'Нет' }}</dd>
+              </div>
+            </dl>
+
+            @if (incident.reviewedBy) {
+              <p class="jk-caption">
+                Решение: {{ incident.action || '—' }} · {{ incident.reviewedBy }}
+                @if (incident.reviewedAt) {
+                  · {{ incident.reviewedAt | date: 'dd.MM.yyyy HH:mm' }}
+                }
+              </p>
+            }
+
+            @if (!isResolved(incident)) {
+              <label class="security-note">
+                <span class="jk-label">Комментарий к решению</span>
+                <textarea
+                  rows="2"
+                  placeholder="Причина решения, ссылка на оригинал, evidence…"
+                  [value]="notes()[incident.id] ?? ''"
+                  (input)="setNote(incident.id, $event)"
+                ></textarea>
+              </label>
+            }
+
+            <div class="security-actions">
+              @if (incident.status === 'pending_review' || incident.status === 'acknowledged') {
+                <button
+                  type="button"
+                  [disabled]="busy() === incident.id"
+                  (click)="acknowledge(incident)"
+                  appearance="secondary"
+                  tuiButton
+                >
+                  Взять в работу
+                </button>
+              }
+              @if (!isResolved(incident)) {
+                <button
+                  type="button"
+                  [disabled]="busy() === incident.id"
+                  (click)="resolve(incident, 'confirm_fraud')"
+                  appearance="primary"
+                  tuiButton
+                >
+                  Подтвердить мошенничество
+                </button>
+                <button
+                  type="button"
+                  [disabled]="busy() === incident.id"
+                  (click)="resolve(incident, 'false_positive')"
+                  appearance="flat"
+                  tuiButton
+                >
+                  Ложное срабатывание
+                </button>
+                <button
+                  type="button"
+                  [disabled]="busy() === incident.id"
+                  (click)="resolve(incident, 'close')"
+                  appearance="flat"
+                  tuiButton
+                >
+                  Закрыть
+                </button>
+              }
+            </div>
+
+            <details class="security-report">
+              <summary>Отчёт проверки</summary>
+              <pre>{{ incident.report | json }}</pre>
+            </details>
+          </article>
+        }
+      </div>
+    }
+  </section>
+
+  <section class="jk-card security-panel security-hashes">
+    <h2 class="jk-h2">Свои проверки хэшей</h2>
+    <p class="jk-caption">
+      Хэш из этого списка проверяется до ClamAV и внешних движков. Правило администратора имеет приоритет.
+    </p>
+    @if (hashError()) {
+      <p class="security-error" role="alert">{{ hashError() }}</p>
+    }
+    <form class="security-hash-form" (submit)="$event.preventDefault(); addHashRule()">
+      <input
+        class="security-hash-input"
+        type="text"
+        placeholder="SHA-256, 64 hex-символа"
+        aria-label="SHA-256"
+        [value]="hashValue()"
+        (input)="hashValue.set($any($event.target).value)"
+        />
+        <div class="security-verdict-toggle" role="group" aria-label="Вердикт">
+          <button
+            type="button"
+            [class.security-verdict-active]="hashVerdict() === 'malicious'"
+            (click)="setHashVerdict('malicious')"
+          >
+            Блокировать
+          </button>
+          <button
+            type="button"
+            [class.security-verdict-active]="hashVerdict() === 'trusted'"
+            (click)="setHashVerdict('trusted')"
+          >
+            Доверенный
+          </button>
+        </div>
+        <input
+          class="security-hash-input"
+          type="text"
+          placeholder="Причина"
+          aria-label="Причина"
+          [value]="hashReason()"
+          (input)="hashReason.set($any($event.target).value)"
+          />
+          <button appearance="primary" type="button" tuiButton [disabled]="hashBusy()" (click)="addHashRule()">
+            {{ hashBusy() ? 'Сохраняем…' : 'Добавить' }}
+          </button>
+        </form>
+        <div class="security-bulk">
+          <input
+            #bulkHashInput
+            hidden
+            type="file"
+            accept=".txt,.csv,text/plain,text/csv"
+            (change)="bulkHashRules($event)"
+            />
+            <button
+              appearance="secondary"
+              type="button"
+              tuiButton
+              [disabled]="bulkHashBusy()"
+              (click)="bulkHashInput.click()"
+            >
+              {{ bulkHashBusy() ? 'Загружаем…' : 'Загрузить списком' }}
+            </button>
+            <span class="jk-caption">TXT/CSV: hash, verdict, reason</span>
+            @if (bulkHashMessage()) {
+              <span class="jk-caption">{{ bulkHashMessage() }}</span>
+            }
+          </div>
+          @if (hashRules().length) {
+            <div class="security-hash-list">
+              @for (rule of hashRules(); track rule.id) {
+                <div class="security-hash-row">
+            <span
+              class="security-badge"
+              [class.security-badge-critical]="rule.verdict === 'malicious'"
+              [class.security-badge-info]="rule.verdict === 'trusted'"
+                  >{{ rule.verdict === 'malicious' ? 'Блок' : 'Доверенный' }}</span>
+                  <code>{{ rule.sha256 }}</code>
+                  <span class="jk-caption">{{ rule.reason || '—' }}</span>
+                  <span class="jk-caption">{{ rule.createdBy || 'admin' }}</span>
+                  <button appearance="flat" type="button" tuiButton (click)="deleteHashRule(rule.id)">Удалить</button>
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="jk-caption">Правил пока нет.</p>
+          }
+        </section>
+      </div>

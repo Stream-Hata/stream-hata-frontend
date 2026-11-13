@@ -3,6 +3,7 @@ import { profileResolver } from './components/pages/profile-page/profile-resolve
 import { rouletteResolver } from './components/pages/roulette-page/roulette-resolver';
 import { adminGuard } from './guards/admin.guard';
 import { landingGuard } from './guards/desktop.guard';
+import { securityGuard } from './guards/security.guard';
 
 export const routes: Routes = [
 	{
@@ -56,6 +57,12 @@ export const routes: Routes = [
 				canActivate: [adminGuard],
 				loadComponent: () => import('./components/pages/blog-admin-page/blog-admin-page'),
 				title: 'Блог · админка · Nameless StreamHata',
+			},
+			{
+				path: 'security',
+				canActivate: [securityGuard],
+				loadComponent: () => import('./components/pages/security-admin-page/security-admin-page'),
+				title: 'Безопасность · админка · Nameless StreamHata',
 			},
 			{
 				path: 'widgets/system/config',

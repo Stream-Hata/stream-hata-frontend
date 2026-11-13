@@ -1,4 +1,8 @@
-import type { AccessRole, AccessRoles } from '@shared/services/access.service';
+import type {
+	AccessMembership,
+	AccessRole,
+	AccessRoles,
+} from '@shared/services/access.service';
 import { computed, inject, Injectable } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AccessService } from '@shared/services/access.service';
@@ -15,6 +19,13 @@ export class RoleService {
 			switchMap(() => this.access.get().pipe(catchError(() => of(null)))),
 		),
 		{ initialValue: null as AccessRoles | null },
+	);
+
+	readonly membership = toSignal(
+		timer(0, 30000).pipe(
+			switchMap(() => this.access.membership().pipe(catchError(() => of(null)))),
+		),
+		{ initialValue: null as AccessMembership | null },
 	);
 
 	readonly profile = toSignal(
@@ -58,4 +69,6 @@ export class RoleService {
 	});
 
 	readonly isAdmin = computed(() => this.role() === 'owner' || this.role() === 'admin');
+	readonly isGroupAdmin = computed(() => this.membership()?.groupAdmin === true);
+	readonly canViewSecurity = computed(() => this.isAdmin() || this.isGroupAdmin());
 }

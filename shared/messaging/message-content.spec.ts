@@ -6,7 +6,17 @@ describe('message content', () => {
 		const parsed = parseMessageContent('**bold** __italic__ `code` ||spoiler|| @streamer [link](https://example.com)');
 
 		expect(parsed.spans.map((span) => span.kind)).toEqual([
-			'bold', 'text', 'italic', 'text', 'code', 'text', 'spoiler', 'text', 'mention', 'text', 'link',
+			'bold',
+			'text',
+			'italic',
+			'text',
+			'code',
+			'text',
+			'spoiler',
+			'text',
+			'mention',
+			'text',
+			'link',
 		]);
 	});
 
@@ -35,6 +45,7 @@ describe('message content', () => {
 		expect(detectMediaKind('https://cdn.example.com/a.mp3?x=1')).toBe('audio');
 		expect(detectMediaKind('https://cdn.example.com/a.mp4')).toBe('video');
 		expect(detectMediaKind('https://example.com/page')).toBe('link');
+		expect(detectMediaKind('/rgg-sync/media/file/a.png?document=1')).toBe('file');
 	});
 
 	it('exposes media separately from text', () => {

@@ -4,6 +4,8 @@ import type {
 	MessagingEnvelope,
 	MessagingGraph,
 	RelationshipInfo,
+	SecurityNotice,
+	SecurityScanReport,
 } from '@shared/types/messaging';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
@@ -84,7 +86,10 @@ export class MessagingService {
 	}
 
 	setConversationState(peer: string, state: { pinned?: boolean; archived?: boolean }) {
-		return this.http.patch<{ ok: boolean }>('rgg-sync/messaging/conversation/state', { peer, ...state });
+		return this.http.patch<{ ok: boolean }>('rgg-sync/messaging/conversation/state', {
+			peer,
+			...state,
+		});
 	}
 
 	deleteConversation(withLogin: string, scope: 'me' | 'all' = 'me') {
@@ -116,11 +121,32 @@ export class MessagingService {
 		return this.http.post<{ id: number }>('rgg-sync/messaging/test-reply', { peer, envelope });
 	}
 
-	uploadAttachment(file: File) {
+	securityNotices(withLogin: string) {
+		return this.http.get<{ items: SecurityNotice[] }>('rgg-sync/messaging/security-notices', {
+			params: { with: withLogin },
+		});
+	}
+
+	uploadAttachment(
+		file: File,
+		context: {
+			chatType?: string;
+			chatId?: string;
+			recipientId?: number;
+			asDocument?: boolean;
+		} = {},
+	) {
 		const form = new FormData();
 
 		form.append('file', file);
+		if (context.chatType) form.append('chatType', context.chatType);
+		if (context.chatId) form.append('chatId', context.chatId);
+		if (context.recipientId) form.append('recipientId', String(context.recipientId));
+		if (context.asDocument) form.append('asDocument', '1');
 
-		return this.http.post<{ url: string }>('rgg-sync/messaging/upload', form);
+		return this.http.post<{ url: string; scan?: SecurityScanReport }>(
+			'rgg-sync/messaging/upload',
+			form,
+		);
 	}
 }

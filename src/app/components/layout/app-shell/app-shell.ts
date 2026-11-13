@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import type { TranslationKey } from '@shared/services/i18n.service';
 import type { SteamLibraryGame, SteamMe } from '@shared/services/steam.service';
 import type { SearchItem } from '../app-search/app-search';
@@ -24,6 +23,7 @@ import { ObsAutoSceneService } from '@shared/services/obs-auto-scene.service';
 import { OnboardingService } from '@shared/services/onboarding.service';
 import { ProfileDataService } from '@shared/services/profile-data.service';
 import { RoleService } from '@shared/services/role.service';
+import { SecurityNotificationsService } from '@shared/services/security-notifications.service';
 import { SteamService } from '@shared/services/steam.service';
 import { StreamReportService } from '@shared/services/stream-report.service';
 import { SuggestionNotificationsService } from '@shared/services/suggestion-notifications.service';
@@ -72,7 +72,12 @@ const MAIN_NAV: NavItem[] = [
 	{ labelKey: 'nav.stream', link: '/app/stream', icon: '@tui.monitor' },
 	{ labelKey: 'nav.commands', link: '/app/commands', icon: '@tui.terminal' },
 	{ labelKey: 'nav.telegram', link: '/app/telegram', icon: '@tui.send' },
-	{ labelKey: 'nav.feedback', link: 'https://streamhata.rdpctd.dev/feedback', icon: '@tui.message-square', external: true },
+	{
+		labelKey: 'nav.feedback',
+		link: 'https://streamhata.rdpctd.dev/feedback',
+		icon: '@tui.message-square',
+		external: true,
+	},
 	{ labelKey: 'nav.moderation', link: '/app/moderation', icon: '@tui.shield' },
 	{ labelKey: 'nav.donations', link: '/app/donations', icon: '@tui.heart' },
 	{ labelKey: 'nav.music', link: '/app/music', icon: '@tui.music' },
@@ -174,6 +179,7 @@ export default class AppShell {
 	private readonly alerts = inject(AlertsService);
 	readonly systemAlerts = inject(SystemAlertsService);
 	readonly suggestionNotifications = inject(SuggestionNotificationsService);
+	readonly securityNotifications = inject(SecurityNotificationsService);
 	readonly autoClips = inject(AutoClipsService);
 	readonly appLock = inject(AppLockService);
 	readonly obsAutoScene = inject(ObsAutoSceneService);
@@ -272,7 +278,20 @@ export default class AppShell {
 		const items = MAIN_NAV.map((item) => ({ ...item, label: this.i18n.t(item.labelKey) }));
 
 		if (this.roles.isAdmin()) {
-			items.push({ labelKey: 'nav.blog', link: '/app/blog', icon: '@tui.newspaper', label: this.i18n.t('nav.blog') });
+			items.push({
+				labelKey: 'nav.blog',
+				link: '/app/blog',
+				icon: '@tui.newspaper',
+				label: this.i18n.t('nav.blog'),
+			});
+		}
+		if (this.roles.canViewSecurity()) {
+			items.push({
+				labelKey: 'nav.security',
+				link: '/app/security',
+				icon: '@tui.shield-check',
+				label: this.i18n.t('nav.security'),
+			});
 		}
 
 		return items;

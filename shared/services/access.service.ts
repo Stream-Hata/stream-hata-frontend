@@ -11,6 +11,12 @@ export interface AccessRoles {
 	vips: string[];
 }
 
+export interface AccessMembership {
+	login: string;
+	role: AccessRole;
+	groupAdmin: boolean;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AccessService {
 	private readonly http = inject(HttpClient);
@@ -31,5 +37,9 @@ export class AccessService {
 		return this.http.get<{ role: AccessRole }>('rgg-sync/access/role', {
 			params: { login },
 		});
+	}
+
+	membership(): Observable<AccessMembership> {
+		return this.http.get<AccessMembership>('rgg-sync/access/membership');
 	}
 }

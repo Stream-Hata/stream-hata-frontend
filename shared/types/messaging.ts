@@ -72,3 +72,41 @@ export function contactBundle(contact: MessagingContact): PublicKeyBundle {
 		signingKey: contact.signingKey,
 	};
 }
+
+export interface SecurityScanEngine {
+	name: string;
+	status: string;
+	detected: boolean;
+	trusted: boolean;
+	detail?: string;
+}
+
+export interface SecurityScanReport {
+	sha256: string;
+	size: number;
+	fileName: string;
+	verdict: string;
+	severity: string;
+	reason: string;
+	rawDetections: number;
+	trustedDetections: number;
+	engines: SecurityScanEngine[];
+	cached: boolean;
+	checkedAt: string;
+	error?: string;
+}
+
+export interface SecurityNotice {
+	id: number;
+	incidentId: number;
+	sender: string;
+	recipient: string;
+	kind: string;
+	verdict: string;
+	severity: string;
+	fileName: string;
+	fileHash: string;
+	reason: string;
+	report: Record<string, unknown>;
+	createdAt: string;
+}
