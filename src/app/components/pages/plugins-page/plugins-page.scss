@@ -1,0 +1,126 @@
+.plugins-page {
+	max-width: 1120px;
+	margin: 0 auto;
+}
+
+.plugins-toolbar {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	margin: 16px 0;
+}
+
+.plugins-search {
+	flex: 1;
+	min-height: 38px;
+	padding: 8px 12px;
+	border: 1px solid var(--border-normal);
+	border-radius: var(--radius-sm, 8px);
+	background: var(--surface-elevated-1, transparent);
+	color: inherit;
+	font: inherit;
+}
+
+.plugins-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 14px;
+}
+
+.plugin-card {
+	display: flex;
+	gap: 10px;
+	flex-direction: column;
+	padding: 16px;
+}
+
+.plugin-head,
+.plugin-foot {
+	display: flex;
+	gap: 10px;
+	align-items: flex-start;
+	justify-content: space-between;
+}
+
+.plugin-head h2 {
+	margin: 0;
+}
+
+.plugin-description {
+	margin: 0;
+	color: var(--text-secondary);
+	font: var(--font-body-sm);
+}
+
+.plugin-permissions {
+	display: flex;
+	gap: 5px;
+	flex-wrap: wrap;
+}
+
+.plugin-permission {
+	padding: 3px 8px;
+	border-radius: 999px;
+	background: var(--surface-elevated-2);
+	color: var(--text-secondary);
+	font-size: 0.72rem;
+}
+
+.plugin-foot {
+	padding-top: 8px;
+	border-top: 1px solid var(--border-divider);
+}
+
+.plugin-details {
+	padding-top: 8px;
+	border-top: 1px solid var(--border-divider);
+}
+
+.plugin-details summary {
+	color: var(--text-tertiary);
+	font-size: 0.78rem;
+	cursor: pointer;
+}
+
+.plugin-details dl {
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr);
+	gap: 4px 10px;
+	margin: 8px 0 0;
+}
+
+.plugin-details dt {
+	color: var(--text-tertiary);
+	font-size: 0.72rem;
+}
+
+.plugin-details dd {
+	margin: 0;
+	font-size: 0.72rem;
+	overflow-wrap: anywhere;
+}
+
+.plugins-error {
+	color: var(--tui-status-negative);
+}
+
+.chat-loading {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
+
+.chat-spinner {
+	width: 16px;
+	height: 16px;
+	border: 2px solid var(--border-normal);
+	border-top-color: var(--tui-primary);
+	border-radius: 50%;
+	animation: plugins-spin 0.8s linear infinite;
+}
+
+@keyframes plugins-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}

@@ -53,6 +53,11 @@ export const routes: Routes = [
 				title: 'Игры · Nameless StreamHata',
 			},
 			{
+				path: 'plugins',
+				loadComponent: () => import('./components/pages/plugins-page/plugins-page'),
+				title: 'Плагины · Nameless StreamHata',
+			},
+			{
 				path: 'blog',
 				canActivate: [adminGuard],
 				loadComponent: () => import('./components/pages/blog-admin-page/blog-admin-page'),

@@ -59,6 +59,7 @@ const MAIN_NAV: NavItem[] = [
 	{ labelKey: 'nav.dashboard', link: '/app/dashboard', icon: '@tui.layout-dashboard' },
 	{ labelKey: 'nav.events', link: '/app/events', icon: '@tui.calendar-days' },
 	{ labelKey: 'nav.games', link: '/app/games', icon: '@tui.gamepad-2' },
+	{ labelKey: 'nav.plugins', link: '/app/plugins', icon: '@tui.package' },
 	{ labelKey: 'nav.chat', link: '/app/chat', icon: '@tui.message-circle' },
 	{ labelKey: 'nav.messages', link: '/app/messages', icon: '@tui.send' },
 	{ labelKey: 'nav.notifications', link: '/app/notifications', icon: '@tui.bell' },

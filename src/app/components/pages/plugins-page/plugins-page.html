@@ -1,0 +1,77 @@
+<div class="jk-page plugins-page">
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">Плагины и моды</h1>
+      <p class="jk-caption">Проверенные расширения StreamHata с явными разрешениями.</p>
+    </div>
+  </header>
+
+  <div class="plugins-toolbar">
+    <input
+      class="plugins-search"
+      type="search"
+      placeholder="Поиск по плагинам и модам…"
+      [value]="query()"
+      (input)="onSearch($event)"
+      />
+      <button type="button" appearance="flat" tuiButton (click)="load(query())">Обновить</button>
+    </div>
+
+    @if (error()) {
+      <p class="plugins-error" role="alert">{{ error() }}</p>
+    }
+    @if (loading()) {
+      <div class="jk-card chat-loading">
+        <span class="chat-spinner" aria-hidden="true"></span>
+        <span>Загружаем каталог…</span>
+      </div>
+    } @else {
+      <div class="plugins-grid">
+        @for (item of published(); track item.slug) {
+          <article class="jk-card plugin-card">
+            <div class="plugin-head">
+              <div>
+                <h2 class="jk-h3">{{ item.name }}</h2>
+                <span class="jk-caption">{{ item.slug }} · v{{ item.latestVersion }}</span>
+              </div>
+              <span appearance="info" tuiBadge>{{ item.kind === 'mod' ? 'mod' : 'plugin' }}</span>
+            </div>
+            <p class="plugin-description">{{ item.summary || 'Без описания.' }}</p>
+            <div class="plugin-permissions">
+              @for (permission of item.permissions; track permission) {
+                <span class="plugin-permission">{{ permissionLabel(permission) }}</span>
+              } @empty {
+              <span class="jk-caption">Без дополнительных разрешений</span>
+            }
+          </div>
+          <div class="plugin-foot">
+            <span class="jk-caption">publisher: {{ item.publisherSlug }}</span>
+            <a
+              appearance="secondary"
+              tuiButton
+              [href]="item.artifactUrl"
+              target="_blank"
+              rel="noopener"
+            >
+              Скачать
+            </a>
+          </div>
+          <details class="plugin-details">
+            <summary>Безопасность и файл</summary>
+            <dl>
+              <dt>SHA-256</dt>
+              <dd><code>{{ item.artifactSha256 }}</code></dd>
+              <dt>Подпись</dt>
+              <dd>{{ item.signatureType || 'не указана' }}</dd>
+            </dl>
+          </details>
+        </article>
+      } @empty {
+      <div class="jk-card jk-empty">
+        <span class="jk-h4">Плагинов пока нет</span>
+        <span class="jk-caption">Опубликованные расширения появятся здесь после проверки.</span>
+      </div>
+    }
+  </div>
+}
+</div>
