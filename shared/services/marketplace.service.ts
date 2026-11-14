@@ -53,4 +53,24 @@ export class MarketplaceService {
 			`rgg-sync/plugins/${encodeURIComponent(slug)}`,
 		);
 	}
+
+	adminList() {
+		return this.http.get<{ items: MarketplaceAdminPlugin[] }>('rgg-sync/plugins/admin');
+	}
+
+	setStatus(slug: string, input: MarketplaceStatusInput) {
+		return this.http.post<MarketplacePlugin>(
+			`rgg-sync/plugins/admin/${encodeURIComponent(slug)}/status`,
+			input,
+		);
+	}
+}
+
+export interface MarketplaceAdminPlugin extends MarketplacePlugin {
+	manifest?: Record<string, unknown>;
+}
+
+export interface MarketplaceStatusInput {
+	version?: string;
+	status: 'published' | 'rejected' | 'blocked';
 }

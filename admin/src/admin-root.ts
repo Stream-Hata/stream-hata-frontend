@@ -15,6 +15,7 @@ const NAV = [
 	{ link: '/imports', label: 'Импорт', icon: '@tui.download' },
 	{ link: '/users', label: 'Пользователи', icon: '@tui.users' },
 	{ link: '/security', label: 'Безопасность', icon: '@tui.shield-check' },
+	{ link: '/plugins', label: 'Плагины', icon: '@tui.package' },
 	{ link: '/security/trust', label: 'Trust-реестр', icon: '@tui.badge-check' },
 ];
 
@@ -42,6 +43,7 @@ const TITLES: Record<string, string> = {
 	'suggestions': 'Заявки на игры',
 	'users': 'Пользователи',
 	'security': 'Безопасность',
+	'plugins': 'Плагины',
 };
 
 @Component({

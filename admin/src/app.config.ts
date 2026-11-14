@@ -8,6 +8,7 @@ import { DashboardPage } from './pages/dashboard';
 import { GameEditPage } from './pages/game-edit';
 import { GamesAdminPage } from './pages/games';
 import { ImportsPage } from './pages/imports';
+import { PluginsAdminPage } from './pages/plugins';
 import { SuggestionsAdminPage } from './pages/suggestions';
 import { SynonymsPage } from './pages/synonyms';
 import { UserDetailPage } from './pages/user-detail';
@@ -31,6 +32,7 @@ export const appConfig: ApplicationConfig = {
 			{ path: 'synonyms', component: SynonymsPage },
 			{ path: 'users', component: UsersPage },
 			{ path: 'users/:id', component: UserDetailPage },
+			{ path: 'plugins', component: PluginsAdminPage },
 			{ path: 'suggestions', component: SuggestionsAdminPage },
 			{ path: 'imports', component: ImportsPage },
 			{ path: 'security', component: SecurityAdminPage },
