@@ -1,6 +1,11 @@
 {
-  "version": "1.2.1-alpha",
-  "notes": "No update available.",
-  "pub_date": "2026-11-13T20:00:00Z",
-  "platforms": {}
+  "version": "1.2.2-alpha",
+  "notes": "Исправлены вложения, аудио, зависание отправки и утечки подписок.",
+  "pub_date": "2026-11-14T14:35:27.176386Z",
+  "platforms": {
+    "linux-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVROXlEMXFPWnlndXczWHhtUWd4Ky9EaFhGb01hcUpPWHdqRWt6RkpscmxUR0ZGNnlReitrUHhISzNpNU1XUEptY0ZuOEN1TzlsWERvN2w0S0o5VjlVdDNoT3FFZVhxMVFJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk0NjY2MDk2CWZpbGU6TmFtZWxlc3MgU3RyZWFtSGF0YV8xLjIuMi1hbHBoYV9hbWQ2NC5BcHBJbWFnZQl2ZXJzaW9uOjEuMi4yLWFscGhhCnVuMHp6TFVaeTMwcXhNTFZJaWwrS2Z5TzlnSGNPZXdid1BIdUJobTNmdmk0RkgxTE9ZRkZqZmVvL1J2RFIxUzd0UEpYNVordWdIcE91TnNJZGpNZUJBPT0K",
+      "url": "https://streamhata.rdpctd.dev/downloads/streamhata-desktop-1.2.2-alpha.AppImage"
+    }
+  }
 }
