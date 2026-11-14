@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "kind": "plugin",
+  "id": "dev.streamhata.obs-tools",
+  "name": "OBS Tools",
+  "version": "1.0.0",
+  "description": "Scene helpers and safe OBS controls for StreamHata.",
+  "authors": ["StreamHata"],
+  "license": "MIT",
+  "homepage": "https://streamhata.rdpctd.dev/plugins/obs-tools",
+  "apiVersion": "1",
+  "entry": "index.js",
+  "permissions": ["obs", "notifications", "storage"],
+  "compatibility": {
+    "platforms": ["windows", "linux", "macos"]
+  },
+  "artifact": {
+    "url": "https://streamhata.rdpctd.dev/downloads/obs-tools-1.0.0.zip",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "size": 1024,
+    "signatureType": "minisign",
+    "signature": "REPLACE_WITH_MINISIGN_SIGNATURE"
+  },
+  "publisher": {
+    "id": "streamhata",
+    "name": "StreamHata",
+    "trust": "official"
+  }
+}
