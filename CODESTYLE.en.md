@@ -62,17 +62,17 @@ export const HotbarStore = signalStore(
 - State is an `interface` + `initialState` next to the store.
 - Mutations only via `patchState`.
 - `withHooks` — data loading on `onInit`, with `takeUntilDestroyed`.
-- File — `*.store.ts` in `src/app/store/`.
+- File — `*.store.ts` in `apps/web/src/app/store/`.
 
 ## 6. Services
 
 - `@Injectable({ providedIn: 'root' })` (or Angular 22's `@Service({ autoProvided: true })`).
 - HTTP services return `Observable` and never subscribe internally.
-- Shared services live in `src/app/shared/services/` (e.g. `yaml-parser.ts`, `platform-bar.ts`).
+- Shared services live in `packages/shared/services/` (e.g. `yaml-parser.ts`, `platform-bar.ts`).
 
 ## 7. Types
 
-- **Types shared between the frontend and `backend/server.ts`** — in the root `shared/types/`: `AppState`, `TimerState`, `HotbarState`, `Time`.
+- **Types shared between the frontend and `backend/server.ts`** — in the `packages/shared/types/`: `AppState`, `TimerState`, `HotbarState`, `Time`.
 - Utility types (e.g. `Default<Type, Field, Value>`) — also there.
 - Layer-specific types — next to the code (interfaces in `hotbar.service.ts`, `yaml-parser.ts`).
 
@@ -85,9 +85,9 @@ export const HotbarStore = signalStore(
 
 ## 9. Styles (SCSS)
 
-- SCSS + custom Taiga UI theme in `@app/styles/taiga.scss` (shared styles live in `@app/styles/`).
-- Shared style imports: `@use '@app/styles/mixins';` / `@import '@app/styles/taiga'` (includePaths `./` in `angular.json`).
-- Global styles — `src/styles.scss`; component styles — in its `*.scss`.
+- SCSS + custom Taiga UI theme in `packages/styles/taiga.scss` (shared styles live in `packages/styles/`).
+- Shared style imports: `@use 'mixins';` / `@import 'taiga';` (includePaths `./packages/styles` in `angular.json`) .
+- Global styles — `apps/web/src/styles.scss`; component styles — in its `*.scss`.
 - Taiga UI variables — via CSS variables `--tui-*`.
 - Styling through classes (`:host`, `.chip`, `.row`), no inline styles in markup.
 - Do not add redundant units; stick to existing patterns (the `expanded` mixin, the `pulse` animation).
@@ -110,8 +110,8 @@ export const HotbarStore = signalStore(
 
 - **Comments** — in Russian, to the point; do not comment the obvious.
 - **Unused imports** — forbidden (eslint-plugin-unused-imports); import sorting follows the antfu convention.
-- **Directory structure** — features in `src/app/components/<feature>/`, shared code in `src/app/shared/`, stores in `src/app/store/`.
-- **Server** — `backend/server.ts` (Express, type stripping); changes to the `/rgg-sync` protocol go together with the types in `shared/types/`.
+- **Directory structure** — features in `apps/web/src/app/components/<feature>/`, shared code in `packages/shared/`, stores in `apps/web/src/app/store/`.
+- **Server** — `backend/server.ts` (Express, type stripping); changes to the `/rgg-sync` protocol go together with the types in `packages/shared/types/`.
 
 ## 13. Pre-commit checks
 

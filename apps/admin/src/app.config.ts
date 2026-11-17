@@ -1,9 +1,9 @@
 import type { ApplicationConfig } from '@angular/core';
+import SecurityAdminPage from '@admin-ui/security-admin-page/security-admin-page';
+import TrustAdminPage from '@admin-ui/trust-admin-page/trust-admin-page';
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { provideTaiga, TUI_ICON_RESOLVER } from '@taiga-ui/core';
-import SecurityAdminPage from '../../web/src/app/components/pages/security-admin-page/security-admin-page';
-import TrustAdminPage from '../../web/src/app/components/pages/trust-admin-page/trust-admin-page';
 import { DashboardPage } from './pages/dashboard';
 import { GameEditPage } from './pages/game-edit';
 import { GamesAdminPage } from './pages/games';

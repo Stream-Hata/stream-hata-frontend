@@ -66,13 +66,13 @@ export const routes: Routes = [
 			{
 				path: 'security',
 				canActivate: [securityGuard],
-				loadComponent: () => import('./components/pages/security-admin-page/security-admin-page'),
+				loadComponent: () => import('@admin-ui/security-admin-page/security-admin-page'),
 				title: 'Безопасность · админка · Nameless StreamHata',
 			},
 			{
 				path: 'security/trust',
 				canActivate: [securityGuard],
-				loadComponent: () => import('./components/pages/trust-admin-page/trust-admin-page'),
+				loadComponent: () => import('@admin-ui/trust-admin-page/trust-admin-page'),
 				title: 'Trust-реестр · Nameless StreamHata',
 			},
 			{

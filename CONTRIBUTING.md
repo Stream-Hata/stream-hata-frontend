@@ -59,7 +59,7 @@ npx ng g service services/foo
 
 ## Добавление платформ
 
-Справочник платформ — `apps/web/public/platforms.yaml` (структура: `maintainer` → `platforms[]` с полями `name`, `code`, `icon`). Иконки — SVG в `apps/web/public/icons/platforms/`.
+Справочник платформ — `packages/shared/data/platforms.yaml` (структура: `maintainer` → `platforms[]` с полями `name`, `code`, `icon`). Иконки — SVG в `apps/web/public/icons/platforms/`.
 
 - Имя файла иконки указывайте в поле `icon` (например `ps1.svg`).
 - Код платформы (`code`) — уникальный, используется для сопоставления с хотбаром.

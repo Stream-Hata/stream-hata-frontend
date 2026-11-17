@@ -7,7 +7,7 @@
 		"build": "nx run nameless-streamhata:build",
 		"prebuild": "node scripts/write-version.mjs",
 		"watch": "nx run nameless-streamhata:build --watch --configuration development",
-		"test": "nx run nameless-streamhata:test --watch=false",
+		"test": "nx run nameless-streamhata:test",
 		"prepare": "husky",
 		"commitlint": "commitlint --edit",
 		"lint": "eslint .",

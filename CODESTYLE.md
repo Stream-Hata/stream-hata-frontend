@@ -62,17 +62,17 @@ export const HotbarStore = signalStore(
 - Состояние — `interface` + `initialState` рядом со стором.
 - Изменения — только через `patchState`.
 - `withHooks` — загрузка данных на `onInit`, с `takeUntilDestroyed`.
-- Файл — `*.store.ts` в `src/app/store/`.
+- Файл — `*.store.ts` в `apps/web/src/app/store/`.
 
 ## 6. Сервисы
 
 - `@Injectable({ providedIn: 'root' })` (или `@Service({ autoProvided: true })` Angular 22).
 - HTTP-сервисы возвращают `Observable`, не подписываются внутри.
-- Общие сервисы — в `src/app/shared/services/` (например `yaml-parser.ts`, `platform-bar.ts`).
+- Общие сервисы — в `packages/shared/services/` (например `yaml-parser.ts`, `platform-bar.ts`).
 
 ## 7. Типы
 
-- **Общие типы между фронтом и `backend/server.ts`** — в корневой `shared/types/`: `AppState`, `TimerState`, `HotbarState`, `Time`.
+- **Общие типы между фронтом и `backend/server.ts`** — в `packages/shared/types/`: `AppState`, `TimerState`, `HotbarState`, `Time`.
 - Утилитарные типы (например `Default<Type, Field, Value>`) — там же.
 - Типы, специфичные для слоя, — рядом с кодом (интерфейсы в `hotbar.service.ts`, `yaml-parser.ts`).
 
@@ -89,9 +89,9 @@ export const HotbarStore = signalStore(
 
 ## 9. Стили (SCSS)
 
-- SCSS + кастомная тема Taiga UI в `@app/styles/taiga.scss` (шаред-стили — в `@app/styles/`).
-- Импорт шаред-стилей: `@use '@app/styles/mixins';` / `@import '@app/styles/taiga'` (includePaths `./` в `angular.json`).
-- Глобальные стили — `src/styles.scss`; стили компонента — в его `*.scss`.
+- SCSS + кастомная тема Taiga UI в `packages/styles/taiga.scss` (шаред-стили — в `packages/styles/`).
+- Импорт шаред-стилей: `@use 'mixins';` / `@import 'taiga';` (includePaths `./packages/styles` в `angular.json`) .
+- Глобальные стили — `apps/web/src/styles.scss`; стили компонента — в его `*.scss`.
 - Переменные Taiga UI — через CSS-переменные `--tui-*`.
 - Стилизация через классы (`:host`, `.chip`, `.row`), без inline-стилей в разметке.
 - Лишние единицы не ставить; придерживаться существующих паттернов (миксин `expanded`, анимация `pulse`).
@@ -114,8 +114,8 @@ export const HotbarStore = signalStore(
 
 - **Комментарии** — на русском, по делу; не комментировать очевидное.
 - **Лишние импорты** — запрещены (eslint-plugin-unused-imports); сортировка импортов — antfu-конвенция.
-- **Структура каталогов** — фичи в `src/app/components/<feature>/`, общее в `src/app/shared/`, сторы в `src/app/store/`.
-- **Сервер** — `backend/server.ts` (Express, type-stripping); изменения протокола `/rgg-sync` синхронно с типами в `shared/types/`.
+- **Структура каталогов** — фичи в `apps/web/src/app/components/<feature>/`, общее в `packages/shared/`, сторы в `apps/web/src/app/store/`.
+- **Сервер** — `backend/server.ts` (Express, type-stripping); изменения протокола `/rgg-sync` синхронно с типами в `packages/shared/types/`.
 
 ## 13. Проверки перед коммитом
 

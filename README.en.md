@@ -179,30 +179,33 @@ Database and OpenBao settings come from the environment; secrets are never commi
 | `pnpm watch`    | Build in watch mode |
 | `pnpm test`     | Unit tests          |
 | `pnpm lint`     | ESLint              |
+| `pnpm graph`    | Nx project graph    |
 | `pnpm lint:fix` | ESLint with autofix |
 
 ## Project structure
 
 ```text
-src/
-  app/
-    components/
-      layout/        # shell, sidebar, search, dock
-      pages/         # panel and public pages
-      widgets/       # widgets and previews
-      overlays/      # OBS overlays
-      ui/            # shared UI, including the cat
-    guards/          # desktop and landing guards
-    services/        # state and API clients
-  styles.scss
-shared/
-  services/          # HTTP services
-  types/             # shared types
-  components/        # shared components
-@app/styles/         # Taiga UI theme and design tokens
-public/              # static files, changelog, terms
-docs/                # user documentation
-scripts/             # version.json/changelog.json generation
+apps/
+  web/               # main Angular application
+    src/
+      app/
+        components/
+          layout/     # shell, sidebar, search, dock
+          pages/      # app and public pages
+          widgets/    # widgets and previews
+          overlays/   # OBS overlays
+          ui/         # shared UI components
+        guards/
+        store/        # signalStore
+      styles.scss
+    public/           # static data and images only
+  admin/             # separate admin application
+packages/
+  shared/             # HTTP services, types, shared components
+  styles/             # Taiga UI theme and design tokens
+tools/                # service scripts and legacy files
+docs/                 # documentation
+scripts/              # version.json/changelog.json generation
 ```
 
 ## Desktop and OTA

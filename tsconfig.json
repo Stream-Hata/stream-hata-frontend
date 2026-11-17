@@ -16,7 +16,8 @@
 		"paths": {
 			"@shared/*": ["./packages/shared/*"],
 			"@app/components/*": ["./apps/web/src/app/components/"],
-			"@app/stores/*": ["./apps/web/src/app/store/*"]
+			"@app/stores/*": ["./apps/web/src/app/store/*"],
+			"@admin-ui/*": ["./packages/admin-ui/*"]
 		}
 	},
 	"angularCompilerOptions": {

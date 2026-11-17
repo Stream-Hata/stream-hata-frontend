@@ -34,6 +34,9 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Build admin
+        run: pnpm build:admin
+
       - name: Upload coverage artifact
         if: always()
         uses: actions/upload-artifact@v4

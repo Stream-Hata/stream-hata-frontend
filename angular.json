@@ -54,6 +54,11 @@
 								"glob": "sw.js",
 								"input": "apps/web/src",
 								"output": ""
+							},
+							{
+								"glob": "platforms.yaml",
+								"input": "packages/shared/data",
+								"output": ""
 							}
 						],
 						"styles": [
@@ -151,6 +156,11 @@
 								"glob": "**/*",
 								"input": "node_modules/@taiga-ui/icons/src",
 								"output": "assets/taiga-ui/icons"
+							},
+							{
+								"glob": "platforms.yaml",
+								"input": "packages/shared/data",
+								"output": ""
 							}
 						],
 						"styles": [

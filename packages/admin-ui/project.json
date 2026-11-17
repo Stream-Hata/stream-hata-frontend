@@ -1,0 +1,7 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "@stream-hata/admin-ui",
+  "projectType": "library",
+  "sourceRoot": "packages/admin-ui",
+  "tags": ["type:admin-ui"]
+}

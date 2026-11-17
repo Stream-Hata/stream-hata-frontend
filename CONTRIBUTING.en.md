@@ -27,8 +27,8 @@ Thanks for wanting to help with RGG Inventory. Below are the rules and guideline
 - Component selectors: `app` prefix, kebab-case (`app-platform-bar`); directives — `app` + camelCase (`appPlatformGuard`).
 - `ChangeDetectionStrategy.OnPush` for components where appropriate.
 - Formatting: **tabs** in TS, 2 spaces in HTML/SCSS, single quotes, semicolons. Configured by ESLint/Stylelint — do not disable rules locally.
-- State lives in `signalStore` (`src/app/store/`), services in `src/app/shared/services/`.
-- Shared types (`AppState`, `TimerState`, `HotbarState`) live in `shared/types/` and are reused by both the frontend and `backend/server.ts`.
+- State lives in `signalStore` (`apps/web/src/app/store/`), services in `packages/shared/services/`.
+- Shared types (`AppState`, `TimerState`, `HotbarState`) live in `packages/shared/types/` and are reused by both the frontend and `backend/server.ts`.
 - Comments are in Russian (as in the existing code).
 
 ### Checks before committing
@@ -59,7 +59,7 @@ npx ng g service services/foo
 
 ## Adding platforms
 
-The platform reference is `public/platforms.yaml` (structure: `maintainer` → `platforms[]` with `name`, `code`, `icon` fields). Icons are SVGs in `public/icons/platforms/`.
+The platform reference is `packages/shared/data/platforms.yaml` (structure: `maintainer` → `platforms[]` with `name`, `code`, `icon` fields). Icons are SVGs in `apps/web/public/icons/platforms/`.
 
 - Put the icon file name in the `icon` field (e.g. `ps1.svg`).
 - The platform `code` is unique and used for matching against the hotbar.
@@ -67,7 +67,7 @@ The platform reference is `public/platforms.yaml` (structure: `maintainer` → `
 
 ## State sync
 
-- `backend/server.ts` is the local server; when changing the `/rgg-sync` protocol, update the types in `shared/types/`, `hotbar.service.ts` and `hotbar.store.ts` together.
+- `backend/server.ts` is the local server; when changing the `/rgg-sync` protocol, update the types in `packages/shared/types/`, `hotbar.service.ts` and `hotbar.store.ts` together.
 - Do not add secrets/tokens to the code — the server must not depend on external credentials.
 
 ## Commits and PRs
