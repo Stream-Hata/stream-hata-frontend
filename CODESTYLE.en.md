@@ -68,7 +68,7 @@ export const HotbarStore = signalStore(
 
 - `@Injectable({ providedIn: 'root' })` (or Angular 22's `@Service({ autoProvided: true })`).
 - HTTP services return `Observable` and never subscribe internally.
-- Shared services live in `packages/shared/services/` (e.g. `yaml-parser.ts`, `platform-bar.ts`).
+- Shared services live in `packages/api/` (e.g. `yaml-parser.ts`, `platform-bar.ts`).
 
 ## 7. Types
 

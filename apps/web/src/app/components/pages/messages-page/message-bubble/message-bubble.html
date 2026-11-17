@@ -1,0 +1,116 @@
+<article
+  class="message-bubble"
+  [class.message-mine]="message().mine"
+  (contextmenu)="openMenu.emit($event)"
+>
+  @if (message().error) {
+    <span class="message-error">{{ message().error }}</span>
+  } @else {
+    <div class="message-content">
+      @for (span of message().spans; track $index) {
+        @switch (span.kind) {
+          @case ('bold') {
+          <strong>{{ span.text }}</strong>
+        }
+        @case ('italic') {
+        <em>{{ span.text }}</em>
+      }
+      @case ('code') {
+      <code>{{ span.text }}</code>
+    }
+    @case ('codeblock') {
+    <pre class="codeblock"><code>{{ span.text }}</code></pre>
+  }
+  @case ('spoiler') {
+  <span class="spoiler">{{ span.text }}</span>
+}
+@case ('link') {
+            <a
+              target="_blank"
+              rel="noopener"
+              [href]="span.url"
+              (click)="link($event, span.url ?? '')"
+>{{ span.text }}</a
+>
+}
+@case ('mention') {
+<span class="mention">{{ span.text }}</span>
+}
+@case ('color') {
+<span [style.color]="span.color">{{ span.text }}</span>
+}
+@default {
+<span>{{ span.text }}</span>
+}
+}
+}
+</div>
+@if (message().codeIssues.length) {
+  <div class="message-code-errors" role="alert">
+    <strong>Ошибки в коде</strong>
+    @for (issue of message().codeIssues; track $index) {
+      <span
+      >строка {{ issue.line }}, колонка {{ issue.column }} —
+        {{ issue.message }}</span
+      >
+    }
+  </div>
+}
+@for (media of message().media; track media.url) {
+  <div class="message-media">
+    @switch (media.kind) {
+      @case ('image') {
+      <img [src]="media.url" alt="Изображение" loading="lazy" />
+    }
+    @case ('audio') {
+    <audio controls preload="metadata" [src]="media.url" tuiMedia></audio>
+  }
+  @case ('video') {
+  <video controls preload="metadata" [src]="media.url" tuiMedia></video>
+}
+@case ('file') {
+<a class="message-file" [href]="media.url" target="_blank" rel="noopener" download>
+  <tui-icon icon="@tui.file" />
+  <span>{{ fileNameFromUrl(media.url) }}</span>
+</a>
+}
+@default {
+<a
+  target="_blank"
+  rel="noopener"
+  [href]="media.url"
+  (click)="link($event, media.url)"
+>Открыть ссылку</a
+>
+}
+}
+</div>
+}
+}
+@if (message().reactions.length) {
+  <div class="message-reactions">
+    @for (reaction of message().reactions; track reaction.emoji) {
+      <button
+        type="button"
+        class="reaction-chip"
+        [class.reaction-mine]="reaction.mine"
+        (click)="reactTo(reaction.emoji)"
+      >
+        {{ reaction.emoji }} {{ reaction.count }}
+      </button>
+    }
+  </div>
+}
+<span class="message-meta">
+  {{ formatTime(message().createdAt) }}
+  @if (message().editedAt) {
+    · изм.
+  }
+  @if (message().mine && message().readAt) {
+    · прочитано
+  }
+  @if (message().encrypted) {
+    · e2ee
+  }
+</span>
+</article>

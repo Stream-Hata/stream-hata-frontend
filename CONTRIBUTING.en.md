@@ -27,7 +27,7 @@ Thanks for wanting to help with RGG Inventory. Below are the rules and guideline
 - Component selectors: `app` prefix, kebab-case (`app-platform-bar`); directives — `app` + camelCase (`appPlatformGuard`).
 - `ChangeDetectionStrategy.OnPush` for components where appropriate.
 - Formatting: **tabs** in TS, 2 spaces in HTML/SCSS, single quotes, semicolons. Configured by ESLint/Stylelint — do not disable rules locally.
-- State lives in `signalStore` (`apps/web/src/app/store/`), services in `packages/shared/services/`.
+- State lives in `signalStore` (`apps/web/src/app/store/`), services in `packages/api/`.
 - Shared types (`AppState`, `TimerState`, `HotbarState`) live in `packages/shared/types/` and are reused by both the frontend and `backend/server.ts`.
 - Comments are in Russian (as in the existing code).
 

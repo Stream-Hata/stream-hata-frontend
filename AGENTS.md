@@ -79,7 +79,7 @@ pnpm exec eslint <files>
 
 - Локальное состояние — `signal`/`computed`.
 - Глобальное состояние — signalStore в `apps/web/src/app/store/`.
-- HTTP-сервисы — в `packages/shared/services/`, без побочных подписок.
+- HTTP-сервисы — в `packages/api/`, без побочных подписок.
 - Общие типы — в `packages/shared/types/`.
 - Ошибки пользователю показывать понятным текстом; не терять backend `error`.
 

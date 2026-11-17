@@ -27,7 +27,7 @@
 - Селекторы компонентов: префикс `app`, kebab-case (`app-platform-bar`); директивы — `app` + camelCase (`appPlatformGuard`).
 - `ChangeDetectionStrategy.OnPush` для компонентов, где это уместно.
 - Форматирование: **tabs** в TS, 2 пробела в HTML/SCSS, single quotes, semicolons. Настраивается ESLint/Stylelint — не отключайте правила локально.
-- Состояние выносится в `signalStore` (`apps/web/src/app/store/`), сервисы — в `packages/shared/services/`.
+- Состояние выносится в `signalStore` (`apps/web/src/app/store/`), сервисы — в `packages/api/`.
 - Общие типы (`AppState`, `TimerState`, `HotbarState`) живут в `packages/shared/types/` и переиспользуются и фронтом, и `backend/server.ts`.
 - Язык комментариев — русский (как в существующем коде).
 

@@ -68,7 +68,7 @@ export const HotbarStore = signalStore(
 
 - `@Injectable({ providedIn: 'root' })` (или `@Service({ autoProvided: true })` Angular 22).
 - HTTP-сервисы возвращают `Observable`, не подписываются внутри.
-- Общие сервисы — в `packages/shared/services/` (например `yaml-parser.ts`, `platform-bar.ts`).
+- Общие сервисы — в `packages/api/` (например `yaml-parser.ts`, `platform-bar.ts`).
 
 ## 7. Типы
 

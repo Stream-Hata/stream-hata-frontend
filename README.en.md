@@ -201,7 +201,8 @@ apps/
     public/           # static data and images only
   admin/             # separate admin application
 packages/
-  shared/             # HTTP services, types, shared components
+  api/                # HTTP services and API clients
+  shared/             # types, shared components and helpers
   styles/             # Taiga UI theme and design tokens
 tools/                # service scripts and legacy files
 docs/                 # documentation

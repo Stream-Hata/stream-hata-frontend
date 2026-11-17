@@ -40,7 +40,6 @@ import { contactBundle } from '@shared/types/messaging';
 import { TuiMedia } from '@taiga-ui/cdk';
 import { TuiButton, TuiDialog, TuiIcon, TuiInput, TuiTextfield } from '@taiga-ui/core';
 import { TuiBadge, TuiSwitch, TuiTextarea } from '@taiga-ui/kit';
-
 import {
 	catchError,
 	debounceTime,
@@ -58,6 +57,8 @@ import {
 	timeout,
 	timer,
 } from 'rxjs';
+
+import { MessageBubble } from './message-bubble/message-bubble';
 import { applyDialogState, persistDialogState } from './messages-page.dialog-state';
 import { renderMessage } from './messages-page.render';
 import {
@@ -74,6 +75,7 @@ import {
 @Component({
 	imports: [
 		JsonPipe,
+		MessageBubble,
 		TuiBadge,
 		TuiButton,
 		TuiDialog,
