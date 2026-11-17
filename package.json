@@ -3,19 +3,23 @@
 	"version": "1.2.1-alpha",
 	"scripts": {
 		"ng": "ng",
-		"start": "ng serve nameless-streamhata",
-		"build": "ng build nameless-streamhata",
+		"start": "nx serve nameless-streamhata",
+		"build": "nx run nameless-streamhata:build",
 		"prebuild": "node scripts/write-version.mjs",
-		"watch": "ng build nameless-streamhata --watch --configuration development",
-		"test": "ng test nameless-streamhata",
+		"watch": "nx run nameless-streamhata:build --watch --configuration development",
+		"test": "nx run nameless-streamhata:test --watch=false",
 		"prepare": "husky",
 		"commitlint": "commitlint --edit",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
-		"check": "ng build nameless-streamhata --configuration development && eslint apps packages --quiet",
+		"check": "nx run nameless-streamhata:build --configuration development && eslint apps packages --quiet",
 		"lint:web": "eslint apps packages --quiet",
-		"test:coverage": "ng test nameless-streamhata --watch=false --coverage --coverage-reporters=lcovonly --coverage-reporters=text-summary",
-		"build:admin": "ng build streamhata-admin"
+		"test:coverage": "nx run nameless-streamhata:test --watch=false --coverage --coverage-reporters=lcovonly --coverage-reporters=text-summary",
+		"build:admin": "nx run streamhata-admin:build",
+		"nx": "nx",
+		"affected:build": "nx affected -t build",
+		"affected:test": "nx affected -t test",
+		"graph": "nx graph"
 	},
 	"commitlint": {
 		"extends": [
@@ -80,6 +84,7 @@
 		"@commitlint/config-conventional": "^21.2.3",
 		"@html-eslint/eslint-plugin": "^0.66.1",
 		"@html-eslint/parser": "^0.66.1",
+		"@nx/angular": "24.0.6",
 		"@stream-hata/eslint-rules": "github:Stream-Hata/eslint-rules#d3e4748e14d15ec3e5c3fcca1a8017c4600b06d5",
 		"@types/feather-icons": "^4.29.4",
 		"@types/node": "^26.6.3",
@@ -90,6 +95,7 @@
 		"husky": "^9.1.7",
 		"jsdom": "^28.0.0",
 		"lint-staged": "^17.5.1",
+		"nx": "24.0.6",
 		"prettier": "^3.8.1",
 		"typescript": "~6.0.2",
 		"vitest": "^4.0.8"

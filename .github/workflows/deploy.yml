@@ -4,15 +4,15 @@ on:
   push:
     branches: [main, master]
     paths:
-      - 'src/**'
-      - 'shared/**'
-      - 'public/**'
+      - 'apps/web/**'
+      - 'apps/admin/**'
+      - 'packages/**'
       - 'angular.json'
-      - 'index.html'
       - 'tsconfig*.json'
       - 'package.json'
       - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'
+      - 'nx.json'
       - '.github/workflows/deploy.yml'
   workflow_dispatch:
 

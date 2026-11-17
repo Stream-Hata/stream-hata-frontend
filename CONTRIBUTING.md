@@ -27,8 +27,8 @@
 - Селекторы компонентов: префикс `app`, kebab-case (`app-platform-bar`); директивы — `app` + camelCase (`appPlatformGuard`).
 - `ChangeDetectionStrategy.OnPush` для компонентов, где это уместно.
 - Форматирование: **tabs** в TS, 2 пробела в HTML/SCSS, single quotes, semicolons. Настраивается ESLint/Stylelint — не отключайте правила локально.
-- Состояние выносится в `signalStore` (`src/app/store/`), сервисы — в `src/app/shared/services/`.
-- Общие типы (`AppState`, `TimerState`, `HotbarState`) живут в `shared/types/` и переиспользуются и фронтом, и `backend/server.ts`.
+- Состояние выносится в `signalStore` (`apps/web/src/app/store/`), сервисы — в `packages/shared/services/`.
+- Общие типы (`AppState`, `TimerState`, `HotbarState`) живут в `packages/shared/types/` и переиспользуются и фронтом, и `backend/server.ts`.
 - Язык комментариев — русский (как в существующем коде).
 
 ### Проверки перед коммитом
@@ -59,7 +59,7 @@ npx ng g service services/foo
 
 ## Добавление платформ
 
-Справочник платформ — `public/platforms.yaml` (структура: `maintainer` → `platforms[]` с полями `name`, `code`, `icon`). Иконки — SVG в `public/icons/platforms/`.
+Справочник платформ — `apps/web/public/platforms.yaml` (структура: `maintainer` → `platforms[]` с полями `name`, `code`, `icon`). Иконки — SVG в `apps/web/public/icons/platforms/`.
 
 - Имя файла иконки указывайте в поле `icon` (например `ps1.svg`).
 - Код платформы (`code`) — уникальный, используется для сопоставления с хотбаром.
@@ -67,7 +67,7 @@ npx ng g service services/foo
 
 ## Синхронизация состояния
 
-- `backend/server.ts` — локальный сервер; при изменении протокола `/rgg-sync` обновляйте типы в `shared/types/`, `hotbar.service.ts` и `hotbar.store.ts` одновременно.
+- `backend/server.ts` — локальный сервер; при изменении протокола `/rgg-sync` обновляйте типы в `packages/shared/types/`, `hotbar.service.ts` и `hotbar.store.ts` одновременно.
 - Не добавляйте секреты/токены в код — сервер не должен зависеть от внешних credentials.
 
 ## Коммиты и PR

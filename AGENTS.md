@@ -78,9 +78,9 @@ pnpm exec eslint <files>
 ## Состояние и сервисы
 
 - Локальное состояние — `signal`/`computed`.
-- Глобальное состояние — signalStore в `src/app/store/`.
-- HTTP-сервисы — в `shared/services/`, без побочных подписок.
-- Общие типы — в `shared/types/`.
+- Глобальное состояние — signalStore в `apps/web/src/app/store/`.
+- HTTP-сервисы — в `packages/shared/services/`, без побочных подписок.
+- Общие типы — в `packages/shared/types/`.
 - Ошибки пользователю показывать понятным текстом; не терять backend `error`.
 
 ## Тесты
@@ -101,5 +101,5 @@ pnpm exec eslint <files>
 ## Исключения
 
 - Кастомные ESLint-правила и SQL-парсер живут в `Stream-Hata/eslint-rules` и подключаются как `@stream-hata/eslint-rules`.
-- `src/app/components/overlays/dice-overlay/dice-scene.ts` — legacy Three.js-сцена с `@ts-nocheck`; для неё отключено только `ts/ban-ts-comment`. При рефакторинге сцены убрать исключение.
+- `apps/web/src/app/components/overlays/dice-overlay/dice-scene.ts` — legacy Three.js-сцена с `@ts-nocheck`; для неё отключено только `ts/ban-ts-comment`. При рефакторинге сцены убрать исключение.
 - Отключённые кастомные правила перечислены выше; заменять их TypeScript/сборкой, а не новыми глобальными disable-комментариями.

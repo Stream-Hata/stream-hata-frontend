@@ -51,7 +51,7 @@
 								"output": "assets/taiga-ui/icons"
 							},
 							{
-								"glob": "service-worker.js",
+								"glob": "sw.js",
 								"input": "apps/web/src",
 								"output": ""
 							}

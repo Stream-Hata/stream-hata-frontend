@@ -179,30 +179,33 @@ go build ./...
 | `pnpm watch`    | Сборка в watch-режиме     |
 | `pnpm test`     | Юнит-тесты                |
 | `pnpm lint`     | ESLint                    |
+| `pnpm graph`    | Nx project graph          |
 | `pnpm lint:fix` | ESLint с автоисправлением |
 
 ## Структура проекта
 
 ```text
-src/
-  app/
-    components/
-      layout/        # shell, sidebar, поиск, dock
-      pages/         # страницы панели и публичные страницы
-      widgets/       # виджеты и превью
-      overlays/      # OBS-оверлеи
-      ui/            # общие UI-компоненты, включая кота
-    guards/          # desktop и landing guards
-    services/        # состояние и API-клиенты
-  styles.scss
-shared/
-  services/          # HTTP-сервисы
-  types/             # общие типы
-  components/        # общие компоненты
-@app/styles/         # тема Taiga UI и дизайн-токены
-public/              # статические файлы, changelog, terms
-docs/                # пользовательская документация
-scripts/             # генерация version.json/changelog.json
+apps/
+  web/               # основное Angular-приложение
+    src/
+      app/
+        components/
+          layout/     # shell, sidebar, поиск, dock
+          pages/      # страницы панели и публичные страницы
+          widgets/    # виджеты и превью
+          overlays/   # OBS-оверлеи
+          ui/         # общие UI-компоненты
+        guards/
+        store/        # signalStore
+      styles.scss
+    public/           # только статические данные и изображения
+  admin/             # отдельная админка
+packages/
+  shared/             # HTTP-сервисы, типы, общие компоненты
+  styles/             # тема Taiga UI и дизайн-токены
+tools/                # служебные скрипты и legacy-файлы
+docs/                 # документация
+scripts/              # генерация version.json/changelog.json
 ```
 
 ## Desktop и OTA

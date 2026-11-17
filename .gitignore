@@ -57,3 +57,6 @@ agent-state/
 config.json
 config.fixed.json
 feedback-config.json
+
+# Nx cache
+.nx/
