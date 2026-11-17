@@ -4,11 +4,11 @@ import type {
 	TrustPublisher,
 	TrustRelease,
 	TrustSource,
-} from '@shared/services/trust.service';
+} from '@api/trust.service';
 import type { Observable } from 'rxjs';
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { TrustService } from '@shared/services/trust.service';
+import { TrustService } from '@api/trust.service';
 import { TuiButton } from '@taiga-ui/core';
 
 const EMPTY_DATA: TrustAdminData = { publishers: [], products: [], sources: [], releases: [] };

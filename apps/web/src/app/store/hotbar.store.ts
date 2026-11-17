@@ -1,5 +1,5 @@
-import type { AppBackendState } from '@shared/services/hotbar.service';
-import type { Platform } from '@shared/services/yaml-parser';
+import type { AppBackendState } from '@api/hotbar.service';
+import type { Platform } from '@api/yaml-parser';
 
 import type { PlatformInfo } from '@shared/types/hotbar-state';
 
@@ -7,6 +7,7 @@ import type * as luxon from 'luxon';
 import { computed, DestroyRef, inject } from '@angular/core';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HotbarService } from '@api/hotbar.service';
 import {
 	patchState,
 	signalStore,
@@ -15,7 +16,6 @@ import {
 	withMethods,
 	withState,
 } from '@ngrx/signals';
-import { HotbarService } from '@shared/services/hotbar.service';
 import { DateTime } from 'luxon';
 import { map, switchMap, tap, timer } from 'rxjs';
 

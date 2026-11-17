@@ -1,8 +1,8 @@
-import type { GameSuggestion } from '@shared/services/suggestions.service';
+import type { GameSuggestion } from '@api/suggestions.service';
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { SuggestionsService } from '@shared/services/suggestions.service';
+import { SuggestionsService } from '@api/suggestions.service';
 import { TuiButton, TuiIcon } from '@taiga-ui/core';
 import { TuiBadge } from '@taiga-ui/kit';
 

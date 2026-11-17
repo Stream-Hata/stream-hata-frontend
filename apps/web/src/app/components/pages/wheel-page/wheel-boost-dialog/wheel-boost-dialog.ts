@@ -3,7 +3,7 @@ import type { WheelBoost, WheelParticipant } from '@shared/types/automation';
 import { DecimalPipe } from '@angular/common';
 import { Component, computed, DestroyRef, inject, input, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { GamesService } from '@shared/services/engagement.services';
+import { GamesService } from '@api/engagement.services';
 import { TuiButton } from '@taiga-ui/core';
 import { catchError, of, timeout, timer } from 'rxjs';
 

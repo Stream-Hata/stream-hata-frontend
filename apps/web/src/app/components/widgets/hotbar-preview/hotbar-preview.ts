@@ -1,6 +1,6 @@
-import type { CatalogPlatform } from '@shared/services/platform-catalog.service';
+import type { CatalogPlatform } from '@api/platform-catalog.service';
 import { Component, computed, inject, input } from '@angular/core';
-import { PlatformCatalogService, platformIcon } from '@shared/services/platform-catalog.service';
+import { PlatformCatalogService, platformIcon } from '@api/platform-catalog.service';
 
 @Component({
 	selector: 'app-hotbar-preview',

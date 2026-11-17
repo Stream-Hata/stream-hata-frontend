@@ -10,9 +10,9 @@ import type {
 } from '@shared/types/stream';
 import { Component, computed, DestroyRef, inject, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { ObsAutoSceneService } from '@shared/services/obs-auto-scene.service';
-import { NotifyService, ObsService, StreamService } from '@shared/services/stream.services';
-import { TwitchService } from '@shared/services/twitch.service';
+import { ObsAutoSceneService } from '@api/obs-auto-scene.service';
+import { NotifyService, ObsService, StreamService } from '@api/stream.services';
+import { TwitchService } from '@api/twitch.service';
 import { TuiButton, TuiIcon, TuiInput, TuiSelectLike, TuiTextfield } from '@taiga-ui/core';
 import { TuiBadge, TuiButtonCopy, TuiChevron, TuiDataListWrapper, TuiSwitch, TuiTextarea } from '@taiga-ui/kit';
 import { catchError, finalize, merge, of, switchMap, timer } from 'rxjs';

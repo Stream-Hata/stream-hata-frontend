@@ -1,6 +1,6 @@
 import type { CanActivateFn } from '@angular/router';
-import type { AccessRoles } from '@shared/services/access.service';
-import type { TwitchResponse } from '@shared/services/twitch.service';
+import type { AccessRoles } from '@api/access.service';
+import type { TwitchResponse } from '@api/twitch.service';
 import { HttpClient } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';

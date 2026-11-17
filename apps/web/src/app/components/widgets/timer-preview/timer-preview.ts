@@ -1,7 +1,7 @@
 import { Component, computed, DestroyRef, effect, inject, input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { WidgetConfigService } from '@api/widgets.service';
 import { HotbarStore } from '@app/stores/hotbar.store';
-import { WidgetConfigService } from '@shared/services/widgets.service';
 import { catchError, of, switchMap, timer } from 'rxjs';
 
 const pad = (value: number) => String(value).padStart(2, '0');

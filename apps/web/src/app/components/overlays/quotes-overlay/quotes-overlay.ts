@@ -1,7 +1,7 @@
 import type { Quote } from '@shared/types/automation';
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { QuotesService } from '@shared/services/engagement.services';
+import { QuotesService } from '@api/engagement.services';
 import { catchError, of, switchMap, timer } from 'rxjs';
 
 @Component({

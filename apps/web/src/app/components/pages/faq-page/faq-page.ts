@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { VoiceSearchService } from '@shared/services/voice-search.service';
+import { VoiceSearchService } from '@api/voice-search.service';
 import { TuiButton, TuiIcon, TuiInput, TuiLink, TuiTextfield } from '@taiga-ui/core';
 import { Logo } from '../../ui/logo/logo';
 import { FAQ_CATEGORIES, FAQ_ITEMS } from './faq.data';

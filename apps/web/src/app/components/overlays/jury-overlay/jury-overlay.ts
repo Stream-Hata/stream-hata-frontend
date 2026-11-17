@@ -1,9 +1,9 @@
-import type { WidgetConfig } from '@shared/services/widgets.service';
+import type { WidgetConfig } from '@api/widgets.service';
 import type { ChatJuryPublic } from '@shared/types/chat-jury';
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ChatJuryService } from '@shared/services/chat-jury.service';
-import { WidgetConfigService } from '@shared/services/widgets.service';
+import { ChatJuryService } from '@api/chat-jury.service';
+import { WidgetConfigService } from '@api/widgets.service';
 import { catchError, of, switchMap, timer } from 'rxjs';
 
 @Component({

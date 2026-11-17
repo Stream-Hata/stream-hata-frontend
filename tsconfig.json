@@ -15,6 +15,7 @@
 		"module": "preserve",
 		"paths": {
 			"@shared/*": ["./packages/shared/*"],
+			"@api/*": ["./packages/api/src/*"],
 			"@app/components/*": ["./apps/web/src/app/components/"],
 			"@app/stores/*": ["./apps/web/src/app/store/*"],
 			"@admin-ui/*": ["./packages/admin-ui/*"]

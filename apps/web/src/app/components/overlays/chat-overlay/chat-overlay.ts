@@ -1,10 +1,10 @@
-import type { WidgetConfig } from '@shared/services/widgets.service';
+import type { WidgetConfig } from '@api/widgets.service';
 import type { EmotesResponse, LiveChatMessage } from '@shared/types/chat';
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ChatLiveService } from '@api/chat-live.service';
+import { WidgetConfigService } from '@api/widgets.service';
 import { buildChatSegments } from '@shared/helpers/chat-emotes';
-import { ChatLiveService } from '@shared/services/chat-live.service';
-import { WidgetConfigService } from '@shared/services/widgets.service';
 import { TuiIcon } from '@taiga-ui/core';
 import { catchError, map, of, scan, switchMap, timer } from 'rxjs';
 

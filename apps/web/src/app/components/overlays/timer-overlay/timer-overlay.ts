@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { WidgetConfigService } from '@shared/services/widgets.service';
+import { WidgetConfigService } from '@api/widgets.service';
 import { catchError, of, switchMap, timer } from 'rxjs';
 
 interface OverlayTimerState {

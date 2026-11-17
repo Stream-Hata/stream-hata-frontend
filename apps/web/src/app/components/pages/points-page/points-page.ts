@@ -13,7 +13,7 @@ import {
 	PointsService,
 	QuotesService,
 	RedemptionsService,
-} from '@shared/services/engagement.services';
+} from '@api/engagement.services';
 import {
 	TuiTable,
 	TuiTableTbody,

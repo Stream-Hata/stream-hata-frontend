@@ -1,10 +1,10 @@
-import type { WordListPreset } from '@shared/services/moderation.service';
+import type { WordListPreset } from '@api/moderation.service';
 import type { ModerationFilters, ModerationLogEntry } from '@shared/types/automation';
 import { Component, computed, DestroyRef, inject, Injector, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ModerationService } from '@api/moderation.service';
 import { signalControl } from '@shared/helpers/form-control';
-import { ModerationService } from '@shared/services/moderation.service';
 import {
 	TuiTable,
 	TuiTableTbody,

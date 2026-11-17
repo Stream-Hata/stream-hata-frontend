@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { AppStatusService } from '@shared/services/app-status.service';
+import { AppStatusService } from '@api/app-status.service';
 import { TuiButton, TuiIcon } from '@taiga-ui/core';
 
 @Component({

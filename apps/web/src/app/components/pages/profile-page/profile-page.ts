@@ -1,16 +1,16 @@
 import type {
 	SteamAchievement,
 	SteamInventoryItem,
-} from '@shared/services/steam.service';
+} from '@api/steam.service';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { I18nService } from '@shared/services/i18n.service';
-import { ProfileDataService } from '@shared/services/profile-data.service';
-import { RoleService } from '@shared/services/role.service';
-import { SteamService } from '@shared/services/steam.service';
-import { TwitchService } from '@shared/services/twitch.service';
+import { I18nService } from '@api/i18n.service';
+import { ProfileDataService } from '@api/profile-data.service';
+import { RoleService } from '@api/role.service';
+import { SteamService } from '@api/steam.service';
+import { TwitchService } from '@api/twitch.service';
 import {
 	TuiButton,
 	TuiDropdown,

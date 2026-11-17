@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { I18nService } from '@shared/services/i18n.service';
+import { I18nService } from '@api/i18n.service';
 import { interval, startWith, switchMap } from 'rxjs';
 
 interface DiskMetric {

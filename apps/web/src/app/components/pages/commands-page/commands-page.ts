@@ -10,13 +10,13 @@ import type {
 import { Component, computed, DestroyRef, effect, inject, Injector, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
+import { AppSettingsService } from '@api/app-settings.service';
+import { CommandsService } from '@api/commands.service';
+import { I18nService } from '@api/i18n.service';
+import { TriggersService } from '@api/ops.services';
 import { signalControl } from '@shared/helpers/form-control';
 import { saveTextFile } from '@shared/helpers/save-file';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
-import { AppSettingsService } from '@shared/services/app-settings.service';
-import { CommandsService } from '@shared/services/commands.service';
-import { I18nService } from '@shared/services/i18n.service';
-import { TriggersService } from '@shared/services/ops.services';
 import {
 	TuiTable,
 	TuiTableTbody,

@@ -1,9 +1,9 @@
-import type { TwitchUser } from '@shared/services/twitch.service';
+import type { TwitchUser } from '@api/twitch.service';
 import type { ChatJuryPublic, ChatJuryResult } from '@shared/types/chat-jury';
 import type { Viewer, ViewerWatchStreakEvent } from '@shared/types/viewer';
 import { computed, inject } from '@angular/core';
+import { TwitchService } from '@api/twitch.service';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
-import { TwitchService } from '@shared/services/twitch.service';
 import { tap } from 'rxjs';
 
 interface TwitchState {

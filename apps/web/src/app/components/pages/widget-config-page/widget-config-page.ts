@@ -1,15 +1,15 @@
-import type { WidgetConfig } from '@shared/services/widgets.service';
+import type { WidgetConfig } from '@api/widgets.service';
 import type { AlertEvent, AlertSettings } from '@shared/types/automation';
 import { Component, computed, DestroyRef, effect, inject, Injector, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { AlertsService } from '@api/alerts.service';
+import { I18nService } from '@api/i18n.service';
+import { WidgetConfigService } from '@api/widgets.service';
 import { HotbarStore } from '@app/stores/hotbar.store';
 import { WebglHelp } from '@shared/components/webgl-help/webgl-help';
 import { signalControl } from '@shared/helpers/form-control';
-import { AlertsService } from '@shared/services/alerts.service';
-import { I18nService } from '@shared/services/i18n.service';
-import { WidgetConfigService } from '@shared/services/widgets.service';
 import {
 	TuiButton,
 	TuiDropdown,

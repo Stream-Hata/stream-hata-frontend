@@ -1,14 +1,14 @@
-import type { BlogArticle, BlogStatus } from '@shared/services/blog.service';
+import type { BlogArticle, BlogStatus } from '@api/blog.service';
 import type { TuiEditorToolType } from '@taiga-ui/editor';
 import { DatePipe } from '@angular/common';
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { BlogService } from '@api/blog.service';
+import { I18nService } from '@api/i18n.service';
+import { RoleService } from '@api/role.service';
 import { imageUrl } from '@shared/helpers/proxy-image';
-import { BlogService } from '@shared/services/blog.service';
-import { I18nService } from '@shared/services/i18n.service';
-import { RoleService } from '@shared/services/role.service';
 import { TuiButton, TuiInput, TuiTextfield } from '@taiga-ui/core';
 import { provideTuiEditor, TuiEditor, TuiEditorTool } from '@taiga-ui/editor';
 import { catchError, of } from 'rxjs';

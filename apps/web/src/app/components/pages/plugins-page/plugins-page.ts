@@ -1,7 +1,7 @@
-import type { MarketplacePlugin } from '@shared/services/marketplace.service';
+import type { MarketplacePlugin } from '@api/marketplace.service';
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MarketplaceService } from '@shared/services/marketplace.service';
+import { MarketplaceService } from '@api/marketplace.service';
 import { TuiButton } from '@taiga-ui/core';
 import { TuiBadge } from '@taiga-ui/kit';
 import { catchError, debounceTime, distinctUntilChanged, of, Subject, switchMap } from 'rxjs';

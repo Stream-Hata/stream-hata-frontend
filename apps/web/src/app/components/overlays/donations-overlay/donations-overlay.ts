@@ -1,9 +1,9 @@
 import type { DonationEvent, DonationsSnapshot, DonationWidgetConfig } from '@shared/types/donation';
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { DonationsService } from '@shared/services/donations.service';
-import { TtsService } from '@shared/services/tts.service';
-import { WidgetConfigService } from '@shared/services/widgets.service';
+import { DonationsService } from '@api/donations.service';
+import { TtsService } from '@api/tts.service';
+import { WidgetConfigService } from '@api/widgets.service';
 import { donationConfig } from '@shared/types/donation';
 import { catchError, map, of, switchMap, timer } from 'rxjs';
 import { DonationCard } from '../../widgets/donation-card/donation-card';

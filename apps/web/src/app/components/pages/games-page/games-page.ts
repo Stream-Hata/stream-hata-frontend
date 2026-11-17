@@ -3,11 +3,11 @@ import { Component, computed, DestroyRef, effect, inject, signal } from '@angula
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { GamesCatalogService } from '@api/games-catalog.service';
+import { I18nService } from '@api/i18n.service';
+import { PlatformCatalogService } from '@api/platform-catalog.service';
+import { RoleService } from '@api/role.service';
 import { imageUrl } from '@shared/helpers/proxy-image';
-import { GamesCatalogService } from '@shared/services/games-catalog.service';
-import { I18nService } from '@shared/services/i18n.service';
-import { PlatformCatalogService } from '@shared/services/platform-catalog.service';
-import { RoleService } from '@shared/services/role.service';
 import {
 	TuiButton,
 	TuiDropdown,

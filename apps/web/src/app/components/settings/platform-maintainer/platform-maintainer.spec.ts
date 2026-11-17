@@ -1,10 +1,10 @@
 import type { ComponentFixture } from '@angular/core/testing';
-import type { Platform, YamlPlatform } from '@shared/services/yaml-parser';
+import type { Platform, YamlPlatform } from '@api/yaml-parser';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { PlatformBar } from '@shared/services/platform-bar';
+import { PlatformBar } from '@api/platform-bar';
 import { of } from 'rxjs';
 import { PlatformMaintainer } from './platform-maintainer';
 

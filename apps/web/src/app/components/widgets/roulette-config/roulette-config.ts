@@ -2,7 +2,7 @@ import type { RouletteConfig, RouletteMode } from '@shared/types/roulette';
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { RouletteService } from '@shared/services/roulette.service';
+import { RouletteService } from '@api/roulette.service';
 import { DEFAULT_ROULETTE_CONFIG } from '@shared/types/roulette';
 import {
 	TuiButton,

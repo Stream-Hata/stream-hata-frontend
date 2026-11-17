@@ -1,8 +1,8 @@
-import type { StatusIncident, StatusSnapshot } from '@shared/services/status.service';
+import type { StatusIncident, StatusSnapshot } from '@api/status.service';
 import { DatePipe } from '@angular/common';
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { StatusService } from '@shared/services/status.service';
+import { StatusService } from '@api/status.service';
 import { TuiButton } from '@taiga-ui/core';
 
 @Component({

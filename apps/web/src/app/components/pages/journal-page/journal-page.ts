@@ -1,11 +1,11 @@
-import type { SavedStreamReport } from '@shared/services/stream-report.service';
+import type { SavedStreamReport } from '@api/stream-report.service';
 import type { AnalyticsState, StreamSession } from '@shared/types/stream';
 import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { I18nService } from '@shared/services/i18n.service';
-import { StreamJournalService } from '@shared/services/stream-journal.service';
-import { StreamReportService } from '@shared/services/stream-report.service';
-import { AnalyticsService } from '@shared/services/stream.services';
+import { I18nService } from '@api/i18n.service';
+import { StreamJournalService } from '@api/stream-journal.service';
+import { StreamReportService } from '@api/stream-report.service';
+import { AnalyticsService } from '@api/stream.services';
 import { TuiButton, TuiIcon, TuiInput, TuiTextfield } from '@taiga-ui/core';
 import { catchError, of, switchMap, timer } from 'rxjs';
 

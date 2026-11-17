@@ -1,6 +1,6 @@
 import type { ErrorHandler } from '@angular/core';
 import { inject, Injectable } from '@angular/core';
-import { AppStatusService } from '@shared/services/app-status.service';
+import { AppStatusService } from '@api/app-status.service';
 
 const RELOAD_KEY = 'nsh.chunk-reload-at';
 

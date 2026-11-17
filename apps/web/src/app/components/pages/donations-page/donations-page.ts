@@ -2,7 +2,7 @@ import type { DonationsSnapshot } from '@shared/types/donation';
 import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
-import { DonationsService } from '@shared/services/donations.service';
+import { DonationsService } from '@api/donations.service';
 import {
 	TuiTable,
 	TuiTableTbody,

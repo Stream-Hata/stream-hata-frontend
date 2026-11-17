@@ -1,7 +1,7 @@
-import type { Platform, YamlPlatform } from '@shared/services/yaml-parser';
+import type { Platform, YamlPlatform } from '@api/yaml-parser';
 import { computed, inject, Injectable } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { YamlParser } from '@shared/services/yaml-parser';
+import { YamlParser } from '@api/yaml-parser';
 import { catchError, of } from 'rxjs';
 
 export interface CatalogPlatform extends Platform {

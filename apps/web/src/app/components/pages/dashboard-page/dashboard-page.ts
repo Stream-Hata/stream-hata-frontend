@@ -1,16 +1,16 @@
-import type { TwitchResponse } from '@shared/services/twitch.service';
+import type { TwitchResponse } from '@api/twitch.service';
 import type { AlertsState } from '@shared/types/automation';
 import type { ChatJuryPublic } from '@shared/types/chat-jury';
 import type { AnalyticsState } from '@shared/types/stream';
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
+import { AlertsService } from '@api/alerts.service';
+import { ChatJuryService } from '@api/chat-jury.service';
+import { I18nService } from '@api/i18n.service';
+import { AnalyticsService } from '@api/stream.services';
+import { TwitchService } from '@api/twitch.service';
 import { WebglHelp } from '@shared/components/webgl-help/webgl-help';
-import { AlertsService } from '@shared/services/alerts.service';
-import { ChatJuryService } from '@shared/services/chat-jury.service';
-import { I18nService } from '@shared/services/i18n.service';
-import { AnalyticsService } from '@shared/services/stream.services';
-import { TwitchService } from '@shared/services/twitch.service';
 import {
 	TuiTable,
 	TuiTableTbody,

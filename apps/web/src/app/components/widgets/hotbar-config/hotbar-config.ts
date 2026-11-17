@@ -1,5 +1,5 @@
-import type { CatalogPlatform } from '@shared/services/platform-catalog.service';
-import type { WidgetConfig } from '@shared/services/widgets.service';
+import type { CatalogPlatform } from '@api/platform-catalog.service';
+import type { WidgetConfig } from '@api/widgets.service';
 import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -9,7 +9,7 @@ import {
 	PlatformCatalogService,
 	removeSlot,
 	reorderSlots,
-} from '@shared/services/platform-catalog.service';
+} from '@api/platform-catalog.service';
 import { TuiButton, TuiDropdown, TuiIcon, TuiInput, TuiSelectLike, TuiSlider, TuiTextfield } from '@taiga-ui/core';
 import { TuiChevron, TuiDataListWrapper, TuiSegmented, TuiSwitch } from '@taiga-ui/kit';
 import { HotbarPreview } from '../hotbar-preview/hotbar-preview';

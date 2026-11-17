@@ -3,7 +3,7 @@ import type { Game } from '@shared/types/game';
 import type { RouletteRound, RouletteState } from '@shared/types/roulette';
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouletteService } from '@shared/services/roulette.service';
+import { RouletteService } from '@api/roulette.service';
 import { DEFAULT_ROULETTE_CONFIG } from '@shared/types/roulette';
 import { timer } from 'rxjs';
 import { RouletteStage } from '../../widgets/roulette-stage/roulette-stage';

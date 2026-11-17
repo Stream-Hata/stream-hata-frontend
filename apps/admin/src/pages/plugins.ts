@@ -1,6 +1,6 @@
-import type { MarketplaceAdminPlugin } from '@shared/services/marketplace.service';
+import type { MarketplaceAdminPlugin } from '@api/marketplace.service';
 import { Component, inject, signal } from '@angular/core';
-import { MarketplaceService } from '@shared/services/marketplace.service';
+import { MarketplaceService } from '@api/marketplace.service';
 import { TuiButton } from '@taiga-ui/core';
 import { TuiBadge } from '@taiga-ui/kit';
 

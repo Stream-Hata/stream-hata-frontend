@@ -1,6 +1,6 @@
 import type { ElementRef } from '@angular/core';
 import type { SafeResourceUrl } from '@angular/platform-browser';
-import type { WidgetConfig } from '@shared/services/widgets.service';
+import type { WidgetConfig } from '@api/widgets.service';
 import type { MusicListResponse, Track } from '@shared/types/music';
 import {
 	Component,
@@ -15,8 +15,8 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { DomSanitizer } from '@angular/platform-browser';
-import { MusicService } from '@shared/services/music.service';
-import { WidgetConfigService } from '@shared/services/widgets.service';
+import { MusicService } from '@api/music.service';
+import { WidgetConfigService } from '@api/widgets.service';
 import { TuiMedia } from '@taiga-ui/cdk';
 import { catchError, of, switchMap, timer } from 'rxjs';
 

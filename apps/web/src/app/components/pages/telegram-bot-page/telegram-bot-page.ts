@@ -2,9 +2,9 @@ import type { TelegramButton, TelegramCommand } from '@shared/types/automation';
 import type { NotifySettings } from '@shared/types/stream';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CommandsService } from '@shared/services/commands.service';
-import { NotifyService } from '@shared/services/stream.services';
-import { TwitchService } from '@shared/services/twitch.service';
+import { CommandsService } from '@api/commands.service';
+import { NotifyService } from '@api/stream.services';
+import { TwitchService } from '@api/twitch.service';
 import {
 	TuiTable,
 	TuiTableTbody,

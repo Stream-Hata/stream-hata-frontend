@@ -1,7 +1,7 @@
 import type { AlertsState } from '@shared/types/automation';
 import { Component, DestroyRef, effect, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AlertsService } from '@shared/services/alerts.service';
+import { AlertsService } from '@api/alerts.service';
 import { catchError, of, switchMap, timer } from 'rxjs';
 import { OverlayAudioService } from '../overlay-audio.service';
 

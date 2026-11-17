@@ -7,7 +7,7 @@ import type {
 } from '@shared/types/stream';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { ObsLocalService } from '@shared/services/obs-local.service';
+import { ObsLocalService } from '@api/obs-local.service';
 import { defer, throwError } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })

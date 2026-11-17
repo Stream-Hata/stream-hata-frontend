@@ -3,10 +3,10 @@ import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { AppSettingsService } from '@api/app-settings.service';
+import { CommandsService } from '@api/commands.service';
+import { TriggersService } from '@api/ops.services';
 import { FileNamePipe } from '@shared/pipes/file-name.pipe';
-import { AppSettingsService } from '@shared/services/app-settings.service';
-import { CommandsService } from '@shared/services/commands.service';
-import { TriggersService } from '@shared/services/ops.services';
 import { TuiButton, TuiDropdown, TuiInput, TuiSelectLike, TuiTextfield } from '@taiga-ui/core';
 import {
 	TuiChevron,

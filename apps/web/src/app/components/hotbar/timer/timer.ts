@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject } from
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HotbarStore } from '@app/stores/hotbar.store';
 import { TuiButton } from '@taiga-ui/core';
-import { Subject, takeUntil, tap } from 'rxjs';
 import { TimeRow } from './time-row/time-row';
 
 @Component({
@@ -12,7 +11,7 @@ import { TimeRow } from './time-row/time-row';
 	templateUrl: './timer.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Timer extends Subject<void> {
+export class Timer {
 	private readonly store = inject(HotbarStore);
 	private readonly destroy = inject(DestroyRef);
 
@@ -26,21 +25,14 @@ export class Timer extends Subject<void> {
 	startTimer() {
 		this.store
 			.start(this.time())
-			.pipe(
-				tap(() => this.next()),
-				takeUntil(this),
-				takeUntilDestroyed(this.destroy),
-			)
+			.pipe(takeUntilDestroyed(this.destroy))
 			.subscribe();
 	}
 
 	pauseTimer() {
 		this.store
 			.pause(this.time())
-			.pipe(
-				tap(() => this.next()),
-				takeUntilDestroyed(this.destroy),
-			)
+			.pipe(takeUntilDestroyed(this.destroy))
 			.subscribe();
 	}
 
@@ -53,10 +45,7 @@ export class Timer extends Subject<void> {
 					hour: 0,
 				}),
 			)
-			.pipe(
-				tap(() => this.next()),
-				takeUntilDestroyed(this.destroy),
-			)
+			.pipe(takeUntilDestroyed(this.destroy))
 			.subscribe();
 	}
 }

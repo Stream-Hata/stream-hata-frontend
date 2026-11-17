@@ -2,11 +2,11 @@ import type {
 	AccessMembership,
 	AccessRole,
 	AccessRoles,
-} from '@shared/services/access.service';
+} from '@api/access.service';
 import { computed, inject, Injectable } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AccessService } from '@shared/services/access.service';
-import { TwitchService } from '@shared/services/twitch.service';
+import { AccessService } from '@api/access.service';
+import { TwitchService } from '@api/twitch.service';
 import { catchError, of, switchMap, timer } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })

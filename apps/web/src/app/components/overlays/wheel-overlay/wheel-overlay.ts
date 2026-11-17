@@ -6,8 +6,8 @@ import type {
 } from '@shared/types/automation';
 import { Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { GamesService } from '@shared/services/engagement.services';
-import { MediaService } from '@shared/services/media.service';
+import { GamesService } from '@api/engagement.services';
+import { MediaService } from '@api/media.service';
 import { catchError, of, switchMap, timer } from 'rxjs';
 
 const DEFAULT_APPEARANCE: WheelAppearance = {

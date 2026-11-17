@@ -1,6 +1,6 @@
-import type { AppBackendState } from '@shared/services/hotbar.service';
+import type { AppBackendState } from '@api/hotbar.service';
 import { TestBed } from '@angular/core/testing';
-import { HotbarService } from '@shared/services/hotbar.service';
+import { HotbarService } from '@api/hotbar.service';
 import { of } from 'rxjs';
 import { HotbarStore, padded } from './hotbar.store';
 

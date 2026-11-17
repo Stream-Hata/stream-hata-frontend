@@ -1,7 +1,7 @@
 import type { Subscription } from 'rxjs';
 import { Component, computed, DestroyRef, effect, inject, input, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { VoiceSearchService } from '@shared/services/voice-search.service';
+import { VoiceSearchService } from '@api/voice-search.service';
 import { TuiAutoFocus } from '@taiga-ui/cdk';
 import { TuiButton, TuiIcon, TuiInput, TuiTextfield } from '@taiga-ui/core';
 import { timer } from 'rxjs';

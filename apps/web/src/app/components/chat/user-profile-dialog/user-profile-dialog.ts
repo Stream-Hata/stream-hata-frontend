@@ -1,7 +1,7 @@
 import type { ModerationLogEntry } from '@shared/types/automation';
 import { Component, computed, inject } from '@angular/core';
-import { PollsService } from '@shared/services/engagement.services';
-import { ModerationService } from '@shared/services/moderation.service';
+import { PollsService } from '@api/engagement.services';
+import { ModerationService } from '@api/moderation.service';
 import { TuiButton, TuiIcon } from '@taiga-ui/core';
 import { TuiBadge } from '@taiga-ui/kit';
 import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';

@@ -1,4 +1,4 @@
-import type { WidgetConfig } from '@shared/services/widgets.service';
+import type { WidgetConfig } from '@api/widgets.service';
 import type {
 	DonationAnimation,
 	DonationLayout,
@@ -9,8 +9,8 @@ import type {
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { TtsService } from '@shared/services/tts.service';
-import { WidgetConfigService } from '@shared/services/widgets.service';
+import { TtsService } from '@api/tts.service';
+import { WidgetConfigService } from '@api/widgets.service';
 import { donationConfig } from '@shared/types/donation';
 import { TuiButton, TuiDropdown, TuiInput, TuiSelectLike, TuiTextfield } from '@taiga-ui/core';
 import {

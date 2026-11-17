@@ -1,9 +1,9 @@
-import type { AdminUser } from '@shared/services/games-catalog.service';
+import type { AdminUser } from '@api/games-catalog.service';
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { GamesCatalogService } from '@shared/services/games-catalog.service';
+import { GamesCatalogService } from '@api/games-catalog.service';
 import { TuiButton, TuiTextfield } from '@taiga-ui/core';
 import { TuiBadge, TuiSwitch, TuiTextarea } from '@taiga-ui/kit';
 import { catchError, of } from 'rxjs';

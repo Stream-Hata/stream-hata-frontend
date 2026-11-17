@@ -1,9 +1,9 @@
-import type { TranslationKey } from '@shared/services/i18n.service';
+import type { TranslationKey } from '@api/i18n.service';
 
-import type { NotificationSettings } from '@shared/services/notification-settings.service';
+import type { NotificationSettings } from '@api/notification-settings.service';
 import { Component, computed, inject, signal } from '@angular/core';
-import { I18nService } from '@shared/services/i18n.service';
-import { NotificationSettingsService } from '@shared/services/notification-settings.service';
+import { I18nService } from '@api/i18n.service';
+import { NotificationSettingsService } from '@api/notification-settings.service';
 import { TuiIcon } from '@taiga-ui/core';
 import { TuiBadge, TuiSwitch } from '@taiga-ui/kit';
 

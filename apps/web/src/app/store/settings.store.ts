@@ -1,6 +1,7 @@
-import type { Platform, YamlPlatform } from '@shared/services/yaml-parser';
+import type { Platform, YamlPlatform } from '@api/yaml-parser';
 import { computed, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { YamlParser } from '@api/yaml-parser';
 import {
 	patchState,
 	signalStore,
@@ -9,7 +10,6 @@ import {
 	withMethods,
 	withState,
 } from '@ngrx/signals';
-import { YamlParser } from '@shared/services/yaml-parser';
 import { HotbarStore } from './hotbar.store';
 
 interface SettingsState {

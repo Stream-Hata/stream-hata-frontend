@@ -1,11 +1,11 @@
-import type { FeedbackReport, FeedbackReportSummary } from '@shared/services/feedback.service';
+import type { FeedbackReport, FeedbackReportSummary } from '@api/feedback.service';
 import { DatePipe } from '@angular/common';
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FeedbackService } from '@api/feedback.service';
+import { TwitchService } from '@api/twitch.service';
 import { FEEDBACK_REASONS } from '@shared/config/feedback-reasons';
-import { FeedbackService } from '@shared/services/feedback.service';
-import { TwitchService } from '@shared/services/twitch.service';
 import { TuiButton, TuiCheckbox, TuiDropdown, TuiInput, TuiSelectLike, TuiTextfield } from '@taiga-ui/core';
 import { provideTuiEditor, TuiEditor } from '@taiga-ui/editor';
 import { TuiChevron, TuiDataListWrapper, TuiSwitch, TuiTextarea } from '@taiga-ui/kit';

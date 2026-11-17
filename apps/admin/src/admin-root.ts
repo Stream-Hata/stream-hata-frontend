@@ -1,8 +1,8 @@
 import { Component, computed, inject, signal, ViewEncapsulation } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { RoleService } from '@api/role.service';
 import { UpdateNotice } from '@shared/components/update-notice/update-notice';
-import { RoleService } from '@shared/services/role.service';
 import { TuiButton, TuiIcon, TuiRoot } from '@taiga-ui/core';
 import { TuiBadge } from '@taiga-ui/kit';
 import { filter, map } from 'rxjs';

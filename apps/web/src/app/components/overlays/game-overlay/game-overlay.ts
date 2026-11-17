@@ -1,9 +1,9 @@
 import type { AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
-import type { WidgetConfig } from '@shared/services/widgets.service';
+import type { WidgetConfig } from '@api/widgets.service';
 import { HttpClient } from '@angular/common/http';
 import { Component, computed, effect, inject, input, signal, ViewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { WidgetConfigService } from '@shared/services/widgets.service';
+import { WidgetConfigService } from '@api/widgets.service';
 import { catchError, of, switchMap, timer } from 'rxjs';
 import { CoinScene } from './coin-scene';
 import { RandomWheel } from './random-scene';

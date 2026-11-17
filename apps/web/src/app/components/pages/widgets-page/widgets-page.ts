@@ -1,11 +1,11 @@
-import type { WidgetConfig } from '@shared/services/widgets.service';
+import type { WidgetConfig } from '@api/widgets.service';
 import type { RouletteConfig } from '@shared/types/roulette';
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
-import { I18nService } from '@shared/services/i18n.service';
-import { RouletteService } from '@shared/services/roulette.service';
-import { WidgetConfigService, WidgetsService } from '@shared/services/widgets.service';
+import { I18nService } from '@api/i18n.service';
+import { RouletteService } from '@api/roulette.service';
+import { WidgetConfigService, WidgetsService } from '@api/widgets.service';
 import { DEFAULT_ROULETTE_CONFIG } from '@shared/types/roulette';
 import { TuiButton, TuiIcon, TuiLink } from '@taiga-ui/core';
 import { TuiBadge, TuiButtonCopy, TuiSwitch } from '@taiga-ui/kit';

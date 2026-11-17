@@ -4,7 +4,7 @@ import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { RouletteService } from '@shared/services/roulette.service';
+import { RouletteService } from '@api/roulette.service';
 import { DEFAULT_ROULETTE_CONFIG } from '@shared/types/roulette';
 import { TuiButton, TuiIcon, TuiSelectLike, TuiTextfield } from '@taiga-ui/core';
 import { TuiBadge, TuiChevron, TuiDataListWrapper } from '@taiga-ui/kit';

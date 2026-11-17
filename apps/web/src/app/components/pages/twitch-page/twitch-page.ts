@@ -1,7 +1,7 @@
-import type { TwitchResponse } from '@shared/services/twitch.service';
+import type { TwitchResponse } from '@api/twitch.service';
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { TwitchService } from '@shared/services/twitch.service';
+import { TwitchService } from '@api/twitch.service';
 import { TuiButton, TuiCheckbox, TuiIcon } from '@taiga-ui/core';
 import { TuiBadge } from '@taiga-ui/kit';
 import { catchError, of, switchMap, timer } from 'rxjs';

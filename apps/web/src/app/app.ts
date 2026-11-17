@@ -8,8 +8,8 @@ import {
 	Router,
 	RouterOutlet,
 } from '@angular/router';
-import { AppSettingsService } from '@shared/services/app-settings.service';
-import { AppStatusService } from '@shared/services/app-status.service';
+import { AppSettingsService } from '@api/app-settings.service';
+import { AppStatusService } from '@api/app-status.service';
 import { TuiRoot } from '@taiga-ui/core';
 import { AppStatus } from './components/ui/app-status/app-status';
 

@@ -4,12 +4,12 @@ import type { ChatUserProfile } from '../../chat/user-profile-dialog/user-profil
 import { Component, computed, effect, inject, signal, viewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
+import { ChatLiveService } from '@api/chat-live.service';
+import { PointsService } from '@api/engagement.services';
+import { I18nService } from '@api/i18n.service';
+import { ModerationService } from '@api/moderation.service';
+import { TwitchService } from '@api/twitch.service';
 import { buildChatSegments } from '@shared/helpers/chat-emotes';
-import { ChatLiveService } from '@shared/services/chat-live.service';
-import { PointsService } from '@shared/services/engagement.services';
-import { I18nService } from '@shared/services/i18n.service';
-import { ModerationService } from '@shared/services/moderation.service';
-import { TwitchService } from '@shared/services/twitch.service';
 import { TuiButton, TuiDialogService, TuiIcon, TuiInput, TuiTextfield } from '@taiga-ui/core';
 import { catchError, firstValueFrom, map, of, scan, switchMap, timer } from 'rxjs';
 import { UserProfileDialog } from '../../chat/user-profile-dialog/user-profile-dialog';

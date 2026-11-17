@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { UpdateService } from '@shared/services/update.service';
+import { UpdateService } from '@api/update.service';
 
 @Component({
 	selector: 'app-update-notice',

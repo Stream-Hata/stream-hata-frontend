@@ -1,12 +1,12 @@
-import type { AccessRole, AccessRoles } from '@shared/services/access.service';
+import type { AccessRole, AccessRoles } from '@api/access.service';
 import type { Viewer } from '@shared/types/viewer';
 import { Component, computed, DestroyRef, inject, Injector, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AccessService } from '@api/access.service';
+import { I18nService } from '@api/i18n.service';
+import { TwitchService } from '@api/twitch.service';
 import { signalControl } from '@shared/helpers/form-control';
-import { AccessService } from '@shared/services/access.service';
-import { I18nService } from '@shared/services/i18n.service';
-import { TwitchService } from '@shared/services/twitch.service';
 import {
 	TuiTable,
 	TuiTableTbody,

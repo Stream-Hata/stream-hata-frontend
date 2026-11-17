@@ -2,8 +2,8 @@ import type { HttpErrorResponse } from '@angular/common/http';
 import type { MusicListResponse } from '@shared/types/music';
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { MusicService } from '@api/music.service';
 import { saveTextFile } from '@shared/helpers/save-file';
-import { MusicService } from '@shared/services/music.service';
 import {
 	TuiTable,
 	TuiTableTbody,

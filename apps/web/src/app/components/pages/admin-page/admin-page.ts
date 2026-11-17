@@ -1,12 +1,12 @@
-import type { AccessRole } from '@shared/services/access.service';
-import type { ImportStatus, SearchAlias } from '@shared/services/games-catalog.service';
+import type { AccessRole } from '@api/access.service';
+import type { ImportStatus, SearchAlias } from '@api/games-catalog.service';
 import type { Game } from '@shared/types/game';
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { GamesCatalogService } from '@shared/services/games-catalog.service';
-import { RoleService } from '@shared/services/role.service';
+import { GamesCatalogService } from '@api/games-catalog.service';
+import { RoleService } from '@api/role.service';
 import { TuiButton, TuiInput, TuiTextfield } from '@taiga-ui/core';
 import { TuiBadge } from '@taiga-ui/kit';
 import { catchError, of } from 'rxjs';

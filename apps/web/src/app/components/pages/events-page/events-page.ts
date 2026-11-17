@@ -1,11 +1,11 @@
-import type { StreamEvent } from '@shared/services/events.service';
+import type { StreamEvent } from '@api/events.service';
 import type { TuiDay, TuiTime } from '@taiga-ui/cdk';
 import { Component, computed, DestroyRef, inject, Injector, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { StreamEventsService } from '@api/events.service';
+import { I18nService } from '@api/i18n.service';
 import { signalControl } from '@shared/helpers/form-control';
-import { StreamEventsService } from '@shared/services/events.service';
-import { I18nService } from '@shared/services/i18n.service';
 import {
 	TuiTable,
 	TuiTableTbody,

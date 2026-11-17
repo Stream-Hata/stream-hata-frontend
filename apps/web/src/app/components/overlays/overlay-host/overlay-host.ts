@@ -1,10 +1,10 @@
 import type { OnDestroy } from '@angular/core';
-import type { WidgetConfig } from '@shared/services/widgets.service';
+import type { WidgetConfig } from '@api/widgets.service';
 import { HttpClient } from '@angular/common/http';
 import { Component, computed, DOCUMENT, inject } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import { WidgetConfigService } from '@shared/services/widgets.service';
+import { WidgetConfigService } from '@api/widgets.service';
 import { catchError, map, of, switchMap, timer } from 'rxjs';
 import { AlertsOverlay } from '../alerts-overlay/alerts-overlay';
 import { AudioOverlay } from '../audio-overlay/audio-overlay';

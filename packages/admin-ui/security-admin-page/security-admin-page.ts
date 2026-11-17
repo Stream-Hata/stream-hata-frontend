@@ -5,12 +5,12 @@ import type {
 	SecurityIncidentStatus,
 	SecurityResolveAction,
 	SecurityVerdict,
-} from '@shared/services/security.service';
+} from '@api/security.service';
 import { DatePipe, JsonPipe } from '@angular/common';
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { SecurityNotificationsService } from '@shared/services/security-notifications.service';
-import { SecurityService } from '@shared/services/security.service';
+import { SecurityNotificationsService } from '@api/security-notifications.service';
+import { SecurityService } from '@api/security.service';
 import { TuiButton } from '@taiga-ui/core';
 import { catchError, forkJoin, map, of, switchMap, timer } from 'rxjs';
 

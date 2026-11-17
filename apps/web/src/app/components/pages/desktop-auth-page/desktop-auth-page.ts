@@ -1,8 +1,8 @@
-import type { TwitchResponse } from '@shared/services/twitch.service';
+import type { TwitchResponse } from '@api/twitch.service';
 import { HttpClient } from '@angular/common/http';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { TwitchService } from '@shared/services/twitch.service';
+import { TwitchService } from '@api/twitch.service';
 import { TuiButton } from '@taiga-ui/core';
 import { catchError, of, switchMap, timer } from 'rxjs';
 import AuthLayout from '../../layout/auth-layout/auth-layout';

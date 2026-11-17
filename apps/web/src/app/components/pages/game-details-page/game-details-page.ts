@@ -1,4 +1,4 @@
-import type { GameDiscussionMessage } from '@shared/services/games-catalog.service';
+import type { GameDiscussionMessage } from '@api/games-catalog.service';
 import type { Game, GameTier } from '@shared/types/game';
 import type { TuiEditorToolType } from '@taiga-ui/editor';
 import { DatePipe } from '@angular/common';
@@ -7,9 +7,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { GamesCatalogService } from '@api/games-catalog.service';
+import { I18nService } from '@api/i18n.service';
 import { imageUrl } from '@shared/helpers/proxy-image';
-import { GamesCatalogService } from '@shared/services/games-catalog.service';
-import { I18nService } from '@shared/services/i18n.service';
 import { TuiButton, TuiIcon } from '@taiga-ui/core';
 import { provideTuiEditor, TuiEditor, TuiEditorTool } from '@taiga-ui/editor';
 import { TuiBadge } from '@taiga-ui/kit';

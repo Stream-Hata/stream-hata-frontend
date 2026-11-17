@@ -2,7 +2,7 @@ import type { ChatJuryPublic } from '@shared/types/chat-jury';
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
-import { ChatJuryService } from '@shared/services/chat-jury.service';
+import { ChatJuryService } from '@api/chat-jury.service';
 import { TuiButton, TuiIcon } from '@taiga-ui/core';
 import { TuiBadge } from '@taiga-ui/kit';
 import { catchError, of, switchMap, timer } from 'rxjs';

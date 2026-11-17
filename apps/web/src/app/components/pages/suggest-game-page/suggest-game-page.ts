@@ -1,11 +1,11 @@
-import type { GameSuggestion } from '@shared/services/suggestions.service';
-import type { TwitchResponse } from '@shared/services/twitch.service';
+import type { GameSuggestion } from '@api/suggestions.service';
+import type { TwitchResponse } from '@api/twitch.service';
 import { Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { SuggestionsService } from '@shared/services/suggestions.service';
-import { TwitchService } from '@shared/services/twitch.service';
+import { SuggestionsService } from '@api/suggestions.service';
+import { TwitchService } from '@api/twitch.service';
 import {
 	TuiButton,
 	TuiDropdown,

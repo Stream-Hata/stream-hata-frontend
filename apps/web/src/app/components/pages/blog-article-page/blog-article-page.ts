@@ -1,14 +1,14 @@
 import type { ElementRef } from '@angular/core';
 import type { SafeHtml } from '@angular/platform-browser';
-import type { BlogArticle } from '@shared/services/blog.service';
+import type { BlogArticle } from '@api/blog.service';
 import { DatePipe } from '@angular/common';
 import { Component, computed, DestroyRef, inject, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { BlogService } from '@api/blog.service';
+import { I18nService } from '@api/i18n.service';
 import { imageUrl } from '@shared/helpers/proxy-image';
-import { BlogService } from '@shared/services/blog.service';
-import { I18nService } from '@shared/services/i18n.service';
 import { TuiButton, TuiIcon } from '@taiga-ui/core';
 import { catchError, of } from 'rxjs';
 

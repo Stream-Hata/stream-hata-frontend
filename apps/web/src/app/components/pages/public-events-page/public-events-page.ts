@@ -1,8 +1,8 @@
-import type { StreamEvent } from '@shared/services/events.service';
+import type { StreamEvent } from '@api/events.service';
 import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
-import { StreamEventsService } from '@shared/services/events.service';
+import { StreamEventsService } from '@api/events.service';
 import { TuiIcon, TuiLink } from '@taiga-ui/core';
 import { TuiBadge } from '@taiga-ui/kit';
 import { catchError, of } from 'rxjs';

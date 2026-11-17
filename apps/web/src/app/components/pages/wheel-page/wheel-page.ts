@@ -1,4 +1,4 @@
-import type { LotMeta } from '@shared/services/lots.service';
+import type { LotMeta } from '@api/lots.service';
 import type {
 	GamesSettings,
 	WheelAppearance,
@@ -11,11 +11,11 @@ import { DecimalPipe } from '@angular/common';
 import { Component, computed, DestroyRef, effect, inject, signal, untracked } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { GamesService } from '@api/engagement.services';
+import { I18nService } from '@api/i18n.service';
+import { LotsService } from '@api/lots.service';
+import { MediaService } from '@api/media.service';
 import { luminance } from '@shared/helpers/color';
-import { GamesService } from '@shared/services/engagement.services';
-import { I18nService } from '@shared/services/i18n.service';
-import { LotsService } from '@shared/services/lots.service';
-import { MediaService } from '@shared/services/media.service';
 import {
 	TuiButton,
 	TuiHintDirective,

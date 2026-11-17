@@ -1,7 +1,7 @@
 import type { PollsState } from '@shared/types/automation';
 import { Component, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { PollsService } from '@shared/services/engagement.services';
+import { PollsService } from '@api/engagement.services';
 import {
 	TuiTable,
 	TuiTableTbody,

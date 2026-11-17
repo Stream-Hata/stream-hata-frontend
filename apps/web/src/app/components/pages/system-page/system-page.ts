@@ -10,11 +10,11 @@ import {
 	signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TwitchService } from '@api/twitch.service';
 import { FormatBytesPipe } from '@shared/pipes/format-bytes.pipe';
 import { FormatDurationPipe } from '@shared/pipes/format-duration.pipe';
 import { FormatPercentPipe } from '@shared/pipes/format-percent.pipe';
 import { FormatUptimePipe } from '@shared/pipes/format-uptime.pipe';
-import { TwitchService } from '@shared/services/twitch.service';
 import {
 	TuiAxes,
 	TuiBarChart,

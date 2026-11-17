@@ -1,7 +1,7 @@
 import type { MusicListResponse, Track } from '@shared/types/music';
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { MusicService } from '@shared/services/music.service';
+import { MusicService } from '@api/music.service';
 import { catchError, of, switchMap, timer } from 'rxjs';
 
 @Component({

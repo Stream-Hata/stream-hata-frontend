@@ -1,42 +1,46 @@
 import type { ElementRef } from '@angular/core';
+import type { TwitchResponse } from '@api/twitch.service';
 import type { Identity } from '@shared/crypto/secure-messaging';
 import type { CodeIssue } from '@shared/messaging/code-format';
-import type { MediaAttachment, MessageSpan } from '@shared/messaging/message-content';
-import type { TwitchResponse } from '@shared/services/twitch.service';
 import type {
-	MessageReaction,
 	MessagingContact,
 	MessagingEnvelope,
 	MessagingGraph,
 	RelationshipInfo,
 	SecurityNotice,
 } from '@shared/types/messaging';
+import type {
+	DisplayMessage,
+	GraphNodeView,
+	MessageContext,
+	PendingAttachment,
+} from './messages-page.types';
 import { JsonPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, DestroyRef, inject, model, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { decryptMessage, encryptMessage, generateIdentity } from '@shared/crypto/secure-messaging';
+import { ChatLiveService } from '@api/chat-live.service';
+import { I18nService } from '@api/i18n.service';
+import { MessagingIdentityService } from '@api/messaging-identity.service';
+import { MessagingPresenceService } from '@api/messaging-presence.service';
+import { MessagingService } from '@api/messaging.service';
+import { SecurityService } from '@api/security.service';
+import { TwitchChatSocketService } from '@api/twitch-chat.service';
+import { TwitchService } from '@api/twitch.service';
+import { encryptMessage, generateIdentity } from '@shared/crypto/secure-messaging';
 import {
 	describeCodeError,
 	formatCode,
 	formatFencedCode,
-	validateCodeBlock,
 } from '@shared/messaging/code-format';
 import { inspectLink } from '@shared/messaging/link-safety';
 import { detectCodeLanguage, parseMessageContent } from '@shared/messaging/message-content';
-import { ChatLiveService } from '@shared/services/chat-live.service';
-import { I18nService } from '@shared/services/i18n.service';
-import { MessagingIdentityService } from '@shared/services/messaging-identity.service';
-import { MessagingPresenceService } from '@shared/services/messaging-presence.service';
-import { MessagingService } from '@shared/services/messaging.service';
-import { SecurityService } from '@shared/services/security.service';
-import { TwitchChatSocketService } from '@shared/services/twitch-chat.service';
-import { TwitchService } from '@shared/services/twitch.service';
 import { contactBundle } from '@shared/types/messaging';
 import { TuiMedia } from '@taiga-ui/cdk';
 import { TuiButton, TuiDialog, TuiIcon, TuiInput, TuiTextfield } from '@taiga-ui/core';
 import { TuiBadge, TuiSwitch, TuiTextarea } from '@taiga-ui/kit';
+
 import {
 	catchError,
 	debounceTime,
@@ -54,43 +58,18 @@ import {
 	timeout,
 	timer,
 } from 'rxjs';
-
-interface DisplayMessage {
-	id: number;
-	mine: boolean;
-	text: string;
-	spans: MessageSpan[];
-	media: MediaAttachment[];
-	createdAt: string;
-	encrypted: boolean;
-	error: string;
-	editedAt?: string;
-	readAt?: string;
-	reactions: MessageReaction[];
-	codeIssues: CodeIssue[];
-}
-
-interface PendingAttachment {
-	file: File;
-	name: string;
-	size: number;
-	previewUrl: string | null;
-	asDocument: boolean;
-}
-
-type MessageContext =
-	| { kind: 'format'; x: number; y: number }
-	| { kind: 'message'; x: number; y: number; message: DisplayMessage }
-	| { kind: 'dialog'; x: number; y: number; contact: MessagingContact };
-
-interface GraphNodeView {
-	login: string;
-	displayName: string;
-	label: string;
-	strength: number;
-	x: number;
-	y: number;
-}
+import { applyDialogState, persistDialogState } from './messages-page.dialog-state';
+import { renderMessage } from './messages-page.render';
+import {
+	fileNameFromUrl,
+	formatFileSize,
+	formatTime,
+	graphNodeColor,
+	isMediaFile,
+	linkWarningTitle,
+	strengthWidth,
+	strokeWidth,
+} from './messages-page.utils';
 
 @Component({
 	imports: [
@@ -178,6 +157,13 @@ export default class MessagesPage {
 	private readonly contactSearch$ = new Subject<string>();
 	private readonly formatDraft$ = new Subject<void>();
 	private lastTypingAt = 0;
+	readonly fileNameFromUrl = fileNameFromUrl;
+	readonly formatFileSize = formatFileSize;
+	readonly formatTime = formatTime;
+	readonly graphNodeColor = graphNodeColor;
+	readonly strengthWidth = strengthWidth;
+	readonly strokeWidth = strokeWidth;
+	readonly linkWarningTitle = linkWarningTitle;
 
 	readonly filteredContacts = computed(() => {
 		const query = this.search().trim().toLowerCase();
@@ -311,7 +297,7 @@ export default class MessagesPage {
 			.pipe(takeUntilDestroyed(this.destroyRef))
 			.subscribe({
 				next: ({ items }) => {
-					this.contacts.set(this.applyLocalState(items));
+					this.contacts.set(applyDialogState(items));
 					this.loading.set(false);
 				},
 				error: () => {
@@ -354,7 +340,7 @@ export default class MessagesPage {
 			URL.revokeObjectURL(previous.previewUrl);
 		}
 		this.error.set('');
-		const isMedia = this.isMediaFile(file);
+		const isMedia = isMediaFile(file);
 		this.pendingAttachment.set({
 			file,
 			name: file.name,
@@ -362,37 +348,6 @@ export default class MessagesPage {
 			previewUrl: file.type.startsWith('image/') ? URL.createObjectURL(file) : null,
 			asDocument: !isMedia,
 		});
-	}
-
-	private isMediaFile(file: File): boolean {
-		if (/^(?:image|audio|video)\//i.test(file.type)) {
-			return true;
-		}
-
-		return /\.(?:avif|bmp|gif|jpe?g|png|svg|webp|aac|flac|m4a|mp3|oga|ogg|opus|wav|m3u8|m4v|mkv|mov|mp4|ogv|webm)$/i.test(
-			file.name,
-		);
-	}
-
-	fileNameFromUrl(url: string): string {
-		try {
-			const parts = new URL(url, location.origin).pathname.split('/');
-
-			return decodeURIComponent(parts[parts.length - 1] || 'Файл');
-		} catch {
-			return 'Файл';
-		}
-	}
-
-	formatFileSize(bytes: number): string {
-		if (bytes < 1024) {
-			return `${bytes} Б`;
-		}
-		if (bytes < 1024 * 1024) {
-			return `${Math.round(bytes / 1024)} КБ`;
-		}
-
-		return `${(bytes / (1024 * 1024)).toFixed(1)} МБ`;
 	}
 
 	toggleAttachmentDocument(): void {
@@ -470,13 +425,6 @@ export default class MessagesPage {
 	openSecurityNotice(notice: SecurityNotice): void {
 		this.securityNotice.set(notice);
 		this.securityNoticeOpen.set(true);
-	}
-
-	linkWarningTitle(verdict: string): string {
-		if (verdict === 'malicious') return 'Опасная ссылка';
-		if (verdict === 'download') return 'Ссылка на файл';
-
-		return 'Ссылка требует осторожности';
 	}
 
 	onComposerKeydown(event: KeyboardEvent): void {
@@ -779,7 +727,7 @@ export default class MessagesPage {
 				switchMap(({ items, peer }: { items: MessagingEnvelope[]; peer: MessagingContact }) => {
 					const bundle = contactBundle(peer);
 					const rendered$ = items.length
-						? forkJoin(items.map((item) => from(this.renderMessage(item, identity, bundle))))
+						? forkJoin(items.map((item) => from(renderMessage(item, identity, bundle, this.selfLogin()))))
 						: of([]);
 					return rendered$.pipe(map((rendered) => ({ rendered, items })));
 				}),
@@ -1066,7 +1014,7 @@ export default class MessagesPage {
 		this.contacts.update((items) =>
 			items.map((item) => (item.login === contact.login ? { ...item, [key]: value } : item)),
 		);
-		this.persistDialogState(contact.login, key, value);
+		persistDialogState(contact.login, key, value);
 		this.messaging
 			.setConversationState(contact.login, { [key]: value })
 			.pipe(takeUntilDestroyed(this.destroyRef))
@@ -1111,31 +1059,6 @@ export default class MessagesPage {
 				},
 				error: () => this.error.set('Не удалось изменить блокировку.'),
 			});
-	}
-
-	private applyLocalState(items: MessagingContact[]): MessagingContact[] {
-		try {
-			const stored = JSON.parse(localStorage.getItem('nsh.dialog-state') ?? '{}') as Record<
-				string,
-				{ pinned?: boolean; archived?: boolean }
-			>;
-			return items.map((item) => ({ ...item, ...stored[item.login] }));
-		} catch {
-			return items;
-		}
-	}
-
-	private persistDialogState(login: string, key: 'pinned' | 'archived', value: boolean): void {
-		try {
-			const stored = JSON.parse(localStorage.getItem('nsh.dialog-state') ?? '{}') as Record<
-				string,
-				{ pinned?: boolean; archived?: boolean }
-			>;
-			stored[login] = { ...stored[login], [key]: value };
-			localStorage.setItem('nsh.dialog-state', JSON.stringify(stored));
-		} catch {
-			// storage unavailable
-		}
 	}
 
 	clearConversation(): void {
@@ -1202,27 +1125,12 @@ export default class MessagesPage {
 		this.graphOpen.set(false);
 	}
 
-	graphNodeColor(label: string): string {
-		if (label === 'Друг') return '#39ff88';
-		if (label === 'Незнакомец') return '#5a4a6d';
-
-		return '#ff2ea6';
-	}
-
 	pickGraphNode(login: string): void {
 		const contact = this.contacts().find((item) => item.login === login);
 		this.closeGraph();
 		if (contact) {
 			this.select(contact);
 		}
-	}
-
-	strengthWidth(value: number): number {
-		return Math.min(100, value * 10);
-	}
-
-	strokeWidth(value: number): number {
-		return 1 + Math.min(5, value / 2);
 	}
 
 	private autoResize(): void {
@@ -1243,75 +1151,5 @@ export default class MessagesPage {
 				element.scrollTop = element.scrollHeight;
 			}
 		});
-	}
-
-	formatTime(value: string): string {
-		const date = new Date(value);
-
-		return Number.isNaN(date.getTime())
-			? '—'
-			: date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-	}
-
-	mediaKind(media: MediaAttachment): string {
-		return media.kind;
-	}
-
-	private async renderMessage(
-		item: MessagingEnvelope,
-		identity: Identity,
-		peer: ReturnType<typeof contactBundle>,
-	): Promise<DisplayMessage> {
-		try {
-			const mine = item.sender === this.selfLogin();
-			const text = await decryptMessage(
-				identity,
-				mine ? identity.bundle : peer,
-				item.envelope,
-				mine ? peer : undefined,
-			);
-			const parsed = parseMessageContent(text);
-			const codeIssues: CodeIssue[] = [];
-
-			for (const span of parsed.spans) {
-				if (span.kind !== 'codeblock') {
-					continue;
-				}
-				const language = span.language || detectCodeLanguage(span.text) || '';
-				const issue = await validateCodeBlock(span.text, language);
-
-				if (issue) {
-					codeIssues.push({ ...issue, message: `${language || 'code'}: ${issue.message}` });
-				}
-			}
-
-			return {
-				id: item.id,
-				mine: item.sender === this.selfLogin(),
-				text,
-				spans: parsed.spans,
-				media: parsed.media,
-				createdAt: item.createdAt,
-				encrypted: item.envelope.algorithm !== 'PLAINTEXT',
-				error: '',
-				editedAt: item.editedAt,
-				readAt: item.readAt,
-				reactions: item.reactions ?? [],
-				codeIssues,
-			};
-		} catch {
-			return {
-				id: item.id,
-				mine: item.sender === this.selfLogin(),
-				text: '',
-				spans: [],
-				media: [],
-				createdAt: item.createdAt,
-				encrypted: true,
-				error: 'Не удалось расшифровать сообщение',
-				reactions: item.reactions ?? [],
-				codeIssues: [],
-			};
-		}
 	}
 }

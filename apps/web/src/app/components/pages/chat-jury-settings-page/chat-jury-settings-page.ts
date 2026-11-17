@@ -3,9 +3,9 @@ import { Component, computed, DestroyRef, inject, Injector, signal } from '@angu
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { I18nService } from '@api/i18n.service';
+import { TriggersService } from '@api/ops.services';
 import { signalControl } from '@shared/helpers/form-control';
-import { I18nService } from '@shared/services/i18n.service';
-import { TriggersService } from '@shared/services/ops.services';
 import {
 	TuiButton,
 	TuiDropdown,

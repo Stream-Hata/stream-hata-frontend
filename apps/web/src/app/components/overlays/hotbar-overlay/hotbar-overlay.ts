@@ -1,6 +1,6 @@
 import { Component, computed, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { WidgetConfigService } from '@shared/services/widgets.service';
+import { WidgetConfigService } from '@api/widgets.service';
 import { catchError, of, switchMap, timer } from 'rxjs';
 import { HotbarPreview } from '../../widgets/hotbar-preview/hotbar-preview';
 

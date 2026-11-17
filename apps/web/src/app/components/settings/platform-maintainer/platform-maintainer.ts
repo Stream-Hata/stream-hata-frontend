@@ -1,8 +1,8 @@
-import type { Platform, YamlPlatform } from '@shared/services/yaml-parser';
+import type { Platform, YamlPlatform } from '@api/yaml-parser';
 
 import { Component, DestroyRef, effect, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { PlatformBar } from '@shared/services/platform-bar';
+import { PlatformBar } from '@api/platform-bar';
 import { TuiIcon } from '@taiga-ui/core';
 
 @Component({

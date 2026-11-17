@@ -1,7 +1,7 @@
-import type { Identity } from '../crypto/secure-messaging';
+import type { Identity } from '@shared/crypto/secure-messaging';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { generateIdentity } from '../crypto/secure-messaging';
+import { generateIdentity } from '@shared/crypto/secure-messaging';
 
 type Invoke = (command: string, args?: Record<string, unknown>) => Promise<unknown>;
 const STORAGE_KEY = 'nsh.messaging-identity';

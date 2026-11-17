@@ -1,6 +1,6 @@
-import type { Default } from '../types/default';
-import type { HotbarState } from '../types/hotbar-state';
-import type { AppState, Time } from '../types/timer-state';
+import type { Default } from '@shared/types/default';
+import type { HotbarState } from '@shared/types/hotbar-state';
+import type { AppState, Time } from '@shared/types/timer-state';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 

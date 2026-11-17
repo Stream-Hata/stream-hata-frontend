@@ -1,10 +1,10 @@
-import type { AccessRole, AccessRoles } from '@shared/services/access.service';
-import type { AdminUser } from '@shared/services/games-catalog.service';
+import type { AccessRole, AccessRoles } from '@api/access.service';
+import type { AdminUser } from '@api/games-catalog.service';
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
-import { AccessService } from '@shared/services/access.service';
-import { GamesCatalogService } from '@shared/services/games-catalog.service';
+import { AccessService } from '@api/access.service';
+import { GamesCatalogService } from '@api/games-catalog.service';
 import {
 	TuiTable,
 	TuiTableTbody,

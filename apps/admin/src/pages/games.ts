@@ -3,7 +3,7 @@ import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { GamesCatalogService } from '@shared/services/games-catalog.service';
+import { GamesCatalogService } from '@api/games-catalog.service';
 import {
 	TuiButton,
 	TuiDropdown,
