@@ -3,18 +3,19 @@
 	"version": "1.2.1-alpha",
 	"scripts": {
 		"ng": "ng",
-		"start": "ng serve",
-		"build": "ng build",
+		"start": "ng serve nameless-streamhata",
+		"build": "ng build nameless-streamhata",
 		"prebuild": "node scripts/write-version.mjs",
-		"watch": "ng build --watch --configuration development",
-		"test": "ng test",
+		"watch": "ng build nameless-streamhata --watch --configuration development",
+		"test": "ng test nameless-streamhata",
 		"prepare": "husky",
 		"commitlint": "commitlint --edit",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
-		"check": "ng build --configuration development && eslint src shared --quiet",
-		"lint:web": "eslint src shared --quiet",
-		"test:coverage": "ng test --watch=false --coverage --coverage-reporters=lcovonly --coverage-reporters=text-summary"
+		"check": "ng build nameless-streamhata --configuration development && eslint apps packages --quiet",
+		"lint:web": "eslint apps packages --quiet",
+		"test:coverage": "ng test nameless-streamhata --watch=false --coverage --coverage-reporters=lcovonly --coverage-reporters=text-summary",
+		"build:admin": "ng build streamhata-admin"
 	},
 	"commitlint": {
 		"extends": [

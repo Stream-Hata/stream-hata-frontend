@@ -49,5 +49,5 @@ const payload = {
 	notes,
 };
 
-writeFileSync(new URL('../public/version.json', import.meta.url), `${JSON.stringify(payload, null, 2)}\n`);
-writeFileSync(new URL('../public/changelog.json', import.meta.url), `${JSON.stringify(versions, null, 2)}\n`);
+writeFileSync(new URL('../apps/web/public/version.json', import.meta.url), `${JSON.stringify(payload, null, 2)}\n`);
+writeFileSync(new URL('../apps/web/public/changelog.json', import.meta.url), `${JSON.stringify(versions, null, 2)}\n`);

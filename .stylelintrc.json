@@ -6,6 +6,7 @@
 		"no-empty-source": null,
 		"@stylistic/indentation": "tab",
 		"declaration-empty-line-before": null,
+		"declaration-block-single-line-max-declarations": null,
 		"declaration-block-no-redundant-longhand-properties": [
 			true,
 			{

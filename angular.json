@@ -24,8 +24,8 @@
 					"name": "service"
 				}
 			},
-			"root": "",
-			"sourceRoot": "src",
+			"root": "apps/web",
+			"sourceRoot": "apps/web/src",
 			"prefix": "app",
 			"architect": {
 				"build": {
@@ -33,27 +33,33 @@
 					"options": {
 						"stylePreprocessorOptions": {
 							"includePaths": [
+								"./packages/styles",
 								"./"
 							]
 						},
-						"browser": "src/main.ts",
-						"tsConfig": "tsconfig.app.json",
+						"browser": "apps/web/src/main.ts",
+						"tsConfig": "apps/web/tsconfig.app.json",
 						"inlineStyleLanguage": "scss",
 						"assets": [
 							{
 								"glob": "**/*",
-								"input": "public"
+								"input": "apps/web/public"
 							},
 							{
 								"glob": "**/*",
 								"input": "node_modules/@taiga-ui/icons/src",
 								"output": "assets/taiga-ui/icons"
+							},
+							{
+								"glob": "service-worker.js",
+								"input": "apps/web/src",
+								"output": ""
 							}
 						],
 						"styles": [
 							"node_modules/@taiga-ui/styles/taiga-ui-theme.less",
 							"node_modules/@taiga-ui/styles/taiga-ui-fonts.less",
-							"src/styles.scss"
+							"apps/web/src/styles.scss"
 						]
 					},
 					"configurations": {
@@ -121,8 +127,8 @@
 					"name": "service"
 				}
 			},
-			"root": "admin",
-			"sourceRoot": "admin/src",
+			"root": "apps/admin",
+			"sourceRoot": "apps/admin/src",
 			"prefix": "app",
 			"architect": {
 				"build": {
@@ -130,15 +136,16 @@
 					"options": {
 						"stylePreprocessorOptions": {
 							"includePaths": [
+								"./packages/styles",
 								"./"
 							]
 						},
-						"browser": "admin/src/main.ts",
-						"tsConfig": "admin/tsconfig.app.json",
+						"browser": "apps/admin/src/main.ts",
+						"tsConfig": "apps/admin/tsconfig.app.json",
 						"assets": [
 							{
 								"glob": "**/*",
-								"input": "public"
+								"input": "apps/web/public"
 							},
 							{
 								"glob": "**/*",
@@ -147,9 +154,9 @@
 							}
 						],
 						"styles": [
-							"src/styles.scss"
+							"apps/web/src/styles.scss"
 						],
-						"index": "admin/src/index.html",
+						"index": "apps/admin/src/index.html",
 						"outputPath": "dist/streamhata-admin"
 					},
 					"configurations": {

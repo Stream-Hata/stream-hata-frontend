@@ -1,0 +1,190 @@
+.feedback-page .jk-page-header {
+	position: static;
+	justify-content: center;
+	text-align: center;
+}
+
+.feedback-page .jk-page-header-text {
+	align-items: center;
+}
+
+.feedback-form {
+	display: grid;
+	gap: 14px;
+	width: 100%;
+	min-width: 0;
+	max-width: 960px;
+	margin-inline: auto;
+}
+
+.feedback-form label {
+	display: grid;
+	gap: 6px;
+	min-width: 0;
+}
+
+.feedback-form tui-textfield,
+.feedback-form tui-editor {
+	width: 100%;
+	min-width: 0;
+}
+
+.feedback-form select {
+	min-height: 40px;
+	padding: 8px 12px;
+	border: 1px solid var(--border-normal);
+	border-radius: 10px;
+	background: var(--surface-elevated-1);
+	color: var(--text-primary);
+}
+
+.feedback-row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 14px;
+}
+
+.feedback-honeypot {
+	position: absolute;
+	left: -10000px;
+	overflow: hidden;
+	width: 1px;
+	height: 1px;
+}
+
+.feedback-success {
+	color: var(--accent-primary);
+}
+
+@media (width <= 720px) {
+	.feedback-row {
+		grid-template-columns: 1fr;
+	}
+}
+
+.feedback-reasons {
+	display: flex;
+	gap: 6px;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+.feedback-reason-chip {
+	display: inline-flex;
+	gap: 4px;
+	align-items: center;
+	padding: 4px 8px;
+	border-radius: 999px;
+	background: var(--surface-elevated-2);
+}
+
+.feedback-custom-reason {
+	display: flex;
+	gap: 8px;
+	flex: 1 1 320px;
+	align-items: center;
+}
+
+.feedback-custom-reason tui-textfield {
+	flex: 1 1 auto;
+}
+
+.feedback-attachments {
+	display: grid;
+	gap: 8px;
+}
+
+.feedback-attachment-row {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.feedback-attachment-row tui-textfield {
+	flex: 1 1 180px;
+}
+
+.feedback-auth {
+	display: grid;
+	gap: 14px;
+	width: 100%;
+	max-width: 560px;
+	text-align: center;
+	margin-inline: auto;
+}
+
+.feedback-author {
+	display: flex;
+	gap: 6px;
+	flex-wrap: wrap;
+	align-items: baseline;
+	padding: 10px 12px;
+	border: 1px solid var(--border-normal);
+	border-radius: 10px;
+	background: var(--surface-elevated-1);
+}
+
+.feedback-diagnostics {
+	display: grid;
+	gap: 12px;
+	padding: 12px;
+	border: 1px solid var(--border-normal);
+	border-radius: 12px;
+	background: var(--surface-elevated-1);
+}
+
+.feedback-diagnostics-toggle,
+.feedback-log-source {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.feedback-log-sources {
+	display: flex;
+	gap: 10px 18px;
+	flex-wrap: wrap;
+}
+
+.feedback-mine,
+.feedback-similar {
+	display: grid;
+	gap: 10px;
+	padding: 12px;
+	border: 1px solid var(--border-normal);
+	border-radius: 12px;
+	background: var(--surface-elevated-1);
+}
+
+.feedback-mine-head,
+.feedback-similar-row {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.feedback-mine-list,
+.feedback-similar-list {
+	display: grid;
+	gap: 8px;
+}
+
+.feedback-report-link {
+	display: flex;
+	gap: 6px;
+	flex-direction: column;
+	padding: 8px 10px;
+	border-radius: 8px;
+	background: var(--surface-elevated-2);
+	color: var(--text-primary);
+	text-decoration: none;
+}
+
+.feedback-report-link:hover {
+	outline: 1px solid var(--border-normal);
+}
+
+.feedback-similar-row tui-textfield {
+	flex: 1 1 auto;
+}

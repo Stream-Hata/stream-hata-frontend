@@ -1,0 +1,21 @@
+{
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"outDir": "./out-tsc/app",
+		"types": []
+	},
+	"files": [
+		"src/main.ts"
+	],
+	"include": [
+		"src/**/*.d.ts",
+		"../../packages/shared/**/*.ts",
+		"../../apps/web/src/app/components/pages/security-admin-page/**/*.ts",
+		"../../apps/web/src/app/components/pages/trust-admin-page/**/*.ts"
+	],
+	"exclude": [
+		"src/**/*.spec.ts",
+		"../../packages/shared/**/*.spec.ts",
+		"../../packages/shared/**/*.test.ts",
+	]
+}

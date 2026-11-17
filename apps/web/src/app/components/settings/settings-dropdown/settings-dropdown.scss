@@ -1,0 +1,115 @@
+@use 'mixins';
+
+:host {
+	display: block;
+	width: min(22rem, 100%);
+	color: #d8d2bd;
+}
+
+.dropdown-content {
+	padding: 0.75rem;
+
+	border: 0.12rem solid #596575;
+
+	background: linear-gradient(135deg, rgb(255, 255, 255, 0.025), transparent 35%), #18212b;
+	box-shadow:
+		0.2rem 0.2rem 0 #090d12,
+		0.35rem 0.35rem 0 rgb(0, 0, 0, 0.35);
+}
+
+section {
+	padding: 0.45rem;
+}
+
+/* =========================
+   Section header
+   ========================= */
+
+.section-header {
+	display: flex;
+	gap: 0.3rem;
+	flex-direction: column;
+	width: 100%;
+
+	margin-bottom: 0.4rem;
+
+	> span {
+		color: #7f8996;
+		font-size: 0.65rem;
+		letter-spacing: 0.03em;
+		padding-inline: 0.2rem;
+	}
+}
+
+.name {
+	position: sticky;
+	top: 0;
+	z-index: 10;
+
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	box-sizing: border-box;
+
+	width: 100%;
+
+	padding: 0.45rem 0.5rem;
+
+	border: 0.1rem solid #596575;
+
+	background: #202c38;
+
+	box-shadow:
+		inset 0.1rem 0.1rem 0 rgb(255, 255, 255, 0.06),
+		inset -0.1rem -0.1rem 0 rgb(0, 0, 0, 0.35),
+		0.12rem 0.12rem 0 #090d12;
+
+	color: #e5dfc9;
+	font-weight: 700;
+	font-size: 0.8rem;
+	letter-spacing: 0.04em;
+
+	cursor: pointer;
+
+	transition:
+		background-color 0.12s ease,
+		color 0.12s ease;
+
+	&:hover {
+		background: #263442;
+		color: #fff4cf;
+	}
+
+	&:active {
+		box-shadow: inset 0.1rem 0.1rem 0 rgb(0, 0, 0, 0.3);
+		transform: translate(0.05rem, 0.05rem);
+	}
+}
+
+/* =========================
+   Platforms
+   ========================= */
+
+.platforms-container {
+	@include mixins.expanded('maintainer-set');
+
+	box-shadow:
+		0 0.35rem 0.8rem rgb(0, 0, 0, 0.35),
+		inset 0 0.05rem 0.15rem rgb(255, 255, 255, 0.05);
+
+	margin-block: 0.8rem;
+}
+
+.maintainer-set {
+	margin-inline: 0.5rem;
+
+	padding-block: 0.2rem;
+}
+
+/* =========================
+   Small retro details
+   ========================= */
+
+br {
+	display: none;
+}

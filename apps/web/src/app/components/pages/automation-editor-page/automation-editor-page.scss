@@ -1,0 +1,96 @@
+:host { display: block; }
+.editor { display: flex; gap: 8px; flex-direction: column; max-width: 720px; }
+.row { display: flex; gap: 12px; }
+.row > * { flex: 1; }
+.switch { display: flex; gap: 8px; align-items: center; }
+
+.toggle-switch {
+	position: relative;
+	display: inline-block;
+	width: 42px;
+	height: 24px;
+	padding: 0;
+	border: 1px solid var(--border-strong);
+	border-radius: 999px;
+	background: var(--neutral-2);
+	cursor: pointer;
+}
+
+.toggle-switch span {
+	position: absolute;
+	top: 3px;
+	left: 3px;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background: var(--text-secondary);
+	transition: transform 160ms ease;
+}
+
+.toggle-switch.on {
+	border-color: var(--accent-primary);
+	background: var(--accent-primary);
+}
+
+.toggle-switch.on span {
+	background: #fff;
+	transform: translateX(18px);
+}
+
+.toggle-switch input {
+	position: absolute;
+	z-index: 2;
+	margin: 0;
+	opacity: 0;
+	cursor: pointer;
+	inset: 0;
+}
+
+html .switch-hit input[tuiSwitch],
+html[data-tauri] .switch-hit input[tuiSwitch] {
+	pointer-events: none !important;
+}
+
+.switch-hit {
+	position: relative;
+	display: inline-flex;
+}
+
+.switch-hit-area {
+	position: absolute;
+	z-index: 10;
+	cursor: pointer;
+	inset: 0;
+}
+
+.range-editor {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 8px 12px;
+	align-items: center;
+	padding: 10px 12px;
+	border: 1px solid var(--border-normal);
+	border-radius: var(--radius-md);
+}
+
+.range-editor input[type='range'] {
+	width: 100%;
+	accent-color: var(--accent-primary);
+}
+
+
+.file-upload {
+	display: inline-flex;
+	align-items: center;
+	width: fit-content;
+	padding: 6px 10px;
+	border: 1px solid var(--border-normal);
+	border-radius: 8px;
+	color: var(--accent-primary);
+	font: 600 12px/18px var(--font-ui);
+	cursor: pointer;
+}
+
+.file-upload input {
+	display: none;
+}

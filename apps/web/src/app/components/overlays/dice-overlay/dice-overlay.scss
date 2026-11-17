@@ -1,0 +1,143 @@
+:host {
+	display: block;
+	padding: 16px;
+	color: var(--text-primary);
+	font-family: var(--font-ui);
+}
+
+.dice-stage {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	min-height: 100dvh;
+}
+
+.dice-card {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 160px;
+	height: 160px;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	box-shadow: none;
+	opacity: 0;
+	transition:
+		opacity 180ms ease,
+		transform 220ms ease;
+	transform: scale(0.92);
+}
+
+.dice-card.visible {
+	opacity: 1;
+	transform: scale(1);
+}
+
+.dice-kicker {
+	position: absolute;
+	top: -2px;
+	left: 50%;
+	color: var(--accent-primary);
+	font: 700 11px/16px var(--font-ui);
+	letter-spacing: 0.18em;
+	white-space: nowrap;
+	transform: translateX(-50%);
+}
+
+.dice-host {
+	width: 160px;
+	height: 160px;
+}
+
+.dice-host .dice-canvas {
+	display: block;
+	width: 100%;
+	height: 100%;
+	filter: drop-shadow(0 10px 12px rgb(0 0 0 / 60%));
+}
+
+
+
+.dice-formula {
+	position: absolute;
+	top: 166px;
+	left: 50%;
+	color: var(--accent-primary);
+	font: 700 16px/22px var(--font-ui);
+	letter-spacing: 0.08em;
+	white-space: nowrap;
+	transform: translateX(-50%);
+}
+
+.dice-outcome {
+	position: absolute;
+	top: 190px;
+	left: 50%;
+	color: var(--widget-text, #f5eaff);
+	font: 700 13px/18px var(--font-ui);
+	white-space: nowrap;
+	transform: translateX(-50%);
+}
+
+.dice-rolls {
+	position: absolute;
+	top: 212px;
+	left: 50%;
+	color: var(--text-secondary);
+	font: 600 12px/18px var(--font-ui);
+	white-space: nowrap;
+	transform: translateX(-50%);
+}
+
+.dice-viewer {
+	position: absolute;
+	top: 230px;
+	left: 50%;
+	color: var(--text-secondary);
+	font: 600 12px/18px var(--font-ui);
+	white-space: nowrap;
+	transform: translateX(-50%);
+}
+
+
+.dice-card.text-bottom .dice-kicker {
+	top: auto;
+	bottom: -24px;
+}
+
+.dice-card.text-bottom .dice-outcome {
+	top: auto;
+	bottom: -48px;
+}
+
+.dice-card.text-bottom .dice-formula {
+	top: auto;
+	bottom: -70px;
+}
+
+.dice-card.align-left .dice-kicker,
+.dice-card.align-left .dice-outcome,
+.dice-card.align-left .dice-formula {
+	left: 0;
+	text-align: left;
+	transform: none;
+}
+
+.dice-card.align-right .dice-kicker,
+.dice-card.align-right .dice-outcome,
+.dice-card.align-right .dice-formula {
+	right: 0;
+	left: auto;
+	text-align: right;
+	transform: none;
+}
+
+
+.dice-outcome-large {
+	color: #fff;
+	font-size: 15px;
+	text-shadow: 0 0 10px var(--accent-primary);
+}
