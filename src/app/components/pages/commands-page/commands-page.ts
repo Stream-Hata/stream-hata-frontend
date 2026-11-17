@@ -12,10 +12,10 @@ import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-i
 import { RouterLink } from '@angular/router';
 import { signalControl } from '@shared/helpers/form-control';
 import { saveTextFile } from '@shared/helpers/save-file';
+import { TranslatePipe } from '@shared/pipes/translate.pipe';
 import { AppSettingsService } from '@shared/services/app-settings.service';
 import { CommandsService } from '@shared/services/commands.service';
 import { I18nService } from '@shared/services/i18n.service';
-import { TranslatePipe } from '@shared/pipes/translate.pipe';
 import { TriggersService } from '@shared/services/ops.services';
 import {
 	TuiTable,
@@ -112,15 +112,6 @@ const TRIGGER_ACTIONS: { action: string; description: string }[] = [
 	{ action: 'chat.settings', description: 'Настройки чата' },
 ];
 
-const ACTION_LABELS: Record<string, string> = {
-	say: 'Сообщение в чат',
-	points: 'Начислить баллы',
-	timeout: 'Таймаут',
-	wheel: 'Колесо',
-	music: 'Добавить музыку',
-	clip: 'Создать клип',
-};
-
 const LEVEL_LABELS: Record<string, string> = {
 	everyone: 'Все',
 	subscriber: 'Сабы',
@@ -170,6 +161,7 @@ export default class CommandsPage {
 	readonly tab = signal<'commands' | 'timers' | 'triggers' | 'rewards' | 'variables' | 'telegram'>(
 		'commands',
 	);
+
 	readonly refresh = signal(0);
 
 	readonly commands = toSignal(

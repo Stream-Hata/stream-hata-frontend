@@ -1,681 +1,681 @@
 <div class="jk-page">
-	<header class="jk-page-header">
-		<div class="jk-page-header-text">
-			<h1 class="jk-h1">{{ ('commands.title' | translate) }}</h1>
-			<p class="jk-caption">{{ ('commands.subtitle' | translate) }}</p>
-		</div>
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">{{ ('commands.title' | translate) }}</h1>
+      <p class="jk-caption">{{ ('commands.subtitle' | translate) }}</p>
+    </div>
 
-		<div class="jk-page-actions">
-			<a routerLink="/app/commands/editor" appearance="primary" tuiButton>{{
-				('commands.editor' | translate)
-			}}</a>
-			<button type="button" appearance="flat" (click)="exportCommands()" tuiButton>
-				Выгрузить команды
-			</button>
-			<button
-				type="button"
-				[class.active-tab]="tab() === 'commands'"
-				(click)="tab.set('commands')"
-				appearance="jkit-tint"
-				tuiButton
-			>
-				{{ ('commands.commands' | translate) }}
-			</button>
-			<button
-				type="button"
-				[class.active-tab]="tab() === 'timers'"
-				(click)="tab.set('timers')"
-				appearance="jkit-tint-cyan"
-				tuiButton
-			>
-				{{ ('commands.timers' | translate) }}
-			</button>
-			<button
-				type="button"
-				[class.active-tab]="tab() === 'triggers'"
-				(click)="tab.set('triggers')"
-				appearance="jkit-tint"
-				tuiButton
-			>
-				{{ ('commands.triggers' | translate) }}
-			</button>
-			<button
-				type="button"
-				[class.active-tab]="tab() === 'rewards'"
-				(click)="tab.set('rewards')"
-				appearance="jkit-tint-cyan"
-				tuiButton
-			>
-				{{ ('commands.rewards' | translate) }}
-			</button>
-			<button
-				type="button"
-				[class.active-tab]="tab() === 'variables'"
-				(click)="tab.set('variables')"
-				appearance="jkit-tint"
-				tuiButton
-			>
-				{{ ('commands.variables' | translate) }}
-			</button>
-			<button
-				type="button"
-				[class.active-tab]="tab() === 'telegram'"
-				(click)="tab.set('telegram')"
-				appearance="jkit-tint-cyan"
-				tuiButton
-			>
-				Telegram
-			</button>
-		</div>
-	</header>
+    <div class="jk-page-actions">
+      <a routerLink="/app/commands/editor" appearance="primary" tuiButton>{{
+        ('commands.editor' | translate)
+      }}</a>
+    <button type="button" appearance="flat" (click)="exportCommands()" tuiButton>
+      Выгрузить команды
+    </button>
+    <button
+      type="button"
+      [class.active-tab]="tab() === 'commands'"
+      (click)="tab.set('commands')"
+      appearance="jkit-tint"
+      tuiButton
+    >
+      {{ ('commands.commands' | translate) }}
+    </button>
+    <button
+      type="button"
+      [class.active-tab]="tab() === 'timers'"
+      (click)="tab.set('timers')"
+      appearance="jkit-tint-cyan"
+      tuiButton
+    >
+      {{ ('commands.timers' | translate) }}
+    </button>
+    <button
+      type="button"
+      [class.active-tab]="tab() === 'triggers'"
+      (click)="tab.set('triggers')"
+      appearance="jkit-tint"
+      tuiButton
+    >
+      {{ ('commands.triggers' | translate) }}
+    </button>
+    <button
+      type="button"
+      [class.active-tab]="tab() === 'rewards'"
+      (click)="tab.set('rewards')"
+      appearance="jkit-tint-cyan"
+      tuiButton
+    >
+      {{ ('commands.rewards' | translate) }}
+    </button>
+    <button
+      type="button"
+      [class.active-tab]="tab() === 'variables'"
+      (click)="tab.set('variables')"
+      appearance="jkit-tint"
+      tuiButton
+    >
+      {{ ('commands.variables' | translate) }}
+    </button>
+    <button
+      type="button"
+      [class.active-tab]="tab() === 'telegram'"
+      (click)="tab.set('telegram')"
+      appearance="jkit-tint-cyan"
+      tuiButton
+    >
+      Telegram
+    </button>
+  </div>
+</header>
 
-	@if (tab() === 'commands') {
-		<div class="automation-grid single-column">
-			<section class="automation-main">
-				<h2 class="jk-h4">{{ ('commands.commands' | translate) }}</h2>
+@if (tab() === 'commands') {
+  <div class="automation-grid single-column">
+    <section class="automation-main">
+      <h2 class="jk-h4">{{ ('commands.commands' | translate) }}</h2>
 
-				@if (commands().commands.length) {
-					<div class="table-wrap">
-						<table tuiTable>
-							<thead tuiThead>
-								<tr>
-									<th tuiTh>{{ ('commands.rewardCommand' | translate) }}</th>
-									<th tuiTh>{{ ('commands.tableResponse' | translate) }}</th>
-									<th tuiTh>{{ ('commands.tableCooldown' | translate) }}</th>
-									<th tuiTh>{{ ('commands.tableAccess' | translate) }}</th>
-									<th tuiTh>{{ ('commands.tableEnabled' | translate) }}</th>
-									<th tuiTh class="col-actions">
-										<span class="sr-only">{{ ('commands.actions' | translate) }}</span>
-									</th>
-								</tr>
-							</thead>
-							<tbody tuiTbody>
-								@for (command of commands().commands; track command.id) {
-									<tr>
-										<td tuiTd class="name-cell">
-											!{{ command.name }}
-											@if (command.aliases.length) {
-												<span class="jk-caption"> · {{ command.aliases.join(', ') }}</span>
-											}
-										</td>
-										<td tuiTd class="response-cell">{{ command.response }}</td>
-										<td tuiTd>
-											{{ command.cooldownSeconds }}{{ ('commands.secondsShort' | translate) }}
-										</td>
-										<td tuiTd>
-											<span appearance="neutral" tuiBadge>{{ levelLabel(command.userLevel) }}</span>
-										</td>
-										<td tuiTd>
-											<div class="switch-hit">
-												<div class="switch-hit">
-													<input
-														type="checkbox"
-														class="accent-switch"
-														[checked]="commandEnabled(command)"
-														tuiSwitch
-													/>
-													<span
-														class="switch-hit-area"
-														(click)="toggleCommand(command); $event.preventDefault()"
-													></span>
-												</div>
-											</div>
-										</td>
-										<td tuiTd class="col-actions">
-											<button
-												size="s"
-												type="button"
-												[attr.aria-label]="('commands.test' | translate)"
-												(click)="testCommand(command.id)"
-												appearance="flat"
-												iconStart="@tui.play"
-												tuiIconButton
-											></button>
-											<a
-												size="s"
-												[attr.aria-label]="('commands.edit' | translate)"
-												[routerLink]="['/app/commands/editor']"
-												[queryParams]="{ type: 'command', id: command.id }"
-												appearance="flat"
-												iconStart="@tui.pencil"
-												tuiIconButton
-											></a>
-											<button
-												class="danger-action"
-												size="s"
-												type="button"
-												[attr.aria-label]="('commands.delete' | translate)"
-												(click)="removeCommand(command.id)"
-												appearance="flat"
-												iconStart="@tui.trash-2"
-												tuiIconButton
-											></button>
-										</td>
-									</tr>
-								}
-								@for (trigger of triggerDraft(); track trigger.action; let index = $index) {
-									<tr>
-										<td tuiTd class="name-cell">{{ trigger.command }}</td>
-										<td tuiTd>{{ trigger.description }}</td>
-										<td tuiTd class="response-cell">{{ trigger.aliases.join(', ') }}</td>
-										<td tuiTd>
-											{{ trigger.enabled ? ('commands.yes' | translate) : ('commands.no' | translate) }}
-										</td>
-										<td tuiTd>
-											<div class="switch-hit">
-												<div class="switch-hit">
-													<input
-														type="checkbox"
-														class="accent-switch"
-														[checked]="trigger.enabled"
-														tuiSwitch
-													/>
-													<span
-														class="switch-hit-area"
-														(click)="toggleTrigger(index); $event.preventDefault()"
-													></span>
-												</div>
-											</div>
-										</td>
-										<td tuiTd class="col-actions">
-											<a
-												size="s"
-												[attr.aria-label]="('commands.configure' | translate)"
-												[routerLink]="['/app/commands/editor']"
-												[queryParams]="{ type: 'trigger', id: trigger.action }"
-												appearance="flat"
-												iconStart="@tui.pencil"
-												tuiIconButton
-											></a>
-										</td>
-									</tr>
-								}
-							</tbody>
-						</table>
-					</div>
-				} @else {
-					<div class="jk-card jk-empty">
-						<span class="jk-empty-icon"><tui-icon icon="@tui.terminal" /></span>
-						<span class="jk-h4">{{ ('commands.empty' | translate) }}</span>
-						<span class="jk-body-sm jk-muted">{{ ('commands.emptyHint' | translate) }}</span>
-					</div>
-				}
-			</section>
-		</div>
-	} @else if (tab() === 'rewards') {
-		<div class="automation-grid">
-			<section class="automation-main">
-				<h2 class="jk-h4">{{ ('commands.rewardsTitle' | translate) }}</h2>
-				<div class="table-wrap">
-					<table tuiTable>
-						<thead tuiThead>
-							<tr>
-								<th tuiTh>{{ ('commands.rewardName' | translate) }}</th>
-								<th tuiTh>{{ ('commands.rewardPrice' | translate) }}</th>
-								<th tuiTh>{{ ('commands.variableAction' | translate) }}</th>
-								<th tuiTh>{{ ('commands.rewardCommand' | translate) }}</th>
-								<th tuiTh class="col-actions">
-									<span class="sr-only">{{ ('commands.actions' | translate) }}</span>
-								</th>
-							</tr>
-						</thead>
-						<tbody tuiTbody>
-							@for (reward of twitchRewards().rewards; track reward.id) {
-								<tr>
-									<td tuiTd class="name-cell">{{ reward.title }}</td>
-									<td tuiTd class="jk-numeric">{{ reward.cost }}</td>
-									<td tuiTd>{{ rewardMapping(reward)?.action ?? '—' }}</td>
-									<td tuiTd>
-										{{
-											rewardMapping(reward)?.action === 'command'
-												? (commands().commands.find((c) => c.id === rewardMapping(reward)?.payload)
-														?.name ?? '—')
-												: '—'
-										}}
-									</td>
-									<td tuiTd class="col-actions">
-										<button
-											size="s"
-											type="button"
-											[attr.aria-label]="('commands.edit' | translate)"
-											(click)="editReward(reward)"
-											appearance="flat"
-											iconStart="@tui.pencil"
-											tuiIconButton
-										></button>
-										<button
-											class="danger-action"
-											size="s"
-											type="button"
-											[attr.aria-label]="('commands.delete' | translate)"
-											(click)="removeReward(reward.id)"
-											appearance="flat"
-											iconStart="@tui.trash-2"
-											tuiIconButton
-										></button>
-									</td>
-								</tr>
-							}
-						</tbody>
-					</table>
-				</div>
-			</section>
+      @if (commands().commands.length) {
+        <div class="table-wrap">
+          <table tuiTable>
+            <thead tuiThead>
+              <tr>
+                <th tuiTh>{{ ('commands.rewardCommand' | translate) }}</th>
+                <th tuiTh>{{ ('commands.tableResponse' | translate) }}</th>
+                <th tuiTh>{{ ('commands.tableCooldown' | translate) }}</th>
+                <th tuiTh>{{ ('commands.tableAccess' | translate) }}</th>
+                <th tuiTh>{{ ('commands.tableEnabled' | translate) }}</th>
+                <th tuiTh class="col-actions">
+                  <span class="sr-only">{{ ('commands.actions' | translate) }}</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody tuiTbody>
+              @for (command of commands().commands; track command.id) {
+                <tr>
+                  <td tuiTd class="name-cell">
+                    !{{ command.name }}
+                    @if (command.aliases.length) {
+                      <span class="jk-caption"> · {{ command.aliases.join(', ') }}</span>
+                    }
+                  </td>
+                  <td tuiTd class="response-cell">{{ command.response }}</td>
+                  <td tuiTd>
+                    {{ command.cooldownSeconds }}{{ ('commands.secondsShort' | translate) }}
+                  </td>
+                  <td tuiTd>
+                    <span appearance="neutral" tuiBadge>{{ levelLabel(command.userLevel) }}</span>
+                  </td>
+                  <td tuiTd>
+                    <div class="switch-hit">
+                      <div class="switch-hit">
+                        <input
+                          type="checkbox"
+                          class="accent-switch"
+                          [checked]="commandEnabled(command)"
+                          tuiSwitch
+                          />
+                          <span
+                            class="switch-hit-area"
+                            (click)="toggleCommand(command); $event.preventDefault()"
+                          ></span>
+                        </div>
+                      </div>
+                    </td>
+                    <td tuiTd class="col-actions">
+                      <button
+                        size="s"
+                        type="button"
+                        [attr.aria-label]="('commands.test' | translate)"
+                        (click)="testCommand(command.id)"
+                        appearance="flat"
+                        iconStart="@tui.play"
+                        tuiIconButton
+                      ></button>
+                      <a
+                        size="s"
+                        [attr.aria-label]="('commands.edit' | translate)"
+                        [routerLink]="['/app/commands/editor']"
+                        [queryParams]="{ type: 'command', id: command.id }"
+                        appearance="flat"
+                        iconStart="@tui.pencil"
+                        tuiIconButton
+                      ></a>
+                      <button
+                        class="danger-action"
+                        size="s"
+                        type="button"
+                        [attr.aria-label]="('commands.delete' | translate)"
+                        (click)="removeCommand(command.id)"
+                        appearance="flat"
+                        iconStart="@tui.trash-2"
+                        tuiIconButton
+                      ></button>
+                    </td>
+                  </tr>
+                }
+                @for (trigger of triggerDraft(); track trigger.action; let index = $index) {
+                  <tr>
+                    <td tuiTd class="name-cell">{{ trigger.command }}</td>
+                    <td tuiTd>{{ trigger.description }}</td>
+                    <td tuiTd class="response-cell">{{ trigger.aliases.join(', ') }}</td>
+                    <td tuiTd>
+                      {{ trigger.enabled ? ('commands.yes' | translate) : ('commands.no' | translate) }}
+                    </td>
+                    <td tuiTd>
+                      <div class="switch-hit">
+                        <div class="switch-hit">
+                          <input
+                            type="checkbox"
+                            class="accent-switch"
+                            [checked]="trigger.enabled"
+                            tuiSwitch
+                            />
+                          <span
+                            class="switch-hit-area"
+                            (click)="toggleTrigger(index); $event.preventDefault()"
+                            ></span>
+                          </div>
+                        </div>
+                      </td>
+                      <td tuiTd class="col-actions">
+                      <a
+                        size="s"
+                        [attr.aria-label]="('commands.configure' | translate)"
+                        [routerLink]="['/app/commands/editor']"
+                        [queryParams]="{ type: 'trigger', id: trigger.action }"
+                        appearance="flat"
+                        iconStart="@tui.pencil"
+                        tuiIconButton
+                        ></a>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          } @else {
+            <div class="jk-card jk-empty">
+              <span class="jk-empty-icon"><tui-icon icon="@tui.terminal" /></span>
+              <span class="jk-h4">{{ ('commands.empty' | translate) }}</span>
+              <span class="jk-body-sm jk-muted">{{ ('commands.emptyHint' | translate) }}</span>
+            </div>
+          }
+        </section>
+      </div>
+    } @else if (tab() === 'rewards') {
+      <div class="automation-grid">
+        <section class="automation-main">
+          <h2 class="jk-h4">{{ ('commands.rewardsTitle' | translate) }}</h2>
+          <div class="table-wrap">
+            <table tuiTable>
+              <thead tuiThead>
+                <tr>
+                  <th tuiTh>{{ ('commands.rewardName' | translate) }}</th>
+                  <th tuiTh>{{ ('commands.rewardPrice' | translate) }}</th>
+                  <th tuiTh>{{ ('commands.variableAction' | translate) }}</th>
+                  <th tuiTh>{{ ('commands.rewardCommand' | translate) }}</th>
+                  <th tuiTh class="col-actions">
+                    <span class="sr-only">{{ ('commands.actions' | translate) }}</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody tuiTbody>
+                @for (reward of twitchRewards().rewards; track reward.id) {
+                  <tr>
+                    <td tuiTd class="name-cell">{{ reward.title }}</td>
+                    <td tuiTd class="jk-numeric">{{ reward.cost }}</td>
+                    <td tuiTd>{{ rewardMapping(reward)?.action ?? '—' }}</td>
+                    <td tuiTd>
+                      {{
+                      rewardMapping(reward)?.action === 'command'
+                      ? (commands().commands.find((c) => c.id === rewardMapping(reward)?.payload)
+                      ?.name ?? '—')
+                      : '—'
+                    }}
+                  </td>
+                  <td tuiTd class="col-actions">
+                    <button
+                      size="s"
+                      type="button"
+                      [attr.aria-label]="('commands.edit' | translate)"
+                      (click)="editReward(reward)"
+                      appearance="flat"
+                      iconStart="@tui.pencil"
+                      tuiIconButton
+                    ></button>
+                    <button
+                      class="danger-action"
+                      size="s"
+                      type="button"
+                      [attr.aria-label]="('commands.delete' | translate)"
+                      (click)="removeReward(reward.id)"
+                      appearance="flat"
+                      iconStart="@tui.trash-2"
+                      tuiIconButton
+                    ></button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
 
-			<aside class="jk-card editor">
-				<h2 class="jk-h4">
-					{{ rewardEditingId() ? ('commands.rewardEdit' | translate) : ('commands.rewardNew' | translate) }}
-				</h2>
-				<span class="jk-label">{{ ('commands.rewardName' | translate) }}</span>
-				<tui-textfield
-					><input
-						[attr.aria-label]="('commands.rewardName' | translate)"
-						tuiInput
-						type="text"
-						[value]="rewardTitle()"
-						(input)="rewardTitle.set(value($event))"
-				/></tui-textfield>
-				<span class="jk-label">{{ ('commands.rewardCost' | translate) }}</span>
-				<tui-textfield
-					><input
-						[attr.aria-label]="('commands.rewardCost' | translate)"
-						type="number"
-						min="1"
-						tuiInput
-						[value]="rewardCost()"
-						(input)="rewardCost.set(+value($event))"
-				/></tui-textfield>
-				<span class="jk-label">{{ ('commands.rewardPrompt' | translate) }}</span>
-				<tui-textfield>
-					<textarea
-						[attr.aria-label]="('commands.rewardPrompt' | translate)"
-						rows="2"
-						tuiTextarea
-						[value]="rewardPrompt()"
-						(input)="rewardPrompt.set(value($event))"
-					></textarea>
-				</tui-textfield>
-				<span class="jk-label">{{ ('commands.action' | translate) }}</span>
-				<tui-textfield tuiChevron>
-					<input
-						[attr.aria-label]="('commands.rewardAction' | translate)"
-						[readonly]="true"
-						[value]="rewardActionLabels[rewardActionValues.indexOf(rewardAction())]"
-						[style.color]="accent()"
-						tuiInput
-						tuiSelectLike
-					/>
-					<tui-data-list-wrapper
-						*tuiDropdown
-						[itemContent]="accentOption"
-						[items]="rewardActionLabels"
-						(itemClick)="setRewardActionLabel($event)"
-					></tui-data-list-wrapper>
-				</tui-textfield>
-				@if (rewardAction() === 'command') {
-					<span class="jk-label">{{ ('commands.rewardCommand' | translate) }}</span>
-					<tui-textfield tuiChevron>
-						<input
-							[attr.aria-label]="('commands.rewardCommand' | translate)"
-							[readonly]="true"
-							[value]="rewardCommandLabel()"
-							[style.color]="accent()"
-							tuiInput
-							tuiSelectLike
-						/>
-						<tui-data-list-wrapper
-							*tuiDropdown
-							[itemContent]="accentOption"
-							[items]="commandLabels()"
-							(itemClick)="setRewardCommandLabel($event)"
-						></tui-data-list-wrapper>
-					</tui-textfield>
-				} @else {
-					<span class="jk-label">{{ ('commands.rewardPayload' | translate) }}</span>
-					<tui-textfield
-						><input
-							[attr.aria-label]="('commands.rewardPayload' | translate)"
-							tuiInput
-							type="text"
-							[value]="rewardPayload()"
-							(input)="rewardPayload.set(value($event))"
-					/></tui-textfield>
-				}
-				<div class="editor-switch">
-					<span class="jk-label">{{ ('commands.rewardEnabled' | translate) }}</span>
-					<div class="switch-hit">
-						<input type="checkbox" class="accent-switch" [checked]="rewardEnabled()" tuiSwitch />
-						<span
-							class="switch-hit-area"
-							(click)="rewardEnabled.set(!rewardEnabled()); $event.preventDefault()"
-						></span>
-					</div>
-				</div>
-				@if (error(); as message) {
-					<p class="error-text">{{ message }}</p>
-				}
-				<div class="editor-actions">
-					<button type="button" (click)="saveReward()" appearance="primary" tuiButton>
-						{{
-							rewardEditingId() ? ('commands.rewardSave' | translate) : ('commands.rewardCreate' | translate)
-						}}
-					</button>
-					@if (rewardEditingId()) {
-						<button appearance="flat" tuiButton type="button" (click)="resetRewardForm()">
-							{{ ('commands.rewardCancel' | translate) }}
-						</button>
-					}
-				</div>
-			</aside>
-		</div>
-	} @else if (tab() === 'variables') {
-		<div class="automation-grid">
-			<section class="automation-main">
-				<h2 class="jk-h4">{{ ('commands.variablesTitle' | translate) }}</h2>
-				<div class="table-wrap">
-					<table tuiTable>
-						<thead tuiThead>
-							<tr>
-								<th tuiTh>{{ ('commands.variableName' | translate) }}</th>
-								<th tuiTh>{{ ('commands.variableValue' | translate) }}</th>
-								<th tuiTh>{{ ('commands.variableAction' | translate) }}</th>
-								<th tuiTh class="col-actions"></th>
-							</tr>
-						</thead>
-						<tbody tuiTbody>
-							@for (variable of customVariables().variables; track variable.id) {
-								<tr>
-									<td tuiTd class="name-cell">$ ({{ variable.name }})</td>
-									<td tuiTd class="response-cell">{{ variable.value }}</td>
-									<td tuiTd>{{ variable.action || '—' }}</td>
-									<td tuiTd class="col-actions">
-										<a
-											size="s"
-											[attr.aria-label]="('commands.edit' | translate)"
-											[routerLink]="['/app/commands/editor']"
-											[queryParams]="{ type: 'variable', id: variable.id }"
-											appearance="flat"
-											iconStart="@tui.pencil"
-											tuiIconButton
-										></a>
-										<button
-											class="danger-action"
-											size="s"
-											type="button"
-											[attr.aria-label]="('commands.delete' | translate)"
-											(click)="removeVariable(variable.id)"
-											appearance="flat"
-											iconStart="@tui.trash-2"
-											tuiIconButton
-										></button>
-									</td>
-								</tr>
-							}
-						</tbody>
-					</table>
-				</div>
-			</section>
-			<aside class="jk-card editor">
-				<h2 class="jk-h4">
-					{{
-						variableEditingId() ? ('commands.variableEdit' | translate) : ('commands.variableNew' | translate)
-					}}
-				</h2>
-				<span class="jk-label">{{ ('commands.name' | translate) }}</span>
-				<tui-textfield
-					><input
-						[attr.aria-label]="('commands.variableName' | translate)"
-						tuiInput
-						type="text"
-						[value]="variableName()"
-						(input)="variableName.set(value($event))"
-				/></tui-textfield>
-				<span class="jk-label">{{ ('commands.variableValue' | translate) }}</span>
-				<tui-textfield>
-					<textarea
-						[attr.aria-label]="('commands.variableValue' | translate)"
-						rows="6"
-						tuiTextarea
-						[value]="variableValue()"
-						(input)="variableValue.set(value($event))"
-					></textarea>
-				</tui-textfield>
-				<span class="jk-label">{{ ('commands.action' | translate) }}</span>
-				<tui-textfield tuiChevron>
-					<input
-						[attr.aria-label]="('commands.variableAction' | translate)"
-						[readonly]="true"
-						[value]="
-							variableActionLabels[variableActionValues.indexOf(variableActionControl.value)]
-						"
-						[style.color]="accent()"
-						tuiInput
-						tuiSelectLike
-					/>
-					<tui-data-list-wrapper
-						*tuiDropdown
-						[itemContent]="accentOption"
-						[items]="variableActionLabels"
-						(itemClick)="setVariableActionLabel($event)"
-					></tui-data-list-wrapper>
-				</tui-textfield>
-				@if (error(); as message) {
-					<p class="error-text">{{ message }}</p>
-				}
-				<div class="editor-actions">
-					<button type="button" (click)="saveVariable()" appearance="primary" tuiButton>
-						{{
-							variableEditingId()
-								? ('commands.variableSave' | translate)
-								: ('commands.rewardCreate' | translate)
-						}}
-					</button>
-					@if (variableEditingId()) {
-						<button type="button" appearance="flat" tuiButton (click)="resetVariableForm()">
-							{{ ('commands.rewardCancel' | translate) }}
-						</button>
-					}
-				</div>
-			</aside>
-		</div>
-	} @else if (tab() === 'triggers') {
-		<section class="automation-main">
-			<div class="triggers-head">
-				<h2 class="jk-h4">{{ ('commands.triggersTitle' | translate) }}</h2>
-				<div class="triggers-actions">
-					<tui-textfield tuiChevron>
-						<input
-							[attr.aria-label]="('commands.triggerAction' | translate)"
-							[readonly]="true"
-							[value]="triggerActionLabels[triggerActionValues.indexOf(triggerActionControl.value)]"
-							[style.color]="accent()"
-							tuiInput
-							tuiSelectLike
-						/>
-						<tui-data-list-wrapper
-							*tuiDropdown
-							[itemContent]="accentOption"
-							[items]="triggerActionLabels"
-							(itemClick)="setTriggerActionLabel($event)"
-						></tui-data-list-wrapper>
-					</tui-textfield>
-					<button appearance="flat" tuiButton type="button" (click)="addTrigger()">
-						{{ ('commands.triggerAdd' | translate) }}
-					</button>
-					<button appearance="primary" tuiButton type="button" (click)="saveTriggers()">
-						{{ triggersSaved() ? ('commands.triggerSaved' | translate) : ('commands.triggerSave' | translate) }}
-					</button>
-				</div>
-			</div>
+      <aside class="jk-card editor">
+        <h2 class="jk-h4">
+          {{ rewardEditingId() ? ('commands.rewardEdit' | translate) : ('commands.rewardNew' | translate) }}
+        </h2>
+        <span class="jk-label">{{ ('commands.rewardName' | translate) }}</span>
+        <tui-textfield
+        ><input
+          [attr.aria-label]="('commands.rewardName' | translate)"
+          tuiInput
+          type="text"
+          [value]="rewardTitle()"
+          (input)="rewardTitle.set(value($event))"
+          /></tui-textfield>
+        <span class="jk-label">{{ ('commands.rewardCost' | translate) }}</span>
+        <tui-textfield
+        ><input
+          [attr.aria-label]="('commands.rewardCost' | translate)"
+          type="number"
+          min="1"
+          tuiInput
+          [value]="rewardCost()"
+          (input)="rewardCost.set(+value($event))"
+          /></tui-textfield>
+        <span class="jk-label">{{ ('commands.rewardPrompt' | translate) }}</span>
+        <tui-textfield>
+          <textarea
+            [attr.aria-label]="('commands.rewardPrompt' | translate)"
+            rows="2"
+            tuiTextarea
+            [value]="rewardPrompt()"
+            (input)="rewardPrompt.set(value($event))"
+          ></textarea>
+        </tui-textfield>
+        <span class="jk-label">{{ ('commands.action' | translate) }}</span>
+        <tui-textfield tuiChevron>
+          <input
+            [attr.aria-label]="('commands.rewardAction' | translate)"
+            [readonly]="true"
+            [value]="rewardActionLabels[rewardActionValues.indexOf(rewardAction())]"
+            [style.color]="accent()"
+            tuiInput
+            tuiSelectLike
+            />
+          <tui-data-list-wrapper
+            *tuiDropdown
+            [itemContent]="accentOption"
+            [items]="rewardActionLabels"
+            (itemClick)="setRewardActionLabel($event)"
+            ></tui-data-list-wrapper>
+          </tui-textfield>
+          @if (rewardAction() === 'command') {
+            <span class="jk-label">{{ ('commands.rewardCommand' | translate) }}</span>
+            <tui-textfield tuiChevron>
+              <input
+                [attr.aria-label]="('commands.rewardCommand' | translate)"
+                [readonly]="true"
+                [value]="rewardCommandLabel()"
+                [style.color]="accent()"
+                tuiInput
+                tuiSelectLike
+                />
+            <tui-data-list-wrapper
+              *tuiDropdown
+              [itemContent]="accentOption"
+              [items]="commandLabels()"
+              (itemClick)="setRewardCommandLabel($event)"
+                ></tui-data-list-wrapper>
+              </tui-textfield>
+            } @else {
+              <span class="jk-label">{{ ('commands.rewardPayload' | translate) }}</span>
+          <tui-textfield
+              ><input
+                [attr.aria-label]="('commands.rewardPayload' | translate)"
+                tuiInput
+                type="text"
+                [value]="rewardPayload()"
+                (input)="rewardPayload.set(value($event))"
+                /></tui-textfield>
+            }
+            <div class="editor-switch">
+              <span class="jk-label">{{ ('commands.rewardEnabled' | translate) }}</span>
+              <div class="switch-hit">
+                <input type="checkbox" class="accent-switch" [checked]="rewardEnabled()" tuiSwitch />
+            <span
+              class="switch-hit-area"
+              (click)="rewardEnabled.set(!rewardEnabled()); $event.preventDefault()"
+                ></span>
+              </div>
+            </div>
+            @if (error(); as message) {
+              <p class="error-text">{{ message }}</p>
+            }
+            <div class="editor-actions">
+              <button type="button" (click)="saveReward()" appearance="primary" tuiButton>
+                {{
+                rewardEditingId() ? ('commands.rewardSave' | translate) : ('commands.rewardCreate' | translate)
+              }}
+            </button>
+            @if (rewardEditingId()) {
+              <button appearance="flat" tuiButton type="button" (click)="resetRewardForm()">
+                {{ ('commands.rewardCancel' | translate) }}
+              </button>
+            }
+          </div>
+        </aside>
+      </div>
+    } @else if (tab() === 'variables') {
+      <div class="automation-grid">
+        <section class="automation-main">
+          <h2 class="jk-h4">{{ ('commands.variablesTitle' | translate) }}</h2>
+          <div class="table-wrap">
+            <table tuiTable>
+              <thead tuiThead>
+                <tr>
+                  <th tuiTh>{{ ('commands.variableName' | translate) }}</th>
+                  <th tuiTh>{{ ('commands.variableValue' | translate) }}</th>
+                  <th tuiTh>{{ ('commands.variableAction' | translate) }}</th>
+                  <th tuiTh class="col-actions"></th>
+                </tr>
+              </thead>
+              <tbody tuiTbody>
+                @for (variable of customVariables().variables; track variable.id) {
+                  <tr>
+                    <td tuiTd class="name-cell">$ ({{ variable.name }})</td>
+                    <td tuiTd class="response-cell">{{ variable.value }}</td>
+                    <td tuiTd>{{ variable.action || '—' }}</td>
+                    <td tuiTd class="col-actions">
+                    <a
+                      size="s"
+                      [attr.aria-label]="('commands.edit' | translate)"
+                      [routerLink]="['/app/commands/editor']"
+                      [queryParams]="{ type: 'variable', id: variable.id }"
+                      appearance="flat"
+                      iconStart="@tui.pencil"
+                      tuiIconButton
+                      ></a>
+                    <button
+                      class="danger-action"
+                      size="s"
+                      type="button"
+                      [attr.aria-label]="('commands.delete' | translate)"
+                      (click)="removeVariable(variable.id)"
+                      appearance="flat"
+                      iconStart="@tui.trash-2"
+                      tuiIconButton
+                      ></button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </section>
+        <aside class="jk-card editor">
+          <h2 class="jk-h4">
+            {{
+            variableEditingId() ? ('commands.variableEdit' | translate) : ('commands.variableNew' | translate)
+          }}
+        </h2>
+        <span class="jk-label">{{ ('commands.name' | translate) }}</span>
+        <tui-textfield
+        ><input
+          [attr.aria-label]="('commands.variableName' | translate)"
+          tuiInput
+          type="text"
+          [value]="variableName()"
+          (input)="variableName.set(value($event))"
+          /></tui-textfield>
+        <span class="jk-label">{{ ('commands.variableValue' | translate) }}</span>
+        <tui-textfield>
+          <textarea
+            [attr.aria-label]="('commands.variableValue' | translate)"
+            rows="6"
+            tuiTextarea
+            [value]="variableValue()"
+            (input)="variableValue.set(value($event))"
+          ></textarea>
+        </tui-textfield>
+        <span class="jk-label">{{ ('commands.action' | translate) }}</span>
+        <tui-textfield tuiChevron>
+          <input
+            [attr.aria-label]="('commands.variableAction' | translate)"
+            [readonly]="true"
+            [value]="
+            variableActionLabels[variableActionValues.indexOf(variableActionControl.value)]
+            "
+            [style.color]="accent()"
+            tuiInput
+            tuiSelectLike
+            />
+          <tui-data-list-wrapper
+            *tuiDropdown
+            [itemContent]="accentOption"
+            [items]="variableActionLabels"
+            (itemClick)="setVariableActionLabel($event)"
+            ></tui-data-list-wrapper>
+          </tui-textfield>
+          @if (error(); as message) {
+            <p class="error-text">{{ message }}</p>
+          }
+          <div class="editor-actions">
+            <button type="button" (click)="saveVariable()" appearance="primary" tuiButton>
+              {{
+              variableEditingId()
+              ? ('commands.variableSave' | translate)
+              : ('commands.rewardCreate' | translate)
+            }}
+          </button>
+          @if (variableEditingId()) {
+            <button type="button" appearance="flat" tuiButton (click)="resetVariableForm()">
+              {{ ('commands.rewardCancel' | translate) }}
+            </button>
+          }
+        </div>
+      </aside>
+    </div>
+  } @else if (tab() === 'triggers') {
+    <section class="automation-main">
+      <div class="triggers-head">
+        <h2 class="jk-h4">{{ ('commands.triggersTitle' | translate) }}</h2>
+        <div class="triggers-actions">
+          <tui-textfield tuiChevron>
+            <input
+              [attr.aria-label]="('commands.triggerAction' | translate)"
+              [readonly]="true"
+              [value]="triggerActionLabels[triggerActionValues.indexOf(triggerActionControl.value)]"
+              [style.color]="accent()"
+              tuiInput
+              tuiSelectLike
+              />
+            <tui-data-list-wrapper
+              *tuiDropdown
+              [itemContent]="accentOption"
+              [items]="triggerActionLabels"
+              (itemClick)="setTriggerActionLabel($event)"
+              ></tui-data-list-wrapper>
+            </tui-textfield>
+            <button appearance="flat" tuiButton type="button" (click)="addTrigger()">
+              {{ ('commands.triggerAdd' | translate) }}
+            </button>
+            <button appearance="primary" tuiButton type="button" (click)="saveTriggers()">
+              {{ triggersSaved() ? ('commands.triggerSaved' | translate) : ('commands.triggerSave' | translate) }}
+            </button>
+          </div>
+        </div>
 
-			<div class="table-wrap">
-				<table tuiTable>
-					<thead tuiThead>
-						<tr>
-							<th tuiTh>{{ ('commands.variableAction' | translate) }}</th>
-							<th tuiTh>{{ ('commands.rewardCommand' | translate) }}</th>
-							<th tuiTh>{{ ('commands.triggerAliases' | translate) }}</th>
-							<th tuiTh>{{ ('commands.tableEnabled' | translate) }}</th>
-							<th tuiTh class="col-actions">
-								<span class="sr-only">{{ ('commands.actions' | translate) }}</span>
-							</th>
-						</tr>
-					</thead>
-					<tbody tuiTbody>
-						@for (trigger of triggerDraft(); track trigger.action; let index = $index) {
-							<tr>
-								<td tuiTd>
-									<div class="cfg-text">
-										<span class="cfg-label">{{ trigger.description }}</span>
-										<span class="jk-caption">{{ trigger.action }}</span>
-									</div>
-								</td>
-								<td tuiTd>
-									<tui-textfield
-										><input
-											[attr.aria-label]="('commands.triggerCommand' | translate)"
-											[attr.placeholder]="('commands.triggerCommandPlaceholder' | translate)"
-											tuiInput
-											type="text"
-											[value]="trigger.command"
-											(input)="updateTrigger(index, 'command', $event)"
-									/></tui-textfield>
-								</td>
-								<td tuiTd>
-									<tui-textfield
-										><input
-											[attr.aria-label]="('commands.triggerAliases' | translate)"
-											[attr.placeholder]="('commands.triggerAliasesPlaceholder' | translate)"
-											tuiInput
-											type="text"
-											[value]="trigger.aliases.join(', ')"
-											(input)="updateTrigger(index, 'aliases', $event)"
-									/></tui-textfield>
-								</td>
-								<td tuiTd>
-									<div class="switch-hit">
-										<input
-											type="checkbox"
-											class="accent-switch"
-											[checked]="trigger.enabled"
-											tuiSwitch
-										/>
-										<span
-											class="switch-hit-area"
-											(click)="toggleTrigger(index); $event.preventDefault()"
-										></span>
-									</div>
-								</td>
-								<td tuiTd class="col-actions">
-									<button
-										class="danger-action"
-										size="s"
-										type="button"
-										[attr.aria-label]="('commands.triggerDelete' | translate)"
-										(click)="removeTrigger(index)"
-										appearance="flat"
-										iconStart="@tui.trash-2"
-										tuiIconButton
-									></button>
-								</td>
-							</tr>
-						}
-					</tbody>
-				</table>
-			</div>
-		</section>
-	} @else if (tab() === 'telegram') {
-		<div class="automation-grid">
-			<section class="automation-main">
-				<h2 class="jk-h4">Команды Telegram-бота</h2>
-				<div class="table-wrap">
-					<table tuiTable>
-						<thead tuiThead>
-							<tr>
-								<th tuiTh>Команда</th>
-								<th tuiTh>Ответ</th>
-								<th tuiTh>Вкл.</th>
-								<th tuiTh class="col-actions"></th>
-							</tr>
-						</thead>
-						<tbody tuiTbody>
-							@for (command of telegramCommands().commands; track command.id) {
-								<tr>
-									<td tuiTd class="name-cell">{{ command.command }}</td>
-									<td tuiTd class="response-cell">{{ command.response }}</td>
-									<td tuiTd>{{ command.enabled ? 'Да' : 'Нет' }}</td>
-									<td tuiTd class="col-actions">
-										<button
-											size="s"
-											type="button"
-											appearance="flat"
-											(click)="editTelegram(command)"
-											tuiButton
-										>
-											Изменить
-										</button>
-										<button
-											class="danger-action"
-											size="s"
-											type="button"
-											appearance="flat"
-											(click)="removeTelegram(command.id)"
-											tuiButton
-										>
-											Удалить
-										</button>
-									</td>
-								</tr>
-							}
-						</tbody>
-					</table>
-				</div>
-			</section>
-			<aside class="automation-side">
-				<h2 class="jk-h4">{{ telegramEditingId() ? 'Изменить команду' : 'Новая команда' }}</h2>
-				<span class="jk-label">Команда</span>
-				<tui-textfield>
-					<input
-						tuiInput
-						[value]="telegramCommand()"
-						(input)="telegramCommand.set(value($event))"
-						placeholder="/start"
-					/>
-				</tui-textfield>
-				<span class="jk-label">Ответ</span>
-				<tui-textfield>
-					<textarea
-						tuiTextarea
-						rows="6"
-						[value]="telegramResponse()"
-						(input)="telegramResponse.set(value($event))"
-						placeholder="Текст ответа. {user}, {args}, {date}, {time}"
-					></textarea>
-				</tui-textfield>
-				<div class="editor-switch">
-					<span class="jk-label">Включена</span>
-					<div class="switch-hit">
-						<input type="checkbox" class="accent-switch" [checked]="telegramEnabled()" tuiSwitch />
-						<span
-							class="switch-hit-area"
-							(click)="telegramEnabled.set(!telegramEnabled()); $event.preventDefault()"
-						></span>
-					</div>
-				</div>
-				<div class="editor-actions">
-					<button type="button" appearance="primary" (click)="saveTelegram()" tuiButton>
-						{{ telegramEditingId() ? 'Сохранить' : 'Создать' }}
-					</button>
-					@if (telegramEditingId()) {
-						<button type="button" appearance="flat" (click)="resetTelegramForm()" tuiButton>
-							Отмена
-						</button>
-					}
-				</div>
-			</aside>
-		</div>
-	}
-</div>
+        <div class="table-wrap">
+          <table tuiTable>
+            <thead tuiThead>
+              <tr>
+                <th tuiTh>{{ ('commands.variableAction' | translate) }}</th>
+                <th tuiTh>{{ ('commands.rewardCommand' | translate) }}</th>
+                <th tuiTh>{{ ('commands.triggerAliases' | translate) }}</th>
+                <th tuiTh>{{ ('commands.tableEnabled' | translate) }}</th>
+                <th tuiTh class="col-actions">
+                  <span class="sr-only">{{ ('commands.actions' | translate) }}</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody tuiTbody>
+              @for (trigger of triggerDraft(); track trigger.action; let index = $index) {
+                <tr>
+                  <td tuiTd>
+                    <div class="cfg-text">
+                      <span class="cfg-label">{{ trigger.description }}</span>
+                      <span class="jk-caption">{{ trigger.action }}</span>
+                    </div>
+                  </td>
+                  <td tuiTd>
+                  <tui-textfield
+                    ><input
+                      [attr.aria-label]="('commands.triggerCommand' | translate)"
+                      [attr.placeholder]="('commands.triggerCommandPlaceholder' | translate)"
+                      tuiInput
+                      type="text"
+                      [value]="trigger.command"
+                      (input)="updateTrigger(index, 'command', $event)"
+                      /></tui-textfield>
+                  </td>
+                  <td tuiTd>
+                  <tui-textfield
+                    ><input
+                      [attr.aria-label]="('commands.triggerAliases' | translate)"
+                      [attr.placeholder]="('commands.triggerAliasesPlaceholder' | translate)"
+                      tuiInput
+                      type="text"
+                      [value]="trigger.aliases.join(', ')"
+                      (input)="updateTrigger(index, 'aliases', $event)"
+                      /></tui-textfield>
+                  </td>
+                  <td tuiTd>
+                    <div class="switch-hit">
+                      <input
+                        type="checkbox"
+                        class="accent-switch"
+                        [checked]="trigger.enabled"
+                        tuiSwitch
+                        />
+                    <span
+                      class="switch-hit-area"
+                      (click)="toggleTrigger(index); $event.preventDefault()"
+                        ></span>
+                      </div>
+                    </td>
+                    <td tuiTd class="col-actions">
+                  <button
+                    class="danger-action"
+                    size="s"
+                    type="button"
+                    [attr.aria-label]="('commands.triggerDelete' | translate)"
+                    (click)="removeTrigger(index)"
+                    appearance="flat"
+                    iconStart="@tui.trash-2"
+                    tuiIconButton
+                      ></button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </section>
+      } @else if (tab() === 'telegram') {
+        <div class="automation-grid">
+          <section class="automation-main">
+            <h2 class="jk-h4">Команды Telegram-бота</h2>
+            <div class="table-wrap">
+              <table tuiTable>
+                <thead tuiThead>
+                  <tr>
+                    <th tuiTh>Команда</th>
+                    <th tuiTh>Ответ</th>
+                    <th tuiTh>Вкл.</th>
+                    <th tuiTh class="col-actions"></th>
+                  </tr>
+                </thead>
+                <tbody tuiTbody>
+                  @for (command of telegramCommands().commands; track command.id) {
+                    <tr>
+                      <td tuiTd class="name-cell">{{ command.command }}</td>
+                      <td tuiTd class="response-cell">{{ command.response }}</td>
+                      <td tuiTd>{{ command.enabled ? 'Да' : 'Нет' }}</td>
+                      <td tuiTd class="col-actions">
+                        <button
+                          size="s"
+                          type="button"
+                          appearance="flat"
+                          (click)="editTelegram(command)"
+                          tuiButton
+                        >
+                          Изменить
+                        </button>
+                        <button
+                          class="danger-action"
+                          size="s"
+                          type="button"
+                          appearance="flat"
+                          (click)="removeTelegram(command.id)"
+                          tuiButton
+                        >
+                          Удалить
+                        </button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </section>
+          <aside class="automation-side">
+            <h2 class="jk-h4">{{ telegramEditingId() ? 'Изменить команду' : 'Новая команда' }}</h2>
+            <span class="jk-label">Команда</span>
+            <tui-textfield>
+              <input
+                tuiInput
+                [value]="telegramCommand()"
+                (input)="telegramCommand.set(value($event))"
+                placeholder="/start"
+                />
+              </tui-textfield>
+              <span class="jk-label">Ответ</span>
+              <tui-textfield>
+          <textarea
+            tuiTextarea
+            rows="6"
+            [value]="telegramResponse()"
+            (input)="telegramResponse.set(value($event))"
+            placeholder="Текст ответа. {user}, {args}, {date}, {time}"
+                ></textarea>
+              </tui-textfield>
+              <div class="editor-switch">
+                <span class="jk-label">Включена</span>
+                <div class="switch-hit">
+                  <input type="checkbox" class="accent-switch" [checked]="telegramEnabled()" tuiSwitch />
+            <span
+              class="switch-hit-area"
+              (click)="telegramEnabled.set(!telegramEnabled()); $event.preventDefault()"
+                  ></span>
+                </div>
+              </div>
+              <div class="editor-actions">
+                <button type="button" appearance="primary" (click)="saveTelegram()" tuiButton>
+                  {{ telegramEditingId() ? 'Сохранить' : 'Создать' }}
+                </button>
+                @if (telegramEditingId()) {
+                  <button type="button" appearance="flat" (click)="resetTelegramForm()" tuiButton>
+                    Отмена
+                  </button>
+                }
+              </div>
+            </aside>
+          </div>
+        }
+      </div>
 
-<ng-template #accentOption let-item>
-	<span [style.color]="accent()">{{ item }}</span>
-</ng-template>
+      <ng-template #accentOption let-item>
+        <span [style.color]="accent()">{{ item }}</span>
+      </ng-template>

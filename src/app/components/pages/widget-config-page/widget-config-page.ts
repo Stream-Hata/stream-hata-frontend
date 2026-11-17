@@ -5,6 +5,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HotbarStore } from '@app/stores/hotbar.store';
+import { WebglHelp } from '@shared/components/webgl-help/webgl-help';
 import { signalControl } from '@shared/helpers/form-control';
 import { AlertsService } from '@shared/services/alerts.service';
 import { I18nService } from '@shared/services/i18n.service';
@@ -32,10 +33,9 @@ import { catchError, map, of, switchMap, timer } from 'rxjs';
 import { Timer } from '../../hotbar/timer/timer';
 import { AlertPreview } from '../../widgets/alert-preview/alert-preview';
 import { DonationConfig } from '../../widgets/donation-config/donation-config';
-import { RouletteConfigForm } from '../../widgets/roulette-config/roulette-config';
 import { HotbarConfig } from '../../widgets/hotbar-config/hotbar-config';
 import { HotbarPreview } from '../../widgets/hotbar-preview/hotbar-preview';
-import { WebglHelp } from '@shared/components/webgl-help/webgl-help';
+import { RouletteConfigForm } from '../../widgets/roulette-config/roulette-config';
 
 const STYLE_LABELS: Record<string, string> = {
 	standard: 'Standard',
@@ -82,13 +82,13 @@ const KIND_TITLES: Record<string, string> = {
 		TuiSlider,
 		TuiSwitch,
 		TuiTextfield,
+		WebglHelp,
 		AlertPreview,
 		DonationConfig,
 		HotbarConfig,
 		HotbarPreview,
 		RouletteConfigForm,
 		Timer,
-		WebglHelp,
 	],
 	selector: 'app-widget-config-page',
 	providers: [
@@ -119,9 +119,16 @@ export default class WidgetConfigPage {
 		'nowplaying',
 		'streaks',
 	];
+
 	readonly isGeneric = computed(() => this.genericKinds.includes(this.kind()));
 	readonly genericConfig = signal<WidgetConfig>({});
 	readonly hotbarConfig = signal<WidgetConfig>({});
+	readonly hotbarSlots = computed(() => this.hotbarConfig().hotbarSlots ?? []);
+
+	setHotbarConfig(config: WidgetConfig): void {
+		this.hotbarConfig.set(config);
+	}
+
 	readonly genericForm = new FormGroup({
 		transparent: new FormControl(true, { nonNullable: true }),
 		backgroundColor: new FormControl('#121218', { nonNullable: true }),
@@ -632,7 +639,7 @@ export default class WidgetConfigPage {
 			return;
 		}
 
-		if (!/\.(woff2?|ttf|otf)$/i.test(file.name)) {
+		if (!/\.(?:woff2?|ttf|otf)$/i.test(file.name)) {
 			this.fontError.set('Поддерживаются woff2, woff, ttf и otf');
 
 			return;
@@ -676,27 +683,27 @@ export default class WidgetConfigPage {
 				? { ...this.genericConfig(), ...this.hotbarConfig() }
 				: this.kind() === 'timer'
 					? {
-							...this.genericConfig(),
-							...this.genericForm.getRawValue(),
-							timerMode: this.timerMode(),
-							timerLabel: this.labelText(),
-							timerShowLabel: this.labels(),
-							timerDurationSeconds: this.hours() * 3600 + this.minutes() * 60 + this.seconds(),
-							timerCountFromSeconds:
+						...this.genericConfig(),
+						...this.genericForm.getRawValue(),
+						timerMode: this.timerMode(),
+						timerLabel: this.labelText(),
+						timerShowLabel: this.labels(),
+						timerDurationSeconds: this.hours() * 3600 + this.minutes() * 60 + this.seconds(),
+						timerCountFromSeconds:
 								this.countFromHours() * 3600 +
 								this.countFromMinutes() * 60 +
 								this.countFromSeconds(),
-							timerCountToSeconds: this.countUpLimit()
-								? this.countToHours() * 3600 + this.countToMinutes() * 60 + this.countToSeconds()
-								: null,
-							timerSize: this.timeSize(),
-							timerShowProgress: this.showTimerProgress(),
-							timerProgressColor: this.timerProgressColor(),
-							timerFontFamily: this.timerFont(),
-							timerFontUrl: this.timerFontUrl(),
-							timerAlign: this.timerAlign(),
-							timerVerticalAlign: this.timerVerticalAlign(),
-						}
+						timerCountToSeconds: this.countUpLimit()
+							? this.countToHours() * 3600 + this.countToMinutes() * 60 + this.countToSeconds()
+							: null,
+						timerSize: this.timeSize(),
+						timerShowProgress: this.showTimerProgress(),
+						timerProgressColor: this.timerProgressColor(),
+						timerFontFamily: this.timerFont(),
+						timerFontUrl: this.timerFontUrl(),
+						timerAlign: this.timerAlign(),
+						timerVerticalAlign: this.timerVerticalAlign(),
+					}
 					: { ...this.genericConfig(), ...this.genericForm.getRawValue() };
 
 		if (this.kind() === 'chat') {

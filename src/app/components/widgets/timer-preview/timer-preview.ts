@@ -50,6 +50,7 @@ export class TimerPreview {
 			)
 			.subscribe();
 	}
+
 	readonly showMode = input(false);
 	readonly showModeLabel = input(false);
 	readonly config = computed(() => this.widgetConfig.configs()['timer'] ?? {});
@@ -62,14 +63,17 @@ export class TimerPreview {
 	readonly label = computed(
 		() => this.config().timerLabel ?? (this.countdown() ? 'До старта события' : 'Прошло времени'),
 	);
+
 	readonly showLabel = computed(() => this.config().timerShowLabel !== false);
 	readonly showProgress = computed(
 		() => this.config().timerShowProgress ?? this.countdown(),
 	);
+
 	readonly progressColor = computed(() => this.config().timerProgressColor ?? '#22e0ff');
 	readonly fontFamily = computed(() =>
 		this.config().timerFontUrl ? 'NSH Custom Timer Font' : this.config().timerFontFamily ?? 'JetBrains Mono',
 	);
+
 	readonly textColor = computed(() => this.config().textColor ?? '#F5EAFF');
 	readonly alignItems = computed(() =>
 		this.config().timerAlign === 'right'
@@ -78,15 +82,18 @@ export class TimerPreview {
 				? 'center'
 				: 'flex-start',
 	);
+
 	readonly textAlign = computed(() => this.config().timerAlign ?? 'left');
 	readonly running = computed(
 		() => !this.showMode() || this.store?.state()?.timerState.mode !== 'pause',
 	);
+
 	readonly elapsed = computed(() => {
 		const value = this.store?.state()?.timerState.time;
 
 		return (value?.hours ?? 0) * 3600 + (value?.minutes ?? 0) * 60 + (value?.seconds ?? 0);
 	});
+
 	readonly time = computed(() => {
 		const total = this.countdown()
 			? Math.max(0, this.duration() - this.elapsed())
@@ -96,6 +103,7 @@ export class TimerPreview {
 			.map(pad)
 			.join(':');
 	});
+
 	readonly progress = computed(() => {
 		if (!this.countdown()) {
 			const from = this.countFrom();

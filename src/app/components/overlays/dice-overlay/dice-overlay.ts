@@ -1,7 +1,9 @@
-import { AfterViewInit, Component, computed, effect, ElementRef, inject, OnDestroy, signal, ViewChild } from '@angular/core';
+import type { AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
+import type { WidgetConfig } from '@shared/services/widgets.service';
 import { HttpClient } from '@angular/common/http';
-import { WidgetConfigService, type WidgetConfig } from '@shared/services/widgets.service';
+import { Component, computed, effect, inject, signal, ViewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { WidgetConfigService } from '@shared/services/widgets.service';
 import { catchError, of, switchMap, timer } from 'rxjs';
 import { DiceScene } from './dice-scene';
 
@@ -50,6 +52,7 @@ export class DiceOverlay implements AfterViewInit, OnDestroy {
 		this.configService.watch('dice').pipe(catchError(() => of({ config: {} as WidgetConfig }))),
 		{ initialValue: { config: {} as WidgetConfig } },
 	);
+
 	readonly title = computed(() => this.config().config.gameTitle?.trim() || 'DICE');
 	readonly edgeColor = computed(() => this.config().config.diceEdgeColor || '#f5eaff');
 	readonly edgeWidth = computed(() => this.config().config.diceEdgeWidth ?? 1);
@@ -65,16 +68,16 @@ export class DiceOverlay implements AfterViewInit, OnDestroy {
 			.replaceAll('{result}', String(this.result()))
 			.replaceAll('{number}', String(this.result()))
 			.replaceAll('{formula}', this.formula())
-			.replaceAll('${nick}', this.viewer() || '—')
-			.replaceAll('${number}', String(this.result()));
+			.replaceAll('$' + '{nick}', this.viewer() || '—')
+			.replaceAll('$' + '{number}', String(this.result()));
 	});
+
 	readonly rolls = computed(() => this.state().rolls ?? []);
 	readonly sides = computed(() => {
 		const match = this.formula().match(/(\d*)d(\d+)/i);
 
 		return match ? Math.max(1, Number(match[2])) : 6;
 	});
-
 
 	constructor() {
 		effect(() => {

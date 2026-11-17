@@ -5,9 +5,10 @@ import type { AnalyticsState } from '@shared/types/stream';
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
+import { WebglHelp } from '@shared/components/webgl-help/webgl-help';
 import { AlertsService } from '@shared/services/alerts.service';
-import { I18nService } from '@shared/services/i18n.service';
 import { ChatJuryService } from '@shared/services/chat-jury.service';
+import { I18nService } from '@shared/services/i18n.service';
 import { AnalyticsService } from '@shared/services/stream.services';
 import { TwitchService } from '@shared/services/twitch.service';
 import {
@@ -21,7 +22,6 @@ import { TuiButton, TuiIcon, TuiLink } from '@taiga-ui/core';
 import { TuiBadge, TuiProgressBar } from '@taiga-ui/kit';
 import { catchError, of, switchMap, timer } from 'rxjs';
 import { ApprovalRing } from '../../ui/approval-ring/approval-ring';
-import { WebglHelp } from '@shared/components/webgl-help/webgl-help';
 
 @Component({
 	imports: [
@@ -36,8 +36,8 @@ import { WebglHelp } from '@shared/components/webgl-help/webgl-help';
 		TuiTableTd,
 		TuiTableTh,
 		TuiTableThead,
-		ApprovalRing,
 		WebglHelp,
+		ApprovalRing,
 	],
 	selector: 'app-dashboard-page',
 	styleUrl: './dashboard-page.scss',

@@ -24,28 +24,28 @@
         [value]="draft()"
         (input)="draft.set($any($event.target).value)"
         (keydown.enter)="addNote()"
-      />
-    </tui-textfield>
-    <button type="button" appearance="primary" size="s" tuiButton (click)="addNote()">{{ i18n.t('journal.add') }}</button>
-    <button type="button" appearance="secondary" size="s" tuiButton (click)="journal.add('Маркер момента', 'marker')">{{ i18n.t('journal.marker') }}</button>
-  </section>
+        />
+      </tui-textfield>
+      <button type="button" appearance="primary" size="s" tuiButton (click)="addNote()">{{ i18n.t('journal.add') }}</button>
+      <button type="button" appearance="secondary" size="s" tuiButton (click)="journal.add('Маркер момента', 'marker')">{{ i18n.t('journal.marker') }}</button>
+    </section>
 
-  <div class="journal-grid">
-    <section class="jk-card journal-list">
-      <div class="journal-list-head">
-        <h2 class="jk-h4">{{ i18n.t('journal.entries') }}</h2>
-        @if (journal.entries().length) {
-          <button type="button" appearance="flat" size="xs" tuiButton (click)="journal.clear()">{{ i18n.t('journal.clear') }}</button>
-        }
-      </div>
-      @for (entry of journal.entries().slice().reverse(); track entry.id) {
-        <article class="journal-entry" [class.journal-marker]="entry.kind === 'marker'">
-          <span class="journal-time">{{ time(entry.at) }}</span>
-          <span class="journal-kind">{{ entry.kind === 'marker' ? 'Маркер' : 'Заметка' }}</span>
-          <span class="journal-text">{{ entry.text }}</span>
-          <button type="button" appearance="flat" size="xs" tuiButton (click)="journal.remove(entry.id)">×</button>
-        </article>
-      } @empty {
+    <div class="journal-grid">
+      <section class="jk-card journal-list">
+        <div class="journal-list-head">
+          <h2 class="jk-h4">{{ i18n.t('journal.entries') }}</h2>
+          @if (journal.entries().length) {
+            <button type="button" appearance="flat" size="xs" tuiButton (click)="journal.clear()">{{ i18n.t('journal.clear') }}</button>
+          }
+        </div>
+        @for (entry of journal.entries().slice().reverse(); track entry.id) {
+          <article class="journal-entry" [class.journal-marker]="entry.kind === 'marker'">
+            <span class="journal-time">{{ time(entry.at) }}</span>
+            <span class="journal-kind">{{ entry.kind === 'marker' ? 'Маркер' : 'Заметка' }}</span>
+            <span class="journal-text">{{ entry.text }}</span>
+            <button type="button" appearance="flat" size="xs" tuiButton (click)="journal.remove(entry.id)">×</button>
+          </article>
+        } @empty {
         <p class="jk-caption">{{ i18n.t('journal.empty') }}</p>
       }
     </section>
@@ -82,7 +82,7 @@
         <button type="button" appearance="flat" size="xs" tuiButton (click)="reportService.remove(report.id)">×</button>
       </div>
     } @empty {
-      <p class="jk-caption">{{ i18n.t('journal.noSaved') }}</p>
-    }
-  </section>
+    <p class="jk-caption">{{ i18n.t('journal.noSaved') }}</p>
+  }
+</section>
 </div>

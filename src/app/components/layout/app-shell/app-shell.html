@@ -195,7 +195,7 @@
               routerLink="/app/profile"
             >
               @if (twitch()?.user?.avatar) {
-                <img
+                <img alt=""
                   class="jk-avatar jk-avatar-purple"
                   [alt]="initials()"
                   [src]="twitch()?.user?.avatar" />
@@ -241,7 +241,7 @@
             routerLink="/app/profile"
           >
             @if (twitch()?.user?.avatar) {
-              <img
+              <img alt=""
                 class="jk-avatar jk-avatar-purple"
                 [alt]="initials()"
                 [src]="twitch()?.user?.avatar" />
@@ -259,7 +259,7 @@
                 (focus)="preloadProfile()"
                 routerLink="/app/profile"
               >
-                <img
+                <img alt=""
                   class="dock-steam-avatar"
                   loading="lazy"
                   [alt]="player.personaName"

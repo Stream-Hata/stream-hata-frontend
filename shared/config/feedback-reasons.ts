@@ -21,7 +21,7 @@ const CATALOG: Record<FeedbackArea, Record<string, string[]>> = {
 			'Не меняется категория',
 			'Не работают награды канала',
 		],
-		Telegram: [
+		'Telegram': [
 			'Бот не отвечает в личке',
 			'Бот не отвечает в группе',
 			'Бот не отвечает в канале',
@@ -33,7 +33,7 @@ const CATALOG: Record<FeedbackArea, Record<string, string[]>> = {
 			'Ошибка chat ID',
 			'Не работает /music',
 		],
-		OBS: [
+		'OBS': [
 			'WebSocket не подключается',
 			'WebSocket отключается после запроса',
 			'Не находится сцена',
@@ -57,7 +57,7 @@ const CATALOG: Record<FeedbackArea, Record<string, string[]>> = {
 			'Медленные запросы',
 			'БД недоступна после рестарта',
 		],
-		OpenBao: [
+		'OpenBao': [
 			'Не читаются секреты',
 			'Ошибка AppRole',
 			'Истёк токен OpenBao',
@@ -113,7 +113,7 @@ const CATALOG: Record<FeedbackArea, Record<string, string[]>> = {
 		],
 	},
 	frontend: {
-		Dashboard: [
+		'Dashboard': [
 			'Не обновляется статус стрима',
 			'Неверное число зрителей',
 			'Неверное число сообщений',
@@ -149,7 +149,7 @@ const CATALOG: Record<FeedbackArea, Record<string, string[]>> = {
 			'Не обновляется меню',
 			'Не отправляется тест',
 		],
-		Feedback: [
+		'Feedback': [
 			'Не открывается форма',
 			'Не отправляется обращение',
 			'Не работает выбор причины',

@@ -7,7 +7,7 @@ import type {
 } from '@shared/types/automation';
 import { Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import {
 	GamesService,
 	PointsService,
@@ -29,8 +29,7 @@ import {
 	TuiSelectLike,
 	TuiTextfield,
 } from '@taiga-ui/core';
-import {
-	TuiInputNumber, TuiBadge, TuiChevron, TuiDataListWrapper, TuiSwitch, TuiTextarea } from '@taiga-ui/kit';
+import { TuiBadge, TuiChevron, TuiDataListWrapper, TuiSwitch, TuiTextarea } from '@taiga-ui/kit';
 import { catchError, merge, of, switchMap, timer } from 'rxjs';
 
 const MAPPING_ACTION_LABELS: Record<string, string> = {
@@ -69,15 +68,13 @@ const DATE_FORMAT: Intl.DateTimeFormatOptions = {
 
 @Component({
 	imports: [
-		
-		TuiInputNumber,ReactiveFormsModule,
-		TuiChevron,
-		TuiDataListWrapper,
-		TuiSelectLike,
 		TuiBadge,
 		TuiButton,
+		TuiChevron,
+		TuiDataListWrapper,
 		TuiIcon,
 		TuiInput,
+		TuiSelectLike,
 		TuiSwitch,
 		TuiTable,
 		TuiTableTbody,
@@ -196,7 +193,10 @@ export default class PointsPage {
 
 	readonly gameMinBet = signal(10);
 	readonly wheelMode = signal<'spin' | 'elimination'>('spin');
-	readonly wheelModeControl = new FormControl<'spin' | 'elimination'>('spin', { nonNullable: true });
+	readonly wheelModeControl = new FormControl<'spin' | 'elimination'>('spin', {
+		nonNullable: true,
+	});
+
 	readonly wheelModeValues: Array<'spin' | 'elimination'> = ['spin', 'elimination'];
 	readonly wheelModeLabels = ['Обычное', 'На выбывание'];
 	readonly wheelRoundSeconds = signal(60);

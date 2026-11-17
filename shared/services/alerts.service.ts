@@ -53,7 +53,7 @@ export class AlertsService {
 		try {
 			localStorage.setItem(READ_KEY, JSON.stringify([...ids].slice(-1000)));
 		} catch {
-			undefined;
+			// storage unavailable
 		}
 	}
 

@@ -23,6 +23,7 @@ export class DonationGoalBar {
 
 		return Math.max(0, Math.min(100, ((current - start) / (target - start)) * 100));
 	});
+
 	readonly remaining = computed(() => Math.max(0, this.goal().goalAmount - this.goal().raisedAmount));
 	readonly style = computed(() => ({
 		'--goal-width': `${this.config().goalWidth}px`,

@@ -1,24 +1,29 @@
+import type { WidgetConfig } from '@shared/services/widgets.service';
+import type { RouletteConfig } from '@shared/types/roulette';
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
-import type { RouletteConfig } from '@shared/types/roulette';
-import { DEFAULT_ROULETTE_CONFIG } from '@shared/types/roulette';
+import { I18nService } from '@shared/services/i18n.service';
 import { RouletteService } from '@shared/services/roulette.service';
-import { WidgetConfigService, type WidgetConfig, WidgetsService } from '@shared/services/widgets.service';
+import { WidgetConfigService, WidgetsService } from '@shared/services/widgets.service';
+import { DEFAULT_ROULETTE_CONFIG } from '@shared/types/roulette';
 import { TuiButton, TuiIcon, TuiLink } from '@taiga-ui/core';
 import { TuiBadge, TuiButtonCopy, TuiSwitch } from '@taiga-ui/kit';
+import { Timer } from '../../hotbar/timer/timer';
 import { AlertPreview } from '../../widgets/alert-preview/alert-preview';
-import { JuryPreview } from '../../widgets/jury-preview/jury-preview';
-import { Timer as HotbarTimer } from '../../hotbar/timer/timer';
 import { HotbarPreview } from '../../widgets/hotbar-preview/hotbar-preview';
+import { JuryPreview } from '../../widgets/jury-preview/jury-preview';
 import { MiniWheel } from '../../widgets/mini-wheel/mini-wheel';
-import { TimerPreview } from '../../widgets/timer-preview/timer-preview';
 import { SystemStatsWidget } from '../../widgets/system-stats-widget/system-stats-widget';
-import { I18nService } from '@shared/services/i18n.service';
-import { loadSystemWidgetConfig, systemWidgetUrl } from '../../widgets/system-stats-widget/system-widget-config';
+import {
+	loadSystemWidgetConfig,
+	systemWidgetUrl,
+} from '../../widgets/system-stats-widget/system-widget-config';
+import { TimerPreview } from '../../widgets/timer-preview/timer-preview';
 
 @Component({
 	imports: [
+		Timer,
 		RouterLink,
 		TuiBadge,
 		TuiButton,
@@ -27,12 +32,11 @@ import { loadSystemWidgetConfig, systemWidgetUrl } from '../../widgets/system-st
 		TuiLink,
 		TuiSwitch,
 		AlertPreview,
-		JuryPreview,
 		HotbarPreview,
+		JuryPreview,
 		MiniWheel,
-		HotbarTimer,
-		TimerPreview,
 		SystemStatsWidget,
+		TimerPreview,
 	],
 	selector: 'app-widgets-page',
 	styleUrl: './widgets-page.scss',
@@ -45,7 +49,9 @@ export default class WidgetsPage {
 	private readonly roulette = inject(RouletteService);
 	private readonly destroyRef = inject(DestroyRef);
 
-	readonly desktop = navigator.userAgent.includes('NamelessStreamHataDesktop') || '__TAURI_INTERNALS__' in window;
+	readonly desktop =
+		navigator.userAgent.includes('NamelessStreamHataDesktop') || '__TAURI_INTERNALS__' in window;
+
 	readonly systemEnabled = signal(true);
 	readonly systemUrl = signal(systemWidgetUrl(loadSystemWidgetConfig()));
 	readonly state = signal<Record<string, boolean>>({});
@@ -79,14 +85,15 @@ export default class WidgetsPage {
 
 	private initSystem(): void {
 		const internals = (window as unknown as Record<string, unknown>)['__TAURI_INTERNALS__'] as
-			| { invoke?: (command: string) => Promise<unknown> }
-			| undefined;
+			{ invoke?: (command: string) => Promise<unknown> } | undefined;
 
 		if (!internals?.invoke) {
 			return;
 		}
 
-		void internals.invoke('system_widget_enabled').then((enabled) => this.systemEnabled.set(Boolean(enabled)));
+		void internals
+			.invoke('system_widget_enabled')
+			.then((enabled) => this.systemEnabled.set(Boolean(enabled)));
 	}
 
 	toggleSystem(enabled: boolean): void {

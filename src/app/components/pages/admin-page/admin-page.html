@@ -58,42 +58,42 @@
               placeholder="The Elder Scrolls: Arena"
               tuiInput
               [formControl]="queryControl"
-            />
-          </tui-textfield>
-          <button type="submit" appearance="primary" tuiButton [disabled]="importing()">
-            {{ importing() ? 'Импортируем…' : 'Импортировать' }}
-          </button>
-        </form>
-        @if (result()) {
-          <p class="jk-caption">{{ result() }}</p>
-        }
-      </section>
+              />
+            </tui-textfield>
+            <button type="submit" appearance="primary" tuiButton [disabled]="importing()">
+              {{ importing() ? 'Импортируем…' : 'Импортировать' }}
+            </button>
+          </form>
+          @if (result()) {
+            <p class="jk-caption">{{ result() }}</p>
+          }
+        </section>
 
-      <section class="jk-card admin-section admin-aliases">
-        <h2 class="jk-h4">Поисковые ассоциации</h2>
-        <p class="jk-caption">Например: «мортал шел» → «mortal shell». Работает и по словам, и по фразе.</p>
+        <section class="jk-card admin-section admin-aliases">
+          <h2 class="jk-h4">Поисковые ассоциации</h2>
+          <p class="jk-caption">Например: «мортал шел» → «mortal shell». Работает и по словам, и по фразе.</p>
 
-        <form class="admin-form" (submit)="$event.preventDefault(); addAlias()">
-          <tui-textfield class="admin-input">
-            <input aria-label="Термин" placeholder="мортал шел" tuiInput [formControl]="aliasTerm" />
-          </tui-textfield>
-          <tui-textfield class="admin-input">
-            <input aria-label="Замена" placeholder="mortal shell" tuiInput [formControl]="aliasReplacement" />
-          </tui-textfield>
-          <button type="submit" appearance="primary" tuiButton>Добавить</button>
-        </form>
+          <form class="admin-form" (submit)="$event.preventDefault(); addAlias()">
+            <tui-textfield class="admin-input">
+              <input aria-label="Термин" placeholder="мортал шел" tuiInput [formControl]="aliasTerm" />
+            </tui-textfield>
+            <tui-textfield class="admin-input">
+              <input aria-label="Замена" placeholder="mortal shell" tuiInput [formControl]="aliasReplacement" />
+            </tui-textfield>
+            <button type="submit" appearance="primary" tuiButton>Добавить</button>
+          </form>
 
-        <div class="alias-list">
-          @for (alias of aliases(); track alias.term) {
-            <div class="alias-row">
-              <span class="alias-term">{{ alias.term }}</span>
-              <span class="alias-arrow">→</span>
-              <span class="alias-value">{{ alias.replacement }}</span>
-              <button appearance="flat" size="xs" tuiButton type="button" (click)="removeAlias(alias.term)">
-                Удалить
-              </button>
-            </div>
-          } @empty {
+          <div class="alias-list">
+            @for (alias of aliases(); track alias.term) {
+              <div class="alias-row">
+                <span class="alias-term">{{ alias.term }}</span>
+                <span class="alias-arrow">→</span>
+                <span class="alias-value">{{ alias.replacement }}</span>
+                <button appearance="flat" size="xs" tuiButton type="button" (click)="removeAlias(alias.term)">
+                  Удалить
+                </button>
+              </div>
+            } @empty {
             <span class="jk-caption">Пока нет ассоциаций.</span>
           }
         </div>
@@ -138,33 +138,33 @@
                 </button>
               </div>
             } @empty {
-              <span class="jk-caption">Синонимов пока нет.</span>
-            }
-          </div>
-        }
-      </section>
-
-      <section class="jk-card admin-section">
-        <h2 class="jk-h4">Доступ</h2>
-        <div class="admin-stats">
-          @for (item of accessSummary(); track item.label) {
-            <div class="admin-stat">
-              <span class="jk-caption">{{ item.label }}</span>
-              <strong>{{ item.value }}</strong>
-            </div>
+            <span class="jk-caption">Синонимов пока нет.</span>
           }
         </div>
-        <a appearance="flat" routerLink="/app/viewers" tuiButton>Управлять ролями</a>
-      </section>
+      }
+    </section>
 
-      <section class="jk-card admin-section">
-        <h2 class="jk-h4">Система</h2>
-        <div class="admin-actions">
-          <a appearance="flat" routerLink="/app/settings" tuiButton>Настройки</a>
-          <a appearance="flat" routerLink="/app/notifications" tuiButton>Уведомления</a>
-        </div>
-        <p class="jk-caption">Фоновый импорт RAWG и обогащение каталога работают на бэкенде постоянно.</p>
-      </section>
-    </div>
-  }
+    <section class="jk-card admin-section">
+      <h2 class="jk-h4">Доступ</h2>
+      <div class="admin-stats">
+        @for (item of accessSummary(); track item.label) {
+          <div class="admin-stat">
+            <span class="jk-caption">{{ item.label }}</span>
+            <strong>{{ item.value }}</strong>
+          </div>
+        }
+      </div>
+      <a appearance="flat" routerLink="/app/viewers" tuiButton>Управлять ролями</a>
+    </section>
+
+    <section class="jk-card admin-section">
+      <h2 class="jk-h4">Система</h2>
+      <div class="admin-actions">
+        <a appearance="flat" routerLink="/app/settings" tuiButton>Настройки</a>
+        <a appearance="flat" routerLink="/app/notifications" tuiButton>Уведомления</a>
+      </div>
+      <p class="jk-caption">Фоновый импорт RAWG и обогащение каталога работают на бэкенде постоянно.</p>
+    </section>
+  </div>
+}
 </div>

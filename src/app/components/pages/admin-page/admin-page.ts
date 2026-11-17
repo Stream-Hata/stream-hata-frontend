@@ -1,18 +1,18 @@
 import type { AccessRole } from '@shared/services/access.service';
+import type { ImportStatus, SearchAlias } from '@shared/services/games-catalog.service';
+import type { Game } from '@shared/types/game';
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import type { Game } from '@shared/types/game';
-import type { ImportStatus, SearchAlias } from '@shared/services/games-catalog.service';
 import { GamesCatalogService } from '@shared/services/games-catalog.service';
 import { RoleService } from '@shared/services/role.service';
-import { TuiButton, TuiIcon, TuiInput, TuiTextfield } from '@taiga-ui/core';
+import { TuiButton, TuiInput, TuiTextfield } from '@taiga-ui/core';
 import { TuiBadge } from '@taiga-ui/kit';
 import { catchError, of } from 'rxjs';
 
 @Component({
-	imports: [ReactiveFormsModule, RouterLink, TuiBadge, TuiButton, TuiIcon, TuiInput, TuiTextfield],
+	imports: [ReactiveFormsModule, RouterLink, TuiBadge, TuiButton, TuiInput, TuiTextfield],
 	selector: 'app-admin-page',
 	styleUrl: './admin-page.scss',
 	templateUrl: './admin-page.html',

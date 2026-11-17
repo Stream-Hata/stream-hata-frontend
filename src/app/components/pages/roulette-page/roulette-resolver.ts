@@ -1,8 +1,9 @@
 import type { ResolveFn } from '@angular/router';
 import type { Game } from '@shared/types/game';
-import { DEFAULT_ROULETTE_CONFIG, type RouletteConfig, type RouletteState } from '@shared/types/roulette';
+import type { RouletteConfig, RouletteState } from '@shared/types/roulette';
 import { inject } from '@angular/core';
 import { RouletteService } from '@shared/services/roulette.service';
+import { DEFAULT_ROULETTE_CONFIG } from '@shared/types/roulette';
 import { catchError, forkJoin, map, of } from 'rxjs';
 
 export interface RoulettePreload {

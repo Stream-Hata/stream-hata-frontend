@@ -1,21 +1,21 @@
 import {
 	CanvasTexture,
+	CylinderGeometry,
 	DirectionalLight,
 	Group,
 	HemisphereLight,
 	Mesh,
 	MeshStandardMaterial,
 	PerspectiveCamera,
+	PlaneGeometry,
 	Quaternion,
+	RepeatWrapping,
 	Scene,
 	ShadowMaterial,
 	SRGBColorSpace,
-	PlaneGeometry,
-	RepeatWrapping,
 	TorusGeometry,
 	Vector3,
 	WebGLRenderer,
-	CylinderGeometry,
 } from 'three';
 
 const R = 1;
@@ -23,7 +23,6 @@ const T = 0.13;
 const LIP = 0.045;
 const REST_Y = T / 2 + LIP;
 const X_AXIS = new Vector3(1, 0, 0);
-const Y_AXIS = new Vector3(0, 1, 0);
 const Z_AXIS = new Vector3(0, 0, 1);
 
 function faceTexture(kind: 'heads' | 'tails', label: string): CanvasTexture {
@@ -126,8 +125,8 @@ export class CoinScene {
 
 		this.camera.position.set(0, 6, 6);
 		this.camera.lookAt(0, 1.3, 0);
-		this.scene.add(new HemisphereLight(0xffffff, 0x334455, 1.2));
-		const sun = new DirectionalLight(0xffffff, 2.6);
+		this.scene.add(new HemisphereLight(0xFFFFFF, 0x334455, 1.2));
+		const sun = new DirectionalLight(0xFFFFFF, 2.6);
 		sun.position.set(-3, 9, 4);
 		sun.castShadow = true;
 		this.scene.add(sun);
@@ -166,7 +165,7 @@ export class CoinScene {
 		);
 		this.body.castShadow = this.body.receiveShadow = true;
 		this.coin.add(this.body);
-		const rimMat = new MeshStandardMaterial({ color: 0xd9a93f, ...gold });
+		const rimMat = new MeshStandardMaterial({ color: 0xD9A93F, ...gold });
 		for (const sign of [1, -1]) {
 			const rim = new Mesh(new TorusGeometry(R - LIP, LIP, 16, 96), rimMat);
 			rim.rotation.x = Math.PI / 2;

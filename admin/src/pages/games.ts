@@ -1,10 +1,17 @@
 import type { Game, GameAge, GameStatus, GameTier } from '@shared/types/game';
 import { Component, DestroyRef, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { GamesCatalogService } from '@shared/services/games-catalog.service';
-import { TuiButton, TuiDropdown, TuiIcon, TuiInput, TuiSelectLike, TuiTextfield } from '@taiga-ui/core';
+import {
+	TuiButton,
+	TuiDropdown,
+	TuiIcon,
+	TuiInput,
+	TuiSelectLike,
+	TuiTextfield,
+} from '@taiga-ui/core';
 import {
 	TuiBadge,
 	TuiChevron,
@@ -15,20 +22,9 @@ import {
 } from '@taiga-ui/kit';
 import { catchError, of } from 'rxjs';
 
-const TIERS: GameTier[] = ['none', 'gold', 'diamond', 'platinum'];
-const AGES: GameAge[] = ['classic', 'retro', 'modern', 'new'];
-const STATUSES: GameStatus[] = ['seed', 'pending', 'approved', 'rejected', 'merged'];
-
 function list(value: string): string[] {
 	return value
 		.split(',')
-		.map((item) => item.trim())
-		.filter(Boolean);
-}
-
-function lines(value: string): string[] {
-	return value
-		.split('\n')
 		.map((item) => item.trim())
 		.filter(Boolean);
 }
@@ -40,8 +36,8 @@ function lines(value: string): string[] {
 		TuiBadge,
 		TuiButton,
 		TuiChevron,
-		TuiDropdown,
 		TuiDataListWrapper,
+		TuiDropdown,
 		TuiIcon,
 		TuiInput,
 		TuiInputNumber,
@@ -68,7 +64,9 @@ function lines(value: string): string[] {
 						<input placeholder="Название игры или slug" [formControl]="query" tuiInput />
 					</tui-textfield>
 					<button appearance="primary" type="submit" tuiButton>Найти</button>
-					<button appearance="flat" type="button" (click)="resetSearch()" tuiButton>Сбросить</button>
+					<button appearance="flat" type="button" (click)="resetSearch()" tuiButton>
+						Сбросить
+					</button>
 				</form>
 			</section>
 
@@ -76,7 +74,13 @@ function lines(value: string): string[] {
 				@if (items().length) {
 					<table class="admin-table">
 						<thead>
-							<tr><th>Игра</th><th>Год</th><th>Tier</th><th>Slug</th><th></th></tr>
+							<tr>
+								<th>Игра</th>
+								<th>Год</th>
+								<th>Tier</th>
+								<th>Slug</th>
+								<th></th>
+							</tr>
 						</thead>
 						<tbody>
 							@for (game of items(); track game.slug) {
@@ -86,17 +90,23 @@ function lines(value: string): string[] {
 											@if (game.cover) {
 												<img class="admin-cover" [alt]="game.title" [src]="game.cover" />
 											} @else {
-												<span class="admin-cover admin-cover-empty">{{ initials(game.title) }}</span>
+												<span class="admin-cover admin-cover-empty">{{
+													initials(game.title)
+												}}</span>
 											}
 											<strong>{{ game.title }}</strong>
 										</div>
 									</td>
 									<td>{{ game.year || '—' }}</td>
-									<td><span appearance="neutral" tuiBadge>{{ game.tier }}</span></td>
+									<td>
+										<span appearance="neutral" tuiBadge>{{ game.tier }}</span>
+									</td>
 									<td class="jk-caption">{{ game.slug }}</td>
 									<td>
 										<div class="admin-table-actions">
-											<a appearance="flat" size="s" [routerLink]="['/games', game.slug]" tuiButton>Изменить</a>
+											<a appearance="flat" size="s" [routerLink]="['/games', game.slug]" tuiButton
+												>Изменить</a
+											>
 											<a
 												appearance="flat"
 												size="s"
@@ -104,8 +114,17 @@ function lines(value: string): string[] {
 												target="_blank"
 												rel="noopener"
 												tuiButton
-											>Открыть</a>
-											<button appearance="flat" size="s" type="button" (click)="remove(game)" tuiButton>Удалить</button>
+												>Открыть</a
+											>
+											<button
+												appearance="flat"
+												size="s"
+												type="button"
+												(click)="remove(game)"
+												tuiButton
+											>
+												Удалить
+											</button>
 										</div>
 									</td>
 								</tr>
@@ -113,9 +132,27 @@ function lines(value: string): string[] {
 						</tbody>
 					</table>
 					<div class="admin-pagination">
-						<button appearance="flat" size="s" type="button" [disabled]="page() <= 1" (click)="load(page() - 1)" tuiButton>Назад</button>
+						<button
+							appearance="flat"
+							size="s"
+							type="button"
+							[disabled]="page() <= 1"
+							(click)="load(page() - 1)"
+							tuiButton
+						>
+							Назад
+						</button>
 						<span class="jk-caption">Страница {{ page() }} из {{ pages() }}</span>
-						<button appearance="flat" size="s" type="button" [disabled]="page() >= pages()" (click)="load(page() + 1)" tuiButton>Вперёд</button>
+						<button
+							appearance="flat"
+							size="s"
+							type="button"
+							[disabled]="page() >= pages()"
+							(click)="load(page() + 1)"
+							tuiButton
+						>
+							Вперёд
+						</button>
 					</div>
 				} @else {
 					<div class="admin-empty">
@@ -133,34 +170,82 @@ function lines(value: string): string[] {
 							<h2>Редактирование: {{ game.title }}</h2>
 							<span class="jk-caption">Slug: {{ game.slug }} · ID: {{ game.id }}</span>
 						</div>
-						<button appearance="flat" size="s" type="button" (click)="selected.set(null)" tuiButton>Закрыть</button>
+						<button appearance="flat" size="s" type="button" (click)="selected.set(null)" tuiButton>
+							Закрыть
+						</button>
 					</div>
 
 					<span class="jk-label">Основное</span>
 					<div class="admin-form">
-						<tui-textfield><input placeholder="Название" [formControl]="title" tuiInput /></tui-textfield>
-						<tui-textfield><input placeholder="Название на русском" [formControl]="titleRu" tuiInput /></tui-textfield>
-						<tui-textfield><input placeholder="Оригинальное название" [formControl]="originalTitle" tuiInput /></tui-textfield>
-						<tui-textfield><input placeholder="Год" [formControl]="year" tuiInputNumber /></tui-textfield>
-						<tui-textfield><input placeholder="Дата релиза" [formControl]="releaseDate" tuiInput /></tui-textfield>
-						<tui-textfield><input placeholder="Возрастной рейтинг" [formControl]="ageRating" tuiInput /></tui-textfield>
-						<tui-textfield><input placeholder="Сайт" [formControl]="website" tuiInput /></tui-textfield>
-						<tui-textfield><input placeholder="Обложка URL" [formControl]="cover" tuiInput /></tui-textfield>
+						<tui-textfield
+							><input placeholder="Название" [formControl]="title" tuiInput
+						/></tui-textfield>
+						<tui-textfield
+							><input placeholder="Название на русском" [formControl]="titleRu" tuiInput
+						/></tui-textfield>
+						<tui-textfield
+							><input placeholder="Оригинальное название" [formControl]="originalTitle" tuiInput
+						/></tui-textfield>
+						<tui-textfield
+							><input placeholder="Год" [formControl]="year" tuiInputNumber
+						/></tui-textfield>
+						<tui-textfield
+							><input placeholder="Дата релиза" [formControl]="releaseDate" tuiInput
+						/></tui-textfield>
+						<tui-textfield
+							><input placeholder="Возрастной рейтинг" [formControl]="ageRating" tuiInput
+						/></tui-textfield>
+						<tui-textfield
+							><input placeholder="Сайт" [formControl]="website" tuiInput
+						/></tui-textfield>
+						<tui-textfield
+							><input placeholder="Обложка URL" [formControl]="cover" tuiInput
+						/></tui-textfield>
 					</div>
 
 					<span class="jk-label">Классификация</span>
 					<div class="admin-form">
 						<tui-textfield tuiChevron>
-							<input aria-label="Tier" [readonly]="true" [value]="tierText()" tuiInput tuiSelectLike />
-							<tui-data-list-wrapper *tuiDropdown [items]="tierLabels" (itemClick)="setTier($event)" />
+							<input
+								aria-label="Tier"
+								[readonly]="true"
+								[value]="tierText()"
+								tuiInput
+								tuiSelectLike
+							/>
+							<tui-data-list-wrapper
+								*tuiDropdown
+								[items]="tierLabels"
+								(itemClick)="setTier($event)"
+							/>
 						</tui-textfield>
 						<tui-textfield tuiChevron>
-							<input aria-label="Возраст" [readonly]="true" [value]="ageText()" tuiInput tuiSelectLike />
-							<tui-data-list-wrapper *tuiDropdown [items]="ageLabels" (itemClick)="setAge($event)" />
+							<input
+								aria-label="Возраст"
+								[readonly]="true"
+								[value]="ageText()"
+								tuiInput
+								tuiSelectLike
+							/>
+							<tui-data-list-wrapper
+								*tuiDropdown
+								[items]="ageLabels"
+								(itemClick)="setAge($event)"
+							/>
 						</tui-textfield>
 						<tui-textfield tuiChevron>
-							<input aria-label="Статус" [readonly]="true" [value]="statusText()" tuiInput tuiSelectLike />
-							<tui-data-list-wrapper *tuiDropdown [items]="statusLabels" (itemClick)="setStatus($event)" />
+							<input
+								aria-label="Статус"
+								[readonly]="true"
+								[value]="statusText()"
+								tuiInput
+								tuiSelectLike
+							/>
+							<tui-data-list-wrapper
+								*tuiDropdown
+								[items]="statusLabels"
+								(itemClick)="setStatus($event)"
+							/>
 						</tui-textfield>
 						<label class="admin-switch">
 							<input type="checkbox" [formControl]="emulatorsRequired" tuiSwitch />
@@ -170,65 +255,144 @@ function lines(value: string): string[] {
 
 					<span class="jk-label">Жанры и теги</span>
 					<div class="admin-form">
-						<tui-textfield><input placeholder="Жанры" [formControl]="genres" tuiInput /></tui-textfield>
-						<tui-textfield><input placeholder="Жанры на русском" [formControl]="genresRu" tuiInput /></tui-textfield>
-						<tui-textfield><input placeholder="Режимы" [formControl]="modes" tuiInput /></tui-textfield>
-						<tui-textfield><input placeholder="Перспективы" [formControl]="perspectives" tuiInput /></tui-textfield>
-						<tui-textfield><input placeholder="Темы" [formControl]="themes" tuiInput /></tui-textfield>
-						<tui-textfield><input placeholder="Разработчики" [formControl]="developers" tuiInput /></tui-textfield>
-						<tui-textfield><input placeholder="Издатели" [formControl]="publishers" tuiInput /></tui-textfield>
-						<tui-textfield><input placeholder="Алиасы" [formControl]="aliases" tuiInput /></tui-textfield>
-						<tui-textfield><input placeholder="Теги поиска" [formControl]="searchTags" tuiInput /></tui-textfield>
-						<tui-textfield><input placeholder="Скриншоты (URL через запятую)" [formControl]="screenshots" tuiInput /></tui-textfield>
+						<tui-textfield
+							><input placeholder="Жанры" [formControl]="genres" tuiInput
+						/></tui-textfield>
+						<tui-textfield
+							><input placeholder="Жанры на русском" [formControl]="genresRu" tuiInput
+						/></tui-textfield>
+						<tui-textfield
+							><input placeholder="Режимы" [formControl]="modes" tuiInput
+						/></tui-textfield>
+						<tui-textfield
+							><input placeholder="Перспективы" [formControl]="perspectives" tuiInput
+						/></tui-textfield>
+						<tui-textfield
+							><input placeholder="Темы" [formControl]="themes" tuiInput
+						/></tui-textfield>
+						<tui-textfield
+							><input placeholder="Разработчики" [formControl]="developers" tuiInput
+						/></tui-textfield>
+						<tui-textfield
+							><input placeholder="Издатели" [formControl]="publishers" tuiInput
+						/></tui-textfield>
+						<tui-textfield
+							><input placeholder="Алиасы" [formControl]="aliases" tuiInput
+						/></tui-textfield>
+						<tui-textfield
+							><input placeholder="Теги поиска" [formControl]="searchTags" tuiInput
+						/></tui-textfield>
+						<tui-textfield
+							><input
+								placeholder="Скриншоты (URL через запятую)"
+								[formControl]="screenshots"
+								tuiInput
+						/></tui-textfield>
 					</div>
 
 					<span class="jk-label">Рейтинги и прохождение</span>
 					<div class="admin-form">
-						<tui-textfield><input placeholder="Рейтинг" [formControl]="rating" tuiInputNumber /></tui-textfield>
-						<tui-textfield><input placeholder="Агрегированный рейтинг" [formControl]="aggregatedRating" tuiInputNumber /></tui-textfield>
-						<tui-textfield><input placeholder="Часов: быстро" [formControl]="hastilyHours" tuiInputNumber /></tui-textfield>
-						<tui-textfield><input placeholder="Часов: обычно" [formControl]="normallyHours" tuiInputNumber /></tui-textfield>
-						<tui-textfield><input placeholder="Часов: полностью" [formControl]="completelyHours" tuiInputNumber /></tui-textfield>
+						<tui-textfield
+							><input placeholder="Рейтинг" [formControl]="rating" tuiInputNumber
+						/></tui-textfield>
+						<tui-textfield
+							><input
+								placeholder="Агрегированный рейтинг"
+								[formControl]="aggregatedRating"
+								tuiInputNumber
+						/></tui-textfield>
+						<tui-textfield
+							><input placeholder="Часов: быстро" [formControl]="hastilyHours" tuiInputNumber
+						/></tui-textfield>
+						<tui-textfield
+							><input placeholder="Часов: обычно" [formControl]="normallyHours" tuiInputNumber
+						/></tui-textfield>
+						<tui-textfield
+							><input placeholder="Часов: полностью" [formControl]="completelyHours" tuiInputNumber
+						/></tui-textfield>
 					</div>
 
 					<span class="jk-label">Описание</span>
 					<tui-textfield>
-						<textarea rows="8" placeholder="Описание игры" [formControl]="description" tuiTextarea></textarea>
+						<textarea
+							rows="8"
+							placeholder="Описание игры"
+							[formControl]="description"
+							tuiTextarea
+						></textarea>
 					</tui-textfield>
 
 					<span class="jk-label">Дополнительно</span>
 					<div class="admin-form">
-						<tui-textfield><input placeholder="DLC через запятую" [formControl]="dlc" tuiInput /></tui-textfield>
-						<tui-textfield><input placeholder="Издания через запятую" [formControl]="editions" tuiInput /></tui-textfield>
-						<tui-textfield><input placeholder="Моды через запятую" [formControl]="mods" tuiInput /></tui-textfield>
+						<tui-textfield
+							><input placeholder="DLC через запятую" [formControl]="dlc" tuiInput
+						/></tui-textfield>
+						<tui-textfield
+							><input placeholder="Издания через запятую" [formControl]="editions" tuiInput
+						/></tui-textfield>
+						<tui-textfield
+							><input placeholder="Моды через запятую" [formControl]="mods" tuiInput
+						/></tui-textfield>
 					</div>
 
 					<span class="jk-label">JSON-поля</span>
 					<div class="admin-json-grid">
 						<tui-textfield>
-							<textarea rows="5" placeholder="platforms: []" [formControl]="platformsJson" tuiTextarea></textarea>
+							<textarea
+								rows="5"
+								placeholder="platforms: []"
+								[formControl]="platformsJson"
+								tuiTextarea
+							></textarea>
 						</tui-textfield>
 						<tui-textfield>
-							<textarea rows="5" placeholder="emulators: []" [formControl]="emulatorsJson" tuiTextarea></textarea>
+							<textarea
+								rows="5"
+								placeholder="emulators: []"
+								[formControl]="emulatorsJson"
+								tuiTextarea
+							></textarea>
 						</tui-textfield>
 						<tui-textfield>
-							<textarea rows="5" placeholder="downloads: []" [formControl]="downloadsJson" tuiTextarea></textarea>
+							<textarea
+								rows="5"
+								placeholder="downloads: []"
+								[formControl]="downloadsJson"
+								tuiTextarea
+							></textarea>
 						</tui-textfield>
 						<tui-textfield>
-							<textarea rows="5" placeholder="sources: []" [formControl]="sourcesJson" tuiTextarea></textarea>
+							<textarea
+								rows="5"
+								placeholder="sources: []"
+								[formControl]="sourcesJson"
+								tuiTextarea
+							></textarea>
 						</tui-textfield>
 						<tui-textfield>
-							<textarea rows="5" placeholder="popularMods: []" [formControl]="popularModsJson" tuiTextarea></textarea>
+							<textarea
+								rows="5"
+								placeholder="popularMods: []"
+								[formControl]="popularModsJson"
+								tuiTextarea
+							></textarea>
 						</tui-textfield>
 						<tui-textfield>
-							<textarea rows="5" placeholder="popularCollections: []" [formControl]="popularCollectionsJson" tuiTextarea></textarea>
+							<textarea
+								rows="5"
+								placeholder="popularCollections: []"
+								[formControl]="popularCollectionsJson"
+								tuiTextarea
+							></textarea>
 						</tui-textfield>
 					</div>
 
 					<div class="admin-card-head">
 						<button appearance="primary" type="button" (click)="save()" tuiButton>Сохранить</button>
 						@if (saved()) {
-							<span [class.admin-error]="!savedOk()" [class.admin-success]="savedOk()">{{ saved() }}</span>
+							<span [class.admin-error]="!savedOk()" [class.admin-success]="savedOk()">{{
+								saved()
+							}}</span>
 						}
 					</div>
 				</section>
@@ -296,8 +460,17 @@ export class GamesAdminPage {
 
 	load(page: number): void {
 		this.catalog
-			.list({ q: this.query.value.trim(), page, pageSize: this.pageSize, facets: false, enrich: false })
-			.pipe(catchError(() => of(null)), takeUntilDestroyed(this.destroyRef))
+			.list({
+				q: this.query.value.trim(),
+				page,
+				pageSize: this.pageSize,
+				facets: false,
+				enrich: false,
+			})
+			.pipe(
+				catchError(() => of(null)),
+				takeUntilDestroyed(this.destroyRef),
+			)
 			.subscribe((response) => {
 				if (!response) {
 					return;
@@ -436,7 +609,10 @@ export class GamesAdminPage {
 
 		this.catalog
 			.updateGame(game.slug, patch)
-			.pipe(catchError(() => of(null)), takeUntilDestroyed(this.destroyRef))
+			.pipe(
+				catchError(() => of(null)),
+				takeUntilDestroyed(this.destroyRef),
+			)
 			.subscribe((updated) => {
 				if (!updated) {
 					this.savedOk.set(false);
@@ -448,7 +624,9 @@ export class GamesAdminPage {
 				this.savedOk.set(true);
 				this.selected.set(updated);
 				this.saved.set('Сохранено');
-				this.items.update((items) => items.map((item) => (item.slug === updated.slug ? updated : item)));
+				this.items.update((items) =>
+					items.map((item) => (item.slug === updated.slug ? updated : item)),
+				);
 			});
 	}
 
@@ -460,7 +638,9 @@ export class GamesAdminPage {
 				downloads: JSON.parse(this.downloadsJson.value) as Game['downloads'],
 				sources: JSON.parse(this.sourcesJson.value) as Game['sources'],
 				popularMods: JSON.parse(this.popularModsJson.value) as Game['popularMods'],
-				popularCollections: JSON.parse(this.popularCollectionsJson.value) as Game['popularCollections'],
+				popularCollections: JSON.parse(
+					this.popularCollectionsJson.value,
+				) as Game['popularCollections'],
 			};
 		} catch {
 			return null;
@@ -470,7 +650,10 @@ export class GamesAdminPage {
 	remove(game: Game): void {
 		this.catalog
 			.deleteGame(game.slug)
-			.pipe(catchError(() => of(null)), takeUntilDestroyed(this.destroyRef))
+			.pipe(
+				catchError(() => of(null)),
+				takeUntilDestroyed(this.destroyRef),
+			)
 			.subscribe((result) => {
 				if (!result?.deleted) {
 					this.savedOk.set(false);

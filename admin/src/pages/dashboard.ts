@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { GamesCatalogService } from '@shared/services/games-catalog.service';
 import { RouterLink } from '@angular/router';
+import { GamesCatalogService } from '@shared/services/games-catalog.service';
 import { TuiButton, TuiIcon } from '@taiga-ui/core';
 import { TuiBadge } from '@taiga-ui/kit';
 import { catchError, of } from 'rxjs';

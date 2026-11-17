@@ -146,7 +146,7 @@
       <tui-textfield>
         <input type="number" tuiInput
           aria-label="Длительность опроса" max="1800" min="15"
-         
+
           [value]="duration()"
           (input)="duration.set(+value($event))"
           />

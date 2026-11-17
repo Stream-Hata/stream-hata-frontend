@@ -26,7 +26,11 @@ export class AutoClipsService {
 	private primed = false;
 	private lastClipAt = 0;
 	private readonly invoke = (
-		window as unknown as { __TAURI_INTERNALS__?: { invoke?: (command: string, args?: Record<string, unknown>) => Promise<unknown> } }
+		window as unknown as {
+			__TAURI_INTERNALS__?: {
+				invoke?: (command: string, args?: Record<string, unknown>) => Promise<unknown>;
+			};
+		}
 	).__TAURI_INTERNALS__?.invoke;
 
 	readonly enabled = signal(false);
@@ -61,7 +65,11 @@ export class AutoClipsService {
 					continue;
 				}
 				this.seen.add(event.id);
-				if (this.enabled() && this.types().includes(event.type) && Date.now() - this.lastClipAt >= this.cooldownSeconds() * 1000) {
+				if (
+					this.enabled() &&
+					this.types().includes(event.type) &&
+					Date.now() - this.lastClipAt >= this.cooldownSeconds() * 1000
+				) {
 					this.lastClipAt = Date.now();
 					this.createClip(event.type, event.username);
 				}
@@ -93,7 +101,9 @@ export class AutoClipsService {
 		try {
 			const raw = localStorage.getItem(STORAGE_KEY);
 
-			return raw ? { ...DEFAULTS, ...(JSON.parse(raw) as Partial<AutoClipState>) } : { ...DEFAULTS };
+			return raw
+				? { ...DEFAULTS, ...(JSON.parse(raw) as Partial<AutoClipState>) }
+				: { ...DEFAULTS };
 		} catch {
 			return { ...DEFAULTS };
 		}

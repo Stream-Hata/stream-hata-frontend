@@ -1,11 +1,12 @@
+import type { SavedStreamReport } from '@shared/services/stream-report.service';
 import type { AnalyticsState, StreamSession } from '@shared/types/stream';
 import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { TuiButton, TuiIcon, TuiInput, TuiTextfield } from '@taiga-ui/core';
-import { AnalyticsService } from '@shared/services/stream.services';
 import { I18nService } from '@shared/services/i18n.service';
 import { StreamJournalService } from '@shared/services/stream-journal.service';
-import { StreamReportService, type SavedStreamReport } from '@shared/services/stream-report.service';
+import { StreamReportService } from '@shared/services/stream-report.service';
+import { AnalyticsService } from '@shared/services/stream.services';
+import { TuiButton, TuiIcon, TuiInput, TuiTextfield } from '@taiga-ui/core';
 import { catchError, of, switchMap, timer } from 'rxjs';
 
 @Component({
@@ -31,6 +32,7 @@ export default class JournalPage {
 		),
 		{ initialValue: { current: null, history: [], messages: 0 } as AnalyticsState },
 	);
+
 	readonly report = computed(() => {
 		const state = this.state();
 		const session = state.current ?? state.history[0];

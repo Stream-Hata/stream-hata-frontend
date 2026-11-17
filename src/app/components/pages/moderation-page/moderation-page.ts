@@ -21,7 +21,6 @@ import {
 	TuiTextfield,
 } from '@taiga-ui/core';
 import {
-	TuiInputNumber,
 	TuiBadge,
 	TuiChevron,
 	TuiDataListWrapper,
@@ -42,18 +41,17 @@ const PRESET_LABELS: Record<string, string> = {
 
 @Component({
 	imports: [
-		
-		TuiInputNumber,ReactiveFormsModule,
-		TuiChevron,
-		TuiDataListWrapper,
-		TuiSelectLike,
+		ReactiveFormsModule,
 		TuiBadge,
 		TuiButton,
+		TuiChevron,
+		TuiDataListWrapper,
 		TuiIcon,
 		TuiInput,
 		TuiInputFiles,
 		TuiInputFilesDirective,
 		TuiSegmented,
+		TuiSelectLike,
 		TuiSwitch,
 		TuiTable,
 		TuiTableTbody,

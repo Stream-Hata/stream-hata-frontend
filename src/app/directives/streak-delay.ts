@@ -42,8 +42,8 @@ export class ChatJuryDelayDirective {
 
 	static ngTemplateContextGuard(
 		_directive: ChatJuryDelayDirective,
-		context: unknown,
-	): context is ChatJuryDelayContext {
+		_context: unknown,
+	): _context is ChatJuryDelayContext {
 		return true;
 	}
 }

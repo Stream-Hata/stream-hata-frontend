@@ -1,5 +1,5 @@
-import type { Observable } from 'rxjs';
 import type { DonationWidgetConfig } from '@shared/types/donation';
+import type { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { switchMap, tap, timer } from 'rxjs';

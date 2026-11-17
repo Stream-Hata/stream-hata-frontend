@@ -1,9 +1,10 @@
 import type { SteamMe } from '@shared/services/steam.service';
 import type { TwitchResponse } from '@shared/services/twitch.service';
+import type { Observable } from 'rxjs';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { SteamService } from '@shared/services/steam.service';
 import { TwitchService } from '@shared/services/twitch.service';
-import { catchError, forkJoin, map, Observable, of, shareReplay } from 'rxjs';
+import { catchError, forkJoin, map, of, shareReplay } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ProfileDataService {

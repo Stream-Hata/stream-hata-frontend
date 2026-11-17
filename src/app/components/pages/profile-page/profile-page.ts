@@ -1,16 +1,15 @@
 import type {
 	SteamAchievement,
 	SteamInventoryItem,
-	SteamLibraryGame,
 } from '@shared/services/steam.service';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { RoleService } from '@shared/services/role.service';
 import { I18nService } from '@shared/services/i18n.service';
-import { SteamService } from '@shared/services/steam.service';
 import { ProfileDataService } from '@shared/services/profile-data.service';
+import { RoleService } from '@shared/services/role.service';
+import { SteamService } from '@shared/services/steam.service';
 import { TwitchService } from '@shared/services/twitch.service';
 import {
 	TuiButton,
@@ -71,6 +70,19 @@ export default class ProfilePage {
 	readonly gamePage = signal(1);
 	readonly gamePageSize = 24;
 	readonly inventorySort = signal<'name' | 'amount' | 'type'>('name');
+
+	setSection(index: number): void {
+		this.section.set(index === 0 ? 'info' : 'games');
+	}
+
+	setTab(index: number): void {
+		this.tab.set(index === 0 ? 'games' : index === 1 ? 'inventory' : 'achievements');
+	}
+
+	setInventorySort(index: number): void {
+		this.inventorySort.set(index === 1 ? 'amount' : index === 2 ? 'type' : 'name');
+	}
+
 	readonly achievementGame = signal('all');
 	readonly steamLibraryLoading = signal(true);
 	readonly steamLibrary = computed(() => this.steam()?.items ?? []);

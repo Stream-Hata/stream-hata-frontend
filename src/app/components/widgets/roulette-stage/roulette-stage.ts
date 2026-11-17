@@ -1,3 +1,4 @@
+import type { ElementRef } from '@angular/core';
 import type { Game } from '@shared/types/game';
 import type {
 	RouletteAppearance,
@@ -6,7 +7,7 @@ import type {
 	RouletteReveal,
 	RouletteRound,
 } from '@shared/types/roulette';
-import { Component, computed, DestroyRef, effect, ElementRef, inject, input, signal, viewChild } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, input, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { imageUrl } from '@shared/helpers/proxy-image';

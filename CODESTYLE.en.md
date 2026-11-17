@@ -1,6 +1,6 @@
 # Code Style (CODESTYLE)
 
-The style described here is derived from the actual conventions used in this project. Rules enforced by tooling (ESLint, Prettier, Stylelint) are mandatory; everything else is a recommendation that should be followed for consistency.
+The style described here is derived from the actual conventions used in this project. Rules enforced by tooling (ESLint, Stylelint) are mandatory; everything else is a recommendation that should be followed for consistency.
 
 > Russian version: [CODESTYLE.md](CODESTYLE.md)
 
@@ -8,14 +8,14 @@ The style described here is derived from the actual conventions used in this pro
 
 | Rule                          | Value                                                 |
 | ----------------------------- | ----------------------------------------------------- |
-| Indentation in TS/JS          | **Tabs** (eslint: `indent: tab`; prettier: `useTabs`) |
+| Indentation in TS/JS          | **Tabs** (eslint: `indent: tab`)                      |
 | Indentation in SCSS/HTML/JSON | 2 spaces                                              |
 | Quotes                        | single (`'...'`)                                      |
 | Semicolons                    | required                                              |
-| Line width                    | 100 (prettier), max 120 (eslint `max-len`)            |
+| Line width                    | max 120 (eslint `max-len`)                            |
 | Encoding                      | UTF-8, LF line endings                                |
 
-Configs: `.prettierrc`, `eslint.config.js` (antfu), `.stylelintrc.json` (stylelint-config-standard-scss), `.editorconfig`.
+Configs: `eslint.config.js` (antfu), `.stylelintrc.json` (stylelint-config-standard-scss), `.editorconfig`.
 
 ## 2. Naming
 
@@ -117,7 +117,6 @@ export const HotbarStore = signalStore(
 
 ```bash
 npx eslint .                  # 0 errors
-npx prettier --check .        # formatting
 npx stylelint "**/*.scss"     # styles
 pnpm test                     # unit tests
 pnpm build                    # build

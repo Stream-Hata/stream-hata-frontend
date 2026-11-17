@@ -9,7 +9,7 @@ import { catchError, map, of, switchMap, timer } from 'rxjs';
 import { DonationCard } from '../../widgets/donation-card/donation-card';
 import { DonationGoalBar } from '../../widgets/donation-goal/donation-goal';
 
-const CYRILLIC = /[А-Яа-яЁё]/;
+const CYRILLIC = /\p{Script=Cyrillic}/u;
 
 @Component({
 	imports: [DonationCard, DonationGoalBar],
@@ -60,6 +60,7 @@ export class DonationsOverlay {
 			updatedAt: new Date().toISOString(),
 		}];
 	});
+
 	readonly rows = computed(() => {
 		const config = this.config();
 		const items = (this.snapshot()?.recent ?? []).filter((event) => event.amount >= config.minAmount);

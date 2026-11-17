@@ -123,10 +123,10 @@ export default class PublicEventsPage {
 		return Number.isNaN(date.getTime())
 			? 'Дата уточняется'
 			: date.toLocaleString('ru-RU', {
-					day: 'numeric',
-					month: 'long',
-					hour: '2-digit',
-					minute: '2-digit',
-				});
+				day: 'numeric',
+				month: 'long',
+				hour: '2-digit',
+				minute: '2-digit',
+			});
 	}
 }

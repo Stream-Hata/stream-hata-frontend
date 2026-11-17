@@ -1,5 +1,5 @@
-import type { Game } from '@shared/types/game';
 import type { SearchAlias } from '@shared/services/games-catalog.service';
+import type { Game } from '@shared/types/game';
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';

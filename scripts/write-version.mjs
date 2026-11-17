@@ -6,10 +6,14 @@ const blocks = changelog.split(/^##\s+/m).slice(1);
 
 function parseItem(line) {
 	const text = line.replace(/^-\s+/, '').trim();
-	const match = text.match(/^(.*?)\s*\[([^\]]+)\]\((https?:\/\/[^)]+)\)\s*[).!]*\s*$/);
+	const match = text.match(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)\s*(?:[).!]+\s*)?$/);
 
 	return match
-		? { text: match[1].trim().replace(/[\s(]+$/, ''), linkLabel: match[2], url: match[3] }
+		? {
+			text: text.slice(0, match.index).trim().replace(/[\s(]+$/, ''),
+			linkLabel: match[1],
+			url: match[2],
+		}
 		: { text };
 }
 

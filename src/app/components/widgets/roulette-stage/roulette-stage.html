@@ -15,7 +15,7 @@
         <div class="roulette-cell">
           <div class="roulette-cover">
             @if (item.cover) {
-              <img [alt]="item.title" [src]="imageUrl(item.cover)" loading="lazy" />
+              <img alt="" [alt]="item.title" [src]="imageUrl(item.cover)" loading="lazy" />
             } @else {
               <span>{{ initials(item.title) }}</span>
             }
@@ -31,47 +31,47 @@
   </div>
 
   <div class="roulette-result-slot">
-  @if (round(); as result) {
-    @if (!spinning() && resultOpen()) {
-      <div #resultCard class="roulette-result">
-        @if (cat()) {
-          <img class="roulette-cat" alt="Кот в мешке" [src]="cat()" />
-        }
-
-        <div class="roulette-result-head">
-          <span class="roulette-kicker">{{ mode() === 'cat-bag' ? 'КОТ В МЕШКЕ' : 'ВЫПАЛО' }}</span>
-          <span appearance="info" tuiBadge>{{ result.platform.name }}</span>
-        </div>
-
-        <h2 class="roulette-result-title">{{ title() }}</h2>
-        <span class="roulette-result-year">{{ result.game.year || 'Год неизвестен' }}</span>
-
-        @if (result.game.emulatorsRequired) {
-          <p class="roulette-emulators">
-            Эмулятор:
-            @for (emulator of result.game.emulators; track emulator.name) {
-              <a target="_blank" rel="noopener" [href]="emulator.url">{{ emulator.name }}</a>
-            }
-          </p>
-        }
-
-        <div class="roulette-result-actions">
-          @if (interactive()) {
-            <a
-              size="s"
-              [routerLink]="['/app/games', result.game.slug]"
-              appearance="primary"
-              tuiButton
-            >
-              Подробнее об игре
-            </a>
+    @if (round(); as result) {
+      @if (!spinning() && resultOpen()) {
+        <div #resultCard class="roulette-result">
+          @if (cat()) {
+            <img class="roulette-cat" alt="Кот в мешке" [src]="cat()" />
           }
-          <button appearance="flat" size="s" tuiButton type="button" (click)="closeResult()">
-            Закрыть
-          </button>
+
+          <div class="roulette-result-head">
+            <span class="roulette-kicker">{{ mode() === 'cat-bag' ? 'КОТ В МЕШКЕ' : 'ВЫПАЛО' }}</span>
+            <span appearance="info" tuiBadge>{{ result.platform.name }}</span>
+          </div>
+
+          <h2 class="roulette-result-title">{{ title() }}</h2>
+          <span class="roulette-result-year">{{ result.game.year || 'Год неизвестен' }}</span>
+
+          @if (result.game.emulatorsRequired) {
+            <p class="roulette-emulators">
+              Эмулятор:
+              @for (emulator of result.game.emulators; track emulator.name) {
+                <a target="_blank" rel="noopener" [href]="emulator.url">{{ emulator.name }}</a>
+              }
+            </p>
+          }
+
+          <div class="roulette-result-actions">
+            @if (interactive()) {
+              <a
+                size="s"
+                [routerLink]="['/app/games', result.game.slug]"
+                appearance="primary"
+                tuiButton
+              >
+                Подробнее об игре
+              </a>
+            }
+            <button appearance="flat" size="s" tuiButton type="button" (click)="closeResult()">
+              Закрыть
+            </button>
+          </div>
         </div>
-      </div>
+      }
     }
-  }
   </div>
 </div>

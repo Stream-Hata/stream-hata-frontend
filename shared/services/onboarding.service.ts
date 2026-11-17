@@ -6,9 +6,9 @@ interface OnboardingState {
 	virus: boolean;
 }
 
-type TauriInternals = {
+interface TauriInternals {
 	invoke?: <T>(command: string) => Promise<T>;
-};
+}
 
 @Injectable({ providedIn: 'root' })
 export class OnboardingService {

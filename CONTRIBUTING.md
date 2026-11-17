@@ -26,7 +26,7 @@
 - Имена классов с суффиксом типа (`HotbarStore`, `SettingsStore`, `PlatformBar`, `YamlParser`) — задано схематиками в `angular.json`.
 - Селекторы компонентов: префикс `app`, kebab-case (`app-platform-bar`); директивы — `app` + camelCase (`appPlatformGuard`).
 - `ChangeDetectionStrategy.OnPush` для компонентов, где это уместно.
-- Форматирование: **tabs**, single quotes, semicolons (`printWidth: 100`). Настраивается Prettier/ESLint — не отключайте правила локально.
+- Форматирование: **tabs** в TS, 2 пробела в HTML/SCSS, single quotes, semicolons. Настраивается ESLint/Stylelint — не отключайте правила локально.
 - Состояние выносится в `signalStore` (`src/app/store/`), сервисы — в `src/app/shared/services/`.
 - Общие типы (`AppState`, `TimerState`, `HotbarState`) живут в `shared/types/` и переиспользуются и фронтом, и `backend/server.ts`.
 - Язык комментариев — русский (как в существующем коде).
@@ -35,17 +35,15 @@
 
 ```bash
 npx eslint .                  # линт без ошибок
-npx prettier --check .        # форматирование
 npx stylelint "**/*.scss"     # стили
 pnpm test                     # юнит-тесты (Vitest)
 pnpm build                    # сборка проходит
 ```
 
-Если правило линтера/преттиера можно исправить автоматически:
+Если правило линтера можно исправить автоматически:
 
 ```bash
 npx eslint . --fix
-npx prettier --write .
 ```
 
 ### Компоненты и кодогенерация

@@ -3,15 +3,15 @@ const unusedImports = require('eslint-plugin-unused-imports');
 
 const htmlParser = require('@html-eslint/parser');
 const htmlPlugin = require('@html-eslint/eslint-plugin');
-const componentImportsUnused = require('./shared/eslint/rules/component-imports-unused');
-const noSignalMisuse = require('./shared/eslint/rules/no-signal-misuse');
-const noOutputToInput = require('./shared/eslint/rules/no-output-to-input');
-const htmlFormat = require('./shared/eslint/rules/html-format');
-const sqlFormat = require('./shared/eslint/rules/sql-format');
-const sqlIndent = require('./shared/eslint/rules/sql-indent');
-const sqlRules = require('./shared/eslint/rules/sql-rules');
-const sqlInTs = require('./shared/eslint/rules/sql-in-ts');
-const sqlParser = require('./shared/eslint/plugins/sql-parser');
+const componentImportsUnused = require('@stream-hata/eslint-rules/rules/component-imports-unused');
+const noSignalMisuse = require('@stream-hata/eslint-rules/rules/no-signal-misuse');
+const noOutputToInput = require('@stream-hata/eslint-rules/rules/no-output-to-input');
+const htmlFormat = require('@stream-hata/eslint-rules/rules/html-format');
+const sqlFormat = require('@stream-hata/eslint-rules/rules/sql-format');
+const sqlIndent = require('@stream-hata/eslint-rules/rules/sql-indent');
+const sqlRules = require('@stream-hata/eslint-rules/rules/sql-rules');
+const sqlInTs = require('@stream-hata/eslint-rules/rules/sql-in-ts');
+const sqlParser = require('@stream-hata/eslint-rules/sql-parser');
 
 module.exports = plugin.antfu(
 	{
@@ -25,6 +25,7 @@ module.exports = plugin.antfu(
 		markdown: false,
 		ignores: [
 			'**/jest.config.ts',
+			'public/legacy/**',
 			'*.json',
 			'tsconfig.*.json',
 			'node_modules',
@@ -78,9 +79,20 @@ module.exports = plugin.antfu(
 			'prefer-arrow-callback': 0,
 			'array-bracket-spacing': 1,
 			indent: ['error', 'tab', { ignoredNodes: ['PropertyDefinition'], SwitchCase: 1 }],
+			'style/indent': 'off',
 			semi: 'error',
 			'style/semi': 'error',
-			'max-len': ['error', 120],
+			'max-len': [
+				'error',
+				{
+					code: 120,
+					ignoreUrls: true,
+					ignoreStrings: true,
+					ignoreTemplateLiterals: true,
+					ignoreRegExpLiterals: true,
+					ignoreComments: true,
+				},
+			],
 			'style/jsx-quotes': 'error',
 			'antfu/consistent-list-newline': 'error',
 			'no-trailing-spaces': 'error',
@@ -141,7 +153,7 @@ module.exports = plugin.antfu(
 				},
 			},
 			...unusedImports,
-			local: {
+			'stream-hata': {
 				rules: {
 					'component-imports-unused': componentImportsUnused,
 					'no-signal-misuse': noSignalMisuse,
@@ -152,7 +164,7 @@ module.exports = plugin.antfu(
 		},
 
 		rules: {
-			'local/sql-in-ts': [
+			'stream-hata/sql-in-ts': [
 				'error',
 				{
 					noSelectStar: true,
@@ -164,40 +176,26 @@ module.exports = plugin.antfu(
 					strings: false,
 				},
 			],
-			'local/component-imports-unused': [
-				'error',
-				{
-					decorators: ['Component', 'Directive', 'Pipe', 'NgModule'],
-					checkUnusedInArrays: ['imports'],
-					templateUsage: true,
-					codeUsage: true,
-					cleanEmptyArrays: true,
-					emptyArrays: ['imports', 'providers', 'schemas', 'exports', 'declarations', 'bootstrap'],
-					pipeNames: {
-						DecimalPipe: ['number'],
-						DatePipe: ['date'],
-						UpperCasePipe: ['uppercase'],
-						LowerCasePipe: ['lowercase'],
-						CurrencyPipe: ['currency'],
-						PercentPipe: ['percent'],
-						SlicePipe: ['slice'],
-						JsonPipe: ['json'],
-						AsyncPipe: ['async'],
-						KeyValuePipe: ['keyvalue'],
-					},
-					conservativePipes: true,
-					sortArrays: ['imports'],
-					importGroups: true,
-				},
-			],
-			'local/no-signal-misuse': ['error', { flagPipeOnObservables: true }],
-			'local/no-output-to-input': 'error',
+			'stream-hata/component-imports-unused': 'off',
+			'stream-hata/no-signal-misuse': ['error', { flagPipeOnObservables: true }],
+			'stream-hata/no-output-to-input': 'error',
 			'prefer-arrow-callback': 0,
 			'array-bracket-spacing': 1,
 			indent: ['error', 'tab', { ignoredNodes: ['PropertyDefinition'], SwitchCase: 1 }],
+			'style/indent': 'off',
 			semi: 'error',
 			'style/semi': 'error',
-			'max-len': ['error', 120],
+			'max-len': [
+				'error',
+				{
+					code: 120,
+					ignoreUrls: true,
+					ignoreStrings: true,
+					ignoreTemplateLiterals: true,
+					ignoreRegExpLiterals: true,
+					ignoreComments: true,
+				},
+			],
 			'style/jsx-quotes': 'error',
 			'antfu/consistent-list-newline': 'error',
 			'no-trailing-spaces': 'error',
@@ -223,7 +221,7 @@ module.exports = plugin.antfu(
 		files: ['**/*.html'],
 		plugins: {
 			'@html-eslint': htmlPlugin,
-			local: {
+			'stream-hata': {
 				rules: {
 					'html-format': htmlFormat,
 					'no-output-to-input': noOutputToInput,
@@ -234,17 +232,17 @@ module.exports = plugin.antfu(
 			parser: htmlParser,
 		},
 		rules: {
-			'local/html-format': [
+			'stream-hata/html-format': [
 				'error',
 				{
 					indent: 2,
 					attributeIndent: 2,
-					multilineAttributes: 'auto',
+					multilineAttributes: 'never',
 					maxAttributeLineLength: 100,
 					collapseBlankLines: true,
 					trimTrailingWhitespace: true,
 					mergeFlagAttributes: false,
-					sortAttributes: true,
+					sortAttributes: false,
 				},
 			],
 			'@html-eslint/no-duplicate-attrs': 'error',
@@ -252,7 +250,7 @@ module.exports = plugin.antfu(
 			'@html-eslint/require-img-alt': 'warn',
 			'@html-eslint/no-obsolete-tags': 'error',
 			'@html-eslint/no-obsolete-attrs': 'error',
-			'local/no-output-to-input': 'error',
+			'stream-hata/no-output-to-input': 'error',
 			indent: 'off',
 			'max-len': 'off',
 			'no-trailing-spaces': 'off',
@@ -261,7 +259,7 @@ module.exports = plugin.antfu(
 	{
 		files: ['**/*.sql'],
 plugins: {
-			local: {
+			'stream-hata': {
 				rules: {
 					'sql-format': sqlFormat,
 					'sql-indent': sqlIndent,
@@ -273,9 +271,9 @@ plugins: {
 			parser: sqlParser,
 		},
 		rules: {
-			'local/sql-format': ['error', { useTabs: true }],
-			'local/sql-indent': ['error', { useTabs: true }],
-			'local/sql-rules': [
+			'stream-hata/sql-format': ['error', { useTabs: true }],
+			'stream-hata/sql-indent': ['error', { useTabs: true }],
+			'stream-hata/sql-rules': [
 				'error',
 				{
 					noSelectStar: true,
@@ -295,9 +293,15 @@ plugins: {
 		},
 	},
 	{
+		files: ['src/app/components/overlays/dice-overlay/dice-scene.ts'],
+		rules: {
+			'ts/ban-ts-comment': 'off',
+		},
+	},
+	{
 		files: ['src/app/components/pages/wheel-page/wheel-page.html'],
 		rules: {
-			'local/html-format': 'off',
+			'stream-hata/html-format': 'off',
 		},
 	},
 

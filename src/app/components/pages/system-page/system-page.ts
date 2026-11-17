@@ -18,8 +18,8 @@ import { TwitchService } from '@shared/services/twitch.service';
 import {
 	TuiAxes,
 	TuiBarChart,
-	TuiLineChartHint,
 	TuiLineChart,
+	TuiLineChartHint,
 	TuiRingChart,
 } from '@taiga-ui/addon-charts';
 import {
@@ -362,6 +362,7 @@ export class SystemPage implements OnDestroy {
 		loadproc: 1,
 		cores: 1,
 	});
+
 	readonly streamOnline = signal(false);
 	readonly recordMode = signal<RecordMode>('auto');
 	readonly periods = signal<Record<PeriodKey, PeriodAggregate>>(this.loadPeriods());
@@ -377,7 +378,6 @@ export class SystemPage implements OnDestroy {
 			this.recordModeOptions[['auto', 'before', 'live', 'after'].indexOf(this.recordMode())] ??
 			'Авто',
 	);
-
 
 	readonly axisYLabels = ['100', '75', '50', '25', '0'];
 	readonly chartX = 0;
@@ -398,6 +398,7 @@ export class SystemPage implements OnDestroy {
 	readonly coreCharts = computed(() =>
 		this.history().cores.map((series) => this.points(series, 'cores')),
 	);
+
 	readonly ramPercent = computed(() => {
 		const data = this.metrics();
 

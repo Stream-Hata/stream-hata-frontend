@@ -1,6 +1,6 @@
 # Кодстайл (CODESTYLE)
 
-Стиль кода описан по фактическим конвенциям проекта. Правила enforced инструментами (ESLint, Prettier, Stylelint) — обязательны; остальное — рекомендации, которым следует следовать для единообразия.
+Стиль кода описан по фактическим конвенциям проекта. Правила enforced инструментами (ESLint, Stylelint) — обязательны; остальное — рекомендации, которым следует следовать для единообразия.
 
 > English version: [CODESTYLE.en.md](CODESTYLE.en.md)
 
@@ -8,14 +8,14 @@
 
 | Правило                  | Значение                                              |
 | ------------------------ | ----------------------------------------------------- |
-| Отступы в TS/JS          | **Tabs** (eslint: `indent: tab`; prettier: `useTabs`) |
+| Отступы в TS/JS          | **Tabs** (eslint: `indent: tab`)                      |
 | Отступы в SCSS/HTML/JSON | 2 пробела                                             |
 | Кавычки                  | одинарные (`'...'`)                                   |
 | Точки с запятой          | обязательны                                           |
-| Ширина строки            | 100 (prettier), максимум 120 (eslint `max-len`)       |
+| Ширина строки            | максимум 120 (eslint `max-len`)                       |
 | Кодировка                | UTF-8, перевод строки LF                              |
 
-Конфиги: `.prettierrc`, `eslint.config.js` (antfu), `.stylelintrc.json` (stylelint-config-standard-scss), `.editorconfig`.
+Конфиги: `eslint.config.js` (antfu), `.stylelintrc.json` (stylelint-config-standard-scss), `.editorconfig`.
 
 ## 2. Именование
 
@@ -82,6 +82,10 @@ export const HotbarStore = signalStore(
 - `switchMap` для переключения потоков (см. `Timer.startTimer`).
 - Именование потоков — по сути: `initialLoad()`, `updateState()`.
 - Без вложенных подписок в шаблонах; подписки — только с уничтожением.
+- Не использовать `setInterval` в компонентах: `timer(0, N)` + `switchMap` + `takeUntilDestroyed`.
+- Debounce/search/autosave — `Subject` + `debounceTime` + `switchMap`.
+- Не использовать `window.confirm`/`window.alert`: подтверждения — через `TuiDialog` или `model()`.
+- Перед правкой читать сообщение ESLint; `eslint --fix` — только по изменённым файлам, затем проверять diff.
 
 ## 9. Стили (SCSS)
 
@@ -117,7 +121,6 @@ export const HotbarStore = signalStore(
 
 ```bash
 npx eslint .                  # 0 ошибок
-npx prettier --check .        # форматирование
 npx stylelint "**/*.scss"     # стили
 pnpm test                     # юнит-тесты
 pnpm build                    # сборка

@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { ObsService } from './stream.services';
 import { TwitchService } from './twitch.service';
@@ -69,7 +69,13 @@ export class DesktopHotkeysService {
 	}
 
 	private notify(title: string, body: string): void {
-		const invoke = (window as unknown as { __TAURI_INTERNALS__?: { invoke?: (command: string, args?: Record<string, unknown>) => Promise<unknown> } }).__TAURI_INTERNALS__?.invoke;
+		const invoke = (
+			window as unknown as {
+				__TAURI_INTERNALS__?: {
+					invoke?: (command: string, args?: Record<string, unknown>) => Promise<unknown>;
+				};
+			}
+		).__TAURI_INTERNALS__?.invoke;
 		void invoke?.('system_alert', { title, body });
 	}
 }

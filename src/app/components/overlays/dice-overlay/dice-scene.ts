@@ -10,20 +10,45 @@ function platonicNormals(N: number) {
 	const s = [-1, 1];
 	const out: any[] = [];
 
-	if (N === 4) return [[1, 1, 1], [1, -1, -1], [-1, 1, -1], [-1, -1, 1]].map((p) => unit(p[0], p[1], p[2]));
-	if (N === 6) return [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]].map((p) => unit(p[0], p[1], p[2]));
+	if (N === 4) {
+		return [
+			[1, 1, 1],
+			[1, -1, -1],
+			[-1, 1, -1],
+			[-1, -1, 1],
+		].map((p) => unit(p[0], p[1], p[2]));
+	}
+	if (N === 6) {
+		return [
+			[1, 0, 0],
+			[-1, 0, 0],
+			[0, 1, 0],
+			[0, -1, 0],
+			[0, 0, 1],
+			[0, 0, -1],
+		].map((p) => unit(p[0], p[1], p[2]));
+	}
 
-	for (const x of s) for (const y of s) for (const z of s) out.push(unit(x, y, z));
+	for (const x of s) {
+		for (const y of s) {
+			for (const z of s) out.push(unit(x, y, z));
+		}
+	}
 	if (N === 8) return out;
 
 	if (N === 12) {
 		out.length = 0;
-		for (const a of s) for (const b of s) out.push(unit(0, a, b * PHI), unit(a, b * PHI, 0), unit(b * PHI, 0, a));
+		for (const a of s) {
+			for (const b of s) out.push(unit(0, a, b * PHI), unit(a, b * PHI, 0), unit(b * PHI, 0, a));
+		}
 
 		return out;
 	}
 
-	for (const a of s) for (const b of s) out.push(unit(0, a / PHI, b * PHI), unit(a / PHI, b * PHI, 0), unit(b * PHI, 0, a / PHI));
+	for (const a of s) {
+		for (const b of s)
+			out.push(unit(0, a / PHI, b * PHI), unit(a / PHI, b * PHI, 0), unit(b * PHI, 0, a / PHI));
+	}
 
 	return out;
 }
@@ -48,7 +73,7 @@ function trapezohedronNormals(N: number, H = 1) {
 function mulberry32(a: number) {
 	return () => {
 		a |= 0;
-		a = (a + 0x6d2b79f5) | 0;
+		a = (a + 0x6D2B79F5) | 0;
 		let t = Math.imul(a ^ (a >>> 15), 1 | a);
 
 		t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
@@ -66,7 +91,13 @@ function relaxedSphere(N: number, iters = 180) {
 		const r = Math.sqrt(1 - y * y);
 		const a = i * Math.PI * (3 - Math.sqrt(5));
 
-		P.push(new V3(Math.cos(a) * r + (rnd() - 0.5) * 0.02, y, Math.sin(a) * r + (rnd() - 0.5) * 0.02).normalize());
+		P.push(
+			new V3(
+				Math.cos(a) * r + (rnd() - 0.5) * 0.02,
+				y,
+				Math.sin(a) * r + (rnd() - 0.5) * 0.02,
+			).normalize(),
+		);
 	}
 
 	const h = Math.sqrt((4 * Math.PI) / N);
@@ -132,7 +163,8 @@ function dualFaces(P: any[]) {
 				}
 
 				if (!ok) continue;
-				if (verts.some((w) => (w.x - vx) ** 2 + (w.y - vy) ** 2 + (w.z - vz) ** 2 < 1e-12)) continue;
+				if (verts.some((w) => (w.x - vx) ** 2 + (w.y - vy) ** 2 + (w.z - vz) ** 2 < 1e-12))
+					continue;
 
 				verts.push(new V3(vx, vy, vz));
 			}
@@ -165,7 +197,11 @@ function prismFaces(m: number, R: number, H: number, labelSides: boolean) {
 		const k2 = (k + 1) % m;
 		const mid = (2 * Math.PI * (k + 0.5)) / m;
 
-		faces.push({ n: new V3(Math.cos(mid), 0, Math.sin(mid)), pts: [top[k], top[k2], bot[k2], bot[k]], labeled: labelSides });
+		faces.push({
+			n: new V3(Math.cos(mid), 0, Math.sin(mid)),
+			pts: [top[k], top[k2], bot[k2], bot[k]],
+			labeled: labelSides,
+		});
 	}
 
 	faces.push({ n: new V3(0, 1, 0), pts: top, labeled: !labelSides });
@@ -291,7 +327,7 @@ function polyData(N: number) {
 	});
 
 	const volume = faces.reduce((s, f) => s + (f.area * f.dist) / 3, 0);
-	const scale = Math.cbrt((4 / 3) * Math.PI / Math.max(0.0001, volume));
+	const scale = Math.cbrt(((4 / 3) * Math.PI) / Math.max(0.0001, volume));
 
 	faces.forEach((f) => {
 		f.pts.forEach((p) => p.multiplyScalar(scale));
@@ -354,8 +390,15 @@ function sphereData() {
 	}
 
 	const face = {
-		n: UP.clone(), u: new V3(0, 0, -1), center: new V3(0, cut, 0),
-		dist: cut, r2: Math.sqrt(1 - cut * cut) * 0.9, k: 0, labeled: true, value: 1, pts: [],
+		n: UP.clone(),
+		u: new V3(0, 0, -1),
+		center: new V3(0, cut, 0),
+		dist: cut,
+		r2: Math.sqrt(1 - cut * cut) * 0.9,
+		k: 0,
+		labeled: true,
+		value: 1,
+		pts: [],
 	};
 
 	return { geometry: g, faces: [face], smooth: true };
@@ -366,7 +409,7 @@ const FLIP = { 0: '0', 1: '1', 6: '9', 8: '8', 9: '6' };
 function isAmbiguous(s: string) {
 	const r = [...s].reverse().map((c) => FLIP[c]);
 
-	if (r.some((c) => c === undefined)) return false;
+	if (r.includes(undefined)) return false;
 
 	const t = r.join('');
 
@@ -418,8 +461,12 @@ function labelTexture(value: string | number) {
 function makeLabel(f: any, value: string | number) {
 	const side = f.r2 * 2 * (f.k <= 3 && f.k > 0 ? 0.8 : 0.95);
 	const mat = new THREE.MeshStandardMaterial({
-		map: labelTexture(value), transparent: true, roughness: 0.5,
-		polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
+		map: labelTexture(value),
+		transparent: true,
+		roughness: 0.5,
+		polygonOffset: true,
+		polygonOffsetFactor: -2,
+		polygonOffsetUnits: -2,
 	});
 	const m = new THREE.Mesh(new THREE.PlaneGeometry(side, side), mat);
 
@@ -432,21 +479,29 @@ function makeLabel(f: any, value: string | number) {
 }
 
 function createDie(N: number, opts: any = {}) {
-	if (!Number.isInteger(N) || N < 1 || N > 100) throw new RangeError('N must be an integer in 1..100');
-	const { color = 0x3d6fd1, labels = true, labelValues } = opts;
+	if (!Number.isInteger(N) || N < 1 || N > 100)
+		throw new RangeError('N must be an integer in 1..100');
+	const { color = 0x3D6FD1, labels = true, labelValues } = opts;
 	const data = N === 1 ? sphereData() : polyData(N);
 	const die = new THREE.Group();
 	const body = new THREE.Mesh(
 		data.geometry,
-		new THREE.MeshStandardMaterial({ color, roughness: 0.38, metalness: 0.15, flatShading: !data.smooth }),
+		new THREE.MeshStandardMaterial({
+			color,
+			roughness: 0.38,
+			metalness: 0.15,
+			flatShading: !data.smooth,
+		}),
 	);
 
 	body.castShadow = body.receiveShadow = true;
 	die.add(body);
-	die.add(new THREE.LineSegments(
-		new THREE.EdgesGeometry(data.geometry, 5),
-		new THREE.LineBasicMaterial({ color: 0xf5eaff, transparent: true, opacity: 0.7 }),
-	));
+	die.add(
+		new THREE.LineSegments(
+			new THREE.EdgesGeometry(data.geometry, 5),
+			new THREE.LineBasicMaterial({ color: 0xF5EAFF, transparent: true, opacity: 0.7 }),
+		),
+	);
 
 	const faceByValue = new Map();
 
@@ -484,15 +539,21 @@ function disposeDie(die: any) {
 function restQuaternion(f: any) {
 	const X = new V3().crossVectors(f.u, f.n);
 
-	return new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(X, f.n, f.u.clone().negate())).invert();
+	return new THREE.Quaternion()
+		.setFromRotationMatrix(new THREE.Matrix4().makeBasis(X, f.n, f.u.clone().negate()))
+		.invert();
 }
 
 function facingQuaternion(f: any, dir: any, upHint = UP) {
 	const up = upHint.clone().addScaledVector(dir, -upHint.dot(dir)).normalize();
 	const right = new V3().crossVectors(up, dir);
-	const qW = new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(right, up, dir));
+	const qW = new THREE.Quaternion().setFromRotationMatrix(
+		new THREE.Matrix4().makeBasis(right, up, dir),
+	);
 	const Xm = new V3().crossVectors(f.u, f.n);
-	const qM = new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(Xm, f.u, f.n));
+	const qM = new THREE.Quaternion().setFromRotationMatrix(
+		new THREE.Matrix4().makeBasis(Xm, f.u, f.n),
+	);
 
 	return qW.multiply(qM.invert());
 }
@@ -518,17 +579,26 @@ class DiceAnimator {
 	}
 
 	private finalQuaternion(f: any, x: number, z: number, yaw = 0) {
-		if (!this.camera) return new THREE.Quaternion().setFromAxisAngle(UP, yaw).multiply(restQuaternion(f));
+		if (!this.camera)
+			return new THREE.Quaternion().setFromAxisAngle(UP, yaw).multiply(restQuaternion(f));
 
 		this.camera.updateMatrixWorld();
-		const dir = this.camera.position.clone().sub(new V3(x, 1, z)).normalize();
+		const dir = this.camera.position
+			.clone()
+			.sub(new V3(x, 1, z))
+			.normalize();
 		const camUp = new V3(0, 1, 0).applyQuaternion(this.camera.quaternion);
 
 		return facingQuaternion(f, dir, camUp);
 	}
 
 	place(die: any, value: number, opts: any = {}) {
-		const q = this.finalQuaternion(die.userData.faceByValue.get(value), opts.x ?? 0, opts.z ?? 0, opts.yaw ?? 0);
+		const q = this.finalQuaternion(
+			die.userData.faceByValue.get(value),
+			opts.x ?? 0,
+			opts.z ?? 0,
+			opts.yaw ?? 0,
+		);
 
 		die.quaternion.copy(q);
 		die.position.set(opts.x ?? 0, supportHeight(die.userData.support, q), opts.z ?? 0);
@@ -547,7 +617,13 @@ class DiceAnimator {
 
 		return new Promise((resolve) => {
 			this.active.add({
-				die, value, resolve, qFinal, from, to, t: 0,
+				die,
+				value,
+				resolve,
+				qFinal,
+				from,
+				to,
+				t: 0,
 				axis: new V3(rnd() - 0.5, rnd() - 0.5, rnd() - 0.5).normalize(),
 				angle0: Math.PI * 2 * (opts.spins ?? 2 + rnd() * 2),
 				duration: opts.duration ?? 1.4,
@@ -571,7 +647,10 @@ class DiceAnimator {
 
 			r.die.position.x = r.from.x + (r.to.x - r.from.x) * h;
 			r.die.position.z = r.from.z + (r.to.z - r.from.z) * h;
-			let y = r.restY + (r.from.y - r.restY) * (1 - t) ** 3 + r.height * Math.abs(Math.sin(Math.PI * r.bounces * t)) * (1 - t) ** 2;
+			let y =
+				r.restY +
+				(r.from.y - r.restY) * (1 - t) ** 3 +
+				r.height * Math.abs(Math.sin(Math.PI * r.bounces * t)) * (1 - t) ** 2;
 
 			y = Math.max(y, supportHeight(r.die.userData.support, r.q));
 			r.die.position.y = y;
@@ -616,8 +695,8 @@ export class DiceScene {
 
 		this.camera.position.set(0, 5.2, 6.2);
 		this.camera.lookAt(0, 0.4, 0);
-		this.scene.add(new THREE.HemisphereLight(0xffffff, 0x334455, 1.25));
-		const sun = new THREE.DirectionalLight(0xffffff, 2.6);
+		this.scene.add(new THREE.HemisphereLight(0xFFFFFF, 0x334455, 1.25));
+		const sun = new THREE.DirectionalLight(0xFFFFFF, 2.6);
 
 		sun.position.set(-3, 8, 4);
 		this.scene.add(sun);
@@ -639,7 +718,10 @@ export class DiceScene {
 		this.edgeOpacity = opacity;
 
 		this.die?.traverse((object: any) => {
-			if (object instanceof THREE.LineSegments && object.material instanceof THREE.LineBasicMaterial) {
+			if (
+				object instanceof THREE.LineSegments &&
+				object.material instanceof THREE.LineBasicMaterial
+			) {
 				object.material.color.set(color);
 				object.material.linewidth = width;
 				object.material.opacity = opacity;

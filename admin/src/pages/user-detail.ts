@@ -4,12 +4,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { GamesCatalogService } from '@shared/services/games-catalog.service';
-import { TuiButton, TuiIcon, TuiInput, TuiTextfield } from '@taiga-ui/core';
+import { TuiButton, TuiTextfield } from '@taiga-ui/core';
 import { TuiBadge, TuiSwitch, TuiTextarea } from '@taiga-ui/kit';
 import { catchError, of } from 'rxjs';
 
 @Component({
-	imports: [ReactiveFormsModule, RouterLink, TuiBadge, TuiButton, TuiIcon, TuiInput, TuiSwitch, TuiTextarea, TuiTextfield],
+	imports: [ReactiveFormsModule, RouterLink, TuiBadge, TuiButton, TuiSwitch, TuiTextarea, TuiTextfield],
 	selector: 'app-admin-user-detail',
 	template: `
 		<div class="admin-page">

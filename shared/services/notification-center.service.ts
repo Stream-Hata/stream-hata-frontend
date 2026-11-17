@@ -12,7 +12,15 @@ export interface SystemNotice {
 const STORAGE_KEY = 'nsh.system-notifications';
 const FILTERS_KEY = 'nsh.notification-filters';
 const LIMIT = 200;
-const KINDS = ['message', 'monitor', 'clip', 'suggestion', 'discussion', 'system'] as const;
+const KINDS = [
+	'message',
+	'monitor',
+	'clip',
+	'suggestion',
+	'discussion',
+	'security',
+	'system',
+] as const;
 export type NotificationKind = (typeof KINDS)[number];
 
 @Injectable({ providedIn: 'root' })
@@ -76,9 +84,14 @@ export class NotificationCenterService {
 	}
 
 	private loadFilters(): Record<NotificationKind, boolean> {
-		const defaults = Object.fromEntries(KINDS.map((kind) => [kind, true])) as Record<NotificationKind, boolean>;
+		const defaults = Object.fromEntries(KINDS.map((kind) => [kind, true])) as Record<
+			NotificationKind,
+			boolean
+		>;
 		try {
-			const stored = JSON.parse(localStorage.getItem(FILTERS_KEY) ?? '{}') as Partial<Record<NotificationKind, boolean>>;
+			const stored = JSON.parse(localStorage.getItem(FILTERS_KEY) ?? '{}') as Partial<
+				Record<NotificationKind, boolean>
+			>;
 
 			return { ...defaults, ...stored };
 		} catch {

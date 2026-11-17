@@ -1,8 +1,9 @@
+import type { WidgetConfig } from '@shared/services/widgets.service';
 import type { ViewerWatchStreakEvent } from '@shared/types/viewer';
 import { Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { TwitchService } from '@shared/services/twitch.service';
-import { WidgetConfigService, type WidgetConfig } from '@shared/services/widgets.service';
+import { WidgetConfigService } from '@shared/services/widgets.service';
 import { catchError, of, switchMap, timer } from 'rxjs';
 
 @Component({

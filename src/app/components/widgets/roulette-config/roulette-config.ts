@@ -4,8 +4,21 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RouletteService } from '@shared/services/roulette.service';
 import { DEFAULT_ROULETTE_CONFIG } from '@shared/types/roulette';
-import { TuiButton, TuiDropdown, TuiInput, TuiSelectLike, TuiSlider, TuiTextfield } from '@taiga-ui/core';
-import { TuiChevron, TuiDataListWrapper, TuiInputColor, TuiInputNumber, TuiSwitch } from '@taiga-ui/kit';
+import {
+	TuiButton,
+	TuiDropdown,
+	TuiInput,
+	TuiSelectLike,
+	TuiSlider,
+	TuiTextfield,
+} from '@taiga-ui/core';
+import {
+	TuiChevron,
+	TuiDataListWrapper,
+	TuiInputColor,
+	TuiInputNumber,
+	TuiSwitch,
+} from '@taiga-ui/kit';
 import { timer } from 'rxjs';
 
 @Component({
@@ -13,8 +26,8 @@ import { timer } from 'rxjs';
 		ReactiveFormsModule,
 		TuiButton,
 		TuiChevron,
-		TuiDropdown,
 		TuiDataListWrapper,
+		TuiDropdown,
 		TuiInput,
 		TuiInputColor,
 		TuiInputNumber,
@@ -102,7 +115,10 @@ export class RouletteConfigForm {
 			...DEFAULT_ROULETTE_CONFIG,
 			mode: value.mode,
 			filters: {
-				platforms: value.platforms.split(',').map((item) => item.trim()).filter(Boolean),
+				platforms: value.platforms
+					.split(',')
+					.map((item) => item.trim())
+					.filter(Boolean),
 				tiers: ['gold', 'diamond', 'platinum', 'none'],
 				ages: ['classic', 'retro', 'modern', 'new'],
 				emulator: value.emulator === 'all' ? null : value.emulator === 'yes',
@@ -148,7 +164,9 @@ export class RouletteConfigForm {
 			.subscribe({
 				next: () => {
 					this.saved.set(true);
-					timer(1500).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.saved.set(false));
+					timer(1500)
+						.pipe(takeUntilDestroyed(this.destroyRef))
+						.subscribe(() => this.saved.set(false));
 				},
 				error: (response) => this.error.set(response.error?.error ?? 'Не удалось сохранить'),
 			});
@@ -163,28 +181,32 @@ export class RouletteConfigForm {
 				)
 			] ?? 'Не важно',
 		);
-		this.form.patchValue({
-			mode: config.mode,
-			platforms: (config.filters?.platforms ?? []).join(', '),
-			emulator: config.filters?.emulator === null ? 'all' : config.filters?.emulator ? 'yes' : 'no',
-			avoidRecent: config.avoidRecent ?? 10,
-			tierGold: config.weights?.tiers?.['gold'] ?? 2,
-			tierDiamond: config.weights?.tiers?.['diamond'] ?? 3,
-			tierPlatinum: config.weights?.tiers?.['platinum'] ?? 5,
-			tierNone: config.weights?.tiers?.['none'] ?? 1,
-			background: config.appearance?.background ?? '#0F0817',
-			accent: config.appearance?.accent ?? '#FF2EA6',
-			text: config.appearance?.text ?? '#F5EAFF',
-			fontFamily: config.appearance?.fontFamily ?? 'JetBrains Mono',
-			fontUrl: config.appearance?.fontUrl ?? '',
-			memeUrl: config.appearance?.memeUrl ?? '',
-			musicUrl: config.audio?.musicUrl ?? '',
-			revealUrl: config.audio?.revealUrl ?? '',
-			volume: config.audio?.volume ?? 70,
-			durationSeconds: config.reveal?.durationSeconds ?? 12,
-			showCat: config.reveal?.showCat ?? true,
-			catImage: config.reveal?.catImage ?? '',
-			titleTemplate: config.reveal?.titleTemplate ?? '{{game}} · {{platform}}',
-		}, { emitEvent: false });
+		this.form.patchValue(
+			{
+				mode: config.mode,
+				platforms: (config.filters?.platforms ?? []).join(', '),
+				emulator:
+					config.filters?.emulator === null ? 'all' : config.filters?.emulator ? 'yes' : 'no',
+				avoidRecent: config.avoidRecent ?? 10,
+				tierGold: config.weights?.tiers?.['gold'] ?? 2,
+				tierDiamond: config.weights?.tiers?.['diamond'] ?? 3,
+				tierPlatinum: config.weights?.tiers?.['platinum'] ?? 5,
+				tierNone: config.weights?.tiers?.['none'] ?? 1,
+				background: config.appearance?.background ?? '#0F0817',
+				accent: config.appearance?.accent ?? '#FF2EA6',
+				text: config.appearance?.text ?? '#F5EAFF',
+				fontFamily: config.appearance?.fontFamily ?? 'JetBrains Mono',
+				fontUrl: config.appearance?.fontUrl ?? '',
+				memeUrl: config.appearance?.memeUrl ?? '',
+				musicUrl: config.audio?.musicUrl ?? '',
+				revealUrl: config.audio?.revealUrl ?? '',
+				volume: config.audio?.volume ?? 70,
+				durationSeconds: config.reveal?.durationSeconds ?? 12,
+				showCat: config.reveal?.showCat ?? true,
+				catImage: config.reveal?.catImage ?? '',
+				titleTemplate: config.reveal?.titleTemplate ?? '{{game}} · {{platform}}',
+			},
+			{ emitEvent: false },
+		);
 	}
 }

@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import type { GameSuggestion } from '@shared/services/suggestions.service';
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';

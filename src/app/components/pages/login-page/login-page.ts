@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { TwitchService } from '@shared/services/twitch.service';
-import { catchError, of } from 'rxjs';
 import { TuiButton } from '@taiga-ui/core';
+import { catchError, of } from 'rxjs';
 import AuthLayout from '../../layout/auth-layout/auth-layout';
 
 @Component({

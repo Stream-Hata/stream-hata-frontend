@@ -1,36 +1,41 @@
+import type { RecoveryBlob } from '@shared/crypto/recovery';
+import type { AccountInfo } from '@shared/services/accounts.service';
 import type { TranslationKey } from '@shared/services/i18n.service';
+import type { NotificationKind } from '@shared/services/notification-center.service';
+import type { SystemAlertRule } from '@shared/services/system-alert-settings.service';
 import type { NotifySettings } from '@shared/types/stream';
-import { Component, computed, DestroyRef, inject, Injector, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, Injector, model, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { decryptRecovery, encryptRecovery } from '@shared/crypto/recovery';
 import { contrastRatio } from '@shared/helpers/color';
 import { signalControl } from '@shared/helpers/form-control';
+import { AccountsService } from '@shared/services/accounts.service';
+import { AppLockService } from '@shared/services/app-lock.service';
 import { AppSettingsService } from '@shared/services/app-settings.service';
+import { AutoClipsService } from '@shared/services/auto-clips.service';
 import { ChatJuryService } from '@shared/services/chat-jury.service';
 import { DesktopUpdateService } from '@shared/services/desktop-update.service';
 import { DonationsService } from '@shared/services/donations.service';
 import { I18nService } from '@shared/services/i18n.service';
 import { IntegrationsService } from '@shared/services/integrations.service';
-import { OnboardingService } from '@shared/services/onboarding.service';
-import { MetricsService, NetworkService } from '@shared/services/ops.services';
-import { NotifyService } from '@shared/services/stream.services';
-import { TwitchService } from '@shared/services/twitch.service';
-import { RoleService } from '@shared/services/role.service';
-import { SystemAlertsService } from '@shared/services/system-alerts.service';
-import { SettingsTransferService } from '@shared/services/settings-transfer.service';
-import { AutoClipsService } from '@shared/services/auto-clips.service';
-import { AppLockService } from '@shared/services/app-lock.service';
-import { AccountsService, type AccountInfo } from '@shared/services/accounts.service';
 import { MessagingIdentityService } from '@shared/services/messaging-identity.service';
 import { MessagingService } from '@shared/services/messaging.service';
+import { NotificationCenterService } from '@shared/services/notification-center.service';
+import { OnboardingService } from '@shared/services/onboarding.service';
+import { MetricsService, NetworkService } from '@shared/services/ops.services';
 import { QuietHoursService } from '@shared/services/quiet-hours.service';
-import { NotificationCenterService, type NotificationKind } from '@shared/services/notification-center.service';
-import { decryptRecovery, encryptRecovery, type RecoveryBlob } from '@shared/crypto/recovery';
-import { SystemAlertSettingsService, type SystemAlertRule } from '@shared/services/system-alert-settings.service';
+import { RoleService } from '@shared/services/role.service';
+import { SettingsTransferService } from '@shared/services/settings-transfer.service';
+import { NotifyService } from '@shared/services/stream.services';
+import { SystemAlertSettingsService } from '@shared/services/system-alert-settings.service';
+import { SystemAlertsService } from '@shared/services/system-alerts.service';
+import { TwitchService } from '@shared/services/twitch.service';
 import { WelcomeService } from '@shared/services/welcome.service';
 import {
 	TuiButton,
+	TuiDialog,
 	TuiDropdown,
 	TuiIcon,
 	TuiInput,
@@ -109,6 +114,7 @@ const SECTION_DEFS: { id: Section; labelKey: TranslationKey; icon: string }[] = 
 		TuiButton,
 		TuiButtonCopy,
 		TuiDataListWrapper,
+		TuiDialog,
 		TuiDropdown,
 		TuiIcon,
 		TuiInput,
@@ -136,6 +142,13 @@ export default class SettingsPage {
 	readonly i18n = inject(I18nService);
 	readonly onboarding = inject(OnboardingService);
 	readonly desktopUpdate = inject(DesktopUpdateService);
+	readonly rollbackConfirmOpen = model(false);
+
+	confirmRollback(): void {
+		this.rollbackConfirmOpen.set(false);
+		void this.desktopUpdate.rollback();
+	}
+
 	private readonly injector = inject(Injector);
 	private readonly welcomeService = inject(WelcomeService);
 	readonly desktop =
@@ -201,6 +214,7 @@ export default class SettingsPage {
 		{ id: 'suggestion', label: 'Заявки на игры' },
 		{ id: 'system', label: 'Системные' },
 	];
+
 	private readonly accountsService = inject(AccountsService);
 	private readonly messagingIdentity = inject(MessagingIdentityService);
 	private readonly messaging = inject(MessagingService);
@@ -217,6 +231,7 @@ export default class SettingsPage {
 		{ id: 'donation', label: 'Донаты' },
 		{ id: 'cheer', label: 'Bits / Cheer' },
 	];
+
 	readonly role = inject(RoleService);
 	private readonly systemAlertsRuntime = inject(SystemAlertsService);
 	readonly alertTestStatus = signal('');
@@ -771,7 +786,7 @@ export default class SettingsPage {
 	}
 
 	addAccount(): void {
-		this.twitchService.connect(location.origin + '/app/settings', true);
+		this.twitchService.connect(`${location.origin}/app/settings`, true);
 	}
 
 	async switchAccount(login: string): Promise<void> {

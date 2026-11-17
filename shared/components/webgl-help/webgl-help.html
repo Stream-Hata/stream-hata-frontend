@@ -1,60 +1,60 @@
 @if (visible()) {
-	<div class="webgl-backdrop" role="presentation" (click)="close()"></div>
-	<section class="webgl-dialog" role="dialog" aria-modal="true" aria-labelledby="webgl-title">
-		<button
-			class="webgl-close"
-			type="button"
-			appearance="flat"
-			tuiButton
-			(click)="close()"
-			aria-label="Закрыть"
-		>
-			<tui-icon icon="@tui.x" />
-		</button>
-		<span class="webgl-icon"><tui-icon icon="@tui.monitor" /></span>
-		<h2 id="webgl-title">Этот виджет использует WebGL</h2>
-		<p class="jk-caption">
-			Кубик и монетка рисуются через WebGL. Если в OBS-плагине браузера WebGL выключен, виджет будет
-			пустым или чёрным.
-		</p>
+  <div class="webgl-backdrop" role="presentation" (click)="close()"></div>
+  <section class="webgl-dialog" role="dialog" aria-modal="true" aria-labelledby="webgl-title">
+    <button
+      class="webgl-close"
+      type="button"
+      appearance="flat"
+      tuiButton
+      (click)="close()"
+      aria-label="Закрыть"
+    >
+      <tui-icon icon="@tui.x" />
+    </button>
+    <span class="webgl-icon"><tui-icon icon="@tui.monitor" /></span>
+    <h2 id="webgl-title">Этот виджет использует WebGL</h2>
+    <p class="jk-caption">
+      Кубик и монетка рисуются через WebGL. Если в OBS-плагине браузера WebGL выключен, виджет будет
+      пустым или чёрным.
+    </p>
 
-		@if (!checked()) {
-			<button type="button" appearance="primary" tuiButton (click)="check()">
-				Проверить WebGL
-			</button>
-		} @else if (supported()) {
-			<div class="webgl-status webgl-status-ok">
-				<tui-icon icon="@tui.circle-check" />
-				<div>
-					<strong>WebGL2 доступен</strong>
-					<span class="jk-caption">{{ renderer() }}</span>
-				</div>
-			</div>
-		} @else {
-			<div class="webgl-status webgl-status-bad">
-				<tui-icon icon="@tui.circle-alert" />
-				<div>
-					<strong>WebGL2 недоступен</strong>
-					<span class="jk-caption">Включи аппаратное ускорение и WebGL в OBS browser plugin.</span>
-				</div>
-			</div>
-		}
+    @if (!checked()) {
+      <button type="button" appearance="primary" tuiButton (click)="check()">
+        Проверить WebGL
+      </button>
+    } @else if (supported()) {
+      <div class="webgl-status webgl-status-ok">
+        <tui-icon icon="@tui.circle-check" />
+        <div>
+          <strong>WebGL2 доступен</strong>
+          <span class="jk-caption">{{ renderer() }}</span>
+        </div>
+      </div>
+    } @else {
+      <div class="webgl-status webgl-status-bad">
+        <tui-icon icon="@tui.circle-alert" />
+        <div>
+          <strong>WebGL2 недоступен</strong>
+          <span class="jk-caption">Включи аппаратное ускорение и WebGL в OBS browser plugin.</span>
+        </div>
+      </div>
+    }
 
-		<ol class="webgl-steps">
-			<li>В OBS добавь источник <strong>Browser</strong> (Browser Source).</li>
-			<li>В поле <strong>URL</strong> вставь <code>https://streamhata.rdpctd.dev/webgl-check</code>.</li>
-			<li>Поставь размер <strong>1280×720</strong> и нажми <strong>OK</strong>.</li>
-			<li>Посмотри на статус: «WebGL2 работает» — всё готово.</li>
-			<li>Если «WebGL2 недоступен» — включи аппаратное ускорение в OBS и browser source, обнови OBS/плагин и перезапусти OBS.</li>
-			<li>После проверки замени URL на ссылку нужного виджета из раздела «Виджеты».</li>
-		</ol>
+    <ol class="webgl-steps">
+      <li>В OBS добавь источник <strong>Browser</strong> (Browser Source).</li>
+      <li>В поле <strong>URL</strong> вставь <code>https://streamhata.rdpctd.dev/webgl-check</code>.</li>
+      <li>Поставь размер <strong>1280×720</strong> и нажми <strong>OK</strong>.</li>
+      <li>Посмотри на статус: «WebGL2 работает» — всё готово.</li>
+      <li>Если «WebGL2 недоступен» — включи аппаратное ускорение в OBS и browser source, обнови OBS/плагин и перезапусти OBS.</li>
+      <li>После проверки замени URL на ссылку нужного виджета из раздела «Виджеты».</li>
+    </ol>
 
-		<div class="webgl-actions">
-			<a routerLink="/webgl-check" appearance="flat" tuiButton (click)="close()">Открыть тестовую страницу</a>
-			<a routerLink="/app/widgets/dice/config" appearance="flat" tuiButton (click)="close()"
-				>Открыть настройки кубика</a
-			>
-			<button type="button" appearance="primary" tuiButton (click)="close()">Понятно</button>
-		</div>
-	</section>
+    <div class="webgl-actions">
+      <a routerLink="/webgl-check" appearance="flat" tuiButton (click)="close()">Открыть тестовую страницу</a>
+      <a routerLink="/app/widgets/dice/config" appearance="flat" tuiButton (click)="close()"
+      >Открыть настройки кубика</a
+    >
+    <button type="button" appearance="primary" tuiButton (click)="close()">Понятно</button>
+  </div>
+</section>
 }

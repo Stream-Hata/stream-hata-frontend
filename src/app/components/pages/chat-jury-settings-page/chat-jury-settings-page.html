@@ -74,174 +74,174 @@
               *tuiDropdown
               [items]="durationValues"
               (itemClick)="duration.set($event)"
-            ></tui-data-list-wrapper>
-          </tui-textfield>
-        </div>
-
-        <div class="cfg-row">
-          <div class="cfg-text">
-            <span class="cfg-label">Кворум</span>
-            <span class="jk-caption">Минимум голосов для вердикта · {{ quorum() }}</span>
-          </div>
-          <input
-            aria-label="Кворум"
-            class="cfg-slider"
-            max="50"
-            min="1"
-            type="range"
-            [value]="quorum()"
-            (input)="quorum.set($any($event.target).value)"
-            tuiSlider
-            />
-          </div>
-
-          <div class="cfg-row">
-            <div class="cfg-text">
-              <span class="cfg-label">Авто-открытие</span>
-              <span class="jk-caption">Открывать жюри, когда AI уверен в совете</span>
-            </div>
-            <input
-              aria-label="Авто-открытие"
-              type="checkbox"
-              [formControl]="autoOpenControl"
-              tuiSwitch
-              />
-            </div>
-          </section>
-        }
-
-        @case ('appearance') {
-        <section class="cfg-section">
-          <header class="cfg-head">
-            <h2 class="cfg-title">{{ i18n.t('jurySettings.appearance') }}</h2>
-            <p class="jk-caption">Как жюри выглядит в панели и в эфире.</p>
-          </header>
-
-          <div class="cfg-row">
-            <span class="cfg-label">{{ i18n.t('jurySettings.style') }}</span>
-            <tui-textfield tuiChevron class="cfg-control">
-              <input type="text"
-                aria-label="Стиль"
-                [formControl]="styleControl" tuiInput tuiSelectLike>
-              <tui-data-list-wrapper
-                *tuiDropdown
-                [items]="styleValues"></tui-data-list-wrapper>
+              ></tui-data-list-wrapper>
             </tui-textfield>
           </div>
 
           <div class="cfg-row">
-            <span class="cfg-label">{{ i18n.t('jurySettings.theme') }}</span>
-            <tui-segmented
-              [activeItemIndex]="themeIndex()"
-              (activeItemIndexChange)="setTheme($event)"
-            >
-              <button type="button">{{ i18n.t('jurySettings.dark') }}</button>
-              <button type="button">{{ i18n.t('jurySettings.light') }}</button>
-              <button type="button">{{ i18n.t('jurySettings.auto') }}</button>
-            </tui-segmented>
-          </div>
-
-          <div class="cfg-row">
             <div class="cfg-text">
-              <span class="cfg-label">Авторы советов</span>
-              <span class="jk-caption">Показывать ник и контекст</span>
+              <span class="cfg-label">Кворум</span>
+              <span class="jk-caption">Минимум голосов для вердикта · {{ quorum() }}</span>
             </div>
             <input
-              aria-label="Авторы советов"
-              type="checkbox"
-              [formControl]="showAuthorsControl"
-              tuiSwitch
+              aria-label="Кворум"
+              class="cfg-slider"
+              max="50"
+              min="1"
+              type="range"
+              [value]="quorum()"
+              (input)="quorum.set($any($event.target).value)"
+              tuiSlider
               />
             </div>
 
             <div class="cfg-row">
               <div class="cfg-text">
-                <span class="cfg-label">Полосы прогресса</span>
-                <span class="jk-caption">Голоса За / Против в кадре</span>
+                <span class="cfg-label">Авто-открытие</span>
+                <span class="jk-caption">Открывать жюри, когда AI уверен в совете</span>
               </div>
               <input
-                aria-label="Полосы прогресса"
+                aria-label="Авто-открытие"
                 type="checkbox"
-                [formControl]="showProgressControl"
+                [formControl]="autoOpenControl"
                 tuiSwitch
                 />
+              </div>
+            </section>
+          }
+
+          @case ('appearance') {
+          <section class="cfg-section">
+            <header class="cfg-head">
+              <h2 class="cfg-title">{{ i18n.t('jurySettings.appearance') }}</h2>
+              <p class="jk-caption">Как жюри выглядит в панели и в эфире.</p>
+            </header>
+
+            <div class="cfg-row">
+              <span class="cfg-label">{{ i18n.t('jurySettings.style') }}</span>
+              <tui-textfield tuiChevron class="cfg-control">
+                <input type="text"
+                  aria-label="Стиль"
+                  [formControl]="styleControl" tuiInput tuiSelectLike>
+                  <tui-data-list-wrapper
+                    *tuiDropdown
+                    [items]="styleValues"></tui-data-list-wrapper>
+                    </tui-textfield>
+                    </div>
+
+                    <div class="cfg-row">
+                    <span class="cfg-label">{{ i18n.t('jurySettings.theme') }}</span>
+                    <tui-segmented
+                  [activeItemIndex]="themeIndex()"
+                  (activeItemIndexChange)="setTheme($event)"
+                >
+                  <button type="button">{{ i18n.t('jurySettings.dark') }}</button>
+                  <button type="button">{{ i18n.t('jurySettings.light') }}</button>
+                  <button type="button">{{ i18n.t('jurySettings.auto') }}</button>
+                </tui-segmented>
               </div>
 
               <div class="cfg-row">
                 <div class="cfg-text">
-                  <span class="cfg-label">Анимация</span>
-                  <span class="jk-caption">Переходы при смене состояния</span>
+                  <span class="cfg-label">Авторы советов</span>
+                  <span class="jk-caption">Показывать ник и контекст</span>
                 </div>
                 <input
-                  aria-label="Анимация"
+                  aria-label="Авторы советов"
                   type="checkbox"
-                  [formControl]="animationControl"
+                  [formControl]="showAuthorsControl"
                   tuiSwitch
                   />
                 </div>
-              </section>
-            }
 
-            @case ('access') {
-            <section class="cfg-section">
-              <header class="cfg-head">
-                <h2 class="cfg-title">{{ i18n.t('jurySettings.access') }}</h2>
-                <p class="jk-caption">Команды чата для управления жюри.</p>
-              </header>
-
-              <div class="cfg-row">
-                <span class="cfg-label">{{ i18n.t('jurySettings.voteYea') }}</span>
-                <tui-textfield class="cfg-control">
+                <div class="cfg-row">
+                  <div class="cfg-text">
+                    <span class="cfg-label">Полосы прогресса</span>
+                    <span class="jk-caption">Голоса За / Против в кадре</span>
+                  </div>
                   <input
-                    aria-label="Команда голоса за"
-                    type="text"
-                    [value]="yeaCommand()"
-                    (input)="yeaCommand.set($any($event.target).value)"
-                    tuiInput
-                  />
-                </tui-textfield>
-              </div>
-
-              <div class="cfg-row">
-                <span class="cfg-label">{{ i18n.t('jurySettings.voteNei') }}</span>
-                <tui-textfield class="cfg-control">
-                  <input
-                    aria-label="Команда голоса против"
-                    type="text"
-                    [value]="neiCommand()"
-                    (input)="neiCommand.set($any($event.target).value)"
-                    tuiInput
-                  />
-                </tui-textfield>
-              </div>
-
-              <p class="jk-caption">
-                По умолчанию: !yea и !nei. Сообщения «yea» и «nei» без команды тоже считаются голосами.
-              </p>
-
-              <div class="cfg-row">
-                <span class="cfg-label">Команда запуска</span>
-                  <tui-textfield class="cfg-control">
-                    <input
-                      aria-label="Команда запуска"
-                      type="text"
-                      [value]="startCommand()"
-                      (input)="startCommand.set($any($event.target).value)"
-                      tuiInput
-                      />
-                    </tui-textfield>
+                    aria-label="Полосы прогресса"
+                    type="checkbox"
+                    [formControl]="showProgressControl"
+                    tuiSwitch
+                    />
                   </div>
 
                   <div class="cfg-row">
                     <div class="cfg-text">
-                      <span class="cfg-label">Модераторы и VIP</span>
-                      <span class="jk-caption">Могут запускать жюри без команды</span>
+                      <span class="cfg-label">Анимация</span>
+                      <span class="jk-caption">Переходы при смене состояния</span>
                     </div>
-                    <span appearance="info" tuiBadge>Включено</span>
-                  </div>
-                </section>
-              }
-            }
-          </div>
-        </div>
-      </div>
+                    <input
+                      aria-label="Анимация"
+                      type="checkbox"
+                      [formControl]="animationControl"
+                      tuiSwitch
+                      />
+                    </div>
+                  </section>
+                }
+
+                @case ('access') {
+                <section class="cfg-section">
+                  <header class="cfg-head">
+                    <h2 class="cfg-title">{{ i18n.t('jurySettings.access') }}</h2>
+                    <p class="jk-caption">Команды чата для управления жюри.</p>
+                  </header>
+
+                  <div class="cfg-row">
+                    <span class="cfg-label">{{ i18n.t('jurySettings.voteYea') }}</span>
+                    <tui-textfield class="cfg-control">
+                      <input
+                        aria-label="Команда голоса за"
+                        type="text"
+                        [value]="yeaCommand()"
+                        (input)="yeaCommand.set($any($event.target).value)"
+                        tuiInput
+                        />
+                      </tui-textfield>
+                    </div>
+
+                    <div class="cfg-row">
+                      <span class="cfg-label">{{ i18n.t('jurySettings.voteNei') }}</span>
+                      <tui-textfield class="cfg-control">
+                        <input
+                          aria-label="Команда голоса против"
+                          type="text"
+                          [value]="neiCommand()"
+                          (input)="neiCommand.set($any($event.target).value)"
+                          tuiInput
+                          />
+                        </tui-textfield>
+                      </div>
+
+                      <p class="jk-caption">
+                        По умолчанию: !yea и !nei. Сообщения «yea» и «nei» без команды тоже считаются голосами.
+                      </p>
+
+                      <div class="cfg-row">
+                        <span class="cfg-label">Команда запуска</span>
+                        <tui-textfield class="cfg-control">
+                          <input
+                            aria-label="Команда запуска"
+                            type="text"
+                            [value]="startCommand()"
+                            (input)="startCommand.set($any($event.target).value)"
+                            tuiInput
+                            />
+                          </tui-textfield>
+                        </div>
+
+                        <div class="cfg-row">
+                          <div class="cfg-text">
+                            <span class="cfg-label">Модераторы и VIP</span>
+                            <span class="jk-caption">Могут запускать жюри без команды</span>
+                          </div>
+                          <span appearance="info" tuiBadge>Включено</span>
+                        </div>
+                      </section>
+                    }
+                  }
+                </div>
+              </div>
+            </div>

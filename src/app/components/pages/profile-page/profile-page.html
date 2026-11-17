@@ -1,380 +1,376 @@
 <div class="jk-page profile-page">
-	<header class="jk-page-header">
-		<div class="jk-page-header-text">
-			<h1 class="jk-h1">{{ i18n.t('profile.title') }}</h1>
-			<p class="jk-caption">{{ i18n.t('profile.subtitle') }}</p>
-		</div>
+  <header class="jk-page-header">
+    <div class="jk-page-header-text">
+      <h1 class="jk-h1">{{ i18n.t('profile.title') }}</h1>
+      <p class="jk-caption">{{ i18n.t('profile.subtitle') }}</p>
+    </div>
 
-		<div class="jk-page-actions">
-			<button appearance="secondary-destructive" tuiButton type="button" (click)="logout()">
-				<tui-icon icon="@tui.log-out" />
-				Выйти
-			</button>
-		</div>
-	</header>
+    <div class="jk-page-actions">
+      <button appearance="secondary-destructive" tuiButton type="button" (click)="logout()">
+        <tui-icon icon="@tui.log-out" />
+        Выйти
+      </button>
+    </div>
+  </header>
 
-	<section class="jk-card profile-card profile-accounts">
-		<div class="profile-account">
-			@if (twitch()?.user?.avatar) {
-				<img
-					class="jk-avatar jk-avatar-xl jk-avatar-purple"
-					alt=""
-					[src]="twitch()?.user?.avatar"
-				/>
-			} @else {
-				<span class="jk-avatar jk-avatar-xl jk-avatar-purple">{{ initials() }}</span>
-			}
-			<div class="profile-info">
-				<span class="profile-name">{{ name() }}</span>
-				<span class="jk-caption">twitch.tv/{{ login() }}</span>
-				<div class="profile-badges">
-					@if (connected()) {
-						<span appearance="positive" tuiBadge>{{ i18n.t('profile.twitchConnected') }}</span>
-					} @else {
-						<span appearance="warning" tuiBadge>{{ i18n.t('profile.twitchOffline') }}</span>
-					}
-					@if (online()) {
-						<span appearance="info" tuiBadge>В эфире · {{ viewers() }} зрителей</span>
-					} @else {
-						<span appearance="neutral" tuiBadge>{{ i18n.t('profile.offline') }}</span>
-					}
-				</div>
-			</div>
-		</div>
+  <section class="jk-card profile-card profile-accounts">
+    <div class="profile-account">
+      @if (twitch()?.user?.avatar) {
+        <img
+          class="jk-avatar jk-avatar-xl jk-avatar-purple"
+          alt=""
+          [src]="twitch()?.user?.avatar"
+          />
+        } @else {
+          <span class="jk-avatar jk-avatar-xl jk-avatar-purple">{{ initials() }}</span>
+        }
+        <div class="profile-info">
+          <span class="profile-name">{{ name() }}</span>
+          <span class="jk-caption">twitch.tv/{{ login() }}</span>
+          <div class="profile-badges">
+            @if (connected()) {
+              <span appearance="positive" tuiBadge>{{ i18n.t('profile.twitchConnected') }}</span>
+            } @else {
+              <span appearance="warning" tuiBadge>{{ i18n.t('profile.twitchOffline') }}</span>
+            }
+            @if (online()) {
+              <span appearance="info" tuiBadge>В эфире · {{ viewers() }} зрителей</span>
+            } @else {
+              <span appearance="neutral" tuiBadge>{{ i18n.t('profile.offline') }}</span>
+            }
+          </div>
+        </div>
+      </div>
 
-		@if (steam()?.player; as player) {
-			<div class="profile-account">
-				<img
-					class="jk-avatar jk-avatar-xl"
-					[alt]="player.personaName"
-					[src]="player.avatarFull || player.avatar"
-				/>
-				<div class="profile-info">
-					<span class="profile-name">{{ player.personaName }}</span>
-					<span class="jk-caption">Steam ID {{ player.steamId }}</span>
-					<div class="profile-badges">
-						<span appearance="positive" tuiBadge>{{ i18n.t('profile.steamConnected') }}</span>
-						<span appearance="info" tuiBadge>{{ steamGameCountLabel() }}</span>
-					</div>
-				</div>
-				<button
-					appearance="secondary-destructive"
-					size="s"
-					tuiButton
-					type="button"
-					(click)="unlinkSteam()"
-				>
-					Отключить
-				</button>
-			</div>
-		} @else {
-			<div class="profile-account">
-				<span class="jk-avatar jk-avatar-xl">S</span>
-				<div class="profile-info">
-					<span class="profile-name">Steam</span>
-					<span class="jk-caption"
-						>{{ i18n.t('profile.connectHint') }}</span
-					>
-				</div>
-				<button appearance="primary" size="s" tuiButton type="button" (click)="linkSteam()">
-					Подключить Steam
-				</button>
-			</div>
-		}
-	</section>
+      @if (steam()?.player; as player) {
+        <div class="profile-account">
+          <img alt=""
+            class="jk-avatar jk-avatar-xl"
+            [alt]="player.personaName"
+            [src]="player.avatarFull || player.avatar"
+            />
+            <div class="profile-info">
+              <span class="profile-name">{{ player.personaName }}</span>
+              <span class="jk-caption">Steam ID {{ player.steamId }}</span>
+              <div class="profile-badges">
+                <span appearance="positive" tuiBadge>{{ i18n.t('profile.steamConnected') }}</span>
+                <span appearance="info" tuiBadge>{{ steamGameCountLabel() }}</span>
+              </div>
+            </div>
+            <button
+              appearance="secondary-destructive"
+              size="s"
+              tuiButton
+              type="button"
+              (click)="unlinkSteam()"
+            >
+              Отключить
+            </button>
+          </div>
+        } @else {
+          <div class="profile-account">
+            <span class="jk-avatar jk-avatar-xl">S</span>
+            <div class="profile-info">
+              <span class="profile-name">Steam</span>
+          <span class="jk-caption"
+              >{{ i18n.t('profile.connectHint') }}</span
+            >
+          </div>
+          <button appearance="primary" size="s" tuiButton type="button" (click)="linkSteam()">
+            Подключить Steam
+          </button>
+        </div>
+      }
+    </section>
 
-	<tui-segmented
-		class="profile-segmented"
-		[activeItemIndex]="section() === 'info' ? 0 : 1"
-		(activeItemIndexChange)="section.set($event === 0 ? 'info' : 'games')"
-	>
-		<button type="button">{{ i18n.t('profile.mainInfo') }}</button>
-		<button type="button">{{ i18n.t('profile.games') }}</button>
-	</tui-segmented>
+    <tui-segmented
+      class="profile-segmented"
+      [activeItemIndex]="section() === 'info' ? 0 : 1"
+      (activeItemIndexChange)="setSection($event)"
+    >
+      <button type="button">{{ i18n.t('profile.mainInfo') }}</button>
+      <button type="button">{{ i18n.t('profile.games') }}</button>
+    </tui-segmented>
 
-	@if (section() === 'info') {
-		<div class="profile-info-grid">
-			<section class="jk-card info-card">
-				<h2 class="jk-h4">Twitch</h2>
-				<div class="info-row">
-					<span class="jk-label">{{ i18n.t('profile.followers') }}</span><span class="info-value">{{ followers() }}</span>
-				</div>
-				<div class="info-row">
-					<span class="jk-label">{{ i18n.t('profile.subscribers') }}</span
-					><span class="info-value">{{ subscribers() }}</span>
-				</div>
-				<div class="info-row">
-					<span class="jk-label">{{ i18n.t('profile.chatters') }}</span
-					><span class="info-value">{{ chatters() }}</span>
-				</div>
-				<div class="info-row">
-					<span class="jk-label">{{ i18n.t('profile.panelRole') }}</span><span class="info-value">{{ role() }}</span>
-				</div>
-				<div class="info-row">
-					<span class="jk-label">Twitch ID</span><span class="info-value">{{ twitchId() }}</span>
-				</div>
-			</section>
+    @if (section() === 'info') {
+      <div class="profile-info-grid">
+        <section class="jk-card info-card">
+          <h2 class="jk-h4">Twitch</h2>
+          <div class="info-row">
+            <span class="jk-label">{{ i18n.t('profile.followers') }}</span><span class="info-value">{{ followers() }}</span>
+          </div>
+          <div class="info-row">
+            <span class="jk-label">{{ i18n.t('profile.subscribers') }}</span
+            ><span class="info-value">{{ subscribers() }}</span>
+          </div>
+          <div class="info-row">
+            <span class="jk-label">{{ i18n.t('profile.chatters') }}</span
+            ><span class="info-value">{{ chatters() }}</span>
+          </div>
+          <div class="info-row">
+            <span class="jk-label">{{ i18n.t('profile.panelRole') }}</span><span class="info-value">{{ role() }}</span>
+          </div>
+          <div class="info-row">
+            <span class="jk-label">Twitch ID</span><span class="info-value">{{ twitchId() }}</span>
+          </div>
+        </section>
 
-			<section class="jk-card info-card">
-				<h2 class="jk-h4">{{ i18n.t('profile.stream') }}</h2>
-				<div class="info-row">
-					<span class="jk-label">{{ i18n.t('profile.status') }}</span
-					><span class="info-value">{{ online() ? 'В эфире' : i18n.t('profile.offline') }}</span>
-				</div>
-				<div class="info-row">
-					<span class="jk-label">{{ i18n.t('profile.streamTitle') }}</span><span class="info-value">{{ streamTitle() }}</span>
-				</div>
-				<div class="info-row">
-					<span class="jk-label">{{ i18n.t('profile.game') }}</span><span class="info-value">{{ streamGame() }}</span>
-				</div>
-				<div class="info-row">
-					<span class="jk-label">{{ i18n.t('profile.start') }}</span><span class="info-value">{{ streamStarted() }}</span>
-				</div>
-				<div class="info-row">
-					<span class="jk-label">{{ i18n.t('profile.language') }}</span><span class="info-value">{{ streamLanguage() }}</span>
-				</div>
-				<div class="info-row">
-					<span class="jk-label">{{ i18n.t('profile.tags') }}</span
-					><span class="info-value">{{ streamTags() || '—' }}</span>
-				</div>
-			</section>
+        <section class="jk-card info-card">
+          <h2 class="jk-h4">{{ i18n.t('profile.stream') }}</h2>
+          <div class="info-row">
+            <span class="jk-label">{{ i18n.t('profile.status') }}</span
+            ><span class="info-value">{{ online() ? 'В эфире' : i18n.t('profile.offline') }}</span>
+          </div>
+          <div class="info-row">
+            <span class="jk-label">{{ i18n.t('profile.streamTitle') }}</span><span class="info-value">{{ streamTitle() }}</span>
+          </div>
+          <div class="info-row">
+            <span class="jk-label">{{ i18n.t('profile.game') }}</span><span class="info-value">{{ streamGame() }}</span>
+          </div>
+          <div class="info-row">
+            <span class="jk-label">{{ i18n.t('profile.start') }}</span><span class="info-value">{{ streamStarted() }}</span>
+          </div>
+          <div class="info-row">
+            <span class="jk-label">{{ i18n.t('profile.language') }}</span><span class="info-value">{{ streamLanguage() }}</span>
+          </div>
+          <div class="info-row">
+            <span class="jk-label">{{ i18n.t('profile.tags') }}</span
+            ><span class="info-value">{{ streamTags() || '—' }}</span>
+          </div>
+        </section>
 
-			<section class="jk-card info-card">
-				<h2 class="jk-h4">Steam</h2>
-				@if (steam()?.player; as player) {
-					<div class="info-row">
-						<span class="jk-label">{{ i18n.t('profile.account') }}</span
-						><span class="info-value">{{ player.personaName }}</span>
-					</div>
-					<div class="info-row">
-						<span class="jk-label">Steam ID</span
-						><span class="info-value">{{ player.steamId }}</span>
-					</div>
-					<div class="info-row">
-						<span class="jk-label">{{ i18n.t('profile.country') }}</span
-						><span class="info-value">{{ player.country || '—' }}</span>
-					</div>
-					<div class="info-row">
-						<span class="jk-label">{{ i18n.t('profile.gamesCount') }}</span
-						><span class="info-value">{{ steamGameCount() }}</span>
-					</div>
-					<a [href]="player.profileUrl" target="_blank" rel="noopener" tuiLink
-						>{{ i18n.t('profile.openSteam') }}</a
-					>
-				} @else {
-					<p class="jk-body-sm jk-muted">{{ i18n.t('profile.noSteam') }}</p>
-					<button appearance="primary" size="s" tuiButton type="button" (click)="linkSteam()">
-						Подключить Steam
-					</button>
-				}
-			</section>
-		</div>
-	} @else {
-		<tui-segmented
-			class="profile-segmented profile-tabs"
-			[activeItemIndex]="tab() === 'games' ? 0 : tab() === 'inventory' ? 1 : 2"
-			(activeItemIndexChange)="
-				tab.set($event === 0 ? 'games' : $event === 1 ? 'inventory' : 'achievements')
-			"
-		>
-			<button type="button">Игры ({{ steamGameCount() }})</button>
-			<button type="button">Инвентарь ({{ sortedInventory().length }})</button>
-			<button type="button">Достижения ({{ steamAchievements().length }})</button>
-		</tui-segmented>
+        <section class="jk-card info-card">
+          <h2 class="jk-h4">Steam</h2>
+          @if (steam()?.player; as player) {
+            <div class="info-row">
+              <span class="jk-label">{{ i18n.t('profile.account') }}</span
+              ><span class="info-value">{{ player.personaName }}</span>
+            </div>
+            <div class="info-row">
+              <span class="jk-label">Steam ID</span
+              ><span class="info-value">{{ player.steamId }}</span>
+            </div>
+            <div class="info-row">
+              <span class="jk-label">{{ i18n.t('profile.country') }}</span
+              ><span class="info-value">{{ player.country || '—' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="jk-label">{{ i18n.t('profile.gamesCount') }}</span
+              ><span class="info-value">{{ steamGameCount() }}</span>
+            </div>
+          <a [href]="player.profileUrl" target="_blank" rel="noopener" tuiLink
+            >{{ i18n.t('profile.openSteam') }}</a
+          >
+        } @else {
+          <p class="jk-body-sm jk-muted">{{ i18n.t('profile.noSteam') }}</p>
+          <button appearance="primary" size="s" tuiButton type="button" (click)="linkSteam()">
+            Подключить Steam
+          </button>
+        }
+      </section>
+    </div>
+  } @else {
+    <tui-segmented
+      class="profile-segmented profile-tabs"
+      [activeItemIndex]="tab() === 'games' ? 0 : tab() === 'inventory' ? 1 : 2"
+      (activeItemIndexChange)="setTab($event)"
+    >
+      <button type="button">Игры ({{ steamGameCount() }})</button>
+      <button type="button">Инвентарь ({{ sortedInventory().length }})</button>
+      <button type="button">Достижения ({{ steamAchievements().length }})</button>
+    </tui-segmented>
 
-		@if (tab() === 'games') {
-			<section class="jk-card">
-				<div class="profile-toolbar">
-					<tui-textfield>
-						<tui-icon icon="@tui.search" />
-						<input
-							placeholder="Найти игру в библиотеке Steam"
-							[formControl]="gameQuery"
-							(input)="gamePage.set(1)"
-							tuiInput
-						/>
-					</tui-textfield>
-					<span class="jk-caption"
-						>{{ filteredGames().length }} из {{ steamLibrary().length }}</span
-					>
-				</div>
+    @if (tab() === 'games') {
+      <section class="jk-card">
+        <div class="profile-toolbar">
+          <tui-textfield>
+            <tui-icon icon="@tui.search" />
+            <input
+              placeholder="Найти игру в библиотеке Steam"
+              [formControl]="gameQuery"
+              (input)="gamePage.set(1)"
+              tuiInput
+              />
+            </tui-textfield>
+          <span class="jk-caption"
+            >{{ filteredGames().length }} из {{ steamLibrary().length }}</span
+          >
+        </div>
 
-				@if (pagedGames().length) {
-					<div class="steam-games-list">
-						@for (game of pagedGames(); track game.appId) {
-							<article class="steam-game-row">
-								@if (game.iconUrl) {
-									<img [alt]="game.name" [src]="game.iconUrl" />
-								}
-								<div class="steam-game-text">
-									<strong>{{ game.name }}</strong>
-									<span class="jk-caption"
-										>{{ (game.playtimeMinutes / 60).toFixed(1) }} ч в Steam</span
-									>
-								</div>
-								<div class="steam-game-links">
-									@if (game.streamhataSlug) {
-										<a [routerLink]="['/app/games', game.streamhataSlug]" tuiLink>StreamHata</a>
-									}
-									<a
-										[href]="'https://store.steampowered.com/app/' + game.appId"
-										target="_blank"
-										rel="noopener"
-										tuiLink
-										>Steam</a
-									>
-								</div>
-							</article>
-						}
-					</div>
+        @if (pagedGames().length) {
+          <div class="steam-games-list">
+            @for (game of pagedGames(); track game.appId) {
+              <article class="steam-game-row">
+                @if (game.iconUrl) {
+                  <img alt="" [alt]="game.name" [src]="game.iconUrl" />
+                }
+                <div class="steam-game-text">
+                  <strong>{{ game.name }}</strong>
+                  <span class="jk-caption"
+                  >{{ (game.playtimeMinutes / 60).toFixed(1) }} ч в Steam</span
+                >
+              </div>
+              <div class="steam-game-links">
+                @if (game.streamhataSlug) {
+                  <a [routerLink]="['/app/games', game.streamhataSlug]" tuiLink>StreamHata</a>
+                }
+                  <a
+                    [href]="'https://store.steampowered.com/app/' + game.appId"
+                    target="_blank"
+                    rel="noopener"
+                    tuiLink
+                >Steam</a
+              >
+            </div>
+          </article>
+        }
+      </div>
 
-					@if (gamePages() > 1) {
-						<div class="profile-pager">
-							<button
-								appearance="flat"
-								size="s"
-								tuiButton
-								type="button"
-								[disabled]="safeGamePage() === 1"
-								(click)="gamePage.set(safeGamePage() - 1)"
-							>
-								Назад
-							</button>
-							<span class="jk-caption">Страница {{ safeGamePage() }} из {{ gamePages() }}</span>
-							<button
-								appearance="flat"
-								size="s"
-								tuiButton
-								type="button"
-								[disabled]="safeGamePage() === gamePages()"
-								(click)="gamePage.set(safeGamePage() + 1)"
-							>
-								Вперёд
-							</button>
-						</div>
-					}
-				} @else if (steamLibraryLoading()) {
-					<div class="jk-empty">
-						<tui-icon icon="@tui.loader" />
-						<span class="jk-h4">{{ i18n.t('profile.loadingSteam') }}</span>
-						<span class="jk-caption">{{ i18n.t('profile.loadingHint') }}</span>
-					</div>
-				} @else {
-					<div class="jk-empty">
-						<tui-icon icon="@tui.gamepad-2" />
-						<span class="jk-h4">{{ i18n.t('profile.noGames') }}</span>
-						<span class="jk-caption">{{ i18n.t('profile.noGamesHint') }}</span>
-					</div>
-				}
-			</section>
-		} @else if (tab() === 'inventory') {
-			<section class="jk-card">
-				<div class="profile-toolbar">
-					<span class="jk-label">{{ i18n.t('profile.sort') }}</span>
-					<tui-segmented
-						[activeItemIndex]="
-							inventorySort() === 'name' ? 0 : inventorySort() === 'amount' ? 1 : 2
-						"
-						(activeItemIndexChange)="
-							inventorySort.set($event === 1 ? 'amount' : $event === 2 ? 'type' : 'name')
-						"
-					>
-						<button type="button">{{ i18n.t('profile.streamTitle') }}</button>
-						<button type="button">Количество</button>
-						<button type="button">Тип</button>
-					</tui-segmented>
-				</div>
+      @if (gamePages() > 1) {
+        <div class="profile-pager">
+          <button
+            appearance="flat"
+            size="s"
+            tuiButton
+            type="button"
+            [disabled]="safeGamePage() === 1"
+            (click)="gamePage.set(safeGamePage() - 1)"
+          >
+            Назад
+          </button>
+          <span class="jk-caption">Страница {{ safeGamePage() }} из {{ gamePages() }}</span>
+          <button
+            appearance="flat"
+            size="s"
+            tuiButton
+            type="button"
+            [disabled]="safeGamePage() === gamePages()"
+            (click)="gamePage.set(safeGamePage() + 1)"
+          >
+            Вперёд
+          </button>
+        </div>
+      }
+    } @else if (steamLibraryLoading()) {
+      <div class="jk-empty">
+        <tui-icon icon="@tui.loader" />
+        <span class="jk-h4">{{ i18n.t('profile.loadingSteam') }}</span>
+        <span class="jk-caption">{{ i18n.t('profile.loadingHint') }}</span>
+      </div>
+    } @else {
+      <div class="jk-empty">
+        <tui-icon icon="@tui.gamepad-2" />
+        <span class="jk-h4">{{ i18n.t('profile.noGames') }}</span>
+        <span class="jk-caption">{{ i18n.t('profile.noGamesHint') }}</span>
+      </div>
+    }
+  </section>
+} @else if (tab() === 'inventory') {
+  <section class="jk-card">
+    <div class="profile-toolbar">
+      <span class="jk-label">{{ i18n.t('profile.sort') }}</span>
+      <tui-segmented
+        [activeItemIndex]="
+        inventorySort() === 'name' ? 0 : inventorySort() === 'amount' ? 1 : 2
+        "
+        (activeItemIndexChange)="setInventorySort($event)"
+      >
+        <button type="button">{{ i18n.t('profile.streamTitle') }}</button>
+        <button type="button">Количество</button>
+        <button type="button">Тип</button>
+      </tui-segmented>
+    </div>
 
-				@if (sortedInventory().length) {
-					<div class="steam-inventory">
-						@for (item of sortedInventory(); track item.id) {
-							<article class="steam-inventory-item">
-								@if (item.iconUrl) {
-									<img [alt]="item.name" [src]="item.iconUrl" />
-								}
-								<strong>{{ item.name }}</strong>
-								<span class="jk-caption">{{ item.type }}</span>
-								<span appearance="info" tuiBadge>×{{ item.amount }}</span>
-							</article>
-						}
-					</div>
-				} @else {
-					<div class="jk-empty">
-						<tui-icon icon="@tui.package" />
-						<span class="jk-h4">Инвентарь пуст или закрыт</span>
-						<span class="jk-caption">Проверьте публичность инвентаря Steam.</span>
-					</div>
-				}
-			</section>
-		} @else {
-			<section class="jk-card">
-				<div class="profile-toolbar">
-					<tui-textfield tuiChevron>
-						<input
-							aria-label="Фильтр достижений по игре"
-							[readonly]="true"
-							[value]="achievementGameLabel()"
-							tuiInput
-							tuiSelectLike
-						/>
-						<tui-data-list-wrapper
-							*tuiDropdown
-							[items]="achievementLabels()"
-							(itemClick)="setAchievementGame($event)"
-						></tui-data-list-wrapper>
-					</tui-textfield>
-					<span class="jk-caption"
-						>Получено {{ achievedCount() }} из {{ filteredAchievements().length }}</span
-					>
-				</div>
+    @if (sortedInventory().length) {
+      <div class="steam-inventory">
+        @for (item of sortedInventory(); track item.id) {
+          <article class="steam-inventory-item">
+            @if (item.iconUrl) {
+              <img alt="" [alt]="item.name" [src]="item.iconUrl" />
+            }
+            <strong>{{ item.name }}</strong>
+            <span class="jk-caption">{{ item.type }}</span>
+            <span appearance="info" tuiBadge>×{{ item.amount }}</span>
+          </article>
+        }
+      </div>
+    } @else {
+      <div class="jk-empty">
+        <tui-icon icon="@tui.package" />
+        <span class="jk-h4">Инвентарь пуст или закрыт</span>
+        <span class="jk-caption">Проверьте публичность инвентаря Steam.</span>
+      </div>
+    }
+  </section>
+} @else {
+  <section class="jk-card">
+    <div class="profile-toolbar">
+      <tui-textfield tuiChevron>
+        <input
+          aria-label="Фильтр достижений по игре"
+          [readonly]="true"
+          [value]="achievementGameLabel()"
+          tuiInput
+          tuiSelectLike
+          />
+            <tui-data-list-wrapper
+              *tuiDropdown
+              [items]="achievementLabels()"
+              (itemClick)="setAchievementGame($event)"
+          ></tui-data-list-wrapper>
+        </tui-textfield>
+          <span class="jk-caption"
+        >Получено {{ achievedCount() }} из {{ filteredAchievements().length }}</span
+      >
+    </div>
 
-				@if (achievementsLoading()) {
-					<div class="jk-empty">
-						<tui-icon icon="@tui.loader" />
-						<span class="jk-h4">Загружаем достижения</span>
-						<span class="jk-caption">Steam может отвечать до минуты.</span>
-					</div>
-				} @else if (filteredAchievements().length) {
-					<div class="steam-achievements">
-						@for (
-							achievement of filteredAchievements();
-							track achievement.appId + achievement.apiName
-						) {
-							<article class="steam-achievement-row">
-								@if (achievement.iconUrl) {
-									<img
-										class="achievement-icon"
-										[alt]="achievement.name"
-										[src]="achievement.iconUrl"
-									/>
-								} @else {
-									<tui-icon [icon]="achievement.achieved ? '@tui.trophy' : '@tui.lock'" />
-								}
-								<div class="steam-game-text">
-									<strong>{{ achievement.name }}</strong>
-									<span class="jk-caption">{{ achievement.gameName }}</span>
-									@if (achievement.description) {
-										<span class="achievement-description">{{ achievement.description }}</span>
-									}
-								</div>
-								@if (achievement.achieved) {
-									<span appearance="positive" tuiBadge
-										>Получено {{ achievementDate(achievement.unlockTime) }}</span
-									>
-								} @else {
-									<span appearance="neutral" tuiBadge>Не получено</span>
-								}
-							</article>
-						}
-					</div>
-				} @else {
-					<div class="jk-empty">
-						<tui-icon icon="@tui.trophy" />
-						<span class="jk-h4">Достижений не найдено</span>
-						<span class="jk-caption">Подключите Steam или выберите другую игру.</span>
-					</div>
-				}
-			</section>
-		}
-	}
+    @if (achievementsLoading()) {
+      <div class="jk-empty">
+        <tui-icon icon="@tui.loader" />
+        <span class="jk-h4">Загружаем достижения</span>
+        <span class="jk-caption">Steam может отвечать до минуты.</span>
+      </div>
+    } @else if (filteredAchievements().length) {
+      <div class="steam-achievements">
+        @for (
+        achievement of filteredAchievements();
+        track achievement.appId + achievement.apiName
+        ) {
+        <article class="steam-achievement-row">
+          @if (achievement.iconUrl) {
+            <img alt=""
+              class="achievement-icon"
+              [alt]="achievement.name"
+              [src]="achievement.iconUrl"
+              />
+            } @else {
+              <tui-icon [icon]="achievement.achieved ? '@tui.trophy' : '@tui.lock'" />
+            }
+            <div class="steam-game-text">
+              <strong>{{ achievement.name }}</strong>
+              <span class="jk-caption">{{ achievement.gameName }}</span>
+              @if (achievement.description) {
+                <span class="achievement-description">{{ achievement.description }}</span>
+              }
+            </div>
+            @if (achievement.achieved) {
+                  <span appearance="positive" tuiBadge
+              >Получено {{ achievementDate(achievement.unlockTime) }}</span
+            >
+          } @else {
+            <span appearance="neutral" tuiBadge>Не получено</span>
+          }
+        </article>
+      }
+    </div>
+  } @else {
+    <div class="jk-empty">
+      <tui-icon icon="@tui.trophy" />
+      <span class="jk-h4">Достижений не найдено</span>
+      <span class="jk-caption">Подключите Steam или выберите другую игру.</span>
+    </div>
+  }
+</section>
+}
+}
 </div>

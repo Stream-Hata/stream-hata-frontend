@@ -5,36 +5,36 @@
         <span class="chat-badges">
           @for (badge of row.badges; track badge.set_id + badge.version) {
             @if (badgeUrl(badge.set_id, badge.version); as url) {
-              <img class="chat-badge" [attr.title]="badgeLabel(badge.set_id)" [src]="url" />
+              <img alt="" class="chat-badge" [attr.title]="badgeLabel(badge.set_id)" [src]="url" />
             } @else {
               <tui-icon
                 class="chat-badge-icon"
                 [attr.title]="badgeLabel(badge.set_id)"
                 [icon]="badgeIcon(badge.set_id)"
-              />
+                />
+              }
             }
-          }
-        </span>
-        <span class="chat-author" [style.color]="row.color">{{ row.author }}</span>
-        <span class="chat-text">
-          @for (segment of row.segments; track $index) {
-            @if (segment.type === 'emote') {
+          </span>
+          <span class="chat-author" [style.color]="row.color">{{ row.author }}</span>
+          <span class="chat-text">
+            @for (segment of row.segments; track $index) {
+              @if (segment.type === 'emote') {
               <span
                 class="chat-emote"
                 role="img"
                 [attr.aria-label]="segment.text"
                 [style.background-image]="'url(' + segment.url + ')'"
-              ></span>
-            } @else if (segment.type === 'mention') {
-              <span class="chat-mention">{{ segment.text }}</span>
-            } @else {
-              <span>{{ segment.text }}</span>
+                ></span>
+              } @else if (segment.type === 'mention') {
+                <span class="chat-mention">{{ segment.text }}</span>
+              } @else {
+                <span>{{ segment.text }}</span>
+              }
             }
-          }
-        </span>
-      </div>
-    } @empty {
-    <span class="jk-caption">Чат пока пуст</span>
-  }
-</article>
+          </span>
+        </div>
+      } @empty {
+      <span class="jk-caption">Чат пока пуст</span>
+    }
+  </article>
 </div>

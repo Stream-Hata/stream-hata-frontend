@@ -4,11 +4,11 @@ import { provideHttpClient } from '@angular/common/http';
 import { ErrorHandler, inject, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { PreloadAllModules, provideRouter, withPreloading } from '@angular/router';
 
+import { AppErrorHandler } from '@shared/services/app-error-handler';
 import { I18nService } from '@shared/services/i18n.service';
 import { provideTaiga, TUI_ICON_RESOLVER } from '@taiga-ui/core';
 import { TUI_LANGUAGE } from '@taiga-ui/i18n';
 import { routes } from './app.routes';
-import { AppErrorHandler } from '@shared/services/app-error-handler';
 
 export const appConfig: ApplicationConfig = {
 	providers: [

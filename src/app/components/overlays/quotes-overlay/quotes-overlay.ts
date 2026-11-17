@@ -1,5 +1,5 @@
 import type { Quote } from '@shared/types/automation';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { QuotesService } from '@shared/services/engagement.services';
 import { catchError, of, switchMap, timer } from 'rxjs';
@@ -17,6 +17,7 @@ export class QuotesOverlay {
 		),
 		{ initialValue: { quotes: [] as Quote[] } },
 	);
+
 	readonly top = computed(() => [...this.state().quotes].sort((a, b) => (b.votes ?? 0) - (a.votes ?? 0)).slice(0, 8));
 
 	vote(id: string): void {

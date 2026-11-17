@@ -35,10 +35,14 @@ export default class WebglCheckPage {
 		this.supported.set(true);
 		const debug = context.getExtension('WEBGL_debug_renderer_info');
 		this.renderer.set(
-			debug ? String(context.getParameter(debug.UNMASKED_RENDERER_WEBGL)) : String(context.getParameter(context.RENDERER)),
+			debug
+				? String(context.getParameter(debug.UNMASKED_RENDERER_WEBGL))
+				: String(context.getParameter(context.RENDERER)),
 		);
 		this.vendor.set(
-			debug ? String(context.getParameter(debug.UNMASKED_VENDOR_WEBGL)) : String(context.getParameter(context.VENDOR)),
+			debug
+				? String(context.getParameter(debug.UNMASKED_VENDOR_WEBGL))
+				: String(context.getParameter(context.VENDOR)),
 		);
 		this.size.set(`${canvas.width}×${canvas.height}`);
 	}

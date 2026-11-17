@@ -1,12 +1,14 @@
+import type { TranslationKey } from '@shared/services/i18n.service';
+import type { SystemWidgetConfig } from '../../widgets/system-stats-widget/system-widget-config';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { I18nService } from '@shared/services/i18n.service';
 import { TuiButton, TuiDropdown, TuiInput, TuiLink, TuiSelectLike, TuiTextfield } from '@taiga-ui/core';
-import { I18nService, type TranslationKey } from '@shared/services/i18n.service';
 import { TuiButtonCopy, TuiChevron, TuiDataListWrapper, TuiSwitch } from '@taiga-ui/kit';
 import {
 	loadSystemWidgetConfig,
 	saveSystemWidgetConfig,
-	type SystemWidgetConfig,
+
 	systemWidgetUrl,
 } from '../../widgets/system-stats-widget/system-widget-config';
 

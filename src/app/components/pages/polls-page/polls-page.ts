@@ -10,8 +10,7 @@ import {
 	TuiTableThead,
 } from '@taiga-ui/addon-table';
 import { TuiButton, TuiIcon, TuiInput, TuiTextfield } from '@taiga-ui/core';
-import {
-	TuiInputNumber, TuiBadge, TuiTextarea } from '@taiga-ui/kit';
+import { TuiBadge, TuiTextarea } from '@taiga-ui/kit';
 import { catchError, merge, of, switchMap, timer } from 'rxjs';
 
 const EMPTY: PollsState = { current: null, prediction: null, history: [] };
@@ -25,8 +24,7 @@ const DATE_FORMAT: Intl.DateTimeFormatOptions = {
 
 @Component({
 	imports: [
-		
-		TuiInputNumber,TuiBadge,
+		TuiBadge,
 		TuiButton,
 		TuiIcon,
 		TuiInput,

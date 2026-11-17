@@ -1,8 +1,8 @@
 import { Component, computed, inject } from '@angular/core';
-import { AlertsService } from '@shared/services/alerts.service';
-import { TuiButton, TuiIcon } from '@taiga-ui/core';
 import { RouterLink } from '@angular/router';
+import { AlertsService } from '@shared/services/alerts.service';
 import { NotificationCenterService } from '@shared/services/notification-center.service';
+import { TuiButton, TuiIcon } from '@taiga-ui/core';
 
 interface Notice {
 	id: string;

@@ -1,6 +1,6 @@
+import type { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
-import { catchError, of, type Observable } from 'rxjs';
 import {
 	contrastRatio,
 	isReadableAccent,
@@ -8,6 +8,7 @@ import {
 	nearestReadable,
 	parseHex,
 } from '@shared/helpers/color';
+import { catchError, of } from 'rxjs';
 
 type Theme = 'dark' | 'light' | 'system';
 type Density = 'compact' | 'default';

@@ -1,10 +1,11 @@
+import type { TranslationKey } from '@shared/services/i18n.service';
+
+import type { NotificationSettings } from '@shared/services/notification-settings.service';
 import { Component, computed, inject, signal } from '@angular/core';
-
-import { NotificationSettingsService, type NotificationSettings } from '@shared/services/notification-settings.service';
-import { TuiButton, TuiIcon } from '@taiga-ui/core';
-import { I18nService, type TranslationKey } from '@shared/services/i18n.service';
+import { I18nService } from '@shared/services/i18n.service';
+import { NotificationSettingsService } from '@shared/services/notification-settings.service';
+import { TuiIcon } from '@taiga-ui/core';
 import { TuiBadge, TuiSwitch } from '@taiga-ui/kit';
-
 
 const LABELS: Array<[keyof NotificationSettings, TranslationKey, TranslationKey | null]> = [
 	['enabled', 'notifications.enabled', 'notifications.enabledHint'],
@@ -20,7 +21,7 @@ const LABELS: Array<[keyof NotificationSettings, TranslationKey, TranslationKey 
 ];
 
 @Component({
-	imports: [TuiBadge, TuiButton, TuiIcon, TuiSwitch],
+	imports: [TuiBadge, TuiIcon, TuiSwitch],
 	selector: 'app-notification-settings-page',
 	styleUrl: './notification-settings-page.scss',
 	templateUrl: './notification-settings-page.html',

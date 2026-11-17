@@ -20,7 +20,18 @@ function join(value?: string[]): string {
 }
 
 @Component({
-	imports: [ReactiveFormsModule, RouterLink, TuiBadge, TuiButton, TuiIcon, TuiInput, TuiLink, TuiSwitch, TuiTextarea, TuiTextfield],
+	imports: [
+		ReactiveFormsModule,
+		RouterLink,
+		TuiBadge,
+		TuiButton,
+		TuiIcon,
+		TuiInput,
+		TuiLink,
+		TuiSwitch,
+		TuiTextarea,
+		TuiTextfield,
+	],
 	selector: 'app-admin-game-edit',
 	template: `
 		<div class="admin-page game-detail-page">
@@ -32,13 +43,21 @@ function join(value?: string[]): string {
 				</div>
 				<div class="admin-table-actions">
 					@if (game(); as current) {
-						<a appearance="flat" [href]="'https://streamhata.rdpctd.dev/app/games/' + current.slug" target="_blank" rel="noopener" tuiButton>
+						<a
+							appearance="flat"
+							[href]="'https://streamhata.rdpctd.dev/app/games/' + current.slug"
+							target="_blank"
+							rel="noopener"
+							tuiButton
+						>
 							<tui-icon icon="@tui.external-link" />
 							Открыть в StreamHata
 						</a>
 					}
 					@if (saved()) {
-						<span [class.admin-error]="!savedOk()" [class.admin-success]="savedOk()">{{ saved() }}</span>
+						<span [class.admin-error]="!savedOk()" [class.admin-success]="savedOk()">{{
+							saved()
+						}}</span>
 					}
 				</div>
 			</header>
@@ -51,16 +70,24 @@ function join(value?: string[]): string {
 						@if (current.cover) {
 							<img class="game-detail-cover" [alt]="current.title" [src]="current.cover" />
 						} @else {
-							<div class="game-detail-cover game-detail-cover-empty">{{ initials(current.title) }}</div>
+							<div class="game-detail-cover game-detail-cover-empty">
+								{{ initials(current.title) }}
+							</div>
 						}
 						<div class="game-detail-badges">
-							<span class="game-chip" [class]="'game-chip-' + current.tier">{{ tierLabel(current.tier) }}</span>
+							<span class="game-chip" [class]="'game-chip-' + current.tier">{{
+								tierLabel(current.tier)
+							}}</span>
 							<span class="game-chip">{{ ageLabel(current.age) }}</span>
-							<span class="game-chip" [class]="'game-chip-status-' + current.status">{{ statusLabel(current.status) }}</span>
+							<span class="game-chip" [class]="'game-chip-status-' + current.status">{{
+								statusLabel(current.status)
+							}}</span>
 						</div>
 						<div class="game-detail-cover-meta">
 							<span class="jk-label">Рейтинг</span>
-							<strong class="jk-metric">{{ current.rating ?? current.aggregatedRating ?? '—' }}</strong>
+							<strong class="jk-metric">{{
+								current.rating ?? current.aggregatedRating ?? '—'
+							}}</strong>
 							@if (current.website) {
 								<a [href]="current.website" target="_blank" rel="noopener" tuiLink>Сайт игры</a>
 							}
@@ -78,12 +105,28 @@ function join(value?: string[]): string {
 											<tui-textfield>
 												<input [formControl]="draft" [placeholder]="field.label" tuiInput />
 											</tui-textfield>
-											<button appearance="primary" size="s" type="button" (click)="saveField(field.key)" tuiButton>Сохранить</button>
-											<button appearance="flat" size="s" type="button" (click)="cancel()" tuiButton>Отмена</button>
+											<button
+												appearance="primary"
+												size="s"
+												type="button"
+												(click)="saveField(field.key)"
+												tuiButton
+											>
+												Сохранить
+											</button>
+											<button appearance="flat" size="s" type="button" (click)="cancel()" tuiButton>
+												Отмена
+											</button>
 										</div>
 									} @else {
 										<span class="detail-value">{{ field.value || '—' }}</span>
-										<button appearance="flat" size="s" type="button" (click)="begin(field.key, field.value)" tuiButton>
+										<button
+											appearance="flat"
+											size="s"
+											type="button"
+											(click)="begin(field.key, field.value)"
+											tuiButton
+										>
 											<tui-icon icon="@tui.pencil" /> Изменить
 										</button>
 									}
@@ -98,9 +141,21 @@ function join(value?: string[]): string {
 									<span class="jk-label">{{ field.label }}</span>
 									@if (editing() === field.key) {
 										<div class="detail-edit">
-											<tui-textfield><input [formControl]="draft" [placeholder]="field.label" tuiInput /></tui-textfield>
-											<button appearance="primary" size="s" type="button" (click)="saveField(field.key)" tuiButton>Сохранить</button>
-											<button appearance="flat" size="s" type="button" (click)="cancel()" tuiButton>Отмена</button>
+											<tui-textfield
+												><input [formControl]="draft" [placeholder]="field.label" tuiInput
+											/></tui-textfield>
+											<button
+												appearance="primary"
+												size="s"
+												type="button"
+												(click)="saveField(field.key)"
+												tuiButton
+											>
+												Сохранить
+											</button>
+											<button appearance="flat" size="s" type="button" (click)="cancel()" tuiButton>
+												Отмена
+											</button>
 										</div>
 									} @else {
 										<div class="detail-chips">
@@ -110,7 +165,13 @@ function join(value?: string[]): string {
 												<span class="detail-value">—</span>
 											}
 										</div>
-										<button appearance="flat" size="s" type="button" (click)="begin(field.key, field.value)" tuiButton>
+										<button
+											appearance="flat"
+											size="s"
+											type="button"
+											(click)="begin(field.key, field.value)"
+											tuiButton
+										>
 											<tui-icon icon="@tui.pencil" /> Изменить
 										</button>
 									}
@@ -125,12 +186,30 @@ function join(value?: string[]): string {
 									<textarea rows="8" [formControl]="draft" tuiTextarea></textarea>
 								</tui-textfield>
 								<div class="admin-table-actions">
-									<button appearance="primary" size="s" type="button" (click)="saveField('description')" tuiButton>Сохранить</button>
-									<button appearance="flat" size="s" type="button" (click)="cancel()" tuiButton>Отмена</button>
+									<button
+										appearance="primary"
+										size="s"
+										type="button"
+										(click)="saveField('description')"
+										tuiButton
+									>
+										Сохранить
+									</button>
+									<button appearance="flat" size="s" type="button" (click)="cancel()" tuiButton>
+										Отмена
+									</button>
 								</div>
 							} @else {
-								<p class="detail-description">{{ current.description || 'Описание отсутствует' }}</p>
-								<button appearance="flat" size="s" type="button" (click)="begin('description', current.description ?? '')" tuiButton>
+								<p class="detail-description">
+									{{ current.description || 'Описание отсутствует' }}
+								</p>
+								<button
+									appearance="flat"
+									size="s"
+									type="button"
+									(click)="begin('description', current.description ?? '')"
+									tuiButton
+								>
 									<tui-icon icon="@tui.pencil" /> Изменить
 								</button>
 							}
@@ -140,7 +219,12 @@ function join(value?: string[]): string {
 							<div class="admin-card-head"><h2>Дополнительно</h2></div>
 							<div class="detail-row">
 								<span class="jk-label">Требуется эмулятор</span>
-								<input type="checkbox" [formControl]="emulatorsRequired" (change)="saveEmulators()" tuiSwitch />
+								<input
+									type="checkbox"
+									[formControl]="emulatorsRequired"
+									(change)="saveEmulators()"
+									tuiSwitch
+								/>
 							</div>
 							@for (field of extraFields(); track field.key) {
 								<div class="detail-row">
@@ -150,12 +234,28 @@ function join(value?: string[]): string {
 											<tui-textfield>
 												<textarea rows="5" [formControl]="draft" tuiTextarea></textarea>
 											</tui-textfield>
-											<button appearance="primary" size="s" type="button" (click)="saveJson(field.key)" tuiButton>Сохранить</button>
-											<button appearance="flat" size="s" type="button" (click)="cancel()" tuiButton>Отмена</button>
+											<button
+												appearance="primary"
+												size="s"
+												type="button"
+												(click)="saveJson(field.key)"
+												tuiButton
+											>
+												Сохранить
+											</button>
+											<button appearance="flat" size="s" type="button" (click)="cancel()" tuiButton>
+												Отмена
+											</button>
 										</div>
 									} @else {
 										<span class="detail-value">{{ field.count }} элем.</span>
-										<button appearance="flat" size="s" type="button" (click)="begin(field.key, field.value)" tuiButton>
+										<button
+											appearance="flat"
+											size="s"
+											type="button"
+											(click)="begin(field.key, field.value)"
+											tuiButton
+										>
 											<tui-icon icon="@tui.pencil" /> Изменить JSON
 										</button>
 									}
@@ -201,11 +301,36 @@ export class GameEditPage {
 			{ key: 'tier', label: 'Tier', value: game.tier },
 			{ key: 'age', label: 'Возраст', value: game.age },
 			{ key: 'status', label: 'Статус', value: game.status },
-			{ key: 'rating', label: 'Рейтинг', value: game.rating !== undefined ? String(game.rating) : '' },
-			{ key: 'aggregatedRating', label: 'Агрегированный рейтинг', value: game.aggregatedRating !== undefined ? String(game.aggregatedRating) : '' },
-			{ key: 'hastilyHours', label: 'Прохождение: быстро', value: game.completion?.hastilyHours !== undefined ? String(game.completion.hastilyHours) : '' },
-			{ key: 'normallyHours', label: 'Прохождение: обычно', value: game.completion?.normallyHours !== undefined ? String(game.completion.normallyHours) : '' },
-			{ key: 'completelyHours', label: 'Прохождение: полностью', value: game.completion?.completelyHours !== undefined ? String(game.completion.completelyHours) : '' },
+			{
+				key: 'rating',
+				label: 'Рейтинг',
+				value: game.rating !== undefined ? String(game.rating) : '',
+			},
+			{
+				key: 'aggregatedRating',
+				label: 'Агрегированный рейтинг',
+				value: game.aggregatedRating !== undefined ? String(game.aggregatedRating) : '',
+			},
+			{
+				key: 'hastilyHours',
+				label: 'Прохождение: быстро',
+				value:
+					game.completion?.hastilyHours !== undefined ? String(game.completion.hastilyHours) : '',
+			},
+			{
+				key: 'normallyHours',
+				label: 'Прохождение: обычно',
+				value:
+					game.completion?.normallyHours !== undefined ? String(game.completion.normallyHours) : '',
+			},
+			{
+				key: 'completelyHours',
+				label: 'Прохождение: полностью',
+				value:
+					game.completion?.completelyHours !== undefined
+						? String(game.completion.completelyHours)
+						: '',
+			},
 		];
 	};
 
@@ -218,15 +343,45 @@ export class GameEditPage {
 
 		return [
 			{ key: 'genres', label: 'Жанры', items: game.genres ?? [], value: join(game.genres) },
-			{ key: 'genresRu', label: 'Жанры на русском', items: game.genresRu ?? [], value: join(game.genresRu) },
+			{
+				key: 'genresRu',
+				label: 'Жанры на русском',
+				items: game.genresRu ?? [],
+				value: join(game.genresRu),
+			},
 			{ key: 'modes', label: 'Режимы', items: game.modes ?? [], value: join(game.modes) },
-			{ key: 'perspectives', label: 'Перспективы', items: game.perspectives ?? [], value: join(game.perspectives) },
+			{
+				key: 'perspectives',
+				label: 'Перспективы',
+				items: game.perspectives ?? [],
+				value: join(game.perspectives),
+			},
 			{ key: 'themes', label: 'Темы', items: game.themes ?? [], value: join(game.themes) },
-			{ key: 'developers', label: 'Разработчики', items: game.developers ?? [], value: join(game.developers) },
-			{ key: 'publishers', label: 'Издатели', items: game.publishers ?? [], value: join(game.publishers) },
+			{
+				key: 'developers',
+				label: 'Разработчики',
+				items: game.developers ?? [],
+				value: join(game.developers),
+			},
+			{
+				key: 'publishers',
+				label: 'Издатели',
+				items: game.publishers ?? [],
+				value: join(game.publishers),
+			},
 			{ key: 'aliases', label: 'Алиасы', items: game.aliases ?? [], value: join(game.aliases) },
-			{ key: 'searchTags', label: 'Теги поиска', items: game.searchTags ?? [], value: join(game.searchTags) },
-			{ key: 'screenshots', label: 'Скриншоты', items: game.screenshots ?? [], value: join(game.screenshots) },
+			{
+				key: 'searchTags',
+				label: 'Теги поиска',
+				items: game.searchTags ?? [],
+				value: join(game.searchTags),
+			},
+			{
+				key: 'screenshots',
+				label: 'Скриншоты',
+				items: game.screenshots ?? [],
+				value: join(game.screenshots),
+			},
 			{ key: 'dlc', label: 'DLC', items: game.dlc ?? [], value: join(game.dlc) },
 			{ key: 'editions', label: 'Издания', items: game.editions ?? [], value: join(game.editions) },
 			{ key: 'mods', label: 'Моды', items: game.mods ?? [], value: join(game.mods) },
@@ -241,12 +396,42 @@ export class GameEditPage {
 		}
 
 		return [
-			{ key: 'platforms', label: 'Платформы', count: game.platforms?.length ?? 0, value: JSON.stringify(game.platforms ?? [], null, 2) },
-			{ key: 'emulators', label: 'Эмуляторы', count: game.emulators?.length ?? 0, value: JSON.stringify(game.emulators ?? [], null, 2) },
-			{ key: 'downloads', label: 'Загрузки', count: game.downloads?.length ?? 0, value: JSON.stringify(game.downloads ?? [], null, 2) },
-			{ key: 'sources', label: 'Источники', count: game.sources?.length ?? 0, value: JSON.stringify(game.sources ?? [], null, 2) },
-			{ key: 'popularMods', label: 'Популярные моды', count: game.popularMods?.length ?? 0, value: JSON.stringify(game.popularMods ?? [], null, 2) },
-			{ key: 'popularCollections', label: 'Популярные коллекции', count: game.popularCollections?.length ?? 0, value: JSON.stringify(game.popularCollections ?? [], null, 2) },
+			{
+				key: 'platforms',
+				label: 'Платформы',
+				count: game.platforms?.length ?? 0,
+				value: JSON.stringify(game.platforms ?? [], null, 2),
+			},
+			{
+				key: 'emulators',
+				label: 'Эмуляторы',
+				count: game.emulators?.length ?? 0,
+				value: JSON.stringify(game.emulators ?? [], null, 2),
+			},
+			{
+				key: 'downloads',
+				label: 'Загрузки',
+				count: game.downloads?.length ?? 0,
+				value: JSON.stringify(game.downloads ?? [], null, 2),
+			},
+			{
+				key: 'sources',
+				label: 'Источники',
+				count: game.sources?.length ?? 0,
+				value: JSON.stringify(game.sources ?? [], null, 2),
+			},
+			{
+				key: 'popularMods',
+				label: 'Популярные моды',
+				count: game.popularMods?.length ?? 0,
+				value: JSON.stringify(game.popularMods ?? [], null, 2),
+			},
+			{
+				key: 'popularCollections',
+				label: 'Популярные коллекции',
+				count: game.popularCollections?.length ?? 0,
+				value: JSON.stringify(game.popularCollections ?? [], null, 2),
+			},
 		];
 	};
 
@@ -255,7 +440,10 @@ export class GameEditPage {
 
 		this.catalog
 			.get(slug)
-			.pipe(catchError(() => of(null)), takeUntilDestroyed(this.destroyRef))
+			.pipe(
+				catchError(() => of(null)),
+				takeUntilDestroyed(this.destroyRef),
+			)
 			.subscribe((game) => {
 				this.loading.set(false);
 
@@ -266,7 +454,9 @@ export class GameEditPage {
 	}
 
 	tierLabel(value: string): string {
-		return { none: 'Без тира', gold: 'Gold', diamond: 'Diamond', platinum: 'Platinum' }[value] ?? value;
+		return (
+			{ none: 'Без тира', gold: 'Gold', diamond: 'Diamond', platinum: 'Platinum' }[value] ?? value
+		);
 	}
 
 	ageLabel(value: string): string {
@@ -274,7 +464,15 @@ export class GameEditPage {
 	}
 
 	statusLabel(value: string): string {
-		return { seed: 'В каталоге', pending: 'На проверке', approved: 'Одобрено', rejected: 'Отклонено', merged: 'Объединено' }[value] ?? value;
+		return (
+			{
+				seed: 'В каталоге',
+				pending: 'На проверке',
+				approved: 'Одобрено',
+				rejected: 'Отклонено',
+				merged: 'Объединено',
+			}[value] ?? value
+		);
 	}
 
 	initials(title: string): string {
@@ -327,11 +525,36 @@ export class GameEditPage {
 	}
 
 	private fieldValue(key: string, value: string): unknown {
-		if (['year', 'rating', 'aggregatedRating', 'hastilyHours', 'normallyHours', 'completelyHours'].includes(key)) {
+		if (
+			[
+				'year',
+				'rating',
+				'aggregatedRating',
+				'hastilyHours',
+				'normallyHours',
+				'completelyHours',
+			].includes(key)
+		) {
 			return value === '' ? undefined : Number(value);
 		}
 
-		if (['genres', 'genresRu', 'modes', 'perspectives', 'themes', 'developers', 'publishers', 'aliases', 'searchTags', 'screenshots', 'dlc', 'editions', 'mods'].includes(key)) {
+		if (
+			[
+				'genres',
+				'genresRu',
+				'modes',
+				'perspectives',
+				'themes',
+				'developers',
+				'publishers',
+				'aliases',
+				'searchTags',
+				'screenshots',
+				'dlc',
+				'editions',
+				'mods',
+			].includes(key)
+		) {
 			return split(value);
 		}
 
@@ -347,7 +570,10 @@ export class GameEditPage {
 
 		this.catalog
 			.updateGame(game.slug, patch)
-			.pipe(catchError(() => of(null)), takeUntilDestroyed(this.destroyRef))
+			.pipe(
+				catchError(() => of(null)),
+				takeUntilDestroyed(this.destroyRef),
+			)
 			.subscribe((updated) => {
 				if (!updated) {
 					this.savedOk.set(false);

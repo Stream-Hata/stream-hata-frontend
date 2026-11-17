@@ -198,7 +198,7 @@ export default class TelegramBotPage {
 					this.status.set('Команда сохранена');
 					this.reset();
 					this.reloadCommands();
-		this.twitch.login().subscribe((profile) => this.twitchName.set(profile?.user?.username ?? ''));
+					this.twitch.login().subscribe((profile) => this.twitchName.set(profile?.user?.username ?? ''));
 				},
 				error: () => this.status.set('Не удалось сохранить команду'),
 			});

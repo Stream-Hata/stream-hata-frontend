@@ -1,10 +1,11 @@
+import type { WidgetConfig } from '@shared/services/widgets.service';
 import type { EmotesResponse, LiveChatMessage } from '@shared/types/chat';
 import { Component, computed, inject } from '@angular/core';
-import { TuiIcon } from '@taiga-ui/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { buildChatSegments } from '@shared/helpers/chat-emotes';
 import { ChatLiveService } from '@shared/services/chat-live.service';
-import { WidgetConfigService, type WidgetConfig } from '@shared/services/widgets.service';
+import { WidgetConfigService } from '@shared/services/widgets.service';
+import { TuiIcon } from '@taiga-ui/core';
 import { catchError, map, of, scan, switchMap, timer } from 'rxjs';
 
 const BADGE_IMAGES: Record<string, string> = {
@@ -40,6 +41,7 @@ export class ChatOverlay {
 		this.configService.watch('chat').pipe(catchError(() => of({ config: {} as WidgetConfig }))),
 		{ initialValue: { config: {} as WidgetConfig } },
 	);
+
 	readonly animated = computed(() => this.config().config.chatAnimation !== false);
 	readonly channelMode = computed(() => this.config().config.chatChannelMode === 'original' ? 'original' : 'all');
 

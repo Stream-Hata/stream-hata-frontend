@@ -24,7 +24,7 @@ interface ChangelogVersion {
 }
 
 @Component({
-	imports: [Logo, RouterLink, TuiIcon],
+	imports: [RouterLink, TuiIcon, Logo],
 	selector: 'app-changelog-page',
 	styleUrl: './changelog-page.scss',
 	templateUrl: './changelog-page.html',

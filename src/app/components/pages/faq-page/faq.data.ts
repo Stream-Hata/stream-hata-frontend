@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 export interface FaqCategory {
 	id: string;
 	title: string;

@@ -105,7 +105,6 @@ export interface AnalyticsState {
 	messages: number;
 }
 
-
 export interface ObsStats {
 	activeFps: number;
 	averageFrameRenderTime: number;

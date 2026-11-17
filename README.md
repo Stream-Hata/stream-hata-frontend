@@ -1,5 +1,7 @@
 # Nameless StreamHata
 
+[![codecov](https://codecov.io/gh/Stream-Hata/stream-hata-frontend/branch/master/graph/badge.svg)](https://codecov.io/gh/Stream-Hata/stream-hata-frontend)
+
 [English version](README.en.md)
 
 **Nameless StreamHata** — открытая панель управления Twitch-стримом, набор OBS-виджетов и desktop-клиент. Проект объединяет каталог игр, рулетку, баллы, чат-жюри, модерацию, донаты, музыку, уведомления и локальные метрики в одном рабочем месте стримера.

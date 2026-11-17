@@ -20,5 +20,15 @@ export const gamesResolver: ResolveFn<GameListResponse> = (route) => {
 			sort: 'title',
 			order: 'asc',
 		})
-		.pipe(catchError(() => of({ items: [], total: 0, page: 1, pageSize: 24, facets: { platforms: [], tiers: [], ages: [] } })));
+		.pipe(
+			catchError(() =>
+				of({
+					items: [],
+					total: 0,
+					page: 1,
+					pageSize: 24,
+					facets: { platforms: [], tiers: [], ages: [] },
+				}),
+			),
+		);
 };

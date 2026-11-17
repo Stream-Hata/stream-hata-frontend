@@ -53,7 +53,7 @@
         <div class="admin-topbar-right">
           <span appearance="info" tuiBadge>ADMIN</span>
           @if (roles.profile()?.user?.avatar) {
-            <img class="admin-avatar" [alt]="initials()" [src]="roles.profile()?.user?.avatar" />
+            <img alt="" class="admin-avatar" [alt]="initials()" [src]="roles.profile()?.user?.avatar" />
           } @else {
             <span class="admin-avatar">{{ initials() }}</span>
           }
@@ -88,5 +88,5 @@
       </main>
     </div>
   </div>
-<app-update-notice />
+  <app-update-notice />
 </tui-root>

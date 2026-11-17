@@ -2,11 +2,10 @@
 import type { TelegramButton, TelegramCommand } from '@shared/types/automation';
 import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TELEGRAM_ACTION_LABELS, TELEGRAM_ACTIONS } from '@shared/config/telegram-actions';
 import { CommandsService } from '@shared/services/commands.service';
 import { TuiButton, TuiDropdown, TuiInput, TuiSelectLike, TuiTextfield } from '@taiga-ui/core';
-import { TuiChevron, TuiDataListWrapper } from '@taiga-ui/kit';
-import { TuiSwitch, TuiTextarea } from '@taiga-ui/kit';
-import { TELEGRAM_ACTION_LABELS, TELEGRAM_ACTIONS } from '@shared/config/telegram-actions';
+import { TuiChevron, TuiDataListWrapper, TuiSwitch, TuiTextarea } from '@taiga-ui/kit';
 
 @Component({
 	imports: [RouterLink, TuiButton, TuiChevron, TuiDataListWrapper, TuiDropdown, TuiInput, TuiSelectLike, TuiSwitch, TuiTextarea, TuiTextfield],

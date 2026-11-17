@@ -26,7 +26,7 @@ export class MediaService {
 			return '';
 		}
 
-		if (trimmed.startsWith('/') || /^https?:\/\/[^/]+\.(mp3|ogg|oga|wav|m4a|aac|flac|opus|webm)(\?|$)/i.test(trimmed)) {
+		if (trimmed.startsWith('/') || /^https?:\/\/[^/]+\.(?:mp3|ogg|oga|wav|m4a|aac|flac|opus|webm)(?:\?|$)/i.test(trimmed)) {
 			return trimmed;
 		}
 

@@ -1,5 +1,11 @@
 import type { WidgetConfig } from '@shared/services/widgets.service';
-import type { DonationAnimation, DonationLayout, DonationPosition, DonationTtsProvider, DonationWidgetConfig } from '@shared/types/donation';
+import type {
+	DonationAnimation,
+	DonationLayout,
+	DonationPosition,
+	DonationTtsProvider,
+	DonationWidgetConfig,
+} from '@shared/types/donation';
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -7,7 +13,14 @@ import { TtsService } from '@shared/services/tts.service';
 import { WidgetConfigService } from '@shared/services/widgets.service';
 import { donationConfig } from '@shared/types/donation';
 import { TuiButton, TuiDropdown, TuiInput, TuiSelectLike, TuiTextfield } from '@taiga-ui/core';
-import { TuiChevron, TuiDataListWrapper, TuiInputColor, TuiInputNumber, TuiSwitch, TuiTextarea } from '@taiga-ui/kit';
+import {
+	TuiChevron,
+	TuiDataListWrapper,
+	TuiInputColor,
+	TuiInputNumber,
+	TuiSwitch,
+	TuiTextarea,
+} from '@taiga-ui/kit';
 import { catchError, of } from 'rxjs';
 import { DonationCard } from '../donation-card/donation-card';
 import { DonationGoalBar } from '../donation-goal/donation-goal';
@@ -39,7 +52,17 @@ export class DonationConfig {
 	private readonly destroyRef = inject(DestroyRef);
 	private base: WidgetConfig = {};
 	readonly saved = signal('');
-	readonly previewEvent = { id: 'preview', provider: 'test', type: 'donation', username: 'zritel', message: 'Спасибо за стрим!', amount: 500, currency: 'RUB', createdAt: new Date().toISOString() };
+	readonly previewEvent = {
+		id: 'preview',
+		provider: 'test',
+		type: 'donation',
+		username: 'zritel',
+		message: 'Спасибо за стрим!',
+		amount: 500,
+		currency: 'RUB',
+		createdAt: new Date().toISOString(),
+	};
+
 	readonly form = new FormGroup({
 		minAmount: new FormControl(0, { nonNullable: true }),
 		durationSeconds: new FormControl(10, { nonNullable: true }),
@@ -63,7 +86,9 @@ export class DonationConfig {
 		ttsModel: new FormControl('canopylabs/orpheus-v1-english', { nonNullable: true }),
 		ttsVolume: new FormControl(80, { nonNullable: true }),
 		ttsMinAmount: new FormControl(0, { nonNullable: true }),
-		ttsTemplate: new FormControl('Донат от {user} на {amount} {currency}. {message}', { nonNullable: true }),
+		ttsTemplate: new FormControl('Донат от {user} на {amount} {currency}. {message}', {
+			nonNullable: true,
+		}),
 		kicker: new FormControl('ДОНАТ', { nonNullable: true }),
 		goalsEnabled: new FormControl(true, { nonNullable: true }),
 		goalWidth: new FormControl(460, { nonNullable: true }),
@@ -79,15 +104,45 @@ export class DonationConfig {
 	});
 
 	readonly layoutLabels = ['Карточка', 'Таблица', 'Карточка + таблица'];
-	readonly positionLabels = ['Сверху слева', 'Сверху центр', 'Сверху справа', 'Слева', 'Центр', 'Справа', 'Снизу слева', 'Снизу центр', 'Снизу справа'];
+	readonly positionLabels = [
+		'Сверху слева',
+		'Сверху центр',
+		'Сверху справа',
+		'Слева',
+		'Центр',
+		'Справа',
+		'Снизу слева',
+		'Снизу центр',
+		'Снизу справа',
+	];
+
 	readonly animationLabels = ['Pop', 'Slide Up', 'Slide Left', 'Flip', 'Glitch', 'Bounce'];
 	readonly providerLabels = ['Авто', 'Groq', 'Fish Audio', 'Браузер'];
 	readonly layoutText = signal('Карточка + таблица');
 	readonly positionText = signal('Сверху справа');
 	readonly animationText = signal('Pop');
 	readonly providerText = signal('Авто');
-	readonly voices = signal(['autumn', 'diana', 'hannah', 'austin', 'daniel', 'troy', 'michael', 'sophia']);
-	readonly previewConfig = computed(() => donationConfig({ ...this.form.getRawValue(), layout: this.layoutValue(), position: this.positionValue(), animation: this.animationValue(), ttsProvider: this.providerValue() } as Partial<DonationWidgetConfig>));
+	readonly voices = signal([
+		'autumn',
+		'diana',
+		'hannah',
+		'austin',
+		'daniel',
+		'troy',
+		'michael',
+		'sophia',
+	]);
+
+	readonly previewConfig = computed(() =>
+		donationConfig({
+			...this.form.getRawValue(),
+			layout: this.layoutValue(),
+			position: this.positionValue(),
+			animation: this.animationValue(),
+			ttsProvider: this.providerValue(),
+		} as Partial<DonationWidgetConfig>),
+	);
+
 	readonly previewGoal = computed(() => ({
 		id: 'preview-goal',
 		provider: 'manual',
@@ -99,16 +154,32 @@ export class DonationConfig {
 		active: true,
 		updatedAt: new Date().toISOString(),
 	}));
+
 	readonly previewRows = computed(() => [
-		{ ...this.previewEvent, id: 'preview-2', username: 'nightbot', message: 'Крутой стрим', amount: 250 },
-		{ ...this.previewEvent, id: 'preview-3', username: 'grep_ban', message: 'На игру', amount: 1000 },
+		{
+			...this.previewEvent,
+			id: 'preview-2',
+			username: 'nightbot',
+			message: 'Крутой стрим',
+			amount: 250,
+		},
+		{
+			...this.previewEvent,
+			id: 'preview-3',
+			username: 'grep_ban',
+			message: 'На игру',
+			amount: 1000,
+		},
 		{ ...this.previewEvent, id: 'preview-4', username: 'viewer', message: '', amount: 50 },
 	]);
 
 	constructor() {
 		this.widgetConfig
 			.get('donations')
-			.pipe(catchError(() => of(null)), takeUntilDestroyed(this.destroyRef))
+			.pipe(
+				catchError(() => of(null)),
+				takeUntilDestroyed(this.destroyRef),
+			)
 			.subscribe((response) => {
 				this.base = response?.config ?? {};
 				this.apply(donationConfig(this.base.donation));
@@ -116,7 +187,10 @@ export class DonationConfig {
 
 		this.tts
 			.voices()
-			.pipe(catchError(() => of(null)), takeUntilDestroyed(this.destroyRef))
+			.pipe(
+				catchError(() => of(null)),
+				takeUntilDestroyed(this.destroyRef),
+			)
 			.subscribe((voices) => {
 				if (voices?.voices.length) {
 					this.voices.set(voices.voices);
@@ -125,19 +199,44 @@ export class DonationConfig {
 	}
 
 	layoutValue(): DonationLayout {
-		return (['card', 'table', 'combined'] as const)[this.layoutLabels.indexOf(this.layoutText())] ?? 'combined';
+		return (
+			(['card', 'table', 'combined'] as const)[this.layoutLabels.indexOf(this.layoutText())] ??
+			'combined'
+		);
 	}
 
 	positionValue(): DonationPosition {
-		return (['top-left', 'top-center', 'top-right', 'middle-left', 'center', 'middle-right', 'bottom-left', 'bottom-center', 'bottom-right'] as const)[this.positionLabels.indexOf(this.positionText())] ?? 'top-right';
+		return (
+			(
+				[
+					'top-left',
+					'top-center',
+					'top-right',
+					'middle-left',
+					'center',
+					'middle-right',
+					'bottom-left',
+					'bottom-center',
+					'bottom-right',
+				] as const
+			)[this.positionLabels.indexOf(this.positionText())] ?? 'top-right'
+		);
 	}
 
 	animationValue(): DonationAnimation {
-		return (['pop', 'slide-up', 'slide-left', 'flip', 'glitch', 'bounce'] as const)[this.animationLabels.indexOf(this.animationText())] ?? 'pop';
+		return (
+			(['pop', 'slide-up', 'slide-left', 'flip', 'glitch', 'bounce'] as const)[
+				this.animationLabels.indexOf(this.animationText())
+			] ?? 'pop'
+		);
 	}
 
 	providerValue(): DonationTtsProvider {
-		return (['auto', 'groq', 'fishaudio', 'browser'] as const)[this.providerLabels.indexOf(this.providerText())] ?? 'auto';
+		return (
+			(['auto', 'groq', 'fishaudio', 'browser'] as const)[
+				this.providerLabels.indexOf(this.providerText())
+			] ?? 'auto'
+		);
 	}
 
 	testSound(): void {
@@ -195,10 +294,34 @@ export class DonationConfig {
 
 	private apply(config: DonationWidgetConfig): void {
 		this.form.patchValue(config, { emitEvent: false });
-		this.layoutText.set(this.layoutLabels[['card', 'table', 'combined'].indexOf(config.layout)] ?? 'Карточка + таблица');
-		this.positionText.set(this.positionLabels[['top-left', 'top-center', 'top-right', 'middle-left', 'center', 'middle-right', 'bottom-left', 'bottom-center', 'bottom-right'].indexOf(config.position)] ?? 'Сверху справа');
-		this.animationText.set(this.animationLabels[['pop', 'slide-up', 'slide-left', 'flip', 'glitch', 'bounce'].indexOf(config.animation)] ?? 'Pop');
-		this.providerText.set(this.providerLabels[['auto', 'groq', 'fishaudio', 'browser'].indexOf(config.ttsProvider)] ?? 'Авто');
+		this.layoutText.set(
+			this.layoutLabels[['card', 'table', 'combined'].indexOf(config.layout)] ??
+			'Карточка + таблица',
+		);
+		this.positionText.set(
+			this.positionLabels[
+				[
+					'top-left',
+					'top-center',
+					'top-right',
+					'middle-left',
+					'center',
+					'middle-right',
+					'bottom-left',
+					'bottom-center',
+					'bottom-right',
+				].indexOf(config.position)
+			] ?? 'Сверху справа',
+		);
+		this.animationText.set(
+			this.animationLabels[
+				['pop', 'slide-up', 'slide-left', 'flip', 'glitch', 'bounce'].indexOf(config.animation)
+			] ?? 'Pop',
+		);
+		this.providerText.set(
+			this.providerLabels[['auto', 'groq', 'fishaudio', 'browser'].indexOf(config.ttsProvider)] ??
+			'Авто',
+		);
 	}
 
 	private browserSpeech(text: string): void {

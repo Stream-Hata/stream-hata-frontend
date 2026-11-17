@@ -1,17 +1,16 @@
+import type { Trigger } from '@shared/types/automation';
 import { Component, computed, DestroyRef, inject, Injector, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { TriggersService } from '@shared/services/ops.services';
-import { I18nService } from '@shared/services/i18n.service';
-import type { Trigger } from '@shared/types/automation';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { signalControl } from '@shared/helpers/form-control';
+import { I18nService } from '@shared/services/i18n.service';
+import { TriggersService } from '@shared/services/ops.services';
 import {
 	TuiButton,
 	TuiDropdown,
 	TuiIcon,
 	TuiInput,
-	TuiSelectLike,
 	tuiItemsHandlersProvider,
 	TuiSlider,
 	TuiTextfield,
@@ -101,6 +100,7 @@ export default class ChatJurySettingsPage {
 		this.i18n.t('jurySettings.compact'),
 		this.i18n.t('jurySettings.minimal'),
 	]);
+
 	readonly theme = signal<'dark' | 'light' | 'auto'>('dark');
 	readonly themeIndex = computed(() => ['dark', 'light', 'auto'].indexOf(this.theme()));
 	readonly showAuthors = signal(true);

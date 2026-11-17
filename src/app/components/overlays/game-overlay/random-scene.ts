@@ -34,9 +34,13 @@ export class RandomWheel {
 			const from = Number(range[1]);
 			const to = Number(range[2]);
 			const count = Math.min(16, Math.max(6, to - from + 1));
-			this.labels = Array.from({ length: count }, (_, index) => String(Math.round(from + ((to - from) * index) / Math.max(1, count - 1))));
+			this.labels = Array.from({ length: count }, (_, index) =>
+				String(Math.round(from + ((to - from) * index) / Math.max(1, count - 1))));
 		} else {
-			const values = label.split('|').map((item) => item.trim()).filter(Boolean);
+			const values = label
+				.split('|')
+				.map((item) => item.trim())
+				.filter(Boolean);
 			this.labels = values.length ? values.slice(0, 16) : [label || '?'];
 		}
 		this.target = this.rotation + Math.PI * 2 * (3 + Math.random() * 2);

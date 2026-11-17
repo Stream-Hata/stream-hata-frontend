@@ -97,6 +97,11 @@ export default class GamesPage {
 	readonly page = signal(1);
 	readonly pageControl = new FormControl<number | null>(null, { nonNullable: true });
 	readonly pageMode = signal<'buttons' | 'input'>('buttons');
+
+	setPageMode(index: number): void {
+		this.pageMode.set(index === 0 ? 'buttons' : 'input');
+	}
+
 	readonly loading = signal(true);
 	readonly importing = signal(false);
 	readonly importOpen = signal(false);

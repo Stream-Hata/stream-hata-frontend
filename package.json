@@ -13,7 +13,8 @@
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
 		"check": "ng build --configuration development && eslint src shared --quiet",
-		"lint:web": "eslint src shared --quiet"
+		"lint:web": "eslint src shared --quiet",
+		"test:coverage": "ng test --watch=false --coverage --coverage-reporters=lcovonly --coverage-reporters=text-summary"
 	},
 	"commitlint": {
 		"extends": [
@@ -22,15 +23,13 @@
 	},
 	"lint-staged": {
 		"*.{ts,mts,cts,tsx}": [
-			"eslint --fix",
-			"prettier --write"
+			"eslint --fix"
 		],
 		"*.scss": [
-			"stylelint --fix",
-			"prettier --write"
+			"stylelint --fix"
 		],
-		"*.{html,json,md,yml,yaml,less,css}": [
-			"prettier --write"
+		"*.html": [
+			"eslint --fix"
 		]
 	},
 	"private": true,
@@ -80,9 +79,11 @@
 		"@commitlint/config-conventional": "^21.2.3",
 		"@html-eslint/eslint-plugin": "^0.66.1",
 		"@html-eslint/parser": "^0.66.1",
+		"@stream-hata/eslint-rules": "github:Stream-Hata/eslint-rules#d3e4748e14d15ec3e5c3fcca1a8017c4600b06d5",
 		"@types/feather-icons": "^4.29.4",
 		"@types/node": "^26.6.3",
 		"@types/three": "^0.186.0",
+		"@vitest/coverage-v8": "^4.1.11",
 		"eslint": "^9.39.5",
 		"eslint-plugin-unused-imports": "^4.4.1",
 		"husky": "^9.1.7",

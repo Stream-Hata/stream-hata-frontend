@@ -1,4 +1,5 @@
 import type { StreamEvent } from '@shared/services/events.service';
+import type { TuiDay, TuiTime } from '@taiga-ui/cdk';
 import { Component, computed, DestroyRef, inject, Injector, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -21,7 +22,6 @@ import {
 	TuiTextfield,
 } from '@taiga-ui/core';
 import { TuiBadge, TuiChevron, TuiDataListWrapper, TuiInputDateTime } from '@taiga-ui/kit';
-import { TuiDay, TuiTime } from '@taiga-ui/cdk';
 import { catchError, of, switchMap, timer } from 'rxjs';
 
 const DATE_FORMAT: Intl.DateTimeFormatOptions = {
@@ -62,20 +62,20 @@ const STATUS_BADGES: Record<string, string> = {
 @Component({
 	imports: [
 		ReactiveFormsModule,
-		TuiChevron,
-		TuiDataListWrapper,
-		TuiSelectLike,
 		TuiBadge,
 		TuiButton,
+		TuiChevron,
+		TuiDataListWrapper,
 		TuiIcon,
 		TuiInput,
+		TuiInputDateTime,
+		TuiSelectLike,
 		TuiTable,
 		TuiTableTbody,
 		TuiTableTd,
 		TuiTableTh,
 		TuiTableThead,
 		TuiTextfield,
-		TuiInputDateTime,
 	],
 	providers: [
 		tuiItemsHandlersProvider({
@@ -102,6 +102,7 @@ export default class EventsPage {
 		type: signalControl(this.type, this.injector),
 		startsAt: signalControl(this.startsAt, this.injector),
 	});
+
 	readonly typeValues = ['custom', 'jury', 'achievement', 'timer', 'donation'];
 	readonly typeLabels = ['Событие', 'Жюри', 'Достижение', 'Таймер', 'Донат'];
 	readonly filter = signal('all');

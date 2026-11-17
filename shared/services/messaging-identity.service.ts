@@ -1,6 +1,6 @@
 import type { Identity } from '../crypto/secure-messaging';
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { generateIdentity } from '../crypto/secure-messaging';
 
 type Invoke = (command: string, args?: Record<string, unknown>) => Promise<unknown>;
@@ -12,6 +12,7 @@ export class MessagingIdentityService {
 	private readonly invoke = (
 		window as unknown as { __TAURI_INTERNALS__?: { invoke?: Invoke } }
 	).__TAURI_INTERNALS__?.invoke;
+
 	private cached: Identity | null = null;
 
 	async ensure(): Promise<Identity | null> {

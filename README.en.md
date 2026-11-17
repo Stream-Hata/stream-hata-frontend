@@ -1,5 +1,7 @@
 # Nameless StreamHata
 
+[![codecov](https://codecov.io/gh/Stream-Hata/stream-hata-frontend/branch/master/graph/badge.svg)](https://codecov.io/gh/Stream-Hata/stream-hata-frontend)
+
 [Русская версия](README.md)
 
 **Nameless StreamHata** is an open-source Twitch streamer panel, OBS widget suite and desktop client. It brings the game catalog, roulette, points, chat jury, moderation, donations, music, notifications and local system metrics into one streamer workspace.

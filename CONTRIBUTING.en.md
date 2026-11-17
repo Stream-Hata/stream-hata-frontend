@@ -26,7 +26,7 @@ Thanks for wanting to help with RGG Inventory. Below are the rules and guideline
 - Class names carry a type suffix (`HotbarStore`, `SettingsStore`, `PlatformBar`, `YamlParser`) — enforced by the schematics in `angular.json`.
 - Component selectors: `app` prefix, kebab-case (`app-platform-bar`); directives — `app` + camelCase (`appPlatformGuard`).
 - `ChangeDetectionStrategy.OnPush` for components where appropriate.
-- Formatting: **tabs**, single quotes, semicolons (`printWidth: 100`). Configured by Prettier/ESLint — do not disable rules locally.
+- Formatting: **tabs** in TS, 2 spaces in HTML/SCSS, single quotes, semicolons. Configured by ESLint/Stylelint — do not disable rules locally.
 - State lives in `signalStore` (`src/app/store/`), services in `src/app/shared/services/`.
 - Shared types (`AppState`, `TimerState`, `HotbarState`) live in `shared/types/` and are reused by both the frontend and `backend/server.ts`.
 - Comments are in Russian (as in the existing code).
@@ -35,17 +35,15 @@ Thanks for wanting to help with RGG Inventory. Below are the rules and guideline
 
 ```bash
 npx eslint .                  # lint without errors
-npx prettier --check .        # formatting
 npx stylelint "**/*.scss"     # styles
 pnpm test                     # unit tests (Vitest)
 pnpm build                    # build passes
 ```
 
-If a lint/format rule can be fixed automatically:
+If a lint rule can be fixed automatically:
 
 ```bash
 npx eslint . --fix
-npx prettier --write .
 ```
 
 ### Components and code generation

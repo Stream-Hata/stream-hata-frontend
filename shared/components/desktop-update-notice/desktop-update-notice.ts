@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { TuiButton } from '@taiga-ui/core';
 import { DesktopUpdateService } from '@shared/services/desktop-update.service';
+import { TuiButton } from '@taiga-ui/core';
 
 @Component({
 	imports: [TuiButton],

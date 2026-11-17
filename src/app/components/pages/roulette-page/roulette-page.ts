@@ -1,12 +1,8 @@
 import type { Game } from '@shared/types/game';
-import type {
-	RouletteConfig,
-	RouletteMode,
-	RouletteRound,
-} from '@shared/types/roulette';
+import type { RouletteConfig, RouletteMode, RouletteRound } from '@shared/types/roulette';
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { RouletteService } from '@shared/services/roulette.service';
 import { DEFAULT_ROULETTE_CONFIG } from '@shared/types/roulette';
@@ -34,7 +30,17 @@ function normalizeConfig(config: RouletteConfig): RouletteConfig {
 }
 
 @Component({
-	imports: [ReactiveFormsModule, RouterLink, TuiBadge, TuiButton, TuiChevron, TuiDataListWrapper, TuiIcon, TuiSelectLike, TuiTextfield, RouletteStage],
+	imports: [
+		RouterLink,
+		TuiBadge,
+		TuiButton,
+		TuiChevron,
+		TuiDataListWrapper,
+		TuiIcon,
+		TuiSelectLike,
+		TuiTextfield,
+		RouletteStage,
+	],
 	selector: 'app-roulette-page',
 	styleUrl: './roulette-page.scss',
 	templateUrl: './roulette-page.html',
@@ -62,7 +68,8 @@ export default class RoulettePage {
 	];
 
 	constructor() {
-		const preload = this.route.snapshot.data['roulette'] as import('./roulette-resolver').RoulettePreload | undefined;
+		const preload = this.route.snapshot.data['roulette'] as
+			import('./roulette-resolver').RoulettePreload | undefined;
 
 		if (preload) {
 			this.config.set(normalizeConfig(preload.config));
@@ -74,30 +81,30 @@ export default class RoulettePage {
 		}
 
 		if (!preload) {
-		this.roulette
-			.config()
-			.pipe(takeUntilDestroyed(this.destroyRef))
-			.subscribe({
-				next: (config) => {
-					this.config.set(normalizeConfig(config));
-					this.mode.set(config.mode);
-					this.modeControl.setValue(config.mode);
-				},
-				error: () => undefined,
-			});
+			this.roulette
+				.config()
+				.pipe(takeUntilDestroyed(this.destroyRef))
+				.subscribe({
+					next: (config) => {
+						this.config.set(normalizeConfig(config));
+						this.mode.set(config.mode);
+						this.modeControl.setValue(config.mode);
+					},
+					error: () => undefined,
+				});
 
-		this.roulette
-			.state()
-			.pipe(takeUntilDestroyed(this.destroyRef))
-			.subscribe({
-				next: (state) => {
-					this.history.set(state.history);
-					this.remaining.set(state.remaining);
-				},
-				error: () => undefined,
-			});
+			this.roulette
+				.state()
+				.pipe(takeUntilDestroyed(this.destroyRef))
+				.subscribe({
+					next: (state) => {
+						this.history.set(state.history);
+						this.remaining.set(state.remaining);
+					},
+					error: () => undefined,
+				});
 
-		this.loadFiller();
+			this.loadFiller();
 		}
 	}
 

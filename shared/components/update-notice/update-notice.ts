@@ -18,7 +18,6 @@ export class UpdateNotice {
 		this.dismissed.set(true);
 	}
 
-
 	reload(): void {
 		this.updates.reload();
 	}

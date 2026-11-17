@@ -64,7 +64,13 @@ const DEFAULT_APPEARANCE: WheelAppearance = {
 	fontUrl: '',
 };
 
-function arcPath(cx: number, cy: number, radius: number, startAngle: number, endAngle: number): string {
+function arcPath(
+	cx: number,
+	cy: number,
+	radius: number,
+	startAngle: number,
+	endAngle: number,
+): string {
 	const start = polar(cx, cy, radius, startAngle);
 	const end = polar(cx, cy, radius, endAngle);
 	const largeArc = endAngle - startAngle > 180 ? 1 : 0;
@@ -196,7 +202,10 @@ export default class WheelPage {
 		location.hostname === 'localhost' &&
 		location.port === '4200';
 
-	readonly boostParticipant = signal<import('@shared/types/automation').WheelParticipant | null>(null);
+	readonly boostParticipant = signal<import('@shared/types/automation').WheelParticipant | null>(
+		null,
+	);
+
 	readonly boostedLots = signal<Set<string>>(new Set());
 	readonly flashUserId = signal<string | null>(null);
 	readonly chanceFlash = signal(false);
@@ -322,9 +331,7 @@ export default class WheelPage {
 	});
 
 	readonly eliminatedView = computed(() =>
-		this.isElimination()
-			? this.orderView().slice(0, Math.max(0, this.revealedCount() - 1))
-			: [],
+		this.isElimination() ? this.orderView().slice(0, Math.max(0, this.revealedCount() - 1)) : [],
 	);
 
 	readonly recentEliminated = computed(() => {
@@ -363,7 +370,10 @@ export default class WheelPage {
 		this.buildSectors(this.participants(), this.round()?.title ?? 'Колесо'),
 	);
 
-	private buildSectors(participants: import('@shared/types/automation').WheelParticipant[], title: string) {
+	private buildSectors(
+		participants: import('@shared/types/automation').WheelParticipant[],
+		title: string,
+	) {
 		const palette = ['#FF2EA6', '#22E0FF', '#FFE14D', '#7C5CFF', '#2EE6A8', '#FF8A3D'];
 		const fallbackSegments = this.displaySegments();
 		const fallbackTotal = fallbackSegments.reduce((sum, item) => sum + item.weight, 0);
@@ -373,11 +383,11 @@ export default class WheelPage {
 			for (const [index, participant] of participants.entries()) {
 				items.push({
 					id: participant.userId,
-					label:
-						this.labelMode() === 'viewer'
-							? participant.displayName
-							: participant.lot || title,
-					color: participant.luck && !participant.boostUsed ? '#FFD166' : palette[index % palette.length],
+					label: this.labelMode() === 'viewer' ? participant.displayName : participant.lot || title,
+					color:
+						participant.luck && !participant.boostUsed
+							? '#FFD166'
+							: palette[index % palette.length],
 					chance: participant.chance ?? 100 / participants.length,
 				});
 			}
@@ -437,7 +447,7 @@ export default class WheelPage {
 	readonly hoveredSector = computed(() => {
 		const index = this.hovered();
 
-		return index === null ? null : this.displaySectors()[index] ?? null;
+		return index === null ? null : (this.displaySectors()[index] ?? null);
 	});
 
 	readonly resultRotation = computed(() => {
@@ -449,9 +459,7 @@ export default class WheelPage {
 
 		if (round.mode === 'elimination') {
 			const target = round.state === 'spinning' ? round.order?.[0] : undefined;
-			const sector = target
-				? this.sectors().find((item) => item.id === target.userId)
-				: undefined;
+			const sector = target ? this.sectors().find((item) => item.id === target.userId) : undefined;
 
 			if (sector) {
 				return -90 - sector.mid;
@@ -534,7 +542,13 @@ export default class WheelPage {
 		for (const name of names) {
 			const key = `${lang}|${name}`;
 
-			if (!name || this.isTestLot(name) || cache[key] || this.pendingMeta.has(key) || this.failedMeta().has(key)) {
+			if (
+				!name ||
+				this.isTestLot(name) ||
+				cache[key] ||
+				this.pendingMeta.has(key) ||
+				this.failedMeta().has(key)
+			) {
 				continue;
 			}
 
@@ -591,7 +605,10 @@ export default class WheelPage {
 				{ label: labels.platforms, value: platforms.join(', ') },
 				{ label: labels.artist, value: meta?.artist || '' },
 				{ label: labels.album, value: meta?.album || '' },
-				{ label: labels.runtime, value: meta?.runtimeMinutes ? this.formatRuntime(meta.runtimeMinutes) : '' },
+				{
+					label: labels.runtime,
+					value: meta?.runtimeMinutes ? this.formatRuntime(meta.runtimeMinutes) : '',
+				},
 				{
 					label: labels.runtime,
 					value: meta?.durationSeconds ? this.formatDuration(meta.durationSeconds) : '',
@@ -623,9 +640,7 @@ export default class WheelPage {
 				metaModsUrl: meta?.modsUrl || '',
 				metaCompletion: meta?.completion ?? null,
 				boostAvailable:
-					participant.luck &&
-					!participant.boostUsed &&
-					!this.boostedLots().has(participant.userId),
+					participant.luck && !participant.boostUsed && !this.boostedLots().has(participant.userId),
 			};
 		}),
 	);
@@ -679,7 +694,10 @@ export default class WheelPage {
 		const step = 360 / segments.length;
 
 		return `conic-gradient(${segments
-			.map((segment, index) => `${segment.color || '#FF2EA6'} ${index * step}deg ${(index + 1) * step}deg`)
+			.map(
+				(segment, index) =>
+					`${segment.color || '#FF2EA6'} ${index * step}deg ${(index + 1) * step}deg`,
+			)
 			.join(', ')})`;
 	});
 
@@ -764,21 +782,19 @@ export default class WheelPage {
 			this.autoSaveTimer = setTimeout(() => this.persist(false), 700);
 		});
 
-		this.settingsForm.valueChanges
-			.pipe(takeUntilDestroyed(this.destroyRef))
-			.subscribe((value) => {
-				this.mode.set(value.mode === 'elimination' ? 'elimination' : 'spin');
-				this.labelMode.set(value.labelMode === 'viewer' ? 'viewer' : 'lot');
-				this.spinDelay.set(value.spinDelay ?? 3);
-				this.spinCooldown.set(value.spinCooldown ?? 10);
-				this.roundSeconds.set(value.roundSeconds ?? 60);
-				this.minBet.set(value.minBet ?? 10);
-				this.maxBet.set(value.maxBet ?? 1000);
-				this.soundUrl.set(value.soundUrl ?? '');
-				this.centerUrl.set(value.centerUrl ?? '');
-				this.title.set(value.title ?? '');
-				this.bet.set(value.bet ?? 100);
-			});
+		this.settingsForm.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
+			this.mode.set(value.mode === 'elimination' ? 'elimination' : 'spin');
+			this.labelMode.set(value.labelMode === 'viewer' ? 'viewer' : 'lot');
+			this.spinDelay.set(value.spinDelay ?? 3);
+			this.spinCooldown.set(value.spinCooldown ?? 10);
+			this.roundSeconds.set(value.roundSeconds ?? 60);
+			this.minBet.set(value.minBet ?? 10);
+			this.maxBet.set(value.maxBet ?? 1000);
+			this.soundUrl.set(value.soundUrl ?? '');
+			this.centerUrl.set(value.centerUrl ?? '');
+			this.title.set(value.title ?? '');
+			this.bet.set(value.bet ?? 100);
+		});
 		this.appearanceForm.valueChanges
 			.pipe(takeUntilDestroyed(this.destroyRef))
 			.subscribe((value) => this.appearance.set(value as WheelAppearance));
@@ -878,9 +894,7 @@ export default class WheelPage {
 				this.segments.set(
 					settings.wheelSegments?.length ? settings.wheelSegments : DEFAULT_SEGMENTS,
 				);
-				this.boosts.set(
-					settings.wheelBoosts?.length ? settings.wheelBoosts : this.boosts(),
-				);
+				this.boosts.set(settings.wheelBoosts?.length ? settings.wheelBoosts : this.boosts());
 				this.soundUrl.set(settings.wheelSoundUrl ?? '');
 				this.centerUrl.set(settings.wheelCenterUrl ?? '');
 				this.settingsReady.set(true);
@@ -1064,9 +1078,7 @@ export default class WheelPage {
 
 	updateBoost(index: number, field: keyof WheelBoost, value: number): void {
 		this.boosts.update((list) =>
-			list.map((boost, itemIndex) =>
-				itemIndex === index ? { ...boost, [field]: value } : boost,
-			),
+			list.map((boost, itemIndex) => (itemIndex === index ? { ...boost, [field]: value } : boost)),
 		);
 	}
 
@@ -1201,9 +1213,7 @@ export default class WheelPage {
 
 		this.spinning.set(true);
 		this.spinDuration.set(duration);
-		this.frozenSectors.set(
-			this.buildSectors(round.participants, round.title),
-		);
+		this.frozenSectors.set(this.buildSectors(round.participants, round.title));
 
 		timer(delay)
 			.pipe(takeUntilDestroyed(this.destroyRef))
@@ -1212,7 +1222,7 @@ export default class WheelPage {
 
 				const startAngle = this.wheelAngle();
 				const base = this.sectorRotation(target?.userId);
-				const delta = ((base - startAngle) % 360 + 360) % 360;
+				const delta = (((base - startAngle) % 360) + 360) % 360;
 				const targetAngle = startAngle + 360 * 5 + delta;
 
 				this.spinFrom.set(startAngle);
@@ -1262,10 +1272,7 @@ export default class WheelPage {
 				takeUntilDestroyed(this.destroyRef),
 			)
 			.subscribe(() => {
-				this.games
-					.spinWheel()
-					.pipe(takeUntilDestroyed(this.destroyRef))
-					.subscribe();
+				this.games.spinWheel().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
 			});
 	}
 
@@ -1277,9 +1284,7 @@ export default class WheelPage {
 	});
 
 	readonly activeBoosts = computed(() => this.state()?.settings?.wheelBoosts ?? this.boosts());
-	readonly boostValues = computed(
-		() => this.activeBoosts().map((boost) => boost.value),
-	);
+	readonly boostValues = computed(() => this.activeBoosts().map((boost) => boost.value));
 
 	readonly hasAvailableBoost = computed(() => this.lotRows().some((row) => row.boostAvailable));
 	readonly lotPreview = computed(() => {
@@ -1367,15 +1372,15 @@ export default class WheelPage {
 			return true;
 		}
 
-		if (/(^|\s)(тест|test|demo|sample|fake|проверка|пример)(\s|$)/.test(value)) {
+		if (/(?:^|\s)(?:тест|test|demo|sample|fake|проверка|пример)(?:\s|$)/.test(value)) {
 			return true;
 		}
 
-		if (/(^|\s)(удача|luck|ставка|bet)(\s|$)/.test(value)) {
+		if (/(?:^|\s)(?:удача|luck|ставка|bet)(?:\s|$)/.test(value)) {
 			return true;
 		}
 
-		return /^(лот|lot)\s*[a-zа-я0-9]?$/.test(value);
+		return /^(?:лот|lot)\s*[\p{Script=Cyrillic}a-z0-9]?$/u.test(value);
 	}
 
 	private lotSourceName(source: string): string {
@@ -1477,16 +1482,12 @@ export default class WheelPage {
 		const kind = this.lotType();
 
 		if (kind !== 'auto') {
-			return this.lots
-				.parse(name, kind, lang)
-				.pipe(catchError(() => of(null)));
+			return this.lots.parse(name, kind, lang).pipe(catchError(() => of(null)));
 		}
 
-		return this.lots.parse(name, 'game', lang).pipe(
-			catchError(() =>
-				this.lots.parse(name, 'auto', lang).pipe(catchError(() => of(null))),
-			),
-		);
+		return this.lots
+			.parse(name, 'game', lang)
+			.pipe(catchError(() => this.lots.parse(name, 'auto', lang).pipe(catchError(() => of(null)))));
 	}
 
 	addLot(): void {

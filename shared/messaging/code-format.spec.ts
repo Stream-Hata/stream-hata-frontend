@@ -32,7 +32,6 @@ describe('syntax diagnostics', () => {
 	});
 });
 
-
 describe('incoming code validation', () => {
 	it('reports broken brackets for a recipient', async () => {
 		const issue = await validateCodeBlock('const x = {', 'js');

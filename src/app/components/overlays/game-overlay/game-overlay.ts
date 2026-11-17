@@ -1,7 +1,9 @@
+import type { AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
+import type { WidgetConfig } from '@shared/services/widgets.service';
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component, computed, effect, ElementRef, inject, input, OnDestroy, signal, ViewChild } from '@angular/core';
+import { Component, computed, effect, inject, input, signal, ViewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { WidgetConfigService, type WidgetConfig } from '@shared/services/widgets.service';
+import { WidgetConfigService } from '@shared/services/widgets.service';
 import { catchError, of, switchMap, timer } from 'rxjs';
 import { CoinScene } from './coin-scene';
 import { RandomWheel } from './random-scene';
@@ -55,10 +57,12 @@ export class GameOverlay implements AfterViewInit, OnDestroy {
 		this.configService.watch('coinflip').pipe(catchError(() => of({ config: {} as WidgetConfig }))),
 		{ initialValue: { config: {} as WidgetConfig } },
 	);
+
 	readonly randomConfig = toSignal(
 		this.configService.watch('random').pipe(catchError(() => of({ config: {} as WidgetConfig }))),
 		{ initialValue: { config: {} as WidgetConfig } },
 	);
+
 	readonly gameConfig = computed(() => this.mode() === 'coin' ? this.config().config : this.randomConfig().config);
 	readonly title = computed(() => this.gameConfig().gameTitle?.trim() || (this.mode() === 'coin' ? 'МОНЕТКА' : 'РУЛЕТКА'));
 	readonly outcome = computed(() => {
@@ -68,6 +72,7 @@ export class GameOverlay implements AfterViewInit, OnDestroy {
 			.replaceAll('{user}', this.viewer() || '—')
 			.replaceAll('{result}', this.result() || '—');
 	});
+
 	readonly heads = computed(() => this.config().config.coinHeads?.trim() || 'Орёл');
 	readonly tails = computed(() => this.config().config.coinTails?.trim() || 'Решка');
 	readonly result = computed(() => this.active() ? this.state().result : '');

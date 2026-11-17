@@ -1,7 +1,8 @@
-import type { AdminUser } from '@shared/services/games-catalog.service';
 import type { AccessRole, AccessRoles } from '@shared/services/access.service';
+import type { AdminUser } from '@shared/services/games-catalog.service';
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
 import { AccessService } from '@shared/services/access.service';
 import { GamesCatalogService } from '@shared/services/games-catalog.service';
 import {
@@ -11,8 +12,14 @@ import {
 	TuiTableTh,
 	TuiTableThead,
 } from '@taiga-ui/addon-table';
-import { RouterLink } from '@angular/router';
-import { TuiButton, TuiDropdown, TuiIcon, TuiInput, TuiSelectLike, TuiTextfield } from '@taiga-ui/core';
+import {
+	TuiButton,
+	TuiDropdown,
+	TuiIcon,
+	TuiInput,
+	TuiSelectLike,
+	TuiTextfield,
+} from '@taiga-ui/core';
 import { TuiBadge, TuiChevron, TuiDataListWrapper } from '@taiga-ui/kit';
 import { catchError, of } from 'rxjs';
 
@@ -25,8 +32,8 @@ const ROLE_LABELS = ['Зритель', 'VIP', 'Модератор', 'Админ'
 		TuiBadge,
 		TuiButton,
 		TuiChevron,
-		TuiDropdown,
 		TuiDataListWrapper,
+		TuiDropdown,
 		TuiIcon,
 		TuiInput,
 		TuiSelectLike,
@@ -74,7 +81,13 @@ const ROLE_LABELS = ['Зритель', 'VIP', 'Модератор', 'Админ'
 			<section class="admin-card">
 				<div class="admin-card-head">
 					<h2>Аккаунты</h2>
-					<a appearance="flat" href="https://streamhata.rdpctd.dev/app/viewers" target="_blank" rel="noopener" tuiButton>
+					<a
+						appearance="flat"
+						href="https://streamhata.rdpctd.dev/app/viewers"
+						target="_blank"
+						rel="noopener"
+						tuiButton
+					>
 						Управление зрителями
 					</a>
 				</div>
@@ -95,7 +108,9 @@ const ROLE_LABELS = ['Зритель', 'VIP', 'Модератор', 'Админ'
 							@for (user of users(); track user.id) {
 								<tr>
 									<td tuiTd class="jk-caption">{{ user.id }}</td>
-									<td tuiTd><strong>{{ user.username }}</strong></td>
+									<td tuiTd>
+										<strong>{{ user.username }}</strong>
+									</td>
 									<td tuiTd>{{ user.displayName }}</td>
 									<td tuiTd>
 										@if (user.hasToken) {
@@ -122,8 +137,18 @@ const ROLE_LABELS = ['Зритель', 'VIP', 'Модератор', 'Админ'
 									</td>
 									<td tuiTd>
 										<div class="admin-table-actions">
-											<a appearance="flat" size="s" [routerLink]="['/users', user.id]" tuiButton>Открыть</a>
-											<button appearance="flat" size="s" type="button" (click)="remove(user)" tuiButton>Удалить</button>
+											<a appearance="flat" size="s" [routerLink]="['/users', user.id]" tuiButton
+												>Открыть</a
+											>
+											<button
+												appearance="flat"
+												size="s"
+												type="button"
+												(click)="remove(user)"
+												tuiButton
+											>
+												Удалить
+											</button>
 										</div>
 									</td>
 								</tr>
@@ -152,12 +177,18 @@ export class UsersPage {
 	constructor() {
 		this.access
 			.get()
-			.pipe(catchError(() => of(null)), takeUntilDestroyed(this.destroyRef))
+			.pipe(
+				catchError(() => of(null)),
+				takeUntilDestroyed(this.destroyRef),
+			)
 			.subscribe((roles) => this.roles.set(roles));
 
 		this.catalog
 			.adminUsers()
-			.pipe(catchError(() => of({ items: [] })), takeUntilDestroyed(this.destroyRef))
+			.pipe(
+				catchError(() => of({ items: [] })),
+				takeUntilDestroyed(this.destroyRef),
+			)
 			.subscribe((response) => this.users.set(response.items));
 	}
 
@@ -197,7 +228,10 @@ export class UsersPage {
 
 		this.access
 			.setRole(login, ROLE_VALUES[index])
-			.pipe(catchError(() => of(null)), takeUntilDestroyed(this.destroyRef))
+			.pipe(
+				catchError(() => of(null)),
+				takeUntilDestroyed(this.destroyRef),
+			)
 			.subscribe((roles) => {
 				if (roles) {
 					this.roles.set(roles);
@@ -208,7 +242,10 @@ export class UsersPage {
 	remove(user: AdminUser): void {
 		this.catalog
 			.deleteUser(user.id)
-			.pipe(catchError(() => of(null)), takeUntilDestroyed(this.destroyRef))
+			.pipe(
+				catchError(() => of(null)),
+				takeUntilDestroyed(this.destroyRef),
+			)
 			.subscribe((result) => {
 				if (result?.deleted) {
 					this.users.update((items) => items.filter((item) => item.id !== user.id));

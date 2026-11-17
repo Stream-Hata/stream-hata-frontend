@@ -47,7 +47,7 @@
         ></iframe>
       }
       @if ((track.kind === 'audio' || !showVideo() || videoError()) && thumbnailUrl() && !thumbnailFailed()) {
-        <img
+        <img alt=""
           class="nowplaying-cover"
           [alt]="track.title"
           [src]="thumbnailUrl()"

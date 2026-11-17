@@ -1,10 +1,11 @@
+import type { TwitchResponse } from '@shared/services/twitch.service';
 import { HttpClient } from '@angular/common/http';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import AuthLayout from '../../layout/auth-layout/auth-layout';
+import { TwitchService } from '@shared/services/twitch.service';
 import { TuiButton } from '@taiga-ui/core';
-import { TwitchService, type TwitchResponse } from '@shared/services/twitch.service';
 import { catchError, of, switchMap, timer } from 'rxjs';
+import AuthLayout from '../../layout/auth-layout/auth-layout';
 
 @Component({
 	imports: [AuthLayout, TuiButton],
@@ -27,6 +28,7 @@ export default class DesktopAuthPage {
 		),
 		{ initialValue: null as TwitchResponse | null },
 	);
+
 	readonly loggedIn = computed(() => Boolean(this.profile()?.valid));
 
 	constructor() {

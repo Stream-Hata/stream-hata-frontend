@@ -1,24 +1,25 @@
 import type { OnDestroy } from '@angular/core';
+import type { WidgetConfig } from '@shared/services/widgets.service';
+import { HttpClient } from '@angular/common/http';
 import { Component, computed, DOCUMENT, inject } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { WidgetConfigService, type WidgetConfig } from '@shared/services/widgets.service';
+import { WidgetConfigService } from '@shared/services/widgets.service';
 import { catchError, map, of, switchMap, timer } from 'rxjs';
 import { AlertsOverlay } from '../alerts-overlay/alerts-overlay';
 import { AudioOverlay } from '../audio-overlay/audio-overlay';
 import { ChatOverlay } from '../chat-overlay/chat-overlay';
 import { DiceOverlay } from '../dice-overlay/dice-overlay';
-import { GameOverlay } from '../game-overlay/game-overlay';
 import { DonationsOverlay } from '../donations-overlay/donations-overlay';
 import { EventsOverlay } from '../events-overlay/events-overlay';
+import { GameOverlay } from '../game-overlay/game-overlay';
 import { HotbarOverlay } from '../hotbar-overlay/hotbar-overlay';
 import { JuryOverlay } from '../jury-overlay/jury-overlay';
 import { MusicOverlay } from '../music-overlay/music-overlay';
 import { NowPlayingOverlay } from '../nowplaying-overlay/nowplaying-overlay';
-import { RouletteOverlay } from '../roulette-overlay/roulette-overlay';
 import { PointsOverlay } from '../points-overlay/points-overlay';
 import { QuotesOverlay } from '../quotes-overlay/quotes-overlay';
+import { RouletteOverlay } from '../roulette-overlay/roulette-overlay';
 import { StreaksOverlay } from '../streaks-overlay/streaks-overlay';
 import { TimerOverlay } from '../timer-overlay/timer-overlay';
 import { WheelOverlay } from '../wheel-overlay/wheel-overlay';
@@ -29,16 +30,16 @@ import { WheelOverlay } from '../wheel-overlay/wheel-overlay';
 		AudioOverlay,
 		ChatOverlay,
 		DiceOverlay,
-		GameOverlay,
 		DonationsOverlay,
 		EventsOverlay,
+		GameOverlay,
 		HotbarOverlay,
 		JuryOverlay,
 		MusicOverlay,
 		NowPlayingOverlay,
-		RouletteOverlay,
 		PointsOverlay,
 		QuotesOverlay,
+		RouletteOverlay,
 		StreaksOverlay,
 		TimerOverlay,
 		WheelOverlay,
@@ -85,9 +86,10 @@ export default class OverlayHost implements OnDestroy {
 		const config = this.config();
 
 		return {
-			'--widget-bg': config.transparent === false
-				? config.backgroundColor ?? 'rgb(18, 18, 24, 0.92)'
-				: 'transparent',
+			'--widget-bg':
+				config.transparent === false
+					? (config.backgroundColor ?? 'rgb(18, 18, 24, 0.92)')
+					: 'transparent',
 			'--widget-text': config.textColor ?? '#f5eaff',
 			'--widget-accent': this.globalSettings().accent ?? config.accentColor ?? '#ff2ea6',
 			'--accent-primary': this.globalSettings().accent ?? config.accentColor ?? '#ff2ea6',

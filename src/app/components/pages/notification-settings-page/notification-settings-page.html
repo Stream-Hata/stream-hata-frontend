@@ -20,13 +20,13 @@
               [attr.aria-label]="row[1]"
               [checked]="value[row[0]]"
               tuiSwitch
-            />
-            <span class="notif-switch-hit-area" aria-hidden="true"></span>
-          </label>
-        </div>
+              />
+              <span class="notif-switch-hit-area" aria-hidden="true"></span>
+            </label>
+          </div>
+        }
+      } @else {
+        <div class="jk-empty"><tui-icon icon="@tui.loader" /><span>{{ i18n.t('notifications.loading') }}</span></div>
       }
-    } @else {
-      <div class="jk-empty"><tui-icon icon="@tui.loader" /><span>{{ i18n.t('notifications.loading') }}</span></div>
-    }
-  </section>
-</div>
+    </section>
+  </div>

@@ -1,4 +1,4 @@
-import type { ElementRef } from '@angular/core';
+import type { AfterViewInit, ElementRef } from '@angular/core';
 import type {
 	NotifySettings,
 	ObsSceneItem,
@@ -8,19 +8,20 @@ import type {
 	ObsTransform,
 	StreamInfo,
 } from '@shared/types/stream';
-import { AfterViewInit, Component, computed, DestroyRef, inject, signal, viewChild } from '@angular/core';
+import { Component, computed, DestroyRef, inject, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { NotifyService, ObsService, StreamService } from '@shared/services/stream.services';
 import { ObsAutoSceneService } from '@shared/services/obs-auto-scene.service';
+import { NotifyService, ObsService, StreamService } from '@shared/services/stream.services';
 import { TwitchService } from '@shared/services/twitch.service';
 import { TuiButton, TuiIcon, TuiInput, TuiSelectLike, TuiTextfield } from '@taiga-ui/core';
 import { TuiBadge, TuiButtonCopy, TuiChevron, TuiDataListWrapper, TuiSwitch, TuiTextarea } from '@taiga-ui/kit';
-import { catchError, finalize, map, merge, of, switchMap, timer } from 'rxjs';
+import { catchError, finalize, merge, of, switchMap, timer } from 'rxjs';
 import { Timer as HotbarTimer } from '../../hotbar/timer/timer';
 import { TimerPreview } from '../../widgets/timer-preview/timer-preview';
 
 @Component({
 	imports: [
+		HotbarTimer,
 		TuiBadge,
 		TuiButton,
 		TuiButtonCopy,
@@ -32,7 +33,7 @@ import { TimerPreview } from '../../widgets/timer-preview/timer-preview';
 		TuiSwitch,
 		TuiTextarea,
 		TuiTextfield,
-		// eslint-disable-next-line local/component-imports-unused
+
 		HotbarTimer,
 		TimerPreview,
 	],
@@ -80,6 +81,7 @@ export default class StreamPage implements AfterViewInit {
 		),
 		{ initialValue: null as ObsStats | null },
 	);
+
 	readonly health = computed(() => {
 		const stats = this.obsStats();
 
@@ -158,12 +160,15 @@ export default class StreamPage implements AfterViewInit {
 			type: this.settingType(value),
 		})),
 	);
+
 	readonly selectedItem = computed(() =>
 		this.editor()?.items.find((item) => item.id === this.selectedItemId()) ?? null,
 	);
+
 	readonly sceneOrder = computed(() =>
 		[...(this.editor()?.items ?? [])].sort((left, right) => right.index - left.index),
 	);
+
 	readonly availableInputs = computed(() => {
 		const used = new Set(
 			this.editor()?.items.map((item) => item.sourceName) ?? this.obsStatus()?.sources ?? [],
@@ -847,12 +852,12 @@ export default class StreamPage implements AfterViewInit {
 				items: snapshot.items.map((candidate) =>
 					candidate.id === item.id
 						? {
-								...candidate,
-								transform: {
-									...candidate.transform,
-									...(field === 'width' || field === 'height' ? { [field]: amount } : transform),
-								},
-							}
+							...candidate,
+							transform: {
+								...candidate.transform,
+								...(field === 'width' || field === 'height' ? { [field]: amount } : transform),
+							},
+						}
 						: candidate,
 				),
 			};

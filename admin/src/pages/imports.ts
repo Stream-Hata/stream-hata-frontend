@@ -3,14 +3,15 @@ import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { GamesCatalogService } from '@shared/services/games-catalog.service';
-import { TuiButton, TuiDropdown, TuiIcon, TuiInput, TuiSelectLike, TuiTextfield } from '@taiga-ui/core';
 import {
-	TuiBadge,
-	TuiChevron,
-	TuiDataListWrapper,
-	TuiInputNumber,
-	TuiSwitch,
-} from '@taiga-ui/kit';
+	TuiButton,
+	TuiDropdown,
+	TuiIcon,
+	TuiInput,
+	TuiSelectLike,
+	TuiTextfield,
+} from '@taiga-ui/core';
+import { TuiBadge, TuiChevron, TuiDataListWrapper, TuiInputNumber, TuiSwitch } from '@taiga-ui/kit';
 import { catchError, of } from 'rxjs';
 
 @Component({
@@ -19,8 +20,8 @@ import { catchError, of } from 'rxjs';
 		TuiBadge,
 		TuiButton,
 		TuiChevron,
-		TuiDropdown,
 		TuiDataListWrapper,
+		TuiDropdown,
 		TuiIcon,
 		TuiInput,
 		TuiInputNumber,
@@ -34,7 +35,9 @@ import { catchError, of } from 'rxjs';
 			<header class="admin-page-head">
 				<div>
 					<h1>Импорт</h1>
-					<p class="jk-caption">Загрузка каталога из RAWG и IGDB, точечное добавление и обновление.</p>
+					<p class="jk-caption">
+						Загрузка каталога из RAWG и IGDB, точечное добавление и обновление.
+					</p>
 				</div>
 				@if (busy()) {
 					<span appearance="info" tuiBadge>Идёт импорт…</span>
@@ -50,37 +53,81 @@ import { catchError, of } from 'rxjs';
 					<label class="import-field">
 						<span class="jk-label">Источник</span>
 						<tui-textfield tuiChevron>
-							<input aria-label="Источник" [readonly]="true" [value]="sourceLabel()" tuiInput tuiSelectLike />
-							<tui-data-list-wrapper *tuiDropdown [items]="sourceLabels" (itemClick)="setSource($event)" />
+							<input
+								aria-label="Источник"
+								[readonly]="true"
+								[value]="sourceLabel()"
+								tuiInput
+								tuiSelectLike
+							/>
+							<tui-data-list-wrapper
+								*tuiDropdown
+								[items]="sourceLabels"
+								(itemClick)="setSource($event)"
+							/>
 						</tui-textfield>
 					</label>
 					<label class="import-field">
 						<span class="jk-label">Сортировка</span>
 						<tui-textfield tuiChevron>
-							<input aria-label="Порядок" [readonly]="true" [value]="orderLabel()" tuiInput tuiSelectLike />
-							<tui-data-list-wrapper *tuiDropdown [items]="orderLabels" (itemClick)="setOrder($event)" />
+							<input
+								aria-label="Порядок"
+								[readonly]="true"
+								[value]="orderLabel()"
+								tuiInput
+								tuiSelectLike
+							/>
+							<tui-data-list-wrapper
+								*tuiDropdown
+								[items]="orderLabels"
+								(itemClick)="setOrder($event)"
+							/>
 						</tui-textfield>
 					</label>
 					<label class="import-field">
 						<span class="jk-label">Сколько игр загрузить</span>
-						<tui-textfield><input aria-label="Лимит" [formControl]="limit" tuiInputNumber /></tui-textfield>
+						<tui-textfield
+							><input aria-label="Лимит" [formControl]="limit" tuiInputNumber
+						/></tui-textfield>
 					</label>
 					<label class="import-field">
 						<span class="jk-label">Минимальный рейтинг</span>
-						<tui-textfield><input aria-label="Мин. рейтинг" [formControl]="minRating" tuiInputNumber /></tui-textfield>
+						<tui-textfield
+							><input aria-label="Мин. рейтинг" [formControl]="minRating" tuiInputNumber
+						/></tui-textfield>
 					</label>
 					<label class="import-field">
 						<span class="jk-label">Год выпуска от</span>
 						<tui-textfield tuiChevron>
-							<input aria-label="Год от" [readonly]="true" [value]="yearFromLabel()" tuiInput tuiSelectLike />
-							<tui-data-list-wrapper *tuiDropdown [items]="yearLabels" (itemClick)="setYearFrom($event)" />
+							<input
+								aria-label="Год от"
+								[readonly]="true"
+								[value]="yearFromLabel()"
+								tuiInput
+								tuiSelectLike
+							/>
+							<tui-data-list-wrapper
+								*tuiDropdown
+								[items]="yearLabels"
+								(itemClick)="setYearFrom($event)"
+							/>
 						</tui-textfield>
 					</label>
 					<label class="import-field">
 						<span class="jk-label">Год выпуска до</span>
 						<tui-textfield tuiChevron>
-							<input aria-label="Год до" [readonly]="true" [value]="yearToLabel()" tuiInput tuiSelectLike />
-							<tui-data-list-wrapper *tuiDropdown [items]="yearLabels" (itemClick)="setYearTo($event)" />
+							<input
+								aria-label="Год до"
+								[readonly]="true"
+								[value]="yearToLabel()"
+								tuiInput
+								tuiSelectLike
+							/>
+							<tui-data-list-wrapper
+								*tuiDropdown
+								[items]="yearLabels"
+								(itemClick)="setYearTo($event)"
+							/>
 						</tui-textfield>
 					</label>
 				</div>
@@ -89,10 +136,18 @@ import { catchError, of } from 'rxjs';
 					<span>Только отсутствующие</span>
 				</label>
 				<div class="admin-card-head">
-					<button appearance="primary" type="button" [disabled]="busy()" (click)="startImport()" tuiButton>
+					<button
+						appearance="primary"
+						type="button"
+						[disabled]="busy()"
+						(click)="startImport()"
+						tuiButton
+					>
 						{{ busy() ? 'Импортируем…' : 'Импортировать' }}
 					</button>
-					@if (importResult()) { <span class="admin-success">{{ importResult() }}</span> }
+					@if (importResult()) {
+						<span class="admin-success">{{ importResult() }}</span>
+					}
 				</div>
 			</section>
 
@@ -103,8 +158,18 @@ import { catchError, of } from 'rxjs';
 				</div>
 				<form class="admin-search" (submit)="$event.preventDefault(); run()">
 					<tui-textfield tuiChevron>
-						<input aria-label="Источник поиска" [readonly]="true" [value]="searchSourceLabel()" tuiInput tuiSelectLike />
-						<tui-data-list-wrapper *tuiDropdown [items]="searchSourceLabels" (itemClick)="setSearchSource($event)" />
+						<input
+							aria-label="Источник поиска"
+							[readonly]="true"
+							[value]="searchSourceLabel()"
+							tuiInput
+							tuiSelectLike
+						/>
+						<tui-data-list-wrapper
+							*tuiDropdown
+							[items]="searchSourceLabels"
+							(itemClick)="setSearchSource($event)"
+						/>
 					</tui-textfield>
 					<tui-textfield>
 						<tui-icon icon="@tui.search" />
@@ -114,7 +179,9 @@ import { catchError, of } from 'rxjs';
 						{{ busy() ? 'Ищем…' : 'Импортировать' }}
 					</button>
 				</form>
-				@if (result()) { <span class="admin-success">{{ result() }}</span> }
+				@if (result()) {
+					<span class="admin-success">{{ result() }}</span>
+				}
 			</section>
 
 			@if (previewItems().length) {
@@ -124,11 +191,20 @@ import { catchError, of } from 'rxjs';
 						<span class="jk-caption">{{ previewItems().length }} найдено через API</span>
 					</div>
 					<table class="admin-table">
-						<thead><tr><th>Игра</th><th>Год</th><th>Платформы</th><th>Slug</th></tr></thead>
+						<thead>
+							<tr>
+								<th>Игра</th>
+								<th>Год</th>
+								<th>Платформы</th>
+								<th>Slug</th>
+							</tr>
+						</thead>
 						<tbody>
 							@for (game of previewItems(); track game.slug) {
 								<tr>
-									<td><strong>{{ game.title }}</strong></td>
+									<td>
+										<strong>{{ game.title }}</strong>
+									</td>
 									<td>{{ game.year || '—' }}</td>
 									<td>{{ game.platforms?.[0]?.name || '—' }}</td>
 									<td class="jk-caption">{{ game.slug }}</td>
@@ -145,8 +221,12 @@ import { catchError, of } from 'rxjs';
 					<span class="jk-caption">Пересобрать search_text и связанные данные</span>
 				</div>
 				<div class="admin-card-head">
-					<button appearance="secondary" type="button" (click)="refresh()" tuiButton>Обновить</button>
-					@if (refreshResult()) { <span class="admin-success">{{ refreshResult() }}</span> }
+					<button appearance="secondary" type="button" (click)="refresh()" tuiButton>
+						Обновить
+					</button>
+					@if (refreshResult()) {
+						<span class="admin-success">{{ refreshResult() }}</span>
+					}
 				</div>
 			</section>
 		</div>
@@ -163,6 +243,7 @@ export class ImportsPage {
 
 		return error?.error?.error ?? error?.message ?? 'Ошибка импорта';
 	}
+
 	readonly query = new FormControl('', { nonNullable: true });
 	readonly busy = signal(false);
 	readonly result = signal('');
@@ -177,7 +258,12 @@ export class ImportsPage {
 	readonly onlyMissing = new FormControl(true, { nonNullable: true });
 	readonly previewItems = signal<Game[]>([]);
 	readonly currentYear = new Date().getFullYear();
-	readonly yearLabels = ['Любой', ...Array.from({ length: this.currentYear - 1949 }, (_, index) => String(this.currentYear - index))];
+	readonly yearLabels = [
+		'Любой',
+		...Array.from({ length: this.currentYear - 1949 }, (_, index) =>
+			String(this.currentYear - index)),
+	];
+
 	readonly yearFromLabel = signal('Любой');
 	readonly yearToLabel = signal('Любой');
 	readonly sourceLabels = ['RAWG', 'IGDB'];
@@ -298,7 +384,12 @@ export class ImportsPage {
 	refresh(): void {
 		this.catalog
 			.refreshCatalog()
-			.pipe(catchError(() => of(null)), takeUntilDestroyed(this.destroyRef))
-			.subscribe((response) => this.refreshResult.set(response ? `Обновлено, всего ${response.total}` : 'Ошибка'));
+			.pipe(
+				catchError(() => of(null)),
+				takeUntilDestroyed(this.destroyRef),
+			)
+			.subscribe((response) =>
+				this.refreshResult.set(response ? `Обновлено, всего ${response.total}` : 'Ошибка'),
+			);
 	}
 }
